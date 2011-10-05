@@ -1,0 +1,193 @@
+package net.gtamps.android.core.graph;
+
+import android.text.Html;
+import net.gtamps.android.core.math.Color4;
+import net.gtamps.android.core.utils.Utils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.microedition.khronos.opengles.GL10;
+
+/**
+ * Der Szenengraph
+ */
+public class SceneGraph implements IUpdatableLogic, IProcessable {
+
+	/**
+	 * Der Wurzelknoten
+	 */
+	@NotNull
+	private NullNode rootNode = new NullNode();
+
+	/**
+	 * Die aktive Kamera
+	 */
+	@Nullable
+	private CameraNode activeCamera;
+
+    /**
+     * Defines the background color of the scene.
+     */
+    @NotNull
+    private static final Color4 background = new Color4(0,0,0,0);
+    private static boolean isDirty = true;
+
+	/**
+	 * Bezieht die aktive Kamera
+	 * @return
+	 */
+	@Nullable
+	public final CameraNode getActiveCamera() {
+		return activeCamera;
+	}
+
+	/**
+	 * Setzt die aktive Kamera
+	 * @param camera Die Kamera
+	 */
+	public final void setActiveCamera(@Nullable CameraNode camera) {
+		activeCamera = camera;
+	}
+
+	/**
+	 * Der Processing-State
+	 */
+	@NotNull
+	private final ProcessingState state = new ProcessingState();
+
+	/**
+	 * Rendert den Graphen (Spezialform von {@link #process})
+	 * @param gl Die OpenGL-Instanz
+	 * @see #process(ProcessingState)
+	 */
+	public void render(@NotNull GL10 gl) {
+		state.reset();
+		state.setGl(gl);
+		process(state);
+        if(isDirty) {
+            state.getGl().glClearColor(background.getRedNormalized(),background.getGreenNormalized(),background.getBlueNormalized(),background.getAlphaNormalized());
+            isDirty = false;
+        }
+	}
+
+	/**
+	 * Verarbeitet den Knoten und alle Kindknoten
+	 *
+	 * @param state Die State-Referenz
+	 */
+	@Override
+	public void process(@NotNull ProcessingState state) {
+        CameraNode camera = getActiveCamera();
+        if (camera != null) {
+            camera.setVisible(true);
+            camera.process(state);
+            camera.setVisible(false);
+        }
+		rootNode.process(state);
+	}
+
+    public Color4 getBackground() {
+        isDirty = true;
+        return background;
+    }
+
+	/**
+	 * Ermittelt die Sichtbarkeit des Knotens
+	 *
+	 * @return <code>true</code>, wenn der Knoten sichtbar ist
+	 */
+	@Override
+	public boolean isVisible() {
+		return rootNode.isVisible();
+	}
+
+	/**
+	 * Aktualisiert die aktive Kamera.
+	 *
+	 * @param deltat Zeitdifferenz zum vorherigen Frame
+	 */
+	private void updateActiveCamera(float deltat) {
+		CameraNode camera = getActiveCamera();
+		if (camera != null) camera.update(deltat);
+	}
+
+	/**
+	 * Aktualisiert den Knoten und alle Kind- und Elternknoten.
+	 * Es wird ein volles Update ausgeführt.
+	 *
+	 * @param deltat Zeitdifferenz zum vorherigen Frame
+	 */
+	@Override
+	public void update(float deltat) {
+		// Kamera aktualisieren
+		updateActiveCamera(deltat);
+
+		// Reguläre Aktualisierung durchführen
+		rootNode.update(deltat);
+	}
+
+	/**
+	 * Aktualisiert den Knoten und alle Kind- und Elternknoten.
+	 * Es wird ein volles Update ausgeführt.
+	 *
+	 * @param deltat       Zeitdifferenz zum vorherigen Frame
+	 * @param positionOnly Legt fest, ob nur ein Positionsupdate durchgeführt werden soll (z.B. für Kameraupdates)
+	 */
+	@Override
+	public void update(float deltat, boolean positionOnly) {
+		// Kamera aktualisieren
+		updateActiveCamera(deltat);
+
+		// Reguläre Aktualisierung durchführen
+		rootNode.update(deltat, positionOnly);
+	}
+
+	/**
+	 * Initialisiert den Graphen
+	 *
+	 * @param state Die State-Referenz
+	 */
+	public final void setup(@NotNull ProcessingState state) {
+		rootNode.setup(state);
+	}
+
+	/**
+	 * Fügt der Hierarchie ein Kind hinzu
+	 *
+	 * @param child Der hinzuzufügende Kindknoten
+	 */
+	public final void add(@NotNull SceneNode child) {
+		rootNode.add(child);
+	}
+
+	/**
+	 * Entfernt ein Kind aus der Hierarchie
+	 *
+	 * @param child Der zu entfernende Kindknoten
+	 * @return Gibt an, ob das Kind entfernt wurde
+	 */
+	public final boolean remove(@NotNull SceneNode child) {
+		return rootNode.remove(child);
+	}
+
+	/**
+	 * Bezieht einen Kindknoten
+	 *
+	 * @param childIndex Der Index des Kindknotens
+	 * @return Der Kindknoten
+	 */
+	@Nullable
+	public final SceneNode get(int childIndex) {
+		return rootNode.get(childIndex);
+	}
+
+	/**
+	 * Liefert die Anzahl der direkten Kindknoten
+	 *
+	 * @return Anzahl der direkten Kindknoten
+	 */
+	public int getChildCount() {
+		return rootNode.getChildCount();
+	}
+}
+
