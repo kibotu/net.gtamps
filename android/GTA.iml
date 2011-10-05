@@ -28,9 +28,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../shared">
+      <sourceFolder url="file://$MODULE_DIR$/../shared/src" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="Android 2.1-update1 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="Unnamed" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>

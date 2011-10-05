@@ -47,8 +47,8 @@ public class Game implements IGame{
 
         // TODO load lvl
 
-//        createWorld();
-        createParsedObject();
+        createWorld();
+//        createParsedObject();
         createHud();
 
 
@@ -230,8 +230,8 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             cursor.setPosition(temp);
-//            car.getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().moveXY(car.getPosition());
+            car.getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().moveXY(car.getPosition());
             ring.setRotation(0,0,speed);
             temp.recycle();
         }

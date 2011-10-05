@@ -38,15 +38,14 @@ public class Vbo {
         this.colorBuffer = colorBuffer;
         this.textureCoordinateBuffer = textureCoordinateBuffer;
         isAllocated = false;
-        positionZero();
     }
 
     private void positionZero() {
-        vertexBuffer.position(0);
-        indexBuffer.position(0);
-        normalBuffer.position(0);
-//        colorBuffer.position(0);
-        textureCoordinateBuffer.position(0);
+        if(vertexBuffer != null ) vertexBuffer.position(0);
+        if(indexBuffer != null) indexBuffer.position(0);
+        if(normalBuffer != null) normalBuffer.position(0);
+        if(colorBuffer != null) colorBuffer.position(0);
+        if(textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
     }
 
     public void alloc(GL10 gl) {
@@ -54,6 +53,8 @@ public class Vbo {
         if(isAllocated) {
             return;
         }
+
+        positionZero();
 
         // OpenGL 1.1-Instanz beziehen
         final GL11 gl11 = (GL11) gl;
