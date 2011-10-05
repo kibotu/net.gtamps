@@ -18,3 +18,4 @@ proguard.cfg
 default.properties
 *.class
 workspace.xml
+.metadata
