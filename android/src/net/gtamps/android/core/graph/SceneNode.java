@@ -1,6 +1,6 @@
 package net.gtamps.android.core.graph;
 
-import net.gtamps.android.core.math.Matrix4;
+import net.gtamps.shared.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

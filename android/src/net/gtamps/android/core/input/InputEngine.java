@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.graph.CameraNode;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

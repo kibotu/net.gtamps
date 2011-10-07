@@ -1,9 +1,9 @@
 package net.gtamps.android.core.graph;
 
+import net.gtamps.android.core.utils.Frustum;
 import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.core.math.Frustum;
-import net.gtamps.android.core.math.Matrix4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Matrix4;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -306,7 +306,7 @@ public class CameraNode extends RenderableNode {
     /**
      * Liefert den Sichtpunkt der Kamera absolut, ohne die Position zu verändern
      *
-     * @see CameraNode#setTarget(net.gtamps.android.core.math.Vector3)
+     * @see CameraNode#setTarget(net.gtamps.shared.math.Vector3)
      */
     @NotNull
     public Vector3 getTarget() {

@@ -1,8 +1,6 @@
 package net.gtamps.android.core.graph;
 
-import android.text.Html;
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.utils.Utils;
+import net.gtamps.android.core.utils.Color4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

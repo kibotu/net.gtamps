@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import net.gtamps.android.core.math.Color4;
+import net.gtamps.android.core.utils.Color4;
 
 
 public class Color4BufferManager {

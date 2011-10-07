@@ -1,6 +1,6 @@
 package net.gtamps.android.core.utils.parser;
 
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Vector3;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

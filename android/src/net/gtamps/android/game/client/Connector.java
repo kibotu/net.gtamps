@@ -1,12 +1,5 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.core.math.Plane;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-
-import java.net.DatagramSocket;
-import java.net.Socket;
-import java.net.SocketException;
-
 public class Connector implements Runnable {
 
     private static final String TAG = Connector.class.getSimpleName();
