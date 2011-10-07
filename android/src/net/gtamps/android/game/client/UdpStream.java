@@ -22,12 +22,15 @@ public class UdpStream implements IStream {
     }
 
     @Override
-    public void onData(byte[] response) {
-
+    public void start() {
     }
 
     @Override
-    public void startListening() {
+    public void stop() {
+    }
 
+    @Override
+    public boolean isConnected() {
+        return false;
     }
 }

@@ -4,12 +4,15 @@ import android.os.SystemClock;
 import net.gtamps.android.R;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
+import net.gtamps.android.game.client.MessageFactory;
+import net.gtamps.android.game.client.StreamInputListener;
 import net.gtamps.android.game.entity.views.Hud;
+import net.gtamps.shared.Config;
+import net.gtamps.shared.communication.Command;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
 import net.gtamps.android.core.utils.parser.Parser;
-import net.gtamps.android.game.client.Connector;
 import net.gtamps.android.game.client.IStream;
 import net.gtamps.android.game.client.TcpStream;
 import net.gtamps.android.game.objects.*;
@@ -27,8 +30,8 @@ public class Game implements IGame{
     private InputEngine inputEngine;
     private ArrayList<Scene> scenes;
     private boolean isDragging = false;
-    private Connector connector;
     private Hud hud;
+    private TcpStream stream;
 
     public Game() {
         isRunning = true;
@@ -55,8 +58,8 @@ public class Game implements IGame{
 
         City city = new City();
         scene.add(city);
-        city.setRotation(90,0,0);
-        city.setScaling(20,20,20);
+        city.setRotation(90, 0, 0);
+        city.setScaling(20, 20, 20);
 
         CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
         // set that camera active within scene
@@ -65,6 +68,15 @@ public class Game implements IGame{
 
         // hud
         scenes.add(hud.getScene());
+
+        // connect
+        stream = new TcpStream();
+        StreamInputListener listener = new StreamInputListener();
+        stream.connect(Config.SERVER_HOST_ADDRESS, Config.SERVER_PORT);
+        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (stream.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+        stream.addStreamInputListener(listener);
+
+        if(stream.isConnected()) stream.start();
     }
 
     private void createParsedObject() {
@@ -122,6 +134,7 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
+            if(stream.isConnected()) stream.send(MessageFactory.createCommand(Command.ACCELERATE).toString().getBytes());
 
 //            Utils.log(TAG, "\n\n\n\n\nSending message "+(stream.send(builder.toString().getBytes()) ? "successful." : "failed.")+"\n\n\n\n\n");
 
