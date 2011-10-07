@@ -19,3 +19,4 @@ default.properties
 *.class
 workspace.xml
 .metadata
+*.dex
