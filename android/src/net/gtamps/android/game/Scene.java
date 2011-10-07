@@ -1,7 +1,7 @@
 package net.gtamps.android.game;
 
 import net.gtamps.android.core.graph.SceneGraph;
-import net.gtamps.android.game.primitives.IObject3d;
+import net.gtamps.android.game.objects.IObject3d;
 
 import java.util.ArrayList;
 

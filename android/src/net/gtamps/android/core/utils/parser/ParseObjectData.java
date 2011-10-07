@@ -3,14 +3,12 @@ package net.gtamps.android.core.utils.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.util.Log;
-
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.parser.AParser.Material;
 import net.gtamps.android.core.utils.parser.AParser.TextureAtlas;
 import net.gtamps.android.core.utils.parser.AParser.BitmapAsset;
-import net.gtamps.android.game.primitives.ParsedObject;
+import net.gtamps.android.game.objects.ParsedObject;
 
 public class ParseObjectData {
 

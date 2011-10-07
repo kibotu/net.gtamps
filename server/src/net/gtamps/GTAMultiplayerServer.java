@@ -39,5 +39,4 @@ public class GTAMultiplayerServer {
 	public static int getNextUID(){
 		return uid++;
 	}
-
 }

@@ -1,6 +1,6 @@
 package net.gtamps.android.core.utils.parser;
 
-import net.gtamps.android.game.primitives.ParsedObject;
+import net.gtamps.android.game.objects.ParsedObject;
 
 /**
  * Interface for 3D object parsers

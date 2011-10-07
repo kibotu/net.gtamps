@@ -1,7 +1,7 @@
 package net.gtamps.android.core.utils.parser;
 
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.shared.math.Vector3;
 
 public class VertexManager {
 
