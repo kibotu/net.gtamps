@@ -91,7 +91,7 @@ public class TcpStream implements IStream {
     @Override
     public void onData(byte[] response) {
 //        if(response.length > 1) {
-            Utils.log(TAG, "\n\n\n\n\nResponse "+ new String(response)+"\n\n\n\n\n");
+            Utils.log(TAG, "\n\n\n\n\nAResponse "+ new String(response)+"\n\n\n\n\n");
 //        }
     }
 
