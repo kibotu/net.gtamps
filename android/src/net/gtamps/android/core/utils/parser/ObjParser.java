@@ -12,7 +12,7 @@ import net.gtamps.android.Registry;
 import net.gtamps.android.core.utils.Color4;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.game.primitives.ParsedObject;
+import net.gtamps.android.game.objects.ParsedObject;
 
 /**
  * Parses Wavefront OBJ files. Basic version, this is still a work in progress!

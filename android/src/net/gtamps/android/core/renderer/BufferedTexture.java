@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer;
 
-import net.gtamps.android.game.state.State;
+import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

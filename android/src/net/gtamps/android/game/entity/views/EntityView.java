@@ -2,8 +2,8 @@ package net.gtamps.android.game.entity.views;
 
 import net.gtamps.android.core.graph.SceneNode;
 import net.gtamps.shared.IDirty;
-import net.gtamps.android.game.primitives.IObject3d;
-import net.gtamps.android.game.primitives.Object3dFactory;
+import net.gtamps.android.game.objects.IObject3d;
+import net.gtamps.android.game.objects.Object3dFactory;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +38,12 @@ public class EntityView implements IObject3d, IDirty {
     @Override
     public void onDirty() {
 
-
+        // position
+        object3d.getNode().setPosition(entity.getPosition());
+        // scaling
+        object3d.getNode().setScaling(entity.getScaling());
+        // rotation
+        object3d.getNode().setRotation(entity.getRotation());
 
         clearDirtyFlag();
     }

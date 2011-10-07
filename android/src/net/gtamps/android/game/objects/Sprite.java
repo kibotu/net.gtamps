@@ -1,11 +1,11 @@
-package net.gtamps.android.game.primitives;
+package net.gtamps.android.game.objects;
 
 import net.gtamps.android.Registry;
 import net.gtamps.android.core.graph.SceneNode;
 import net.gtamps.android.core.graph.SpriteNode;
 import net.gtamps.android.core.renderer.BufferedTexture;
 import net.gtamps.android.core.renderer.SpriteTetxure;
-import net.gtamps.android.game.state.State;
+import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
 public class Sprite extends SpriteNode implements IObject3d {

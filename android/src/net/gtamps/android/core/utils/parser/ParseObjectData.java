@@ -8,7 +8,7 @@ import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.parser.AParser.Material;
 import net.gtamps.android.core.utils.parser.AParser.TextureAtlas;
 import net.gtamps.android.core.utils.parser.AParser.BitmapAsset;
-import net.gtamps.android.game.primitives.ParsedObject;
+import net.gtamps.android.game.objects.ParsedObject;
 
 public class ParseObjectData {
 

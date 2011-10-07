@@ -1,4 +1,4 @@
-package net.gtamps.android.game.primitives;
+package net.gtamps.android.game.objects;
 
 import net.gtamps.android.Registry;
 import net.gtamps.android.core.graph.PureVboNode;

@@ -1,6 +1,4 @@
-package net.gtamps.android.game.primitives;
-
-import java.util.ArrayList;
+package net.gtamps.android.game.objects;
 
 final public class Object3dFactory {
 

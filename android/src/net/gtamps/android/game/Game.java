@@ -11,8 +11,8 @@ import net.gtamps.android.core.utils.parser.Parser;
 import net.gtamps.android.game.client.Connector;
 import net.gtamps.android.game.client.IStream;
 import net.gtamps.android.game.client.TcpStream;
-import net.gtamps.android.game.primitives.*;
-import net.gtamps.android.game.state.State;
+import net.gtamps.android.game.objects.*;
+import net.gtamps.shared.state.State;
 
 import java.util.ArrayList;
 

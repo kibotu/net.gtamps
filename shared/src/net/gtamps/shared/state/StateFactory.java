@@ -1,4 +1,4 @@
-package net.gtamps.android.game.state;
+package net.gtamps.shared.state;
 
 
 /**

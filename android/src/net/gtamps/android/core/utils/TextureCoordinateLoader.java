@@ -3,7 +3,7 @@ package net.gtamps.android.core.utils;
 import android.content.Context;
 import net.gtamps.android.core.renderer.BufferedTexture;
 import net.gtamps.android.core.renderer.SpriteTetxure;
-import net.gtamps.android.game.state.State;
+import net.gtamps.shared.state.State;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
