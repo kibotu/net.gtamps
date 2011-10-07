@@ -8,14 +8,18 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 
 public class TcpStream implements IStream {
 
     private static final String TAG = TcpStream.class.getSimpleName();
 
+    private boolean isConnected;
     private Socket socket;
     private DataInputStream input;
     private DataOutputStream output;
+    private RemoteInputDispatcher dispatcher;
     /**
      *   @see <a href="http://stackoverflow.com/questions/2560083/how-to-change-internal-buffer-size-of-datainputstream">BufferSize</a>
       */
@@ -34,6 +38,7 @@ public class TcpStream implements IStream {
         } catch (SocketException e) {
             Utils.log(TAG, "" + e.getMessage());
         }
+        isConnected = false;
     }
 
     @Override
@@ -43,10 +48,11 @@ public class TcpStream implements IStream {
             socket.connect(address);
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
+            dispatcher = new RemoteInputDispatcher(input);
         } catch (IOException e) {
-            return false;
+            return isConnected = false;
         }
-        return true;
+        return isConnected = true;
     }
 
     @Override
@@ -82,79 +88,33 @@ public class TcpStream implements IStream {
             input.close();
             output.close();
             socket.close();
+            dispatcher.stop();
         } catch (IOException e) {
-            return false;
+            return isConnected = false;
         }
-        return true;
+        return isConnected = true;
+    }
+
+    public void addStreamInputListener(StreamInputListener lister) {
+        dispatcher.addObserver(lister);
+    }
+
+    public void removeStreamInputListener(StreamInputListener lister) {
+        dispatcher.deleteObserver(lister);
     }
 
     @Override
-    public void onData(byte[] response) {
-//        if(response.length > 1) {
-            Utils.log(TAG, "\n\n\n\n\nAResponse "+ new String(response)+"\n\n\n\n\n");
-//        }
+    public void start() {
+        dispatcher.start();
     }
 
-    public void startListening() {
-        Utils.log(TAG, "client listens");
-        new Thread(new Runnable() {
-            boolean isRunning = false;
-            byte [] responseBytes = new byte[2];
-            byte [] response;
-            int length;
-            int actualReadBytes = 0;
-            int lastReadBytes = 0;
-            boolean isLocked = false;
-            @Override
-            public void run() {
-                Utils.log(TAG, "client runs");
-                isRunning = true;
-                while(true) {
-                    try {
-                        /** var 1 **/
-                        responseBytes[0] = (byte) socket.getInputStream().read();
-                        responseBytes[1] = (byte) socket.getInputStream().read();
-                        length = ((int)(responseBytes[0]) << 8) + ((int)(responseBytes[1] & 0xFF));
-                        response = new byte[length];
-                        input.readFully(response);
-                        onData(response);
-                        /** var 2 **/
-//                        response = input.readUTF().getBytes();
-//                        if(response.length > 1) {
-//                            onData(response);
-//                        }
-                    } catch (IOException e) {
-                        Utils.log(TAG, ""+e.getMessage());
-                    }
+    @Override
+    public void stop() {
+        dispatcher.stop();
+    }
 
-//                    try {
-//                        if(isLocked) {
-//                            actualReadBytes = input.read(response);
-//                            if(actualReadBytes == length) {
-//
-//                                // fire event
-//                                onData(response);
-//                                // reset
-//                                isLocked = false;
-//                                lastReadBytes = 0;
-//                                actualReadBytes = 0;
-//                                length = 0;
-//                            }
-//                        } else {
-//                            // find response length
-//                            responseBytes[0] = (byte) socket.getInputStream().read();
-//                            responseBytes[1] = (byte) socket.getInputStream().read();
-//                            length = ((int)(responseBytes[0]) << 8) + ((int)(responseBytes[1] & 0xFF));
-//                            response = new byte[length];
-//                            Utils.log(TAG, "server runs, message length: " + length);
-//                            // lock to current message
-//                            isLocked = true;
-//                        }
-//                    } catch (IOException e) {
-//                        Utils.log(TAG, ""+e.getMessage());
-//                    }
-                }
-            }
-        }).start();
+    @Override
+    public boolean isConnected() {
+        return isConnected;
     }
 }
