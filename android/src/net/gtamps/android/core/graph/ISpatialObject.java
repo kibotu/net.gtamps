@@ -1,7 +1,7 @@
 package net.gtamps.android.core.graph;
 
-import net.gtamps.android.core.math.Matrix4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Matrix4;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 /**

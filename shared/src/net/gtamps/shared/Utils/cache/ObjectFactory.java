@@ -1,4 +1,4 @@
-package net.gtamps.android.core.utils.cache;
+package net.gtamps.shared.Utils.cache;
 
 import org.jetbrains.annotations.NotNull;
 

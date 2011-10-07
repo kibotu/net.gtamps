@@ -1,4 +1,4 @@
-package net.gtamps.android.core.math;
+package net.gtamps.android.core.utils;
 
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.OpenGLUtils;

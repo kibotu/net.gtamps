@@ -1,4 +1,4 @@
-package net.gtamps.android.game;
+package net.gtamps.shared;
 
 public interface IDirty {
     public void onDirty();

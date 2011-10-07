@@ -1,4 +1,4 @@
-package net.gtamps.android.core.utils.lists;
+package net.gtamps.shared.Utils.lists;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

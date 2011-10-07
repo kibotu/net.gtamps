@@ -1,7 +1,7 @@
-package net.gtamps.android.core.math;
+package net.gtamps.shared.math;
 
-import net.gtamps.android.core.utils.cache.ObjectCache;
-import net.gtamps.android.core.utils.cache.ObjectFactory;
+import net.gtamps.shared.Utils.cache.ObjectCache;
+import net.gtamps.shared.Utils.cache.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**

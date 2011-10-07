@@ -25,7 +25,7 @@ public class SpriteNode extends VboBaseNode {
      * Setzt die Ausdehnung des Sprite-Knotens als Basis für das Scaling
      * @param width Die Breite
      * @param height Die Höhe
-     * @see #setScaling(net.gtamps.android.core.math.Vector3)
+     * @see #setScaling(net.gtamps.shared.math.Vector3)
      * @see #setScaling(float, float, float)
      */
     public void setDimension(float width, float height) {

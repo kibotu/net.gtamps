@@ -1,4 +1,4 @@
-package net.gtamps.android;
+package net.gtamps.shared;
 
 public class Config {
 

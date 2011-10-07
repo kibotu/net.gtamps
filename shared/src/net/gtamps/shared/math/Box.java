@@ -1,4 +1,4 @@
-package net.gtamps.android.core.math;
+package net.gtamps.shared.math;
 
 import org.jetbrains.annotations.NotNull;
 

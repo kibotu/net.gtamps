@@ -1,6 +1,9 @@
-package net.gtamps.android.core.math;
+package net.gtamps.android.core.utils;
 
 import android.opengl.GLU;
+import net.gtamps.shared.math.Intersection;
+import net.gtamps.shared.math.Sphere;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;

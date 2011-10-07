@@ -1,14 +1,12 @@
 package net.gtamps.android.game;
 
 import android.os.SystemClock;
-import android.util.Xml;
 import net.gtamps.android.R;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
-import net.gtamps.android.core.utils.parser.ObjParser;
 import net.gtamps.android.core.utils.parser.Parser;
 import net.gtamps.android.game.client.Connector;
 import net.gtamps.android.game.client.IStream;
@@ -16,7 +14,6 @@ import net.gtamps.android.game.client.TcpStream;
 import net.gtamps.android.game.primitives.*;
 import net.gtamps.android.game.state.State;
 
-import javax.microedition.khronos.opengles.GL;
 import java.util.ArrayList;
 
 public class Game implements IGame{

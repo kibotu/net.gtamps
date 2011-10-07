@@ -1,6 +1,6 @@
-package net.gtamps.android.core.utils.cache;
+package net.gtamps.shared.Utils.cache;
 
-import net.gtamps.android.core.utils.lists.DoubleLinkedListNode;
+import net.gtamps.shared.Utils.lists.DoubleLinkedListNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

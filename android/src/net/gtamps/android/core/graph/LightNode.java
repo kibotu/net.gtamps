@@ -1,16 +1,12 @@
 package net.gtamps.android.core.graph;
 
-import android.os.Build;
-import android.text.Html;
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.game.state.State;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -112,7 +108,7 @@ public class LightNode extends RenderableNode {
          direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
 		 spotCutoffAngle = 180;
 		 spotExponent = 0;
-         attenuation = Vector3.createNew(1f,0f,0f);
+         attenuation = Vector3.createNew(1f, 0f, 0f);
 		 positionAndTypeBuffer = OpenGLUtils.makeFloatBuffer4(0, 0, 0, 0);
          setPosition(0,0,0);
          commitPositionAndTypeBuffer();

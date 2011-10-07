@@ -1,12 +1,10 @@
 package net.gtamps.android.core.graph;
 
-import android.view.ViewDebug;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.security.PrivateKey;
 
 /**
  * Basisklasse für renderbare Szenenknoten

@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.util.Log;
 import net.gtamps.android.Registry;
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.math.Vector3;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.primitives.ParsedObject;
 

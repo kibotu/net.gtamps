@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
-import net.gtamps.android.Config;
+import net.gtamps.shared.Config;
 import net.gtamps.android.GTA;
 import net.gtamps.android.Registry;
 

@@ -2,19 +2,17 @@ package net.gtamps.android.core.renderer;
 
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import net.gtamps.android.Config;
+import net.gtamps.shared.Config;
 import net.gtamps.android.Registry;
 import net.gtamps.android.core.graph.LightNode;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.graph.ProcessingState;
-import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.game.Game;
 import net.gtamps.android.game.Scene;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 public class Renderer implements GLSurfaceView.Renderer{

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Config;
 
 /**
  * @see <a href="http://developer.android.com/images/activity_lifecycle.png">Activity LifeCycle</a>
