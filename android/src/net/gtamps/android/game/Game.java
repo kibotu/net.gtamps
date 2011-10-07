@@ -4,8 +4,8 @@ import android.os.SystemClock;
 import net.gtamps.android.R;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
+import net.gtamps.android.game.client.ConnectionManager;
 import net.gtamps.android.game.client.MessageFactory;
-import net.gtamps.android.game.client.StreamInputListener;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.Command;
@@ -31,7 +31,7 @@ public class Game implements IGame{
     private ArrayList<Scene> scenes;
     private boolean isDragging = false;
     private Hud hud;
-    private TcpStream stream;
+    private ConnectionManager connection;
 
     public Game() {
         isRunning = true;
@@ -39,9 +39,18 @@ public class Game implements IGame{
         inputEngine = InputEngine.getInstance();
         scenes = new ArrayList<Scene>();
         hud = new Hud();
+        connection = new ConnectionManager();
     }
 
     public void onCreate() {
+
+        // world
+        Scene scene = new Scene();
+        scenes.add(scene);
+
+        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
+        scene.setActiveCamera(camera);
+        scene.getBackground().setAll(0x111111);
 
         LightNode sun = new LightNode();
         sun.setPosition(0,0,30);
@@ -50,33 +59,24 @@ public class Game implements IGame{
         sun.diffuse.setAll(128,128,128,255);
         sun.specular.setAll(64,64,64,255);
 
-        // world
-        Scene scene = new Scene();
-        scenes.add(scene);
         scene.add(sun);
-        scene.add(new Car());
-
-        City city = new City();
-        scene.add(city);
-        city.setRotation(90, 0, 0);
-        city.setScaling(20, 20, 20);
-
-        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
-        // set that camera active within scene
-        scene.setActiveCamera(camera);
-        scene.getBackground().setAll(0x111111);
+        addStuff(scene);
 
         // hud
         scenes.add(hud.getScene());
 
         // connect
-        stream = new TcpStream();
-        StreamInputListener listener = new StreamInputListener();
-        stream.connect(Config.SERVER_HOST_ADDRESS, Config.SERVER_PORT);
-        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (stream.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
-        stream.addStreamInputListener(listener);
+        connection.connect();
+        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+        connection.start();
+    }
 
-        if(stream.isConnected()) stream.start();
+    public void addStuff(Scene scene) {
+        scene.add(new Car());
+        City city = new City();
+        scene.add(city);
+        city.setRotation(90, 0, 0);
+        city.setScaling(20, 20, 20);
     }
 
     private void createParsedObject() {
@@ -134,10 +134,7 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-            if(stream.isConnected()) stream.send(MessageFactory.createCommand(Command.ACCELERATE).toString().getBytes());
-
-//            Utils.log(TAG, "\n\n\n\n\nSending message "+(stream.send(builder.toString().getBytes()) ? "successful." : "failed.")+"\n\n\n\n\n");
-
+            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.ACCELERATE));
         }
 
         // on release
