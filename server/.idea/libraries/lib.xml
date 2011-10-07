@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jdom.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xSocket-2.8.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JBox2D-2.0.1-b250-Full.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xSocket-2.8.15-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/derby.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
