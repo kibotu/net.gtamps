@@ -1,7 +1,5 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.core.utils.Utils;
-
 public class Connector implements Runnable {
 
     private static final String TAG = Connector.class.getSimpleName();
