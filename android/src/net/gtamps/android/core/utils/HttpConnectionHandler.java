@@ -20,7 +20,7 @@ final public class HttpConnectionHandler {
     }
 
     /**
-     * Opens up a connection to a certain HTTP Server via Request Method
+     * Opens up a connection to a certain HTTP Server via ARequest Method
      *
      * @param urlString
      * @param method
