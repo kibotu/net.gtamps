@@ -3,12 +3,13 @@ package net.gtamps.game.handler;
 import org.jbox2d.common.Vec2;
 
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.game.property.HealthProperty;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
 
 /**
  * <p>
@@ -126,7 +127,7 @@ public class SensorExplosionHandler extends SensorHandler {
 			vec.normalize();
 			float impulseWorld = (FALLOFF_SLOPE * distanceSq) + this.initialForce;
 			float impulse = impulseWorld / WorldConstants.PIX_TO_PHYSICS_RATIO;
-			SimplePhysicsHandler ph = e.getPhysicsHandler();
+			SimplePhysicsHandler ph = (SimplePhysicsHandler) e.getHandler(Handler.Type.PHYSICS);
 			if (ph != null) {
 				ph.applyImpulse(vec.mul(impulse));
 			}

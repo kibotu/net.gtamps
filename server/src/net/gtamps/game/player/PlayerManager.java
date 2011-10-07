@@ -1,15 +1,16 @@
 package net.gtamps.game.player;
 
-import net.gtamps.game.entity.Entity;
 import net.gtamps.game.entity.EntityManager;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
-import net.gtamps.game.event.GameEventDispatcher;
-import net.gtamps.game.event.IGameEventListener;
 import net.gtamps.game.property.HealthProperty;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property.Type;
 import net.gtamps.game.world.World;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
+import net.gtamps.shared.game.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;

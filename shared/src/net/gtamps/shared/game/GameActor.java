@@ -1,12 +1,10 @@
-package net.gtamps.game;
+package net.gtamps.shared.game;
 
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
-import net.gtamps.game.event.GameEventDispatcher;
-import net.gtamps.game.event.IGameEventDispatcher;
-import net.gtamps.game.event.IGameEventListener;
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,8 +54,8 @@ public abstract class GameActor extends GameObject implements
 	private boolean enabled = true;
 	private GameEventDispatcher eventDispatcher = new GameEventDispatcher();
 
-	public GameActor(String name, String xmlTag) {
-		super(name, xmlTag);
+	public GameActor(String name) {
+		super(name);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -66,9 +64,9 @@ public abstract class GameActor extends GameObject implements
 	}
 	
 	public void enable() {
-		Logger.i().log(LogType.GAMEWORLD, "Enabling Game Actor "+this);
+		//Logger.i().log(LogType.GAMEWORLD, "Enabling Game Actor "+this);
 		this.enabled = true;
-		Logger.i().log(LogType.GAMEWORLD, this+" was enabled "+this.enabled);
+		//Logger.i().log(LogType.GAMEWORLD, this+" was enabled "+this.enabled);
 	}
 	
 	public void disable() {
@@ -184,7 +182,7 @@ public abstract class GameActor extends GameObject implements
 
 	@Override
 	public void receiveEvent(GameEvent event) {
-		Logger.i().log(LogType.GAMEWORLD, this+" "+event);
+		//Logger.i().log(LogType.GAMEWORLD, this+" "+event);
 		dispatchEvent(event);
 	}
 

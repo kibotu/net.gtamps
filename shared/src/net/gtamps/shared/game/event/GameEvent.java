@@ -1,11 +1,6 @@
-package net.gtamps.game.event;
+package net.gtamps.shared.game.event;
 
-import org.jdom.Element;
-
-import net.gtamps.XmlElements;
-import net.gtamps.game.GameObject;
-import net.gtamps.game.RevisionKeeper;
-import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.game.GameObject;
 
 /**
  * <p>
@@ -32,8 +27,6 @@ import net.gtamps.server.gui.LogType;
  *
  */
 public class GameEvent extends GameObject {
-	@SuppressWarnings("unused")
-	private static final LogType TAG = LogType.GAMEWORLD;
 
 	/**
 	 * signals the beginning of an ongoing event
@@ -59,7 +52,7 @@ public class GameEvent extends GameObject {
 	 * @param value
 	 */
 	public GameEvent(EventType type, GameObject source, GameObject target, String value) {
-		super(type.name(), XmlElements.SINGLE_EVENT.tagName());
+		super(type.name());
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be null");
 		}
@@ -123,18 +116,6 @@ public class GameEvent extends GameObject {
 
 	public boolean isEnd() {
 		return this.value.equals(END_VALUE);
-	}
-
-	
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		if (e != null) {
-			e.setAttribute(XmlElements.ATTRIB_SOURCE.tagName(), getSourceUid()+"");
-			e.setAttribute(XmlElements.ATTRIB_TARGET.tagName(), getTargetUid()+"");
-			e.setAttribute(XmlElements.ATTRIB_VALUE.tagName(), value);
-		}
-		return e;
 	}
 
 }

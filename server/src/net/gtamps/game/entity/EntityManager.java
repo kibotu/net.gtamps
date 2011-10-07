@@ -1,11 +1,12 @@
 package net.gtamps.game.entity;
 
 import net.gtamps.game.RevisionKeeper;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
-import net.gtamps.game.event.GameEventDispatcher;
-import net.gtamps.game.event.IGameEventListener;
 import net.gtamps.game.world.World;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -96,15 +97,16 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 		}
 
 	}
-	
+
+	//TODO
 	public List<Element> getUpdate(long baseRevision, RevisionKeeper keeper) {
 		List<Element> update = new LinkedList<Element>();
-		for (Entity entity: entities.values()) {
-			Element xml = entity.toXMLElement(baseRevision, keeper);
-			if (xml != null) {
-				update.add(xml);
-			}
-		}
+//		for (Entity entity: entities.values()) {
+//			Element xml = entity.toXMLElement(baseRevision, keeper);
+//			if (xml != null) {
+//				update.add(xml);
+//			}
+//		}
 		return update;
 	}
 

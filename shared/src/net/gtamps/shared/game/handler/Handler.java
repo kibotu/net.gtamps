@@ -1,9 +1,9 @@
-package net.gtamps.game.handler;
+package net.gtamps.shared.game.handler;
 
-import net.gtamps.game.GameActor;
-import net.gtamps.game.Propertay;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.GameEvent;
+import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.Propertay;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.GameEvent;
 
 /**
  * Handlers handle stuff for {@link Entity entities}, mainly events of a certain
@@ -23,7 +23,7 @@ public abstract class Handler extends GameActor {
 	private Entity parent = null;
 
 	public Handler(Type type, Entity parent) {
-		super(type.name().toLowerCase(), "Handler");
+		super(type.name().toLowerCase());
 		if (parent == null) {
 			throw new IllegalArgumentException("'parent' must not be null");
 		}

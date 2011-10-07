@@ -1,11 +1,11 @@
 package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.PhysicalProperties;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;

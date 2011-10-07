@@ -1,6 +1,7 @@
-package net.gtamps.android.game.client;
+package net.gtamps.shared.communication;
 
 import java.util.ArrayList;
+
 
 public class Message {
 

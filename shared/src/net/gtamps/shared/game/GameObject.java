@@ -1,14 +1,12 @@
-package net.gtamps.game;
-
-import net.gtamps.GTAMultiplayerServer;
-import net.gtamps.XmlElements;
+package net.gtamps.shared.game;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
-import org.jdom.Element;
+import net.gtamps.shared.UidGenerator;
+
 
 /**
  * A superclass for all objects the game needs to handle; the following features
@@ -24,14 +22,9 @@ import org.jdom.Element;
  * 
  */
 public abstract class GameObject {
-	private static final long START_REVISION = RevisionKeeper.START_REVISION;
+	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "";
-	private static final String PRODUCTION_TAG = "obj";
-	private static final String DEBUG_TAG = "object";
-	private static final String DEFAULT_TAG = GTAMultiplayerServer.DEBUG ? DEBUG_TAG
-			: PRODUCTION_TAG;
 
-	protected final String xmlTag;
 	protected final int uid;
 	protected String name;
 	protected long revision = START_REVISION;
@@ -41,61 +34,15 @@ public abstract class GameObject {
 
 	/**
 	 * 
-	 * 
 	 * @param name
 	 *            default is {@value #DEFAULT_NAME}
-	 * @param xmlTag
-	 *            the name of this type of object as an XML element; like this:
-	 *            <code>&lt;xmlTag...&gt;</code>.<br/>
-	 *            default is {@value #DEFAULT_TAG}
 	 */
-	public GameObject(String name, String xmlTag) {
+	public GameObject(String name) {
 		if (name == null) {
 			name = DEFAULT_NAME;
 		}
-		if (xmlTag == null) {
-			xmlTag = DEFAULT_TAG;
-		}
-		this.uid = GTAMultiplayerServer.getNextUID();
+		this.uid = UidGenerator.getNextUid();
 		this.name = name;
-		this.xmlTag = xmlTag;
-	}
-
-	/**
-	 * Return an XML element containing the data of this game object as a diff
-	 * to the given revision. Only data elements that were changed since this
-	 * revision will be included. If there was no change, <code>null</code> will
-	 * be returned.
-	 * 
-	 * If a <code>revisionKeeper</code> is provided and this gameObject has the
-	 * {@link #hasChanged() changed flag} set, it will update its revision to
-	 * the {@link RevisionKeeper#getNextRevision() upcoming} revision number.
-	 * 
-	 * @param baseRevision
-	 * @param keeper
-	 * @return an XML element containing the data of this game object that has
-	 *         been changed since <code>baseRevision</code>, or
-	 *         <code>null</code>.
-	 */
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		if (this.silent || !(this.revision > baseRevision || this.hasChanged)) {
-			return null;
-		}
-		if (this.hasChanged && keeper != null) {
-			this.updateRevision(keeper.getNextRevision());
-		}
-		Element e = new Element(this.xmlTag);
-		e.setAttribute(XmlElements.ATTRIB_UID.tagName(), this.uid + "");
-		e.setAttribute(XmlElements.ATTRIB_NAME.tagName(), this.name);
-		if (this.properties != null) {
-			for (Propertay<?> p : properties.values()) {
-				Element f = p.toXMLElement(baseRevision, keeper);
-				if (f != null) {
-					e.addContent(f);
-				}
-			}
-		}
-		return e;
 	}
 
 	public int getUid() {
@@ -191,7 +138,7 @@ public abstract class GameObject {
 		}
 		try {
 			@SuppressWarnings("unused")
-			T check = (T) p.get();
+			T check = (T) p.value();
 		} catch (RuntimeErrorException e) {
 			return null;
 		}

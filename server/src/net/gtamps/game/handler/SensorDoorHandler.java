@@ -1,11 +1,12 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
-import net.gtamps.game.player.Player;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.game.player.Player;
 
 /**
  * <p>

@@ -1,4 +1,5 @@
-package net.gtamps.android.game.client;
+package net.gtamps.shared.communication;
+
 
 public class Request implements ISendable{
 }
