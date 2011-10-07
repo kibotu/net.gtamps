@@ -31,10 +31,5 @@ public class GTA extends DefaultActivity {
         view.setKeepScreenOn(true);
 
         view.setOnTouchListener(InputEngine.getInstance());
-
-        RandomSharedObject o = new RandomSharedObject();
-        o.i = 50;
-        Utils.log(TAG,""+o.i);
-
     }
 }
