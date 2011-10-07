@@ -1,14 +1,11 @@
 package net.gtamps.android.game.client;
 
-import android.text.Html;
 import net.gtamps.android.core.utils.Utils;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Arrays;
-import java.util.Observable;
 import java.util.Observer;
 
 public class TcpStream implements IStream {
@@ -19,7 +16,6 @@ public class TcpStream implements IStream {
     private Socket socket;
     private DataInputStream input;
     private DataOutputStream output;
-    private RemoteInputDispatcher dispatcher;
     /**
      *   @see <a href="http://stackoverflow.com/questions/2560083/how-to-change-internal-buffer-size-of-datainputstream">BufferSize</a>
       */
@@ -48,7 +44,19 @@ public class TcpStream implements IStream {
             socket.connect(address);
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
-            dispatcher = new RemoteInputDispatcher(input);
+        } catch (IOException e) {
+            return isConnected = false;
+        }
+        return isConnected = true;
+    }
+
+    @Override
+    public boolean disconnect() {
+        if(!isConnected) return false;
+        try {
+            input.close();
+            output.close();
+            socket.close();
         } catch (IOException e) {
             return isConnected = false;
         }
@@ -57,6 +65,8 @@ public class TcpStream implements IStream {
 
     @Override
     public boolean send(String message) {
+        if(!isConnected) return false;
+
         try {
             output.writeUTF(message);
         } catch (IOException e) {
@@ -67,6 +77,7 @@ public class TcpStream implements IStream {
 
     @Override
     public boolean send(byte [] message) {
+        if(!isConnected) return false;
 
         // TODO don't copy array and alloc byte array every sending invocation
         byte [] temp = new byte[message.length+2];
@@ -83,38 +94,17 @@ public class TcpStream implements IStream {
     }
 
     @Override
-    public boolean disconnect() {
-        try {
-            input.close();
-            output.close();
-            socket.close();
-            dispatcher.stop();
-        } catch (IOException e) {
-            return isConnected = false;
-        }
-        return isConnected = true;
-    }
-
-    public void addStreamInputListener(StreamInputListener lister) {
-        dispatcher.addObserver(lister);
-    }
-
-    public void removeStreamInputListener(StreamInputListener lister) {
-        dispatcher.deleteObserver(lister);
-    }
-
-    @Override
-    public void start() {
-        dispatcher.start();
-    }
-
-    @Override
-    public void stop() {
-        dispatcher.stop();
-    }
-
-    @Override
     public boolean isConnected() {
         return isConnected;
+    }
+
+    @Override
+    public DataOutputStream getOutputStream() {
+        return output;
+    }
+
+    @Override
+    public DataInputStream getInputStream() {
+        return input;
     }
 }

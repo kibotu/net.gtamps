@@ -1,5 +1,8 @@
 package net.gtamps.android.game.client;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
 public interface IStream {
 
     public boolean send(String message);
@@ -28,19 +31,13 @@ public interface IStream {
     public boolean disconnect();
 
     /**
-     * Starts listening thread.
-     */
-    public void start();
-
-    /**
-     * Stops listening thread.
-     */
-    public void stop();
-
-    /**
      * Returns connection status.
      *
      * @return <code>true</code> if is connected
      */
     public boolean isConnected();
+
+    public DataInputStream getInputStream();
+
+    public DataOutputStream getOutputStream();
 }
