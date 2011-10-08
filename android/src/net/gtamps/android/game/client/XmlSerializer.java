@@ -3,6 +3,7 @@ package net.gtamps.android.game.client;
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 
+@Deprecated
 public class XmlSerializer implements ISerializer{
 
     public XmlSerializer() {
