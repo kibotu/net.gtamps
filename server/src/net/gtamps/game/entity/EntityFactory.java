@@ -39,10 +39,10 @@ public class EntityFactory {
 		Logger.i().log(TAG,"Created car at position x:"+pixX+" y:"+pixY);
 		Entity entity = new Entity("car");
 		carBody.setUserData(entity);
-		entity.addProperty(new PositionProperty(pixX,pixY,deg, entity));
-		entity.addProperty(new SpeedProperty(entity));
-		entity.addProperty(new HealthProperty(entity, 2000));
-		entity.addProperty(new IncarnationProperty(entity));
+//		entity.addProperty(new PositionProperty(pixX,pixY,deg, entity));
+//		entity.addProperty(new SpeedProperty(entity));
+//		entity.addProperty(new HealthProperty(entity, 2000));
+//		entity.addProperty(new IncarnationProperty(entity));
 		PhysicsHandler physicsHandler = new PhysicsHandler(entity, carBody, PhysicalProperties.Sportscar); 
 		entity.setHandler(physicsHandler);
 		entity.setHandler(new DriverHandler(entity));
@@ -55,11 +55,11 @@ public class EntityFactory {
 		Logger.i().log(TAG,"Created human at position x:"+pixX+" y:"+pixY);
 		Entity entity = new Entity("human");
 		humanBody.setUserData(entity);
-		entity.addProperty(new PositionProperty(pixX,pixY,deg, entity));
-		entity.addProperty(new SpeedProperty(entity));
-		entity.addProperty(new HealthProperty(entity, 200));
-		entity.addProperty(new IncarnationProperty(entity));
-		entity.addProperty(new ActivationProperty(entity));
+//		entity.addProperty(new PositionProperty(pixX,pixY,deg, entity));
+//		entity.addProperty(new SpeedProperty(entity));
+//		entity.addProperty(new HealthProperty(entity, 200));
+//		entity.addProperty(new IncarnationProperty(entity));
+//		entity.addProperty(new ActivationProperty(entity));
 		PhysicsHandler physicsHandler = new PhysicsHandler(entity, humanBody, PhysicalProperties.Human); 
 		entity.setHandler(physicsHandler);
 		entity.setHandler(new SensorDoorHandler(entity));
@@ -82,7 +82,7 @@ public class EntityFactory {
 		Entity entity = new Entity("spawnpoint");
 		spawnBody.setUserData(entity);
 		entity.setSilent(true);
-		entity.addProperty(new PositionProperty(pixX,pixY,0, entity));
+//		entity.addProperty(new PositionProperty(pixX,pixY,0, entity));
 		// TODO collisionHandler
 		return entity;
 	}
@@ -94,10 +94,10 @@ public class EntityFactory {
 		Logger.i().log(TAG,"Created bullet at position x:"+pixX+" y:"+pixY);
 		Entity entity = new Entity("bullet");
 		bulletBody.setUserData(entity);
-		entity.addProperty(new PositionProperty(pixX, pixY, 0, entity));
-		entity.addProperty(new SpeedProperty(entity));
-		entity.addProperty(new HealthProperty(entity, 10));
-		entity.addProperty(new ActivationProperty(entity));
+//		entity.addProperty(new PositionProperty(pixX, pixY, 0, entity));
+//		entity.addProperty(new SpeedProperty(entity));
+//		entity.addProperty(new HealthProperty(entity, 10));
+//		entity.addProperty(new ActivationProperty(entity));
 		SimplePhysicsHandler physicsHandler = new SimplePhysicsHandler(entity, bulletBody, PhysicalProperties.Bullet); 
 		entity.setHandler(physicsHandler);
 		

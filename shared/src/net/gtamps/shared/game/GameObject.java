@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
-import net.gtamps.shared.UidGenerator;
+import net.gtamps.shared.Utils.UIDGenerator;
 
 
 /**
@@ -41,7 +41,7 @@ public abstract class GameObject {
 		if (name == null) {
 			name = DEFAULT_NAME;
 		}
-		this.uid = UidGenerator.getNextUid();
+		this.uid = UIDGenerator.getNewUID();
 		this.name = name;
 	}
 
@@ -119,6 +119,9 @@ public abstract class GameObject {
 		}
 		if (this.properties == null) {
 			this.properties = new HashMap<String, Propertay<?>>();
+		}
+		if(this.properties.containsKey(p.name)) {
+			throw new IllegalArgumentException("Property exists already: " + p);
 		}
 		this.properties.put(p.name, p);
 	}

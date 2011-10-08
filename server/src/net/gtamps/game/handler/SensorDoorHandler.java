@@ -59,16 +59,12 @@ public class SensorDoorHandler extends SensorHandler {
 		Player player = (Player) event.getSource();
 		float minDistance = Float.POSITIVE_INFINITY;
 		Entity closest = null;
-		PositionProperty p1 = (PositionProperty) getParent().getProperty(
-				Property.Type.POSITION);
-		PositionProperty p2;
 		for (Entity e : sensed) {
 			if (e.getHandler(Handler.Type.DRIVER) == null) {
 				continue;
 			}
-			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
-			float dx = p1.getX() - p2.getX();
-			float dy = p1.getY() - p2.getY();
+			float dx = parent.x.value() - e.x.value();
+			float dy = parent.y.value() - e.y.value();
 			float dist = dx * dx + dy * dy;
 			if (dist < minDistance) {
 				minDistance = dist;

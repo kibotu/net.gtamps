@@ -5,7 +5,6 @@ import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
-import net.gtamps.shared.RandomSharedObject;
 
 public class GTAMultiplayerServer {
 	
@@ -28,9 +27,6 @@ public class GTAMultiplayerServer {
 //		dbHandler.deletePlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 		new ServerGUI(cm);
-        RandomSharedObject o = new RandomSharedObject();
-        o.i = 45;
-        System.out.println(o.i);
 	}
 	
 	/**

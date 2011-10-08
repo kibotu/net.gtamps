@@ -10,7 +10,7 @@ package net.gtamps.shared.game;
  * @author jan, tom, til
  *
  */
-public class Propertay<T> extends GameObject {
+public abstract class Propertay<T> extends GameObject {
 	
 	private final GameObject parent;
 	private T value = null;
@@ -21,11 +21,10 @@ public class Propertay<T> extends GameObject {
 			throw new IllegalArgumentException("'parent' must not be null");
 		}
 		this.parent = parent;
-		if (value == null) {
-			this.value = null;
+		this.value = value;
+		if (this.value == null) {
 			this.hasChanged = false;
 		} else {
-			this.value = value;
 			this.parent.hasChanged = true;
 		}
 	}

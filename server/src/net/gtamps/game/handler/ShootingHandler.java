@@ -32,12 +32,7 @@ public class ShootingHandler extends Handler{
 		EventType type = event.getType();
 		if (type.isType(EventType.ACTION_SHOOT)) {
 			if(System.currentTimeMillis()-lastShot>WorldConstants.GUN_SHOT_MILLIS){
-				Propertay<Float> x = this.getParent().getProperty("posx");
-				Propertay<Float> y = this.getParent().getProperty("posy");
-				Propertay<Float> rot = this.getParent().getProperty("rotation");
-				entityManager.createEntityBullet(x.value().intValue(), y.value().intValue(), rot.value().intValue());
-				//PositionProperty pp = (PositionProperty) this.getParent().getProperty(Property.Type.POSITION);
-				//entityManager.createEntityBullet((int)pp.getX(), (int)pp.getY(), (int)pp.getRotation());
+				entityManager.createEntityBullet(parent.x.value(), parent.y.value(), parent.rota.value());
 				lastShot = System.currentTimeMillis();
 			}
 		} 

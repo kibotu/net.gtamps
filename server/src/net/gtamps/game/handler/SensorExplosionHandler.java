@@ -108,18 +108,19 @@ public class SensorExplosionHandler extends SensorHandler {
 	 */
 	@Override
 	public void act(GameEvent event) {
-		PositionProperty p1 = (PositionProperty) getParent().getProperty(
-				Property.Type.POSITION);
-		PositionProperty p2;
+//		PositionProperty p1 = (PositionProperty) getParent().getProperty(
+//				Property.Type.POSITION);
+//		PositionProperty p2;
 		for (Entity e : this.sensed) {
 			if (e == this.getParent()) {
 				continue;
 			}
-			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
-			if (p2 == null) {
-				continue;
-			}
-			Vec2 vec = new Vec2(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+//			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
+//			if (p2 == null) {
+//				continue;
+//			}
+			Vec2 vec = new Vec2(parent.x.value() - e.x.value(), parent.y.value() - e.y.value());
+			//Vec2 vec = new Vec2(p1.getX() - p2.getX(), p1.getY() - p2.getY());
 			float distanceSq = vec.lengthSquared();
 			if (distanceSq >= this.maxDistanceSq) {
 				continue;
@@ -131,10 +132,11 @@ public class SensorExplosionHandler extends SensorHandler {
 			if (ph != null) {
 				ph.applyImpulse(vec.mul(impulse));
 			}
-			HealthProperty h = (HealthProperty) e.getProperty(Property.Type.HEALTH);
-			if (h != null) {
-				h.takeDamage(impulse);
-			}
+			//TODO
+//			HealthProperty h = (HealthProperty) e.getProperty(Property.Type.HEALTH);
+//			if (h != null) {
+//				h.takeDamage(impulse);
+//			}
 		}
 	}
 

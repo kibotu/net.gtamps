@@ -95,13 +95,15 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 		Player p = getPlayer(uid);
 		assert p != null : "invalid player uid: " + uid;
 		//if the player has an entity and his entity is still alive...
-		if (p.getEntity() != null && ((HealthProperty) p.getEntity().getProperty(Type.HEALTH)).isAlive()) {
+		//FIXME
+		if (p.getEntity() != null /*&& ((HealthProperty) p.getEntity().getProperty(Type.HEALTH)).isAlive()*/) {
 			return false;
 		}
 		//TODO create proper entity
 		// create default entity at default location and add
-		PositionProperty pp = (PositionProperty) world.getRandomSpawnPoint().getProperty(Type.POSITION);
-		Entity e = entityManager.createEntityHuman((int)pp.getX(), (int)pp.getY(), (int)pp.getRotation());
+		//PositionProperty pp = (PositionProperty) world.getRandomSpawnPoint().getProperty(Type.POSITION);
+		Entity spawn = world.getRandomSpawnPoint();
+		Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
 		p.setEntity(e);
 		dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
 		return true;

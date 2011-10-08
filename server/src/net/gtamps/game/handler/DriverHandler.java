@@ -91,19 +91,16 @@ public class DriverHandler extends Handler {
 		Player exDriver = driver;
 		removeDriver();
 		if (driversHumanBody != null) {
-			//TODO
-			PositionProperty pC = (PositionProperty) getParent().getProperty(Property.Type.POSITION);
-			PositionProperty pH = (PositionProperty) driversHumanBody.getProperty(Property.Type.POSITION);
-			int carRota = pC.getRotation();
+			int carRota = parent.rota.value();
 			float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
-			float carX = (pC.getX());
-			float carY = (pC.getY());
+			float carX = parent.x.value();
+			float carY = parent.y.value();
 			Vec2 carPos = new Vec2(carX, carY);
 			Vec2 exitLocalVec = new Vec2((float)Math.cos(carRotaRad)*exitOffset.x, (float) Math.sin(carRotaRad)*exitOffset.y);
 			Vec2 newPos = carPos.add(exitLocalVec);
-			pH.setX((int) newPos.x);
-			pH.setY((int) newPos.y);
-			pH.setRotation(carRota + exitRotation);
+			driversHumanBody.x.set((int) newPos.x);
+			driversHumanBody.y.set((int) newPos.y);
+			driversHumanBody.rota.set(carRota + exitRotation);
 			driversHumanBody.enable();
 			exDriver.setEntity(driversHumanBody);
 		}
