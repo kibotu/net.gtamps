@@ -10,11 +10,13 @@ public class GTA extends DefaultActivity {
 
     public static final String TAG = GTA.class.getSimpleName();
 
+    private Game game;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Game game = new Game();
+        game = new Game();
         Registry.setContext(this);
         Renderer renderer = new Renderer(game);
 
@@ -29,5 +31,9 @@ public class GTA extends DefaultActivity {
         view.setKeepScreenOn(true);
 
         view.setOnTouchListener(InputEngine.getInstance());
+    }
+
+    public void onDestroy() {
+        game.stop();
     }
 }
