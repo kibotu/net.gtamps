@@ -1,7 +1,19 @@
 package net.gtamps.shared.communication;
 
+import android.webkit.ValueCallback;
 import net.gtamps.shared.communication.ISendable;
 
-public enum Command implements ISendable {
-	ACCELERATE, DECELERATE, ENTEREXIT, SHOOT, HANDBRAKE, LEFT, RIGHT;
+public class Command implements ISendable {
+
+    public enum Type {
+        ACCELERATE, DECELERATE, ENTEREXIT, SHOOT, HANDBRAKE, LEFT, RIGHT;
+    }
+
+    public final Type type;
+    public final int percent;
+
+    public Command (Type type, int percent) {
+        this.type = type;
+        this.percent = percent;
+    }
 }

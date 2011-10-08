@@ -8,13 +8,13 @@ final public class MessageFactory {
     private MessageFactory() {
     }
 
-    public static Message createCommand(Command command) {
+    public static Message createCommand(Command.Type type, int percent) {
         Message message = new Message();
-        message.addSendable(command);
+        message.addSendable(new Command(type,percent));
         return message;
     }
 
     public static Message create(byte[] response) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 }
