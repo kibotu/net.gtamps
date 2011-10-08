@@ -18,11 +18,15 @@ public class ConnectionManager implements IMessageManager {
     private IStream stream;
     private RemoteInputDispatcher remoteInputDispatcher;
     private RemoteOutputDispatcher remoteOutputDispatcher;
+    public static String currentSessionId;
+    public static long currentRevId;
 
     public ConnectionManager() {
         stream = new TcpStream();
         inbox = new ConcurrentLinkedQueue<Message>();
         outbox = new ConcurrentLinkedQueue<Message>();
+        currentSessionId = "0";
+        currentRevId = 0;
     }
 
     @Override

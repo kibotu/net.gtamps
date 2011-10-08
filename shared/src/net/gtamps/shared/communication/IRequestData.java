@@ -1,4 +1,6 @@
 package net.gtamps.shared.communication;
 
-public interface IRequestData {
+import java.io.Serializable;
+
+public interface IRequestData extends Serializable {
 }

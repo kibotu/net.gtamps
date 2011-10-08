@@ -4,6 +4,8 @@ import net.gtamps.shared.Utils.UIDGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 
 public class Request implements ISendable {
 
