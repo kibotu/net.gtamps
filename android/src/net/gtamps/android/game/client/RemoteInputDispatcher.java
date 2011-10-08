@@ -51,7 +51,7 @@ public class RemoteInputDispatcher implements Runnable {
                 length = ((int)(responseBytes[0]) << 8) + ((int)(responseBytes[1] & 0xFF));
                 response = new byte[length];
                 inputStream.readFully(response);
-                inbox.add(MessageFactory.parse(response));
+                inbox.add(MessageFactory.deserialize(response));
                 /** var 2 **/
     //                        response = input.readUTF().getBytes();
     //                        if(response.length > 1) {
