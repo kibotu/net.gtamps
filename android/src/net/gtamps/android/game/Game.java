@@ -8,7 +8,7 @@ import net.gtamps.android.game.client.ConnectionManager;
 import net.gtamps.android.game.client.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
-import net.gtamps.shared.communication.Command;
+import net.gtamps.shared.communication.*;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
@@ -32,6 +32,7 @@ public class Game implements IGame{
     private boolean isDragging = false;
     private Hud hud;
     private ConnectionManager connection;
+    private IObject3d activeObject;
 
     public Game() {
         isRunning = true;
@@ -60,7 +61,11 @@ public class Game implements IGame{
         sun.specular.setAll(64,64,64,255);
 
         scene.add(sun);
-        addStuff(scene);
+        scene.addChild(activeObject = new Car());
+        City city = new City();
+        scene.add(city);
+        city.setRotation(90, 0, 0);
+        city.setScaling(20, 20, 20);
 
         // hud
         scenes.add(hud.getScene());
@@ -71,14 +76,7 @@ public class Game implements IGame{
         connection.start();
     }
 
-    public void addStuff(Scene scene) {
-        scene.add(new Car());
-        City city = new City();
-        scene.add(city);
-        city.setRotation(90, 0, 0);
-        city.setScaling(20, 20, 20);
-    }
-
+    @Deprecated
     private void createParsedObject() {
 
         Scene scene = new Scene();
@@ -101,6 +99,7 @@ public class Game implements IGame{
         scene.addChild(objParser.getParsedObject());
     }
 
+    @Deprecated
     private void addSphere(Scene scene) {
         Sphere sphere = new Sphere();
         sphere.setScaling(3, 3, 3);
@@ -108,6 +107,7 @@ public class Game implements IGame{
         scene.add(sphere);
     }
 
+    @Deprecated
     private Cube addCube(Scene scene) {
         Cube cube = new Cube();
         cube.setScaling(10,10,10);
@@ -125,6 +125,22 @@ public class Game implements IGame{
             return;
         }
 
+        // handle inbox messages
+        while(!connection.isEmpty()) {
+            Message message = connection.poll();
+            for(int i = 0; i < message.sendables.size(); i++) {
+                ISendable sendable = message.sendables.get(i);
+                // message is request
+                if(sendable instanceof Request) {
+                    handleRequest((Request) sendable);
+                }
+                // message is response
+                if(sendable instanceof Response) {
+                    handleResponse((Response) sendable);
+                }
+            }
+        }
+
         // zoom
         if (inputEngine.getZoomState()){
             setZoomByDistance(inputEngine.getZoomDistance());
@@ -134,7 +150,7 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.ACCELERATE));
+            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
         }
 
         // on release
@@ -151,10 +167,10 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            car.getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().moveXY(car.getPosition());
-//            hud.getRing().setRotation(0, 0, speed);
-//            temp.recycle();
+            activeObject.getNode().getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().moveXY(activeObject.getNode().getPosition());
+            hud.getRing().setRotation(0, 0, speed);
+            temp.recycle();
         }
 
         // Compute elapsed time
@@ -162,6 +178,91 @@ public class Game implements IGame{
 
         // new start time
         startTime = SystemClock.elapsedRealtime();
+    }
+
+
+    private void handleResponse(Response response) {
+        Utils.log(TAG, "Handles response.");
+        switch (response.requestType) {
+            case GETUPDATE:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case GETPLAYER:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case JOIN:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case GETMAPDATA:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case LEAVE:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case LOGIN:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case REGISTER:
+                switch (response.status) {
+                    case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            default: break;
+        }
+    }
+
+    private void handleRequest(Request request) {
+        Utils.log(TAG, "Handles request.");
+        switch (request.type) {
+            case GETUPDATE: break;
+            case GETPLAYER: break;
+            case JOIN: break;
+            case GETMAPDATA: break;
+            case LEAVE: break;
+            case LOGIN: break;
+            case REGISTER: break;
+            default: break;
+        }
     }
 
     /** Setzt den neuen Zoomfaktor anhand der Zoomwerte des Inputs
