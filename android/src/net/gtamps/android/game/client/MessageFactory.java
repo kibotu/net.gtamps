@@ -1,11 +1,14 @@
 package net.gtamps.android.game.client;
 
+import net.gtamps.android.game.Game;
 import net.gtamps.shared.communication.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 final public class MessageFactory {
 
-    private static  ISerializer serializer;
+    private static ISerializer serializer;
 
     private MessageFactory() {
         serializer = new XmlSerializer();
@@ -44,6 +47,10 @@ final public class MessageFactory {
     }
 
     public static byte [] serialize(@NotNull Message message) {
+
+        message.setSessionId(ConnectionManager.currentSessionId);
+        message.setRevId(ConnectionManager.currentRevId);
+
         return serializer.serializeMessage(message);
     }
 

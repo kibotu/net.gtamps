@@ -74,6 +74,8 @@ public class Game implements IGame{
         connection.connect();
         Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
         connection.start();
+        connection.add(MessageFactory.createLoginRequest("username", "password"));
+        connection.add(MessageFactory.createGetUpdateRequest());
     }
 
     @Deprecated
