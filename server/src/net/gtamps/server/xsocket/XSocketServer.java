@@ -1,23 +1,17 @@
 package net.gtamps.server.xsocket;
 
-import net.gtamps.server.MessageHandler;
-
 import org.xsocket.connection.*;
  
 public class XSocketServer implements Runnable
 {
 	private static IServer srv;
-	private static int PORT = 8090;
+	private static int PORT = 8095;
 	private static boolean isOnline = true;
 	private static boolean wasStarted = false;
 	
-	MessageHandler messageHandler;
+//	MessageHandler messageHandler;
   
-    public XSocketServer(MessageHandler messageHandler) {
-		if (messageHandler == null) {
-			throw new IllegalArgumentException("'connectionManager' must not be null");
-		}
-    	this.messageHandler = messageHandler;
+    public XSocketServer() {
 	}
 
 	public static void shutdownServer()
@@ -38,7 +32,7 @@ public class XSocketServer implements Runnable
 	public void run() {
 		try
         {
-            srv = new Server(PORT, new XSocketHandler(this.messageHandler));
+            srv = new Server(PORT, new TestXSocketHandler());
             srv.run();
             isOnline = true;
         }
