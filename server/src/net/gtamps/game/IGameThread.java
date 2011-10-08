@@ -1,7 +1,7 @@
 package net.gtamps.game;
 
 import net.gtamps.Command;
-import net.gtamps.game.player.Player;
+import net.gtamps.shared.game.player.Player;
 
 import org.jdom.Element;
 

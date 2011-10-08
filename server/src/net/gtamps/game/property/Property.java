@@ -1,8 +1,8 @@
 package net.gtamps.game.property;
 
 import net.gtamps.XmlElements;
-import net.gtamps.game.GameActor;
-import net.gtamps.game.GameObject;
+import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.GameObject;
 
 public abstract class Property extends GameActor {
 
@@ -14,7 +14,7 @@ public abstract class Property extends GameActor {
 	protected final Property.Type type;
 
 	public Property(Property.Type type, GameObject parent) {
-		super(type.name().toLowerCase(), XmlElements.PROPERTY.tagName());
+		super(type.name().toLowerCase());
 		this.parent = parent;
 		this.type = type;
 	}

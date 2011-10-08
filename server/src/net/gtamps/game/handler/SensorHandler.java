@@ -1,11 +1,12 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.game.GameObject;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
 
 import java.util.HashSet;
 import java.util.Set;

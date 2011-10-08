@@ -1,9 +1,5 @@
-package net.gtamps.game;
+package net.gtamps.shared.game;
 
-import net.gtamps.XmlElements;
-
-import org.jdom.Attribute;
-import org.jdom.Element;
 
 /**
  * A new, better implementation of the Property concept, the way Tom
@@ -14,22 +10,21 @@ import org.jdom.Element;
  * @author jan, tom, til
  *
  */
-public class Propertay<T> extends GameObject {
+public abstract class Propertay<T> extends GameObject {
 	
 	private final GameObject parent;
 	private T value = null;
 
 	public Propertay(GameObject parent, String name, T value) {
-		super(name.toLowerCase(), XmlElements.PROPERTY.tagName());
+		super(name.toLowerCase());
 		if (parent == null) {
 			throw new IllegalArgumentException("'parent' must not be null");
 		}
 		this.parent = parent;
-		if (value == null) {
-			this.value = null;
+		this.value = value;
+		if (this.value == null) {
 			this.hasChanged = false;
 		} else {
-			this.value = value;
 			this.parent.hasChanged = true;
 		}
 	}
@@ -42,7 +37,7 @@ public class Propertay<T> extends GameObject {
 		return this.parent;
 	}
 	
-	public T get() {
+	public T value() {
 		return this.value;
 	}
 	
@@ -57,18 +52,6 @@ public class Propertay<T> extends GameObject {
 		this.value = value;
 		this.hasChanged = true;
 		this.parent.hasChanged = true;
-	}
-	
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		if (this.value == null) {
-			return null;
-		}
-		if (e != null) {
-			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(), this.getAsString()));
-		}
-		return e;
 	}
 	
 	@Override

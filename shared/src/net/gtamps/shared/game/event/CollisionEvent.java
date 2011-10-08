@@ -1,6 +1,6 @@
-package net.gtamps.game.event;
+package net.gtamps.shared.game.event;
 
-import net.gtamps.game.GameObject;
+import net.gtamps.shared.game.GameObject;
 
 public class CollisionEvent extends GameEvent {
 	

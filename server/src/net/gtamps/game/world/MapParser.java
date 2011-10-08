@@ -1,10 +1,10 @@
 package net.gtamps.game.world;
 
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.entity.Entity;
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.physics.PhysicsFactory;
+import net.gtamps.shared.game.entity.Entity;
 
 import java.awt.Point;
 import java.util.HashMap;

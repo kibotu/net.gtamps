@@ -1,8 +1,10 @@
 package net.gtamps.game.event;
 
 import net.gtamps.XmlElements;
-import net.gtamps.game.GameActor;
 import net.gtamps.game.RevisionKeeper;
+import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,7 +20,7 @@ public class EventManager extends GameActor {
 	private final Set<GameEvent> archive = Collections.synchronizedSet(new HashSet<GameEvent>());
 	
 	public EventManager(long eventTimeout) {
-		super("EventManager", XmlElements.EVENTS.tagName());
+		super("EventManager");
 		if (eventTimeout < 0) {
 			throw new IllegalArgumentException("'eventTimeout' must be > 0");
 		}
@@ -40,31 +42,32 @@ public class EventManager extends GameActor {
 		}
 	}
 	
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		if (e != null) {
-			e.addContent(this.getUpdate(baseRevision, keeper));
-		}
-		return e;
-	}
-	
+//	@Override
+//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(baseRevision, keeper);
+//		if (e != null) {
+//			e.addContent(this.getUpdate(baseRevision, keeper));
+//		}
+//		return e;
+//	}
+
+	//TODO
 	public List<Element> getUpdate(long baseRevision, RevisionKeeper keeper) {
 		List<Element> update = new LinkedList<Element>();
-		List<GameEvent> toBeRemoved = new LinkedList<GameEvent>();
-		synchronized (archive) {
-			for (GameEvent event: archive) {
-				if (keeper != null && keeper.getCurrentRevision() - event.getRevision() > eventTimeout) {
-					toBeRemoved.add(event);
-					continue;
-				}
-				Element xml = event.toXMLElement(baseRevision, keeper);
-				if (xml != null) {
-					update.add(xml);
-				}
-			}
-			archive.removeAll(toBeRemoved);
-		}
+//		List<GameEvent> toBeRemoved = new LinkedList<GameEvent>();
+//		synchronized (archive) {
+//			for (GameEvent event: archive) {
+//				if (keeper != null && keeper.getCurrentRevision() - event.getRevision() > eventTimeout) {
+//					toBeRemoved.add(event);
+//					continue;
+//				}
+//				Element xml = event.toXMLElement(baseRevision, keeper);
+//				if (xml != null) {
+//					update.add(xml);
+//				}
+//			}
+//			archive.removeAll(toBeRemoved);
+//		}
 		return update;
 	}
 

@@ -2,16 +2,17 @@ package net.gtamps.game.handler;
 
 import net.gtamps.XmlElements;
 import net.gtamps.game.RevisionKeeper;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.game.physics.PhysicsFactory;
-import net.gtamps.game.player.Player;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.game.player.Player;
 
 import org.jbox2d.common.Vec2;
 import org.jdom.Attribute;
@@ -90,19 +91,16 @@ public class DriverHandler extends Handler {
 		Player exDriver = driver;
 		removeDriver();
 		if (driversHumanBody != null) {
-			//TODO
-			PositionProperty pC = (PositionProperty) getParent().getProperty(Property.Type.POSITION);
-			PositionProperty pH = (PositionProperty) driversHumanBody.getProperty(Property.Type.POSITION);
-			int carRota = pC.getRotation();
+			int carRota = parent.rota.value();
 			float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
-			float carX = (pC.getX());
-			float carY = (pC.getY());
+			float carX = parent.x.value();
+			float carY = parent.y.value();
 			Vec2 carPos = new Vec2(carX, carY);
 			Vec2 exitLocalVec = new Vec2((float)Math.cos(carRotaRad)*exitOffset.x, (float) Math.sin(carRotaRad)*exitOffset.y);
 			Vec2 newPos = carPos.add(exitLocalVec);
-			pH.setX((int) newPos.x);
-			pH.setY((int) newPos.y);
-			pH.setRotation(carRota + exitRotation);
+			driversHumanBody.x.set((int) newPos.x);
+			driversHumanBody.y.set((int) newPos.y);
+			driversHumanBody.rota.set(carRota + exitRotation);
 			driversHumanBody.enable();
 			exDriver.setEntity(driversHumanBody);
 		}
@@ -149,17 +147,18 @@ public class DriverHandler extends Handler {
 		}
 	}
 
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		if (e != null) {
-			String driverStr = (driver == null) ? "none" : driver.getUid() + "";
-			Attribute value = new Attribute(XmlElements.ATTRIB_VALUE.tagName(),
-					driverStr);
-			e.setAttribute(value);
-		}
-		return e;
-	}
+	//TODO driver property
+//	@Override
+//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(baseRevision, keeper);
+//		if (e != null) {
+//			String driverStr = (driver == null) ? "none" : driver.getUid() + "";
+//			Attribute value = new Attribute(XmlElements.ATTRIB_VALUE.tagName(),
+//					driverStr);
+//			e.setAttribute(value);
+//		}
+//		return e;
+//	}
 	
 	private boolean canActivate() {
 		long now = System.currentTimeMillis();

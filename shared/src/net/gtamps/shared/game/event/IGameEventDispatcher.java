@@ -1,4 +1,4 @@
-package net.gtamps.game.event;
+package net.gtamps.shared.game.event;
 
 public interface IGameEventDispatcher {
 	/**

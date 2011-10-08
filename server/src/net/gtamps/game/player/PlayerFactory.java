@@ -2,6 +2,7 @@ package net.gtamps.game.player;
 
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.game.player.Player;
 
 
 public class PlayerFactory {

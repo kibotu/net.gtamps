@@ -3,9 +3,9 @@ package net.gtamps.game.physics;
 import net.gtamps.game.conf.PhysicalConstants;
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.event.EventType;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.event.EventType;
 
 import org.jbox2d.collision.shapes.CircleDef;
 import org.jbox2d.collision.shapes.PolygonDef;

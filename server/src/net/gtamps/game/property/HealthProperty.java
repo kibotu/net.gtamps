@@ -1,19 +1,14 @@
 package net.gtamps.game.property;
 
-import net.gtamps.XmlElements;
-import net.gtamps.game.GameObject;
-import net.gtamps.game.RevisionKeeper;
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.BulletHitEvent;
-import net.gtamps.game.event.CollisionEvent;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-
-import org.jdom.Attribute;
-import org.jdom.Element;
+import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.BulletHitEvent;
+import net.gtamps.shared.game.event.CollisionEvent;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
 
 
 public class HealthProperty extends Property{
@@ -39,14 +34,14 @@ public class HealthProperty extends Property{
 		this(parent, maxHealth, 0f, 0);
 	}
 	
-	@Override
-	public Element toXMLElement(long revisionId, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(revisionId, keeper);
-		if(e != null){
-			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(),this.health+""));
-		}
-		return e;
-	}
+//	@Override
+//	public Element toXMLElement(long revisionId, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(revisionId, keeper);
+//		if(e != null){
+//			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(),this.health+""));
+//		}
+//		return e;
+//	}
 
 	@Override
 	public String toString() {

@@ -6,15 +6,15 @@ import net.gtamps.ResourceLoader;
 import net.gtamps.XmlElements;
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.game.physics.Box2DEngine;
-import net.gtamps.game.player.Player;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.game.world.MapParser;
 import net.gtamps.game.world.World;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.player.Player;
 
 import java.io.IOException;
 import java.util.List;
@@ -155,7 +155,9 @@ public class GameThread extends Thread implements IGameThread {
 
 	@Override
 	public Element getMapData() {
-		return world.toXMLElement(0, revisionKeeper);
+		//return world.toXMLElement(0, revisionKeeper);
+		// TODO
+		return null;
 	}
 
 	@Override
