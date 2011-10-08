@@ -1,11 +1,11 @@
 package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.PhysicalProperties;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -18,10 +18,9 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 	
 	@Override
 	public void enable() {
-		PositionProperty p = (PositionProperty) getParent().getProperty(Property.Type.POSITION);
-		int pixX = p.getX();
-		int pixY = p.getY();
-		int rota = p.getRotation();
+		int pixX = parent.x.value();
+		int pixY = parent.y.value();
+		int rota = parent.rota.value();
 		this.body = null;
 		while(body == null) {
 			this.body = PhysicsFactory.createHuman(world, physicalProperties, pixX, pixY, rota);

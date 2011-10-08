@@ -1,4 +1,4 @@
-package net.gtamps.game.event;
+package net.gtamps.shared.game.event;
 
 import java.util.Collections;
 import java.util.HashSet;

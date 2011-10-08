@@ -1,9 +1,7 @@
 package net.gtamps.game.world;
 
 import net.gtamps.XmlElements;
-import net.gtamps.game.GameActor;
 import net.gtamps.game.RevisionKeeper;
-import net.gtamps.game.entity.Entity;
 
 import java.util.LinkedList;
 
@@ -13,6 +11,8 @@ import org.jdom.Element;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.entity.Entity;
 
 public class World extends GameActor {
 
@@ -24,7 +24,7 @@ public class World extends GameActor {
 	private final Box2DEngine physics;
 
 	public World(String name, int width, int height, Box2DEngine physics) {
-		super(name, XmlElements.MAPDATA.tagName());
+		super(name);
 		Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: "+width+"x"+height);
 		this.physics = physics;
 		this.width = width;
@@ -42,14 +42,15 @@ public class World extends GameActor {
 	public Box2DEngine getPhysics() {
 		return this.physics;
 	}
-	
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		e.setAttribute(new Attribute("width",width+""));
-		e.setAttribute(new Attribute("height",height+""));
-		return e;
-	}
+
+	//TODO
+//	@Override
+//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(baseRevision, keeper);
+//		e.setAttribute(new Attribute("width",width+""));
+//		e.setAttribute(new Attribute("height",height+""));
+//		return e;
+//	}
 	
 	public void addSpawnPoint(Entity sp) {
 		if (sp == null) {

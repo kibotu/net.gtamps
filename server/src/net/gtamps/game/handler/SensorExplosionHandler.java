@@ -3,12 +3,13 @@ package net.gtamps.game.handler;
 import org.jbox2d.common.Vec2;
 
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.game.property.HealthProperty;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
 
 /**
  * <p>
@@ -107,18 +108,19 @@ public class SensorExplosionHandler extends SensorHandler {
 	 */
 	@Override
 	public void act(GameEvent event) {
-		PositionProperty p1 = (PositionProperty) getParent().getProperty(
-				Property.Type.POSITION);
-		PositionProperty p2;
+//		PositionProperty p1 = (PositionProperty) getParent().getProperty(
+//				Property.Type.POSITION);
+//		PositionProperty p2;
 		for (Entity e : this.sensed) {
 			if (e == this.getParent()) {
 				continue;
 			}
-			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
-			if (p2 == null) {
-				continue;
-			}
-			Vec2 vec = new Vec2(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+//			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
+//			if (p2 == null) {
+//				continue;
+//			}
+			Vec2 vec = new Vec2(parent.x.value() - e.x.value(), parent.y.value() - e.y.value());
+			//Vec2 vec = new Vec2(p1.getX() - p2.getX(), p1.getY() - p2.getY());
 			float distanceSq = vec.lengthSquared();
 			if (distanceSq >= this.maxDistanceSq) {
 				continue;
@@ -126,14 +128,15 @@ public class SensorExplosionHandler extends SensorHandler {
 			vec.normalize();
 			float impulseWorld = (FALLOFF_SLOPE * distanceSq) + this.initialForce;
 			float impulse = impulseWorld / WorldConstants.PIX_TO_PHYSICS_RATIO;
-			SimplePhysicsHandler ph = e.getPhysicsHandler();
+			SimplePhysicsHandler ph = (SimplePhysicsHandler) e.getHandler(Handler.Type.PHYSICS);
 			if (ph != null) {
 				ph.applyImpulse(vec.mul(impulse));
 			}
-			HealthProperty h = (HealthProperty) e.getProperty(Property.Type.HEALTH);
-			if (h != null) {
-				h.takeDamage(impulse);
-			}
+			//TODO
+//			HealthProperty h = (HealthProperty) e.getProperty(Property.Type.HEALTH);
+//			if (h != null) {
+//				h.takeDamage(impulse);
+//			}
 		}
 	}
 

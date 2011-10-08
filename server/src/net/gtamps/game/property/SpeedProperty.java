@@ -1,11 +1,6 @@
 package net.gtamps.game.property;
 
-import net.gtamps.game.GameObject;
-import net.gtamps.game.RevisionKeeper;
-
-import org.jdom.Attribute;
-import org.jdom.Element;
-
+import net.gtamps.shared.game.GameObject;
 
 public class SpeedProperty extends Property{
 
@@ -21,15 +16,15 @@ public class SpeedProperty extends Property{
 	protected double speedX;
 	protected double speedY;
 	
-	@Override
-	public Element toXMLElement(long revisionId, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(revisionId, keeper);
-		if(e != null){
-			e.setAttribute(new Attribute("speedX",(int)this.speedX+""));
-			e.setAttribute(new Attribute("speedY",(int)this.speedY+""));
-		}
-		return e;
-	}
+//	@Override
+//	public Element toXMLElement(long revisionId, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(revisionId, keeper);
+//		if(e != null){
+//			e.setAttribute(new Attribute("speedX",(int)this.speedX+""));
+//			e.setAttribute(new Attribute("speedY",(int)this.speedY+""));
+//		}
+//		return e;
+//	}
 
 	@Override
 	public String toString() {

@@ -1,14 +1,15 @@
 package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.PhysicalProperties;
-import net.gtamps.game.entity.Entity;
-import net.gtamps.game.event.EventType;
-import net.gtamps.game.event.GameEvent;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
 import net.gtamps.game.property.SpeedProperty;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
 
 import java.util.LinkedList;
 
@@ -87,18 +88,20 @@ public class SimplePhysicsHandler extends Handler {
 			return;
 		}
 		
-		PositionProperty p = (PositionProperty) parent.getProperty(Property.Type.POSITION);
-		SpeedProperty s = (SpeedProperty) parent.getProperty(Property.Type.SPEED);
+//		PositionProperty p = (PositionProperty) parent.getProperty(Property.Type.POSITION);
+//		SpeedProperty s = (SpeedProperty) parent.getProperty(Property.Type.SPEED);
 
-		if (p != null) {
-			p.setX(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().x));
-			p.setY(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().y));
-			p.setRotation(PhysicsFactory.angleToWorld((this.body.getAngle())));
-		}
-		if (s != null) {
-			s.setSpeedX(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().x));
-			s.setSpeedY(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().y));
-		}
+//		if (p != null) {
+			parent.x.set(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().x));
+			parent.y.set(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().y));
+			parent.rota.set(PhysicsFactory.angleToWorld((this.body.getAngle())));
+//		}
+//		if (s != null) {
+			parent.getProperty("speedx").set(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().x));
+			parent.getProperty("speedy").set(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().y));
+//			s.setSpeedX(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().x));
+//			s.setSpeedY(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().y));
+//		}
 
 	}
 

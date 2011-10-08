@@ -1,6 +1,5 @@
 package net.gtamps.shared.state;
 
-import android.util.Log;
 
 /**
  * This class implements the state manager which handles the state of an Entity.
@@ -44,7 +43,7 @@ public abstract class StateManager {
                 // Log.e(TAG, "Default Transistion: "+stateTable[activeState].getStateType());
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            Log.e(TAG, "WRONG STATE TABLE!");
+//            Log.e(TAG, "WRONG STATE TABLE!");
         }
         lastState = activeState;
     }

@@ -4,8 +4,8 @@ import net.gtamps.Command;
 import net.gtamps.XmlElements;
 import net.gtamps.game.GameThread;
 import net.gtamps.game.IGameThread;
-import net.gtamps.game.player.Player;
 import net.gtamps.server.db.DBHandler;
+import net.gtamps.shared.game.player.Player;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -198,7 +198,9 @@ public class ConnectionManager {
 		Player p = gameThread.getPlayer(puid);
 		assert p != null : "this player should exists for an identifued connection";
 		Element response = assembleOKResponse(id, RequestTypes.GETPLAYER);
-		response.addContent(p.toXMLElement(0, null));
+		//FIXME fix
+		//response.addContent(p.toXMLElement(0, null));
+		
 		return response;
 	}
 	

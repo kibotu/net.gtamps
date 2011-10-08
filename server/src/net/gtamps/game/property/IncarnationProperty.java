@@ -1,14 +1,9 @@
 package net.gtamps.game.property;
 
-import net.gtamps.XmlElements;
-import net.gtamps.game.GameObject;
-import net.gtamps.game.RevisionKeeper;
-import net.gtamps.game.player.Player;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-
-import org.jdom.Attribute;
-import org.jdom.Element;
+import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.player.Player;
 
 public class IncarnationProperty extends Property {
 
@@ -21,14 +16,14 @@ public class IncarnationProperty extends Property {
 		this.hasChanged = false;
 	}
 	
-	@Override
-	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-		Element e = super.toXMLElement(baseRevision, keeper);
-		if (e != null && this.player != null) {
-			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(), this.player.getName()));
-		}
-		return e;
-	}
+//	@Override
+//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
+//		Element e = super.toXMLElement(baseRevision, keeper);
+//		if (e != null && this.player != null) {
+//			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(), this.player.getName()));
+//		}
+//		return e;
+//	}
 	
 	public void setPlayer(Player player) {
 		if (player == null) {
