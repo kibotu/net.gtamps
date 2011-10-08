@@ -3,7 +3,7 @@ package net.gtamps.android.game.objects;
 final public class Object3dFactory {
 
     public enum Type {
-        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT
+        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT
     }
 
     private Object3dFactory() {
@@ -21,25 +21,35 @@ final public class Object3dFactory {
             case HOUSE: object3d = createHouse(); break;
             case BULLET: object3d = createBullet(); break;
             case SPAWNPOINT: object3d = createSpawnPoint(); break;
+            case WAYPOINT: object3d = createWayPoint(); break;
             default: object3d = new Cube(); break;
         }
         return object3d;
     }
 
+    @Deprecated
+    public static IObject3d createParsedObject(String resource, String textureResource) {
+        return new ParsedObject(0,0);
+    }
+
+    private static IObject3d createWayPoint() {
+        return new Cube();
+    }
+
     private static IObject3d createBullet() {
-        return null;
+        return new Cube();
     }
 
     private static IObject3d createSpawnPoint() {
-        return null;
+        return new Cube();
     }
 
     private static IObject3d createHouse() {
-        return null;
+        return new Cube();
     }
 
     private static IObject3d createHuman() {
-        return null;
+        return new Cube();
     }
 
     private static IObject3d createCar() {
