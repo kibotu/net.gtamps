@@ -16,7 +16,7 @@ public class Config {
     public static final boolean DISPLAY_FRAME_RATE = false;
 
     public static final String SERVER_HOST_ADDRESS = TIL_IP_HOME;
-    public static final int SERVER_PORT = 8090;
+    public static final int SERVER_PORT = 8095;
     public static final int SOCKET_MAX_SEND_BUFFER_SIZE = 1536;
     public static final int SOCKET_MAX_RECEIVE_BUFFER_SIZE = 1536;
     public static final int SOCKET_TIMEOUT = 3000;

@@ -33,7 +33,9 @@ public class GTA extends DefaultActivity {
         view.setOnTouchListener(InputEngine.getInstance());
     }
 
+    @Override
     public void onDestroy() {
+        super.onDestroy();
         game.stop();
     }
 }

@@ -19,19 +19,13 @@ public class XmlSerializer implements ISerializer {
     private ObjectInputStream objectInputStream;
 
     public XmlSerializer() {
-        byteOutputStream = new ByteArrayOutputStream();
-        objectOutputStream = null;
-        try {
-            objectOutputStream = new ObjectOutputStream(byteOutputStream);
-        } catch (IOException e) {
-            Utils.log(TAG, e.getMessage());
-        }
     }
 
     @Override
     public byte[] serializeMessage(@NotNull Message message) {
         try {
-            objectOutputStream.reset();
+            byteOutputStream = new ByteArrayOutputStream();
+            objectOutputStream = new ObjectOutputStream(byteOutputStream);
             objectOutputStream.writeObject(message);
         } catch (IOException e) {
             Utils.log(TAG, e.getMessage());

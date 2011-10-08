@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 final public class MessageFactory {
 
-    private static ISerializer serializer = new XmlSerializer();;
+    private static ISerializer serializer = new XmlSerializer();
 
     private MessageFactory() {
     }
