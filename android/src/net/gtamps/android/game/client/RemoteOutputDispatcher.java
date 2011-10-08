@@ -46,7 +46,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
         while(isRunning) {
 //            Thread.currentThread().sleep(33);
             if(outbox.isEmpty()) continue;
-            tcpStream.send(outbox.poll().toString());
+            tcpStream.send(MessageFactory.serialize(outbox.poll()));
         }
     }
 }

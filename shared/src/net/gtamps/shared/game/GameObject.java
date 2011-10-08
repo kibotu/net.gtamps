@@ -3,8 +3,6 @@ package net.gtamps.shared.game;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
 import net.gtamps.shared.Utils.UIDGenerator;
 
 
@@ -104,7 +102,7 @@ public abstract class GameObject {
 
 	/**
 	 * <code>true</code> if this gameObject is silent, which means that its
-	 * {@link #toXMLElement(long)} method will under all circumstances return
+	 * method will under all circumstances return
 	 * <code>null</code>.
 	 * 
 	 * @return <code>true</code> if this gameObject is silent.
@@ -142,7 +140,7 @@ public abstract class GameObject {
 		try {
 			@SuppressWarnings("unused")
 			T check = (T) p.value();
-		} catch (RuntimeErrorException e) {
+		} catch (RuntimeException e) {
 			return null;
 		}
 		return p;

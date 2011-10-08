@@ -1,10 +1,14 @@
 package net.gtamps.android.game.client;
 
 import net.gtamps.shared.communication.*;
+import org.jetbrains.annotations.NotNull;
 
 final public class MessageFactory {
 
+    private static  ISerializer serializer;
+
     private MessageFactory() {
+        serializer = new XmlSerializer();
     }
 
     public static Message createCommand(Command.Type type, int percent) {
@@ -39,8 +43,11 @@ final public class MessageFactory {
         return new Message(new Request(Request.Type.GETUPDATE));
     }
 
-    public static Message parse(byte[] response) {
-        // TODO implement me
-        return null;
+    public static byte [] serialize(@NotNull Message message) {
+        return serializer.serializeMessage(message);
+    }
+
+    public static Message deserialize(@NotNull byte[] message) {
+        return serializer.deserializeMessage(message);
     }
 }
