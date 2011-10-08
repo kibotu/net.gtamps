@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,10 +19,12 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.xsocket.DataConverter;
 import org.xsocket.connection.IConnectHandler;
 import org.xsocket.connection.IDataHandler;
 import org.xsocket.connection.IDisconnectHandler;
 import org.xsocket.connection.INonBlockingConnection;
+import org.xsocket.connection.NonBlockingConnection;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
@@ -80,22 +83,51 @@ public class TestXSocketHandler implements IDataHandler, IConnectHandler, IDisco
 
 	}
 
+	private void readFully(INonBlockingConnection nbc, byte[] data) throws IOException {
+		assert nbc != null;
+		assert data != null;
+		int need = data.length;
+		int read = 0;
+		while (need > 0) {
+			int offered = Math.min(nbc.available(), need);
+			ByteBuffer[] buffers = null;
+			try {
+				buffers = nbc.readByteBufferByLength(offered);
+			} catch (BufferUnderflowException bue) {
+				
+			}
+			if (buffers == null) {
+				continue;
+			}
+			for (ByteBuffer b : buffers) {
+				if (b == null) {
+					continue;
+				}
+				int has = b.remaining();
+				b.get(data, read, has);
+				read += has;
+				need -= has;
+			}
+		}
+
+//		t[0].ge t(dst, offset, length)
+//		nbc.readBytesByLength(laenge);
+	}
 	
 	@Override
 	public boolean onData(INonBlockingConnection nbc) {
-		// System.out.println(nbc.getId() + " data.");
-		byte[] bytes = new byte[2];
 		int read = 0;
 		try {
 
-			bytes[0] = readByte(nbc);
-			bytes[1] = readByte(nbc);
-
+			byte hi = readByte(nbc);
+			byte lo = readByte(nbc);
 			read += 2;
 			
-			int laenge = ((int) (bytes[0])) * 256 + (int) (bytes[1]);
+			int laenge = ((((int) hi) & 0xff) << 8) + (((int) lo)  & 0xff);
+			System.out.println("expecting new message: " + laenge );
 			//data = nbc.readStringByLength(laenge);
-			byte[] data = nbc.readBytesByLength(laenge);
+			byte[] data = new byte[laenge]; 
+			this.readFully(nbc, data);
 			this.receive(nbc, data);
 			//data = readByteToStringbyLength(nbc, laenge);
 			Logger.i().indicateNetworkReceiveActivity();
