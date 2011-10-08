@@ -125,11 +125,9 @@ public class TestXSocketHandler implements IDataHandler, IConnectHandler, IDisco
 			
 			int laenge = ((((int) hi) & 0xff) << 8) + (((int) lo)  & 0xff);
 			System.out.println("expecting new message: " + laenge );
-			//data = nbc.readStringByLength(laenge);
 			byte[] data = new byte[laenge]; 
 			this.readFully(nbc, data);
 			this.receive(nbc, data);
-			//data = readByteToStringbyLength(nbc, laenge);
 			Logger.i().indicateNetworkReceiveActivity();
 		} catch (ClosedChannelException e) {
 			e.printStackTrace();
