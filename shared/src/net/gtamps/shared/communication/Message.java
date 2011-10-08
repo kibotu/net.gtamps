@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class Message implements Serializable {
 
     private String sessionId;
-    private long revId;
 
     public final ArrayList<ISendable> sendables;
 
@@ -29,14 +28,6 @@ public class Message implements Serializable {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }
-
-    public long getRevId() {
-        return revId;
-    }
-
-    public void setRevId(long revId) {
-        this.revId = revId;
     }
 
     @Override

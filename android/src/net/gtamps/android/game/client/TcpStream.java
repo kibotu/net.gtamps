@@ -64,8 +64,10 @@ public class TcpStream implements IStream {
         try {
             output.writeUTF(message);
         } catch (IOException e) {
+            Utils.log(TAG, "send bytes IOException "+e.getMessage());
             return false;
         }
+        Utils.log(TAG, "has send string " + message);
         return true;
     }
 
@@ -82,9 +84,10 @@ public class TcpStream implements IStream {
         try {
             output.write(temp);
         } catch (IOException e) {
-            Utils.log(TAG, ""+e.getMessage());
+            Utils.log(TAG, "send bytes IOException "+e.getMessage());
             return false;
         }
+        Utils.log(TAG, "has send bytes " +new String(message));
         return true;
     }
 
