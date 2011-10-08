@@ -1,15 +1,18 @@
 package net.gtamps.shared.communication;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Message implements Serializable {
 
+    @NotNull
     private String sessionId;
 
     public final ArrayList<ISendable> sendables;
 
-    public Message(ISendable sendable) {
+    public Message(@NotNull ISendable sendable) {
         this();
         sendables.add(sendable);
     }
@@ -22,11 +25,11 @@ public class Message implements Serializable {
         sendables.add(sendable);
     }
 
-    public String getSessionId() {
+    public @NotNull String getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(String sessionId) {
+    public void setSessionId(@NotNull String sessionId) {
         this.sessionId = sessionId;
     }
 

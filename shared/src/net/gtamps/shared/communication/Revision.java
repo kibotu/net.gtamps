@@ -1,6 +1,6 @@
 package net.gtamps.shared.communication;
 
-public class Revision implements IRequestData {
+public class Revision implements ISendableData {
 
     public final long revisionId;
 

@@ -18,6 +18,7 @@ import net.gtamps.android.game.client.TcpStream;
 import net.gtamps.android.game.objects.*;
 import net.gtamps.shared.state.State;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 public class Game implements IGame{
@@ -74,10 +75,13 @@ public class Game implements IGame{
         connection.connect();
         Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
         connection.start();
-        connection.add(MessageFactory.createRegisterRequest("username", "password"));
-        connection.add(MessageFactory.createLoginRequest("username", "password"));
-        connection.add(MessageFactory.createJoinRequest());
-        connection.add(MessageFactory.createGetPlayerRequest());
+
+        connection.add(MessageFactory.createSessionRequest());
+
+//        connection.add(MessageFactory.createRegisterRequest("username", "password"));
+//        connection.add(MessageFactory.createLoginRequest("username", "password"));
+//        connection.add(MessageFactory.createJoinRequest());
+//        connection.add(MessageFactory.createGetPlayerRequest());
     }
 
     @Deprecated
@@ -135,12 +139,12 @@ public class Game implements IGame{
             for(int i = 0; i < message.sendables.size(); i++) {
                 ISendable sendable = message.sendables.get(i);
                 // message is request
-                if(sendable instanceof Request) {
-                    handleRequest((Request) sendable);
-                }
+//                if(sendable instanceof Request) {
+//                    handleRequest((Request) sendable, message);
+//                }
                 // message is response
                 if(sendable instanceof Response) {
-                    handleResponse((Response) sendable);
+                    handleResponse((Response) sendable, message);
                 }
             }
         }
@@ -183,17 +187,20 @@ public class Game implements IGame{
 
         // new start time
         startTime = SystemClock.elapsedRealtime();
+
+        // animate
     }
 
-
-    private void handleResponse(Response response) {
+    private void handleResponse(Response response, Message message) {
         Utils.log(TAG, "Handles response.");
         Utils.log(TAG, ""+response.toString());
 
         switch (response.requestType) {
             case GETUPDATE:
                 switch (response.status) {
-                    case OK: break;
+                    case OK:
+                        ConnectionManager.currentRevId = ((UpdateResponse)response.getData()).revId;
+                        break;
                     case BAD: break;
                     case NEED: break;
                     case ERROR: break;
@@ -203,6 +210,17 @@ public class Game implements IGame{
             case GETPLAYER:
                 switch (response.status) {
                     case OK: break;
+                    case BAD: break;
+                    case NEED: break;
+                    case ERROR: break;
+                    default: break;
+                }
+                break;
+            case SESSION:
+                switch (response.status) {
+                    case OK:
+                        ConnectionManager.currentSessionId = message.getSessionId();
+                        break;
                     case BAD: break;
                     case NEED: break;
                     case ERROR: break;
@@ -258,7 +276,7 @@ public class Game implements IGame{
         }
     }
 
-    private void handleRequest(Request request) {
+    private void handleRequest(Request request, Message message) {
         Utils.log(TAG, "Handles request.");
         Utils.log(TAG, ""+request.toString());
 
@@ -266,6 +284,7 @@ public class Game implements IGame{
             case GETUPDATE: break;
             case GETPLAYER: break;
             case JOIN: break;
+            case SESSION: break;
             case GETMAPDATA: break;
             case LEAVE: break;
             case LOGIN: break;

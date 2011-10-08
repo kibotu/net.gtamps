@@ -1,6 +1,8 @@
 package net.gtamps.shared.communication;
 
 import net.gtamps.shared.communication.ISendable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Response implements ISendable {
 
@@ -8,12 +10,30 @@ public class Response implements ISendable {
         OK, NEED, BAD, ERROR
     }
 
+    @NotNull
     public final Status status;
+    @NotNull
     public final Request.Type requestType;
+    @Nullable
+    private ISendableData data;
 
-    public Response(Request.Type requestType, Status status) {
+    public Response(@NotNull Request.Type requestType, @NotNull Status status, @Nullable ISendableData data) {
         this.status = status;
         this.requestType = requestType;
+        this.data = data;
+    }
+
+    public Response(Request.Type requestType, Status status) {
+        this(requestType, status, null);
+    }
+
+    @Nullable
+    public ISendableData getData() {
+        return data;
+    }
+
+    public void setData(@Nullable ISendableData data) {
+        this.data = data;
     }
 
     @Override
@@ -21,6 +41,7 @@ public class Response implements ISendable {
         return "Response{" +
                 "status=" + status +
                 ", requestType=" + requestType +
+                ", data=" + data +
                 '}';
     }
 }

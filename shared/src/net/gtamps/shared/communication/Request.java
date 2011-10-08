@@ -4,22 +4,20 @@ import net.gtamps.shared.Utils.UIDGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
-
 
 public class Request implements ISendable {
 
     public enum Type {
-        LOGIN, REGISTER,JOIN,LEAVE,GETMAPDATA,GETPLAYER,GETUPDATE;
+        GETUPDATE, GETPLAYER, JOIN, LEAVE, LOGIN, REGISTER, SESSION, GETMAPDATA
     }
 
     @NotNull
     public final Type type;
     @Nullable
-    public IRequestData data;
+    private ISendableData data;
     public final int id;
 
-    public Request(@NotNull Type type, @Nullable IRequestData data) {
+    public Request(@NotNull Type type, @Nullable ISendableData data) {
         this.type = type;
         this.data = data;
         id = UIDGenerator.getNewUID();
@@ -29,11 +27,12 @@ public class Request implements ISendable {
         this(type,null);
     }
 
-    public void setData(@NotNull IRequestData data) {
+    public void setData(@NotNull ISendableData data) {
         this.data = data;
     }
 
-    public @Nullable IRequestData getData() {
+    public @Nullable
+    ISendableData getData() {
         return data;
     }
 

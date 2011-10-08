@@ -10,6 +10,10 @@ final public class MessageFactory {
     private MessageFactory() {
     }
 
+    public static Message createSessionRequest() {
+        return new Message(new Request(Request.Type.SESSION));
+    }
+
     public static Message createCommand(Command.Type type, int percent) {
         return new Message(new Command(type,percent));
     }
