@@ -72,4 +72,25 @@ public class Utils {
 
 		return bitmap;
 	}
+
+    /**
+     * Converts 2 bytes to an integer.
+     *
+     *
+     *   Utils.log("-1 0", "0 = "+Utils.convertLength(-1,0));
+     *   Utils.log("0 -1", "0 = "+Utils.convertLength(0,-1));
+     *   Utils.log("0 0", "0 = "+Utils.convertLength(0,0));
+     *   Utils.log("127 127", "32639 = "+Utils.convertLength(127,127));
+     *   Utils.log("255 255", "65536 = "+Utils.convertLength(255,255));
+     *   Utils.log("256 256", "65536 = "+Utils.convertLength(256,256));
+     *
+     * @param high byte 0...255
+     * @param low  byte 0...255
+     * @return length
+     */
+    public static int convertLength(int high, int low) {
+        high = (int) clamp(high, 0,255);
+        low = (int) clamp(low, 0,255);
+        return (high << 8) + low;
+    }
 }

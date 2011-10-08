@@ -1,14 +1,11 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.game.Game;
 import net.gtamps.shared.communication.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 final public class MessageFactory {
 
-    private static ISerializer serializer = new XmlSerializer();
+    private static ISerializer serializer = new ObjectSerializer();
 
     private MessageFactory() {
     }

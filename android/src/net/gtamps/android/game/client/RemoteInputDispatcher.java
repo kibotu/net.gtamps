@@ -54,7 +54,7 @@ public class RemoteInputDispatcher implements Runnable {
                 }
 
                 // build message
-                length = ((int)((byte) inputStream.read()) << 8) + inputStream.read();
+                length =  (inputStream.read() << 8) + inputStream.read();
                 response = new byte[length];
                 Utils.log(TAG, "has received "+ length + " bytes");
                 inputStream.readFully(response);
