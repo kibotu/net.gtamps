@@ -9,6 +9,7 @@ public class Config {
     }
 
     public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE_SHOW_NULL_EXCEPTIONS = false;
     public static boolean renderContinuously = true;
     public static boolean ENABLE_FRAME_LIMITER = true;
     public static final long FPS = 1000/30;
@@ -21,4 +22,5 @@ public class Config {
     public static final int SOCKET_TIMEOUT = 3000;
     public static final boolean SOCKET_KEEP_ALIVE_ENABLED = true;
     public static final boolean SOCKET_TCP_NO_DELAY = true;
+    public static final long SOCKET_LATENCY = 300;
 }

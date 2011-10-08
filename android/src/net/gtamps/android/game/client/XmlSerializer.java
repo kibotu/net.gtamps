@@ -24,7 +24,7 @@ public class XmlSerializer implements ISerializer {
         try {
             objectOutputStream = new ObjectOutputStream(byteOutputStream);
         } catch (IOException e) {
-            Utils.log(TAG, "Construct IOException: " + e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
     }
 
@@ -34,7 +34,7 @@ public class XmlSerializer implements ISerializer {
             objectOutputStream.reset();
             objectOutputStream.writeObject(message);
         } catch (IOException e) {
-            Utils.log(TAG, "Serialize IOException: " + e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
         return byteOutputStream.toByteArray();
     }
@@ -47,9 +47,9 @@ public class XmlSerializer implements ISerializer {
             objectInputStream = new ObjectInputStream(byteInputStream);
             message = (Message) objectInputStream.readObject();
         } catch (IOException e) {
-            Utils.log(TAG, "Deserialize IOException: " + e.getMessage());
+            Utils.log(TAG, e.getMessage());
         } catch (ClassNotFoundException e) {
-            Utils.log(TAG, "Deserialize ClassNotFoundException: " + e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
         return message;
     }

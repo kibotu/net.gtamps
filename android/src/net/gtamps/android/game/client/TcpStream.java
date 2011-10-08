@@ -28,7 +28,7 @@ public class TcpStream implements IStream {
             socket.setTcpNoDelay(Config.SOCKET_TCP_NO_DELAY);
             socket.setSoTimeout(Config.SOCKET_TIMEOUT);
         } catch (SocketException e) {
-            Utils.log(TAG, "" + e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class TcpStream implements IStream {
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            Utils.log(TAG, ""+e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
         return socket.isConnected();
     }
@@ -53,41 +53,40 @@ public class TcpStream implements IStream {
             output.close();
             socket.close();
         } catch (IOException e) {
-            Utils.log(TAG, ""+e.getMessage());
+            Utils.log(TAG, e.getMessage());
         }
         return !socket.isConnected();
     }
 
     @Override
     public boolean send(String message) {
-        if(socket.isConnected()) return false;
+        if(!socket.isConnected()) return false;
         try {
             output.writeUTF(message);
+            Utils.log(TAG, "has send string "+message.length());
         } catch (IOException e) {
-            Utils.log(TAG, "send bytes IOException "+e.getMessage());
+            Utils.log(TAG, e.getMessage());
             return false;
         }
-        Utils.log(TAG, "has send string " + message);
         return true;
     }
 
     @Override
     public boolean send(byte [] message) {
-        if(socket.isConnected()) return false;
+        if(!socket.isConnected()) return false;
 
         // TODO don't copy array and alloc byte array every sending invocation
         byte [] temp = new byte[message.length+2];
         temp[0] = (byte)(message.length >> 8);
         temp[1] = (byte) (message.length & 0xFF);
         System.arraycopy(message,0, temp, 2, message.length);
-
         try {
             output.write(temp);
+            Utils.log(TAG, "has send bytes " +message.length);
         } catch (IOException e) {
-            Utils.log(TAG, "send bytes IOException "+e.getMessage());
+            Utils.log(TAG, e.getMessage());
             return false;
         }
-        Utils.log(TAG, "has send bytes " +new String(message));
         return true;
     }
 

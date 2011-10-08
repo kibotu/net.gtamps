@@ -8,6 +8,7 @@ import android.widget.Toast;
 import net.gtamps.shared.Config;
 import net.gtamps.android.GTA;
 import net.gtamps.android.Registry;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +26,9 @@ public class Utils {
         t.show();
     }
 
-    public static void log(String tag, String message) {
-        if(Config.DEBUG_MODE) Log.i(tag, message);
+    public static void log(String tag, @Nullable String message) {
+        if(message == null && !Config.DEBUG_MODE_SHOW_NULL_EXCEPTIONS) return;
+        if(Config.DEBUG_MODE) Log.i(tag, "" + message);
     }
 
     public static void logAvailableMemory() {
