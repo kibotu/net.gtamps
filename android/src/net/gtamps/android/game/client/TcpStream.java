@@ -39,9 +39,9 @@ public class TcpStream implements IStream {
 
     @Override
     public boolean connect(String host, int port) {
-        InetSocketAddress address = new InetSocketAddress(host, port);
+        if(isConnected) return false;
         try {
-            socket.connect(address);
+            socket.connect(new InetSocketAddress(host, port));
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
