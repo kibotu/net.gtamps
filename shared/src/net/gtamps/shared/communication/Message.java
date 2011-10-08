@@ -5,8 +5,14 @@ import java.util.ArrayList;
 public class Message {
 
     private String sessionId;
+    private String revId;
 
     public final ArrayList<ISendable> sendables;
+
+    public Message(ISendable sendable) {
+        this();
+        sendables.add(sendable);
+    }
 
     public Message() {
         sendables = new ArrayList<ISendable>();
