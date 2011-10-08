@@ -1,6 +1,8 @@
 package net.gtamps.shared.communication;
 
 import net.gtamps.shared.Utils.UIDGenerator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 public class Request implements ISendable {
@@ -9,21 +11,27 @@ public class Request implements ISendable {
         LOGIN, REGISTER,JOIN,LEAVE,GETMAPDATA,GETPLAYER,GETUPDATE;
     }
 
+    @NotNull
     public final Type type;
-    public Object data;
+    @Nullable
+    public IRequestData data;
     public final int id;
 
-    public Request(Type type) {
+    public Request(@NotNull Type type, @Nullable IRequestData data) {
         this.type = type;
+        this.data = data;
         id = UIDGenerator.getNewUID();
-        data = null;
     }
 
-    public void setData(Object data) {
+    public Request(Type type){
+        this(type,null);
+    }
+
+    public void setData(@NotNull IRequestData data) {
         this.data = data;
     }
 
-    public Object getData() {
+    public @Nullable IRequestData getData() {
         return data;
     }
 }
