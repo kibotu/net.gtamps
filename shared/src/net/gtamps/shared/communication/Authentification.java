@@ -9,4 +9,12 @@ public class Authentification implements IRequestData {
         this.username = username;
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "Authentification{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

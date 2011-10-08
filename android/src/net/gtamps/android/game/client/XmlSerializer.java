@@ -2,6 +2,7 @@ package net.gtamps.android.game.client;
 
 import android.text.Html;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 import org.jetbrains.annotations.NotNull;
@@ -12,21 +13,18 @@ public class XmlSerializer implements ISerializer {
 
     private static final String TAG = XmlSerializer.class.getSimpleName();
 
-    private final ByteArrayOutputStream byteOutputStream;
+    private ByteArrayOutputStream byteOutputStream;
+    private ByteArrayInputStream byteInputStream;
     private ObjectOutputStream objectOutputStream;
-    private final ByteArrayInputStream byteInputStream;
     private ObjectInputStream objectInputStream;
 
     public XmlSerializer() {
         byteOutputStream = new ByteArrayOutputStream();
         objectOutputStream = null;
-        byteInputStream = new ByteArrayInputStream();
-        objectInputStream = null;
         try {
             objectOutputStream = new ObjectOutputStream(byteOutputStream);
-            objectInputStream = new ObjectInputStream(byteInputStream);
         } catch (IOException e) {
-            Utils.log(TAG, "" + e.getMessage());
+            Utils.log(TAG, "Construct IOException: " + e.getMessage());
         }
     }
 
@@ -36,14 +34,23 @@ public class XmlSerializer implements ISerializer {
             objectOutputStream.reset();
             objectOutputStream.writeObject(message);
         } catch (IOException e) {
-            Utils.log(TAG, "" + e.getMessage());
+            Utils.log(TAG, "Serialize IOException: " + e.getMessage());
         }
         return byteOutputStream.toByteArray();
     }
 
     @Override
     public Message deserializeMessage(@NotNull byte[] bytes) {
-
-        return null;
+        Message message = null;
+        try {
+            byteInputStream = new ByteArrayInputStream(bytes);
+            objectInputStream = new ObjectInputStream(byteInputStream);
+            message = (Message) objectInputStream.readObject();
+        } catch (IOException e) {
+            Utils.log(TAG, "Deserialize IOException: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            Utils.log(TAG, "Deserialize ClassNotFoundException: " + e.getMessage());
+        }
+        return message;
     }
 }

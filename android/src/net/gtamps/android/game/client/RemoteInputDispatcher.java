@@ -44,19 +44,19 @@ public class RemoteInputDispatcher implements Runnable {
         while(isRunning) {
             try {
                 /** var 1 **/
-//                responseBytes[0] = (byte) socket.getInputStream().read();
-//                responseBytes[1] = (byte) socket.getInputStream().read();
                 responseBytes[0] = (byte) inputStream.read();
                 responseBytes[1] = (byte) inputStream.read();
                 length = ((int)(responseBytes[0]) << 8) + ((int)(responseBytes[1] & 0xFF));
-                response = new byte[length];
+                response = new byte[length]; Utils.log(TAG, "has received "+length + " bytes");
+                Message message = MessageFactory.deserialize(response);
                 inputStream.readFully(response);
-                inbox.add(MessageFactory.deserialize(response));
                 /** var 2 **/
-    //                        response = input.readUTF().getBytes();
-    //                        if(response.length > 1) {
-    //                            onData(response);
-    //                        }
+//                response = inputStream.readUTF().getBytes();
+//                if(response != null && response.length > 1) {
+//                    Utils.log(TAG, "has received "+length + " bytes");
+//                    Message message = MessageFactory.deserialize(response);
+//                    if(message != null) inbox.add(message);
+//                }
             } catch (IOException e) {
                 Utils.log(TAG, ""+e.getMessage());
             }

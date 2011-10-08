@@ -36,4 +36,13 @@ public class Request implements ISendable {
     public @Nullable IRequestData getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "type=" + type +
+                ", data=" + data +
+                ", id=" + id +
+                '}';
+    }
 }
