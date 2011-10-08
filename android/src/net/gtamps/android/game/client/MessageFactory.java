@@ -5,10 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 final public class MessageFactory {
 
-    private static  ISerializer serializer;
+    private static ISerializer serializer = new ObjectSerializer();
 
     private MessageFactory() {
-        serializer = new XmlSerializer();
     }
 
     public static Message createCommand(Command.Type type, int percent) {
@@ -40,10 +39,11 @@ final public class MessageFactory {
     }
 
     public static Message createGetUpdateRequest() {
-        return new Message(new Request(Request.Type.GETUPDATE));
+        return new Message(new Request(Request.Type.GETUPDATE, new Revision(ConnectionManager.currentRevId)));
     }
 
     public static byte [] serialize(@NotNull Message message) {
+        message.setSessionId(ConnectionManager.currentSessionId);
         return serializer.serializeMessage(message);
     }
 

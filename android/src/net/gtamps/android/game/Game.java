@@ -74,6 +74,10 @@ public class Game implements IGame{
         connection.connect();
         Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
         connection.start();
+        connection.add(MessageFactory.createRegisterRequest("username", "password"));
+        connection.add(MessageFactory.createLoginRequest("username", "password"));
+        connection.add(MessageFactory.createJoinRequest());
+        connection.add(MessageFactory.createGetPlayerRequest());
     }
 
     @Deprecated
@@ -150,7 +154,8 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
+//            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
+            if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest());
         }
 
         // on release
@@ -183,6 +188,8 @@ public class Game implements IGame{
 
     private void handleResponse(Response response) {
         Utils.log(TAG, "Handles response.");
+        Utils.log(TAG, ""+response.toString());
+
         switch (response.requestType) {
             case GETUPDATE:
                 switch (response.status) {
@@ -253,6 +260,8 @@ public class Game implements IGame{
 
     private void handleRequest(Request request) {
         Utils.log(TAG, "Handles request.");
+        Utils.log(TAG, ""+request.toString());
+
         switch (request.type) {
             case GETUPDATE: break;
             case GETPLAYER: break;

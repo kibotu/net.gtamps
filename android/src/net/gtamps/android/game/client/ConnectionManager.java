@@ -18,11 +18,15 @@ public class ConnectionManager implements IMessageManager {
     private IStream stream;
     private RemoteInputDispatcher remoteInputDispatcher;
     private RemoteOutputDispatcher remoteOutputDispatcher;
+    public static String currentSessionId;
+    public static long currentRevId;
 
     public ConnectionManager() {
         stream = new TcpStream();
         inbox = new ConcurrentLinkedQueue<Message>();
         outbox = new ConcurrentLinkedQueue<Message>();
+        currentSessionId = "0";
+        currentRevId = 0;
     }
 
     @Override
@@ -32,25 +36,15 @@ public class ConnectionManager implements IMessageManager {
 
     @Override
     public Message poll() {
-        return inbox.poll();
+        Message message = inbox.poll();
+        Utils.log(TAG, "outbox poll: " + message.toString());
+        return message;
     }
 
     @Override
     public boolean add(@NotNull Message message) {
+        Utils.log(TAG, "outbox add: " + message.toString());
         return outbox.add(message);
-    }
-
-    public void update(Observable observable, Object o) {
-//        if(response.length > 1) {
-        Utils.log(TAG, "\n\n\n\n\nResponse " + new String(o.toString()) + "\n\n\n\n\n");
-//    }
-        if(o instanceof Message) {
-            inbox.add(parseMessage(o));
-        }
-    }
-
-    private Message parseMessage(Object o) {
-        return new Message();
     }
 
     public boolean connect() {

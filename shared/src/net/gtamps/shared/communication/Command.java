@@ -16,4 +16,12 @@ public class Command implements ISendable {
         this.type = type;
         this.percent = percent;
     }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "type=" + type +
+                ", percent=" + percent +
+                '}';
+    }
 }

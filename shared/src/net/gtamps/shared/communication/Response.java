@@ -15,4 +15,12 @@ public class Response implements ISendable {
         this.status = status;
         this.requestType = requestType;
     }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status=" + status +
+                ", requestType=" + requestType +
+                '}';
+    }
 }

@@ -1,11 +1,11 @@
 package net.gtamps.shared.communication;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Message {
+public class Message implements Serializable {
 
     private String sessionId;
-    private String revId;
 
     public final ArrayList<ISendable> sendables;
 
@@ -20,6 +20,14 @@ public class Message {
 
     public void addSendable(ISendable sendable) {
         sendables.add(sendable);
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override

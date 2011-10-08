@@ -102,7 +102,7 @@ final public class InputEngine implements OnTouchListener {
             berechneOpenGLKoordinaten(pointerPosition, view);
             isDown = true;
 
-            Utils.log(TAG, "" + view.getWidth() + " " + view.getHeight());
+//            Utils.log(TAG, "" + view.getWidth() + " " + view.getHeight());
 
             break;
         }

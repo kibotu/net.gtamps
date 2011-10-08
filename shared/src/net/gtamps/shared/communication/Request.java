@@ -4,6 +4,8 @@ import net.gtamps.shared.Utils.UIDGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 
 public class Request implements ISendable {
 
@@ -33,5 +35,14 @@ public class Request implements ISendable {
 
     public @Nullable IRequestData getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "type=" + type +
+                ", data=" + data +
+                ", id=" + id +
+                '}';
     }
 }

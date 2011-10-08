@@ -10,23 +10,24 @@ import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.event.GameEvent;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Entity extends GameActor {
+public class Entity extends GameActor implements Serializable {
 	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
 	
 //	protected Map<Property.Type,Property> properties;
-	protected final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final Propertay<Integer> x = new IntProperty(this, "posx");
-	public final Propertay<Integer> y = new IntProperty(this, "posy");
-	public final Propertay<Integer> z = new IntProperty(this, "posz");
+	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
+	public transient final Propertay<Integer> x = new IntProperty(this, "posx");
+	public transient final Propertay<Integer> y = new IntProperty(this, "posy");
+	public transient final Propertay<Integer> z = new IntProperty(this, "posz");
 	/**
 	 * rotation about z
 	 */
-	public final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public transient final Propertay<Integer> rota = new IntProperty(this, "rota");
 	
-	private Player owner = null;
+	private transient Player owner = null;
 
 	public Entity(String name){
 		super(name);

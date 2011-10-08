@@ -36,7 +36,7 @@ public class ConnectionManager {
 	}
 	
 	public void restartGame(){
-		gameThread = new GameThread();
+//		gameThread = new GameThread();
 	}
 	
 	public boolean connectionIsKnown(String connectionId) {

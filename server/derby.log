@@ -1,4 +1,4 @@
-Fri Oct 07 14:09:03 CEST 2011 Thread[main,5,main] Cleanup action starting
+Sat Oct 08 23:07:35 CEST 2011 Thread[main,5,main] Cleanup action starting
 java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
@@ -18,7 +18,7 @@ java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at net.gtamps.server.db.DBHandler.<init>(DBHandler.java:16)
 	at net.gtamps.server.ConnectionManager.<init>(ConnectionManager.java:32)
 	at net.gtamps.server.ServerChainFactory.createServerChain(ServerChainFactory.java:16)
-	at net.gtamps.GTAMultiplayerServer.main(GTAMultiplayerServer.java:23)
+	at net.gtamps.GTAMultiplayerServer.main(GTAMultiplayerServer.java:22)
 Caused by: java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
@@ -45,6 +45,6 @@ java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at net.gtamps.server.db.DBHandler.<init>(DBHandler.java:16)
 	at net.gtamps.server.ConnectionManager.<init>(ConnectionManager.java:32)
 	at net.gtamps.server.ServerChainFactory.createServerChain(ServerChainFactory.java:16)
-	at net.gtamps.GTAMultiplayerServer.main(GTAMultiplayerServer.java:23)
+	at net.gtamps.GTAMultiplayerServer.main(GTAMultiplayerServer.java:22)
 ============= end nested exception, level (1) ===========
 Cleanup action completed
