@@ -39,11 +39,11 @@ public class EntityView implements IObject3d, IDirty {
     public void onDirty() {
 
         // position
-        object3d.getNode().setPosition(entity.getPosition());
-        // scaling
-        object3d.getNode().setScaling(entity.getScaling());
-        // rotation
-        object3d.getNode().setRotation(entity.getRotation());
+//        object3d.getNode().setPosition(entity.getPosition());
+//        scaling
+//        object3d.getNode().setScaling(entity.getScaling());
+//        rotation
+//        object3d.getNode().setRotation(entity.getRotation());
 
         clearDirtyFlag();
     }
