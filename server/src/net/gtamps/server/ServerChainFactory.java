@@ -14,19 +14,19 @@ public class ServerChainFactory {
 	public static ConnectionManager createServerChain() {
 		// hither:
 		ConnectionManager connectionManager = new ConnectionManager();
-		Logger.i().log(LogType.SERVER, "Started ConnectionManager...");
-		CommandHandler	commandHandler = new CommandHandler(connectionManager);
-		Logger.i().log(LogType.SERVER, "Started CommandHandler...");
-		RequestHandler requestHandler = new RequestHandler(connectionManager);
-		Logger.i().log(LogType.SERVER, "Started RequestHandler...");
-		MessageHandler messageHandler = new MessageHandler(commandHandler, requestHandler);
-		Logger.i().log(LogType.SERVER, "Started MessageHandler...");
-		new Thread(new XSocketServer(messageHandler)).start();
-		Logger.i().log(LogType.SERVER, "Started XSocketServer...");
+//		Logger.i().log(LogType.SERVER, "Started ConnectionManager...");
+//		CommandHandler	commandHandler = new CommandHandler(connectionManager);
+//		Logger.i().log(LogType.SERVER, "Started CommandHandler...");
+//		RequestHandler requestHandler = new RequestHandler(connectionManager);
+//		Logger.i().log(LogType.SERVER, "Started RequestHandler...");
+//		MessageHandler messageHandler = new MessageHandler(commandHandler, requestHandler);
+//		Logger.i().log(LogType.SERVER, "Started MessageHandler...");
+//		new Thread(new XSocketServer(messageHandler)).start();
+//		Logger.i().log(LogType.SERVER, "Started XSocketServer...");
 
 		// wither:
 		// handled in Constructors
-		
+		new Thread(new XSocketServer()).start();
 		return connectionManager;
 		
 	}
