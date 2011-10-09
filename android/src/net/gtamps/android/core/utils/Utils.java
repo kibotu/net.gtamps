@@ -50,6 +50,7 @@ public class Utils {
      * @return clamped value
      */
     public static float clamp(float value, float startRange, float endRange) {
+        if(value == Float.NaN) return 0;
         return value < startRange ? startRange : value > endRange ? endRange : value;
     }
 
