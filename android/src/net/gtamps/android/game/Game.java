@@ -20,6 +20,7 @@ import net.gtamps.shared.state.State;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Game implements IGame{
 
@@ -28,11 +29,11 @@ public class Game implements IGame{
     private boolean isRunning;
     private boolean isPaused;
     private long startTime;
-    private InputEngine inputEngine;
-    private ArrayList<Scene> scenes;
+    private final InputEngine inputEngine;
+    private final ArrayList<Scene> scenes;
     private boolean isDragging = false;
-    private Hud hud;
-    private ConnectionManager connection;
+    private final Hud hud;
+    private final ConnectionManager connection;
     private IObject3d activeObject;
 
     public Game() {
@@ -72,11 +73,11 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        connection.connect();
-        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
-        connection.start();
-
-        connection.add(MessageFactory.createSessionRequest());
+//        connection.connect();
+//        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+//        connection.start();
+//
+//        connection.add(MessageFactory.createSessionRequest());
 
 //        connection.add(MessageFactory.createRegisterRequest("username", "password"));
 //        connection.add(MessageFactory.createLoginRequest("username", "password"));
@@ -125,8 +126,6 @@ public class Game implements IGame{
         return cube;
     }
 
-    float speed = 0;
-
     @Override
     public void onDrawFrame() {
         if (!isRunning || isPaused) {
@@ -169,7 +168,6 @@ public class Game implements IGame{
             hud.getCursor().setPosition(inputEngine.getPointerPosition());
         }
 
-        speed+=0.01f;
         if(isDragging) {
 //            Utils.log(TAG, "is dragging");
             Vector3 viewportSize = scenes.get(1).getActiveCamera().getViewportSize();
@@ -178,7 +176,12 @@ public class Game implements IGame{
             hud.getCursor().setPosition(temp);
             activeObject.getNode().getPosition().addInPlace(temp);
             scenes.get(0).getActiveCamera().moveXY(activeObject.getNode().getPosition());
-            hud.getRing().setRotation(0, 0, speed);
+
+
+            float angle = Vector3.XAXIS.angleInBetween(pos)-90;
+            activeObject.getNode().setRotation(0, 0, angle);
+            hud.getRing().setRotation(0, 0, angle);
+
             temp.recycle();
         }
 
@@ -197,6 +200,8 @@ public class Game implements IGame{
 
         switch (response.requestType) {
             case GETUPDATE:
+                if(response.getData() == null) break;
+                if(response.getData() instanceof UpdateResponse) break;
                 switch (response.status) {
                     case OK:
                         ConnectionManager.currentRevId = ((UpdateResponse)response.getData()).revId;

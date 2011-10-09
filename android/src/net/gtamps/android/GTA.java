@@ -4,7 +4,10 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.renderer.Renderer;
+import net.gtamps.android.core.utils.OpenGLUtils;
+import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
+import net.gtamps.shared.math.Vector3;
 
 public class GTA extends DefaultActivity {
 

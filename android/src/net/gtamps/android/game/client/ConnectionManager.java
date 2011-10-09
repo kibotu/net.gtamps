@@ -18,8 +18,8 @@ public class ConnectionManager implements IMessageManager {
     private IStream stream;
     private RemoteInputDispatcher remoteInputDispatcher;
     private RemoteOutputDispatcher remoteOutputDispatcher;
-    public static String currentSessionId;
-    public static long currentRevId;
+    public static volatile String currentSessionId;
+    public static volatile long currentRevId;
 
     public ConnectionManager() {
         stream = new TcpStream();
