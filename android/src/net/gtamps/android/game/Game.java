@@ -29,6 +29,7 @@ public class Game implements IGame{
     private boolean isRunning;
     private boolean isPaused;
     private long startTime;
+    private long finalDelta;
     private final InputEngine inputEngine;
     private final ArrayList<Scene> scenes;
     private boolean isDragging = false;
@@ -188,7 +189,7 @@ public class Game implements IGame{
         }
 
         // Compute elapsed time
-        final long finalDelta = SystemClock.elapsedRealtime() - startTime;
+        finalDelta = SystemClock.elapsedRealtime() - startTime;
 
         // new start time
         startTime = SystemClock.elapsedRealtime();
@@ -196,25 +197,31 @@ public class Game implements IGame{
         // animate
     }
 
+
+    private long impulse = 0;
     private void fireImpulse(float angle, Vector3 force) {
-//        Utils.log(TAG, "angle: "+angle + " force"+force);
         if(!connection.isConnected()) return;
+
+        impulse += finalDelta;
+        if(impulse <= Config.IMPULS_FREQUENCY) return;
+        impulse = 0;
+
         Message message = null;
 
         // up 90° to 0° to -90°
         if(inRange(angle, 90, -90)) {
-            message = MessageFactory.createCommand(Command.Type.ACCELERATE,force.getLength());
+            message = MessageFactory.createCommand(Command.Type.ACCELERATE,force.getLength()*(4/3));
         }
         // left 0° - 90° - 180°
-        else if(inRange(angle,0,-180)) {
+        if(inRange(angle,0,-180)) {
             message = MessageFactory.createCommand(Command.Type.LEFT,force.getLength());
         }
         // down 90° to 180° || -180° to -90°
-        else if(inRange(angle, 90, 180) || inRange(angle, -180,-90)) {
-            message = MessageFactory.createCommand(Command.Type.DECELERATE,force.getLength());
+        if(inRange(angle, 90, 180) || inRange(angle, -180,-90)) {
+            message = MessageFactory.createCommand(Command.Type.DECELERATE,force.getLength()*(4/3));
         }
         // right 0° to -90° - 180°
-        else if(inRange(angle,0,-180)) {
+        if(inRange(angle,0,-180)) {
             message = MessageFactory.createCommand(Command.Type.RIGHT,force.getLength());
         }
 

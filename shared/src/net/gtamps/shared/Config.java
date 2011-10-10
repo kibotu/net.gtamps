@@ -4,6 +4,7 @@ public class Config {
 
     private static final String TIL_IP_HOME = "192.168.1.27";
     private static final String TIL_IP_INI = "141.64.23.78";
+    public static final long IMPULS_FREQUENCY = 300;
 
     private Config() {
     }
