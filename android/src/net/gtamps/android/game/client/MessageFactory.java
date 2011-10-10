@@ -14,7 +14,7 @@ final public class MessageFactory {
         return new Message(new Request(Request.Type.SESSION));
     }
 
-    public static Message createCommand(Command.Type type, int percent) {
+    public static Message createCommand(Command.Type type, float percent) {
         return new Message(new Command(type,percent));
     }
 

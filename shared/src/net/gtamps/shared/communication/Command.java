@@ -10,9 +10,9 @@ public class Command implements ISendable {
     }
 
     public final Type type;
-    public final int percent;
+    public final float percent;
 
-    public Command (Type type, int percent) {
+    public Command (Type type, float percent) {
         this.type = type;
         this.percent = percent;
     }
