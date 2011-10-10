@@ -177,10 +177,12 @@ public class Game implements IGame{
             activeObject.getNode().getPosition().addInPlace(temp);
             scenes.get(0).getActiveCamera().moveXY(activeObject.getNode().getPosition());
 
-
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
             activeObject.getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
+
+            fireImpulse(angle, temp);
+//            if(connection.isConnected()) connection.add(MessageFactory.createCommand())
 
             temp.recycle();
         }
@@ -192,6 +194,35 @@ public class Game implements IGame{
         startTime = SystemClock.elapsedRealtime();
 
         // animate
+    }
+
+    private void fireImpulse(float angle, Vector3 force) {
+//        Utils.log(TAG, "angle: "+angle + " force"+force);
+        if(!connection.isConnected()) return;
+        Message message = null;
+
+        // up 90° to 0° to -90°
+        if(inRange(angle, 90, -90)) {
+            message = MessageFactory.createCommand(Command.Type.ACCELERATE,force.getLength());
+        }
+        // left 0° - 90° - 180°
+        else if(inRange(angle,0,-180)) {
+            message = MessageFactory.createCommand(Command.Type.LEFT,force.getLength());
+        }
+        // down 90° to 180° || -180° to -90°
+        else if(inRange(angle, 90, 180) || inRange(angle, -180,-90)) {
+            message = MessageFactory.createCommand(Command.Type.DECELERATE,force.getLength());
+        }
+        // right 0° to -90° - 180°
+        else if(inRange(angle,0,-180)) {
+            message = MessageFactory.createCommand(Command.Type.RIGHT,force.getLength());
+        }
+
+        if(message != null) connection.add(message);
+    }
+
+    private boolean inRange(float value, float startRange, float endRange) {
+        return value >= Math.min(startRange,endRange) && value <= Math.max(startRange,endRange);
     }
 
     private void handleResponse(Response response, Message message) {
