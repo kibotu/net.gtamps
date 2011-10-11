@@ -42,6 +42,10 @@ public abstract class GameActor extends GameObject implements
 		IGameEventDispatcher, IGameEventListener, Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4996110383027919751L;
+	/**
 	 * The types of gameEvents this actor wants to pass upwards. Must have
 	 * no types in common with {@link #receivesDown}.
 	 */

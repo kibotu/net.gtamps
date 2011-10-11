@@ -16,7 +16,12 @@ import java.util.Map;
 
 public class Entity extends GameActor implements Serializable {
 
-    static public enum Type {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5466989016443709708L;
+
+	static public enum Type {
         CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
     }
 
