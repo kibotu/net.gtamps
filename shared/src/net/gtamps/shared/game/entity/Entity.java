@@ -32,13 +32,11 @@ public class Entity extends GameActor implements Serializable {
 	public final Propertay<Integer> x = new IntProperty(this, "posx");
 	public final Propertay<Integer> y = new IntProperty(this, "posy");
 	public final Propertay<Integer> z = new IntProperty(this, "posz");
-
-    public final Type type;
-
 	/**
 	 * rotation about z
 	 */
-	public transient final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public final Type type;
 	
 	private transient Player owner = null;
 
