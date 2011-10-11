@@ -29,7 +29,7 @@ public abstract class GameObject implements Serializable {
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
-	private Map<String, Propertay<?>> properties = null;
+	private HashMap<String, Propertay<?>> properties = null;
 
 	/**
 	 * 
