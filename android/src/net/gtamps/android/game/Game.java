@@ -34,7 +34,7 @@ public class Game implements IGame{
     private final Hud hud;
     private final World world;
     private final ConnectionManager connection;
-    private IObject3d activeObject;
+    public static IObject3d activeObject;
 
     public Game() {
         isRunning = true;
@@ -233,7 +233,7 @@ public class Game implements IGame{
         switch (response.requestType) {
             case GETUPDATE:
                 if(response.getData() == null) break;
-                if(response.getData() instanceof UpdateData) break;
+                if(!(response.getData() instanceof UpdateData)) break;
                 switch (response.status) {
                     case OK:
                         UpdateData updateData = ((UpdateData)response.getData());
@@ -244,13 +244,14 @@ public class Game implements IGame{
                             Entity serverEntity = entities.get(i);
 
                             // contains?
-                            IObject3d entity = world.getScene().getObject3D(serverEntity.getUid());
-                            if(entity == null) {
-                                world.getScene().addChild(entity = Object3dFactory.create(serverEntity.type));
+                            EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
+                            if(entityView == null) {
+                                entityView = new EntityView(serverEntity);
+                                world.getScene().addChild(entityView);
+                                Utils.log(TAG, "add new entity"+serverEntity.getUid());
                             } else {
-                                if(entity instanceof EntityView) {
-                                    ((EntityView)entity).update(serverEntity);
-                                }
+                                entityView.update(serverEntity);
+                                Utils.log(TAG, "update entity"+serverEntity.getUid());
                             }
                         }
                         break;
