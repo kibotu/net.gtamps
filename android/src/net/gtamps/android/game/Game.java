@@ -52,7 +52,7 @@ public class Game implements IGame{
         Scene scene = new Scene();
         scenes.add(scene);
 
-        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
+        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 0, 1);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x111111);
 
@@ -70,15 +70,17 @@ public class Game implements IGame{
         city.setRotation(90, 0, 0);
         city.setScaling(20, 20, 20);
 
+//        camera.rotate(45,0,0,0);
+
         // hud
         scenes.add(hud.getScene());
 
         // connect
-        connection.connect();
-        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
-        connection.start();
-
-        connection.add(MessageFactory.createSessionRequest());
+//        connection.connect();
+//        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+//        connection.start();
+//
+//        connection.add(MessageFactory.createSessionRequest());
 
 //        connection.add(MessageFactory.createRegisterRequest("username", "password"));
 //        connection.add(MessageFactory.createLoginRequest("username", "password"));
@@ -176,16 +178,27 @@ public class Game implements IGame{
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
             activeObject.getNode().getPosition().addInPlace(temp);
-            scenes.get(0).getActiveCamera().moveXY(activeObject.getNode().getPosition());
+//            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
             activeObject.getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
+            Vector3 temp2 = Vector3.createNew(temp);
+            temp2.normalize();
+            temp2.invert();
+            temp2.mulInPlace(50);
+
+            Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
+            Vector3 temp3 = Vector3.createNew(temp2.x,temp2.y,camPos.z).addInPlace(activeObject.getNode().getPosition());
+
+            scenes.get(0).getActiveCamera().setPosition(temp3);
+            scenes.get(0).getActiveCamera().setTarget(activeObject.getNode().getPosition());
+
             // send driving impulses
             fireImpulse(angle, temp);
 
-            temp.recycle();
+//            temp.recycle();
         }
 
         // Compute elapsed time
