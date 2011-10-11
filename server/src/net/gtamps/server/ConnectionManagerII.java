@@ -7,6 +7,7 @@ import net.gtamps.game.IGameThread;
 import net.gtamps.shared.communication.Command;
 import net.gtamps.shared.communication.Request;
 import net.gtamps.shared.communication.Response;
+import net.gtamps.shared.communication.RevisionData;
 import net.gtamps.shared.communication.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -50,7 +51,7 @@ public class ConnectionManagerII implements ICommandHandler, IRequestHandler {
 			Response resp = new Response(Response.Status.OK, r);
 			long revid = 0;
 			ArrayList<Entity> updates = new ArrayList<Entity>();
-			for (Entity e : gameThread.getUpdates(((UpdateData)(r.getData())).revId)) {
+			for (Entity e : gameThread.getUpdates(((RevisionData)(r.getData())).revisionId)) {
 				updates.add(e);
 				revid = Math.max(revid, e.getRevision());
 			}
