@@ -25,6 +25,7 @@ public abstract class AObjectSerializer implements ISerializer{
             objectOutputStream.writeObject(message);
         } catch (IOException e) {
             printException(TAG, e);
+            log(TAG, e.getClass().getSimpleName() + " " +e.getMessage());
         }
         return byteOutputStream.toByteArray();
     }
@@ -48,8 +49,10 @@ public abstract class AObjectSerializer implements ISerializer{
             message = (Message) objectInputStream.readObject();
         } catch (IOException e) {
             printException(TAG, e);
+            log(TAG, e.getClass().getSimpleName() + " " +e.getMessage());
         } catch (ClassNotFoundException e) {
             printException(TAG, e);
+            log(TAG, e.getClass().getSimpleName() + " " +e.getMessage());
         }
         return message;
     }
