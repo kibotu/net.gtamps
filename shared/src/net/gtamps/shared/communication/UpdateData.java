@@ -4,12 +4,12 @@ import net.gtamps.shared.game.entity.Entity;
 
 import java.util.ArrayList;
 
-public class UpdateResponseData implements ISendableData {
+public class UpdateData implements ISendableData {
 
     public long revId;
     public ArrayList<Entity> entites;
 
-    public UpdateResponseData(long revId) {
+    public UpdateData(long revId) {
         this.revId = revId;
         entites = new ArrayList<Entity>();
     }

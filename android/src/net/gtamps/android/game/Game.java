@@ -9,6 +9,7 @@ import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.*;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
@@ -247,10 +248,16 @@ public class Game implements IGame{
         switch (response.requestType) {
             case GETUPDATE:
                 if(response.getData() == null) break;
-                if(response.getData() instanceof UpdateResponseData) break;
+                if(response.getData() instanceof UpdateData) break;
                 switch (response.status) {
                     case OK:
-                        ConnectionManager.currentRevId = ((UpdateResponseData)response.getData()).revId;
+                        UpdateData updateData = ((UpdateData)response.getData());
+                        ConnectionManager.currentRevId = updateData.revId;
+
+                        for(int i = 0; i < updateData.entites.size(); i++) {
+
+                        }
+
                         break;
                     case BAD: break;
                     case NEED: break;
