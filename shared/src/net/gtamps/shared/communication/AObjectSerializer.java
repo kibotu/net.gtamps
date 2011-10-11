@@ -1,6 +1,5 @@
 package net.gtamps.shared.communication;
 
-import android.text.Html;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
