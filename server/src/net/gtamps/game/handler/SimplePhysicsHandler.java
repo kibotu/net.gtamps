@@ -6,6 +6,7 @@ import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
 import net.gtamps.game.property.SpeedProperty;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -48,6 +49,9 @@ public class SimplePhysicsHandler extends Handler {
 		this.steeringRadius = physicalProperties.STEERING_RADIUS;
 		this.slidyness = physicalProperties.SLIDYNESS;
 
+		parent.addProperty(new IntProperty(parent, "speedx"));
+		parent.addProperty(new IntProperty(parent, "speedy"));
+		
 	}
 
 	@Override
