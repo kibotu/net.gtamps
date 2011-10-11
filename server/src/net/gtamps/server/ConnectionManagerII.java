@@ -7,7 +7,7 @@ import net.gtamps.game.IGameThread;
 import net.gtamps.shared.communication.Command;
 import net.gtamps.shared.communication.Request;
 import net.gtamps.shared.communication.Response;
-import net.gtamps.shared.communication.UpdateResponseData;
+import net.gtamps.shared.communication.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 
 /**
@@ -50,11 +50,11 @@ public class ConnectionManagerII implements ICommandHandler, IRequestHandler {
 			Response resp = new Response(Response.Status.OK, r);
 			long revid = 0;
 			ArrayList<Entity> updates = new ArrayList<Entity>();
-			for (Entity e : gameThread.getUpdates(((UpdateResponseData)(r.getData())).revId)) {
+			for (Entity e : gameThread.getUpdates(((UpdateData)(r.getData())).revId)) {
 				updates.add(e);
 				revid = Math.max(revid, e.getRevision());
 			}
-			UpdateResponseData data = new UpdateResponseData(revid);
+			UpdateData data = new UpdateData(revid);
 			data.entites = updates;
 			resp.setData(data);
 			responseHandler.handleResponse(s, resp);
