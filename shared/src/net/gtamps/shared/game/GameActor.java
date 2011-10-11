@@ -6,6 +6,7 @@ import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +39,7 @@ import java.util.Set;
  * 
  */
 public abstract class GameActor extends GameObject implements
-		IGameEventDispatcher, IGameEventListener {
+		IGameEventDispatcher, IGameEventListener, Serializable {
 
 	/**
 	 * The types of gameEvents this actor wants to pass upwards. Must have

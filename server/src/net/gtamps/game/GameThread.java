@@ -125,7 +125,7 @@ public class GameThread extends Thread implements IGameThread {
 	public Iterable<Entity> getUpdates(long revisionId) {
 		ArrayList<Entity> updates = new ArrayList<Entity>();
 		if (lastPlayerId >=0) {
-			updates.add(playerManager.getPlayer(0).getEntity());
+			updates.add(playerManager.getPlayer(lastPlayerId).getEntity());
 		}
 		return updates;
 	}

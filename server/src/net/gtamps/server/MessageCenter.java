@@ -50,8 +50,6 @@ public class MessageCenter implements IResponseHandler {
 		return session;
 	}
 
-	public void handleResponse(Response response) {
-	}
 	
 	public void sendInMessage(Connection connection, ISendable sendable, String sessionId) {
 		Message msg = new Message();
