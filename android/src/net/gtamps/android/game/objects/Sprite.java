@@ -5,6 +5,7 @@ import net.gtamps.android.core.graph.SceneNode;
 import net.gtamps.android.core.graph.SpriteNode;
 import net.gtamps.android.core.renderer.BufferedTexture;
 import net.gtamps.android.core.renderer.SpriteTetxure;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
