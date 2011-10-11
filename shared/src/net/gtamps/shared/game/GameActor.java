@@ -49,15 +49,15 @@ public abstract class GameActor extends GameObject implements
 	 * The types of gameEvents this actor wants to pass upwards. Must have
 	 * no types in common with {@link #receivesDown}.
 	 */
-	private Set<EventType> sendsUp = null;
+	private transient Set<EventType> sendsUp = null;
 	/**
 	 * The types of gameEvents this actor is interested in receiving from
 	 * upwards. Must have
 	 * no types in common with {@link #sendsUp}.
 	 */
-	private Set<EventType> receivesDown = null;
+	private transient Set<EventType> receivesDown = null;
+	private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
 	private boolean enabled = true;
-	private GameEventDispatcher eventDispatcher = new GameEventDispatcher();
 
 	public GameActor(String name) {
 		super(name);
