@@ -13,4 +13,12 @@ public class UpdateData implements ISendableData {
         this.revId = revId;
         entites = null;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateData{" +
+                "revId=" + revId +
+                ", entites=" + entites +
+                '}';
+    }
 }

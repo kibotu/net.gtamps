@@ -73,7 +73,7 @@ public class Game implements IGame{
         Scene scene = new Scene();
         scenes.add(scene);
 
-        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
+        CameraNode camera =  new CameraNode(0, 0,10, 0, 0, 0, 0, 1, 0);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x222222);
 
@@ -168,7 +168,7 @@ public class Game implements IGame{
             Vector3 temp2 = Vector3.createNew(temp);
             temp2.normalize();
             temp2.invert();
-            temp2.mulInPlace(50);
+            temp2.mulInPlace(40);
 
             Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
             Vector3 temp3 = Vector3.createNew(temp2.x,temp2.y,camPos.z).addInPlace(activeObject.getNode().getPosition());
