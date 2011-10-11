@@ -21,6 +21,10 @@ import net.gtamps.shared.Utils.UIDGenerator;
  * 
  */
 public abstract class GameObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7826642603562424002L;
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "";
 
