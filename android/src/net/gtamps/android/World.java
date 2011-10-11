@@ -36,7 +36,7 @@ public class World {
         light.specular.setAll(64,64,64,255);
         scene.add(light);
 
-        addCity();
+//        addCity();
     }
 
     private void addCity() {
