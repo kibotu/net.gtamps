@@ -2,10 +2,14 @@ package net.gtamps.server;
 
 import java.io.FileNotFoundException;
 
+import net.gtamps.server.ConnectionManagerII;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.http.SimpleHttpServer;
+import net.gtamps.server.xsocket.TestXSocketHandler;
+import net.gtamps.server.xsocket.XSocketHandler;
 import net.gtamps.server.xsocket.XSocketServer;
+import net.gtamps.shared.communication.ISerializer;
 
 public class ServerChainFactory {
 	
@@ -26,7 +30,7 @@ public class ServerChainFactory {
 
 		// wither:
 		// handled in Constructors
-		new Thread(new XSocketServer()).start();
+	//	new Thread(new XSocketServer()).start();
 		return connectionManager;
 		
 	}
@@ -45,6 +49,17 @@ public class ServerChainFactory {
 		if(httpServer != null){
 			httpServer.stopServer();
 		}
+	}
+
+	public static ConnectionManagerII createServerChainII() {
+		MessageCenter msgCenter = new MessageCenter();
+		ConnectionManagerII connectionManager = new ConnectionManagerII(msgCenter);
+		msgCenter.setRequestHandler(connectionManager);
+		msgCenter.setCommandHandler(connectionManager);
+		ISerializer serializer = new ObjectSerializer();
+		ISocketHandler socketHandler = new TestXSocketHandler(msgCenter, serializer);
+		new Thread(new XSocketServer(serializer, msgCenter)).start();
+		return connectionManager;
 	}
 
 }

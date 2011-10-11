@@ -1,9 +1,5 @@
 package net.gtamps.server.xsocket;
 
-import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.BufferOverflowException;
@@ -12,9 +8,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.xsocket.connection.IConnectHandler;
-import org.xsocket.connection.IDataHandler;
-import org.xsocket.connection.IDisconnectHandler;
+import net.gtamps.server.Connection;
+import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.MessageCenter;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.communication.ISerializer;
+
 import org.xsocket.connection.INonBlockingConnection;
 
 /**
@@ -32,10 +32,20 @@ public class TestXSocketHandler implements ISocketHandler {
 	// Collections.synchronizedSet(new HashSet<INonBlockingConnection>());
 
 	// ConnectionID, Connection
-	private ConcurrentHashMap<String, INonBlockingConnection> connections =  new ConcurrentHashMap<String, INonBlockingConnection>();
+	//private ConcurrentHashMap<String, INonBlockingConnection> connections =  new ConcurrentHashMap<String, INonBlockingConnection>();
+	private ConcurrentHashMap<String, Connection> connections =  new ConcurrentHashMap<String, Connection>();
+	private MessageCenter msgCenter;
+	private ISerializer serializer;
 
-
-	public TestXSocketHandler() {
+	public TestXSocketHandler(MessageCenter msgCenter, ISerializer serializer) {
+		if (msgCenter == null) {
+			throw new IllegalArgumentException("'msgCenter' must not be null");
+		}
+		if (serializer == null) {
+			throw new IllegalArgumentException("'serializer' must not be null");
+		}
+		this.msgCenter = msgCenter;
+		this.serializer = serializer;
 	}
 
 	private byte readByte(INonBlockingConnection nbc) {
@@ -121,7 +131,9 @@ public class TestXSocketHandler implements ISocketHandler {
 
 	private void receive(INonBlockingConnection nbc, byte[] data) {
 		System.out.println(new String(data));
-		send(nbc, data);
+		//send(nbc, data)
+		Connection c = connections.get(nbc.getId());
+		c.onData(data);
 	}
 	
 	@Override
@@ -150,7 +162,7 @@ public class TestXSocketHandler implements ISocketHandler {
 			String id = nbc.getId();
 			System.out.println("New Connection: " + id);
 			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-			connections.put(id, nbc);
+			connections.put(id, new Connection(nbc, this, serializer, msgCenter));
 //		}
 		return true;
 	}

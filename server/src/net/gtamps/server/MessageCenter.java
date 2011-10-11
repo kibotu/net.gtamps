@@ -1,5 +1,6 @@
 package net.gtamps.server;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.gtamps.shared.communication.Command;
@@ -10,20 +11,13 @@ import net.gtamps.shared.communication.Response;
 
 public class MessageCenter implements IResponseHandler {
 	
-	private Map<String, Session> sessions;
-	private Map<Integer, Connection> connectionsByRequestId;
-	private final IRequestHandler requestHandler;
-	private final ICommandHandler commandHandler;
+	private Map<String, Session> sessions = new HashMap<String, Session>();
+	private Map<Integer, Connection> connectionsByRequestId = new HashMap<Integer, Connection>();
+	private IRequestHandler requestHandler = null;
+	private ICommandHandler commandHandler = null;;
 	
-	public MessageCenter(IRequestHandler reqHandler, ICommandHandler cmdHandler) {
-		if (reqHandler == null) {
-			throw new IllegalArgumentException("'reqHandler' must not be null");
-		}
-		if (cmdHandler == null) {
-			throw new IllegalArgumentException("'cmdHandler' must not be null");
-		}
-		this.requestHandler = reqHandler;
-		this.commandHandler = cmdHandler;
+	public MessageCenter() {
+		super();
 	}
 
 	public void receiveMessage(Connection connection, Message message) {
@@ -32,11 +26,11 @@ public class MessageCenter implements IResponseHandler {
 			if (part == null) {
 				continue;
 			}
-			if (part instanceof Request) {
+			if (part instanceof Request && requestHandler != null ) {
 				Request r = (Request) part;
 				connectionsByRequestId.put(r.id, connection);
 				requestHandler.handleRequest(session, r);
-			} else if (part instanceof Command) {
+			} else if (part instanceof Command && commandHandler != null) {
 				commandHandler.handleCommand(session, (Command) part);
 			} else {
 				// unknown part. ignore.
@@ -71,6 +65,14 @@ public class MessageCenter implements IResponseHandler {
 		Connection c = connectionsByRequestId.get(response.requestId);
 		sendInMessage(c, response, s.getId());
 	}
-	
+
+	public void setRequestHandler(IRequestHandler requestHandler) {
+		this.requestHandler = requestHandler;
+	}
+
+	public void setCommandHandler(ICommandHandler commandHandler) {
+		this.commandHandler = commandHandler;
+	}
+
 	
 }

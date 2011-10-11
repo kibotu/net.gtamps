@@ -9,8 +9,12 @@ public class Connection {
 	private final ISocketHandler socketHandler;
 	private final ISerializer serializer;
 	private final INonBlockingConnection nbc;
+	private final MessageCenter msgCenter;
 
-	public Connection(INonBlockingConnection nbc, ISocketHandler socketHandler, ISerializer serializer) {
+	public Connection(INonBlockingConnection nbc, ISocketHandler socketHandler, ISerializer serializer, MessageCenter msgCenter) {
+		if (nbc == null) {
+			throw new IllegalArgumentException("'nbc' must not be null");
+		}
 		if (socketHandler == null) {
 			throw new IllegalArgumentException("'socketHandler' must not be null");
 		}
@@ -20,10 +24,18 @@ public class Connection {
 		this.socketHandler = socketHandler;
 		this.serializer = serializer;
 		this.nbc = nbc;
+		this.msgCenter = msgCenter;
 	}
 	
 	public void send(Message msg) {
 		socketHandler.send(nbc, serializer.serializeMessage(msg));
+	}
+	
+	public void onData(byte[] bytes) {
+		if (bytes == null) {
+			throw new IllegalArgumentException("'bytes' must not be null");
+		}
+		msgCenter.receiveMessage(this, serializer.deserializeMessage(bytes));
 	}
 	
 
