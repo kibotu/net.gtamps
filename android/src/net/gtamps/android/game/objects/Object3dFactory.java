@@ -1,19 +1,17 @@
 package net.gtamps.android.game.objects;
 
-final public class Object3dFactory {
+import net.gtamps.shared.game.entity.Entity;
 
-    public enum Type {
-        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT
-    }
+final public class Object3dFactory {
 
     private Object3dFactory() {
     }
 
     public static IObject3d create(String name) {
-        return create(Type.valueOf(name.toUpperCase()));
+        return create(Entity.Type.valueOf(name.toUpperCase()));
     }
 
-    public static IObject3d create(Type type){
+    public static IObject3d create(Entity.Type type){
         IObject3d object3d = null;
         switch (type) {
             case CAR: object3d = createCar(); break;

@@ -1,4 +1,4 @@
-Tue Oct 11 14:23:35 CEST 2011 Thread[main,5,main] Cleanup action starting
+Tue Oct 11 14:39:48 CEST 2011 Thread[main,5,main] Cleanup action starting
 java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)

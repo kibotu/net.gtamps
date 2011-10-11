@@ -15,8 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Entity extends GameActor implements Serializable {
+
+    static public enum Type {
+        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT
+    }
+
 	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
-	
+
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
 	public transient final Propertay<Integer> x = new IntProperty(this, "posx");
