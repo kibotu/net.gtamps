@@ -5,6 +5,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.client.ConnectionManager;
+import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
@@ -254,7 +255,9 @@ public class Game implements IGame{
                         UpdateData updateData = ((UpdateData)response.getData());
                         ConnectionManager.currentRevId = updateData.revId;
 
-                        for(int i = 0; i < updateData.entites.size(); i++) {
+                        ArrayList<Entity> entities = updateData.entites;
+                        for(int i = 0; i < entities.size(); i++) {
+                            EntityView entityView = new EntityView(entities.get(i));
 
                         }
 
