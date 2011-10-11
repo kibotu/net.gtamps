@@ -6,13 +6,15 @@ import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.objects.Car;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
+import net.gtamps.android.game.objects.Object3dFactory;
+import net.gtamps.shared.game.entity.Entity;
 
 public class World {
 
     private CameraNode camera;
     private Scene scene;
     private LightNode light;
-    private IObject3d activeObject;
+    public static IObject3d activeObject;
 
     public World() {
     }
@@ -26,7 +28,7 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x111111);
 
-        scene.addChild(activeObject = new Car());
+        scene.addChild(activeObject = Object3dFactory.create(Entity.Type.CAR));
 
         light = new LightNode();
         light.setPosition(0,0,30);
@@ -36,7 +38,7 @@ public class World {
         light.specular.setAll(64,64,64,255);
         scene.add(light);
 
-//        addCity();
+        addCity();
     }
 
     private void addCity() {
@@ -53,7 +55,7 @@ public class World {
         return scene;
     }
 
-    public IObject3d getActiveObject() {
+    public static IObject3d getActiveObject() {
         return activeObject;
     }
 }

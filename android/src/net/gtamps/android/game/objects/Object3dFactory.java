@@ -56,6 +56,6 @@ final public class Object3dFactory {
     }
 
     private static IObject3d createCar() {
-        return new Car();
+        return  new Car();
     }
 }

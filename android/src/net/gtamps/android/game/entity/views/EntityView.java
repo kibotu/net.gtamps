@@ -1,5 +1,6 @@
 package net.gtamps.android.game.entity.views;
 
+import net.gtamps.android.World;
 import net.gtamps.android.core.graph.SceneNode;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
@@ -48,14 +49,12 @@ public class EntityView implements IObject3d, IDirty {
     }
 
     public void setAsActiveObject() {
-        Game.activeObject = this;
+        World.activeObject = this;
     }
 
     @Override
     public void onDirty() {
 
-
-        Utils.log(TAG, "X " + entity);
 
         // position
         object3d.getNode().setPosition(entity.x.value()* Config.PIXEL_TO_NATIVE,entity.y.value()* Config.PIXEL_TO_NATIVE,entity.z.value()* Config.PIXEL_TO_NATIVE);
