@@ -29,9 +29,9 @@ public class Entity extends GameActor implements Serializable {
 
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public transient final Propertay<Integer> x = new IntProperty(this, "posx");
-	public transient final Propertay<Integer> y = new IntProperty(this, "posy");
-	public transient final Propertay<Integer> z = new IntProperty(this, "posz");
+	public final Propertay<Integer> x = new IntProperty(this, "posx");
+	public final Propertay<Integer> y = new IntProperty(this, "posy");
+	public final Propertay<Integer> z = new IntProperty(this, "posz");
 
     public final Type type;
 
