@@ -17,7 +17,7 @@ import java.util.Map;
 public class Entity extends GameActor implements Serializable {
 
     static public enum Type {
-        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT
+        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
     }
 
 	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
@@ -27,6 +27,9 @@ public class Entity extends GameActor implements Serializable {
 	public transient final Propertay<Integer> x = new IntProperty(this, "posx");
 	public transient final Propertay<Integer> y = new IntProperty(this, "posy");
 	public transient final Propertay<Integer> z = new IntProperty(this, "posz");
+
+    public final Type type;
+
 	/**
 	 * rotation about z
 	 */
@@ -36,11 +39,20 @@ public class Entity extends GameActor implements Serializable {
 
 	public Entity(String name){
 		super(name);
+        type = getType(name);
 //		properties = new HashMap<Property.Type,Property>();
 //		this.physicsHandler = new PhysicsHandler(this, physicalRepresentation);
 	}
-	
-	@Override
+
+    private Type getType(String name) {
+        try {
+           return Type.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return Type.PLACEHOLDER;
+        }
+    }
+
+    @Override
 	public void receiveEvent(GameEvent event) {
 		dispatchEvent(event);
 	}

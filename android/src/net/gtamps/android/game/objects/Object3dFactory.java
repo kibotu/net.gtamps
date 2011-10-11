@@ -20,9 +20,14 @@ final public class Object3dFactory {
             case BULLET: object3d = createBullet(); break;
             case SPAWNPOINT: object3d = createSpawnPoint(); break;
             case WAYPOINT: object3d = createWayPoint(); break;
+            case PLACEHOLDER: object3d = createCube(); break;
             default: object3d = new Cube(); break;
         }
         return object3d;
+    }
+
+    private static IObject3d createCube() {
+        return new Cube();
     }
 
     @Deprecated
@@ -31,23 +36,23 @@ final public class Object3dFactory {
     }
 
     private static IObject3d createWayPoint() {
-        return new Cube();
+        return createCube();
     }
 
     private static IObject3d createBullet() {
-        return new Cube();
+        return createCube();
     }
 
     private static IObject3d createSpawnPoint() {
-        return new Cube();
+        return createCube();
     }
 
     private static IObject3d createHouse() {
-        return new Cube();
+        return createCube();
     }
 
     private static IObject3d createHuman() {
-        return new Cube();
+        return createCube();
     }
 
     private static IObject3d createCar() {
