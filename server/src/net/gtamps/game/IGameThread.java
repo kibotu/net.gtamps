@@ -1,6 +1,7 @@
 package net.gtamps.game;
 
-import net.gtamps.Command;
+import net.gtamps.shared.communication.Command;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.player.Player;
 
 import org.jdom.Element;
@@ -21,6 +22,15 @@ public interface IGameThread extends Runnable{
 	 * 	a jdom xml containing all changed objects and their attributes
 	 */
 	Element getUpdatesAsXML(long revisionId);
+	
+	
+	/**
+	 * 
+	 * temp
+	 * @param revisionId
+	 * @return
+	 */
+	public Iterable<Entity> getUpdates(long revisionId);
 	
 	/**
 	 * This method lets the game-engine computer all the necessary steps

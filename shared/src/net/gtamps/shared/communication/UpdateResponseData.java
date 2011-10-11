@@ -11,6 +11,6 @@ public class UpdateResponseData implements ISendableData {
 
     public UpdateResponseData(long revId) {
         this.revId = revId;
-        entites = new ArrayList<Entity>();
+        entites = null;
     }
 }

@@ -1,6 +1,9 @@
 package net.gtamps.game;
 
-import net.gtamps.Command;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.ResourceLoader;
 import net.gtamps.XmlElements;
@@ -12,12 +15,11 @@ import net.gtamps.game.world.MapParser;
 import net.gtamps.game.world.World;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.communication.Command;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-
-import java.io.IOException;
-import java.util.List;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -44,6 +46,9 @@ public class GameThread extends Thread implements IGameThread {
 	private EntityManager entityManager;
 	private World world;
 	private Box2DEngine physics;
+	
+	//temp
+	private int lastPlayerId = -1;
 
 	private long lastTime = System.nanoTime(); 
 
@@ -117,6 +122,16 @@ public class GameThread extends Thread implements IGameThread {
 	}
 	
 	
+	public Iterable<Entity> getUpdates(long revisionId) {
+		ArrayList<Entity> updates = new ArrayList<Entity>();
+		if (lastPlayerId >=0) {
+			updates.add(playerManager.getPlayer(0).getEntity());
+		}
+		return updates;
+	}
+
+	
+	
 	@Override
 	public void command(int playeruid, Command cmd) {
 		Player player = getPlayer(playeruid);
@@ -124,7 +139,7 @@ public class GameThread extends Thread implements IGameThread {
 		assert cmd != null;
 		
 		EventType type = null;
-		switch(cmd) {
+		switch(cmd.type) {
 		case ACCELERATE:
 			type = EventType.ACTION_ACCELERATE;
 			break;
@@ -174,6 +189,10 @@ public class GameThread extends Thread implements IGameThread {
 	public int createPlayer(String name) {
 		assert name != null;
 		Player player = playerManager.createPlayer(name);
+		
+		// TEMP
+		this.lastPlayerId = player.getUid();
+		
 		return player.getUid();
 	}
 	

@@ -1,5 +1,6 @@
 package net.gtamps.server.xsocket;
 
+import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 
@@ -23,7 +24,7 @@ import org.xsocket.connection.INonBlockingConnection;
  * @author til
  * 
  */
-public class TestXSocketHandler implements IDataHandler, IConnectHandler, IDisconnectHandler {
+public class TestXSocketHandler implements ISocketHandler {
 	private static final LogType TAG = LogType.SERVER;
 
 	// This is where we will keep all active connections
