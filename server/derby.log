@@ -1,4 +1,4 @@
-Sun Oct 09 00:04:53 CEST 2011 Thread[main,5,main] Cleanup action starting
+Tue Oct 11 13:44:15 CEST 2011 Thread[main,5,main] Cleanup action starting
 java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
@@ -12,8 +12,8 @@ java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
 	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:620)
-	at java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at java.sql.DriverManager.getConnection(DriverManager.java:582)
+	at java.sql.DriverManager.getConnection(DriverManager.java:207)
 	at net.gtamps.server.db.JDBCConnector.getConnection(JDBCConnector.java:40)
 	at net.gtamps.server.db.DBHandler.<init>(DBHandler.java:16)
 	at net.gtamps.server.ConnectionManager.<init>(ConnectionManager.java:32)
@@ -39,8 +39,8 @@ java.sql.SQLException: Database 'db/net.net.gtamps' not found.
 	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
 	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
-	at java.sql.DriverManager.getConnection(DriverManager.java:620)
-	at java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at java.sql.DriverManager.getConnection(DriverManager.java:582)
+	at java.sql.DriverManager.getConnection(DriverManager.java:207)
 	at net.gtamps.server.db.JDBCConnector.getConnection(JDBCConnector.java:40)
 	at net.gtamps.server.db.DBHandler.<init>(DBHandler.java:16)
 	at net.gtamps.server.ConnectionManager.<init>(ConnectionManager.java:32)

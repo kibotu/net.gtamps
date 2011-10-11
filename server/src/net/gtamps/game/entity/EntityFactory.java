@@ -16,7 +16,6 @@ import net.gtamps.game.property.SpeedProperty;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
-
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 

@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="Unnamed">
-    <CLASSES>
-      <root url="file://$PROJECT_DIR$/libs" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../../openjdk-7-fcs-src-b147-27_jun_2011.zip!/openjdk/hotspot/src/share/tools/IdealGraphVisualizer/Layout/src" />
@@ -29,6 +27,5 @@
       <root url="jar://$PROJECT_DIR$/../../openjdk-7-fcs-src-b147-27_jun_2011.zip!/openjdk/hotspot/src/share/tools/IdealGraphVisualizer/View/src" />
       <root url="jar://$PROJECT_DIR$/../../openjdk-7-fcs-src-b147-27_jun_2011.zip!/openjdk/hotspot/src/share/tools/IdealGraphVisualizer/RhinoScriptEngineProxy/src" />
     </SOURCES>
-    <jarDirectory url="file://$PROJECT_DIR$/libs" recursive="false" />
   </library>
 </component>
