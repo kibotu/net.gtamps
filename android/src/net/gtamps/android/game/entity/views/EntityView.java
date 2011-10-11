@@ -26,7 +26,7 @@ public class EntityView implements IObject3d, IDirty {
      */
     public EntityView(@NotNull Entity entity) {
         this.entity = entity;
-        object3d = Object3dFactory.create(entity.getName());
+        object3d = Object3dFactory.create(entity.type);
         isDirty = true;
     }
 
