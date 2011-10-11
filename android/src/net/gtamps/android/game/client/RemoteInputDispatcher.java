@@ -3,12 +3,12 @@ package net.gtamps.android.game.client;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.communication.MessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RemoteInputDispatcher implements Runnable {
@@ -58,7 +58,7 @@ public class RemoteInputDispatcher implements Runnable {
                 response = new byte[length];
                 Utils.log(TAG, "has received "+ length + " bytes");
                 inputStream.readFully(response);
-                Message message = MessageFactory.deserialize(response);
+                Message message = ConnectionManager.deserialize(response);
                 if(message != null) inbox.add(message);
 
             } catch (IOException e) {

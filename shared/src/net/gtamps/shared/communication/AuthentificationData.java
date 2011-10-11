@@ -1,11 +1,11 @@
 package net.gtamps.shared.communication;
 
-public class Authentification implements ISendableData {
+public class AuthentificationData implements ISendableData {
 
     public final String username;
     public final String password;
 
-    public Authentification(String username, String password) {
+    public AuthentificationData(String username, String password) {
         this.username = username;
         this.password = password;
     }

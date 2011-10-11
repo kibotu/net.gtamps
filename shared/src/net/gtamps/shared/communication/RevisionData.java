@@ -1,10 +1,10 @@
 package net.gtamps.shared.communication;
 
-public class Revision implements ISendableData {
+public class RevisionData implements ISendableData {
 
     public final long revisionId;
 
-    public Revision(long revisionId) {
+    public RevisionData(long revisionId) {
         this.revisionId = revisionId;
     }
 

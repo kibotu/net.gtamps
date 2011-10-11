@@ -5,7 +5,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.client.ConnectionManager;
-import net.gtamps.android.game.client.MessageFactory;
+import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.*;
@@ -13,14 +13,9 @@ import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
 import net.gtamps.android.core.utils.parser.Parser;
-import net.gtamps.android.game.client.IStream;
-import net.gtamps.android.game.client.TcpStream;
 import net.gtamps.android.game.objects.*;
-import net.gtamps.shared.state.State;
 
-import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Game implements IGame{
 
@@ -161,7 +156,7 @@ public class Game implements IGame{
 //            Utils.log(TAG, "finger down");
             isDragging = true;
 //            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
-            if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest());
+            if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
         }
 
         // on release
@@ -252,10 +247,10 @@ public class Game implements IGame{
         switch (response.requestType) {
             case GETUPDATE:
                 if(response.getData() == null) break;
-                if(response.getData() instanceof UpdateResponse) break;
+                if(response.getData() instanceof UpdateResponseData) break;
                 switch (response.status) {
                     case OK:
-                        ConnectionManager.currentRevId = ((UpdateResponse)response.getData()).revId;
+                        ConnectionManager.currentRevId = ((UpdateResponseData)response.getData()).revId;
                         break;
                     case BAD: break;
                     case NEED: break;
