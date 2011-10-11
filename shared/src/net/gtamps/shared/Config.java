@@ -21,6 +21,7 @@ final public class Config {
      */
     public static final float MIN_ZOOM = 0;
     public static final float MAX_ZOOM = 90;
+    public static final float PIXEL_TO_NATIVE = 1;
 
     /**
      * SOCKET
