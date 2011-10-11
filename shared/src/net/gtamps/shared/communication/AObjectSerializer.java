@@ -1,5 +1,6 @@
 package net.gtamps.shared.communication;
 
+import android.text.Html;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -23,9 +24,17 @@ public abstract class AObjectSerializer implements ISerializer{
             objectOutputStream = new ObjectOutputStream(byteOutputStream);
             objectOutputStream.writeObject(message);
         } catch (IOException e) {
-            log(TAG, e.getMessage());
+            printException(TAG, e);
         }
         return byteOutputStream.toByteArray();
+    }
+
+    public void printException(String tag, Exception e) {
+        StringBuilder error = new StringBuilder();
+        for(StackTraceElement stackTraceElement: e.getStackTrace()) {
+            error.append(stackTraceElement + "\n");
+        }
+        log(tag, error.toString());
     }
 
     protected abstract void log(String tag, String message);
@@ -38,9 +47,9 @@ public abstract class AObjectSerializer implements ISerializer{
             objectInputStream = new ObjectInputStream(byteInputStream);
             message = (Message) objectInputStream.readObject();
         } catch (IOException e) {
-            log(TAG, e.getMessage());
+            printException(TAG, e);
         } catch (ClassNotFoundException e) {
-            log(TAG, e.getMessage());
+            printException(TAG, e);
         }
         return message;
     }
