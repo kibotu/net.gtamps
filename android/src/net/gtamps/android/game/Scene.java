@@ -1,6 +1,7 @@
 package net.gtamps.android.game;
 
 import net.gtamps.android.core.graph.SceneGraph;
+import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.objects.IObject3d;
 
 import java.util.ArrayList;
@@ -26,5 +27,17 @@ public class Scene extends SceneGraph {
     public void removeChild(IObject3d object3D) {
         object3ds.remove(object3D);
         remove(object3D.getNode());
+    }
+
+    public EntityView getObject3DById(int entityUid) {
+        for(int i = 0; i < object3ds.size(); i++) {
+            IObject3d iObject3d = object3ds.get(i);
+            if(iObject3d instanceof EntityView) {
+                if(((EntityView)iObject3d).entity.getUid() == entityUid) {
+                    return (EntityView)iObject3d;
+                }
+            }
+        }
+        return null;
     }
 }
