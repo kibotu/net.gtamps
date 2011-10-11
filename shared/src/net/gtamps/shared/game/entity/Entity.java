@@ -142,6 +142,13 @@ public class Entity extends GameActor implements Serializable {
 //			ap.disable();
 //		}
 	}
+	
+	@Override
+	public String toString() {
+		String s = super.toString();
+		s += String.format("x:%d y:%d r:%d", this.x.value(), this.y.value(), this.rota.value());
+		return s;
+	}
 
 	public void destroy() {
 		// TODO Auto-generated method stub
