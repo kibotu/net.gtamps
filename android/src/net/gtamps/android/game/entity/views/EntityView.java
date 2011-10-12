@@ -45,7 +45,7 @@ public class EntityView implements IObject3d, IDirty {
     public void update(Entity serverEntity) {
         setDirtyFlag();
         entity = serverEntity;
-
+        onDirty();
     }
 
     public void setAsActiveObject() {
@@ -64,6 +64,7 @@ public class EntityView implements IObject3d, IDirty {
         object3d.getNode().setRotation(0,0,entity.rota.value());
 
         clearDirtyFlag();
+        Utils.log(TAG, "update " +entity);
     }
 
     @Override
