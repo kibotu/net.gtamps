@@ -52,4 +52,6 @@ public interface IGameThread extends Runnable{
 	boolean joinPlayer(int uid);
 	void leavePlayer(int uid);
 	int createPlayer(String name);
+
+	public void hardstop();
 }
