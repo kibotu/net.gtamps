@@ -42,8 +42,8 @@ public class MapParser {
 	
 	public void populateWorld(EntityManager em) {
 		createSpawnPoints(em);
-		createCars(em);
-		createBuildings(em);
+		//createCars(em);
+//		createBuildings(em);
 	}
 	
 	private void parseXmlMap() {

@@ -6,6 +6,7 @@ import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property;
 import net.gtamps.game.property.SpeedProperty;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -13,6 +14,7 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -28,7 +30,8 @@ public class SimplePhysicsHandler extends Handler {
 	protected Entity parent;
 	protected Body body;
 	protected World world;
-	protected LinkedList<GameEvent> actionQueue = new LinkedList<GameEvent>();
+	// TODO
+	protected ConcurrentLinkedQueue<GameEvent> actionQueue = new ConcurrentLinkedQueue<GameEvent>();
 	protected PhysicalProperties physicalProperties;
 	protected float velocityForce;
 	protected float steeringForce;
@@ -99,6 +102,7 @@ public class SimplePhysicsHandler extends Handler {
 			parent.x.set(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().x));
 			parent.y.set(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().y));
 			parent.rota.set(PhysicsFactory.angleToWorld((this.body.getAngle())));
+			
 //		}
 //		if (s != null) {
 			parent.getProperty("speedx").set(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().x));
