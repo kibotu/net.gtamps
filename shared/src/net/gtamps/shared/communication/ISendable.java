@@ -1,4 +1,6 @@
 package net.gtamps.shared.communication;
 
-public interface ISendable {
+import java.io.Serializable;
+
+public interface ISendable extends Serializable{
 }

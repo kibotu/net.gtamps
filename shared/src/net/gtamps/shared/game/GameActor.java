@@ -6,6 +6,7 @@ import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,21 +39,25 @@ import java.util.Set;
  * 
  */
 public abstract class GameActor extends GameObject implements
-		IGameEventDispatcher, IGameEventListener {
+		IGameEventDispatcher, IGameEventListener, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4996110383027919751L;
 	/**
 	 * The types of gameEvents this actor wants to pass upwards. Must have
 	 * no types in common with {@link #receivesDown}.
 	 */
-	private Set<EventType> sendsUp = null;
+	private transient Set<EventType> sendsUp = null;
 	/**
 	 * The types of gameEvents this actor is interested in receiving from
 	 * upwards. Must have
 	 * no types in common with {@link #sendsUp}.
 	 */
-	private Set<EventType> receivesDown = null;
+	private transient Set<EventType> receivesDown = null;
+	private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
 	private boolean enabled = true;
-	private GameEventDispatcher eventDispatcher = new GameEventDispatcher();
 
 	public GameActor(String name) {
 		super(name);

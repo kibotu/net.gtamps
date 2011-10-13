@@ -1,9 +1,8 @@
 package net.gtamps.shared.game;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.management.RuntimeErrorException;
 
 import net.gtamps.shared.Utils.UIDGenerator;
 
@@ -21,7 +20,11 @@ import net.gtamps.shared.Utils.UIDGenerator;
  * @author til, tom, jan
  * 
  */
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7826642603562424002L;
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "";
 
@@ -30,7 +33,7 @@ public abstract class GameObject {
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
-	private Map<String, Propertay<?>> properties = null;
+	private HashMap<String, Propertay<?>> properties = null;
 
 	/**
 	 * 
@@ -104,7 +107,7 @@ public abstract class GameObject {
 
 	/**
 	 * <code>true</code> if this gameObject is silent, which means that its
-	 * {@link #toXMLElement(long)} method will under all circumstances return
+	 * method will under all circumstances return
 	 * <code>null</code>.
 	 * 
 	 * @return <code>true</code> if this gameObject is silent.
@@ -142,7 +145,7 @@ public abstract class GameObject {
 		try {
 			@SuppressWarnings("unused")
 			T check = (T) p.value();
-		} catch (RuntimeErrorException e) {
+		} catch (RuntimeException e) {
 			return null;
 		}
 		return p;

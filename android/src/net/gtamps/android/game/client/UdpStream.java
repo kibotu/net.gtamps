@@ -1,6 +1,11 @@
 package net.gtamps.android.game.client;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+@Deprecated
 public class UdpStream implements IStream {
+
     @Override
     public boolean send(String message) {
         return false;
@@ -22,12 +27,17 @@ public class UdpStream implements IStream {
     }
 
     @Override
-    public void onData(byte[] response) {
-
+    public boolean isConnected() {
+        return false;
     }
 
     @Override
-    public void startListening() {
+    public DataInputStream getInputStream() {
+        return null;
+    }
 
+    @Override
+    public DataOutputStream getOutputStream() {
+        return null;
     }
 }

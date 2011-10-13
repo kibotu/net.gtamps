@@ -1,9 +1,10 @@
 package net.gtamps.game.handler;
 
+
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.physics.PhysicsFactory;
-import net.gtamps.game.property.PositionProperty;
-import net.gtamps.game.property.Property;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 
@@ -69,8 +70,10 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 				}
 			}
 			if(physicalProperties.TYPE == PhysicalProperties.Type.HUMAN){
+				Logger.getInstance().log(LogType.PHYSICS, parent.toString());
 				if (pa == EventType.ACTION_ACCELERATE) {
 					Vec2 force = new Vec2((float) Math.cos(this.body.getAngle())*velocityForce, (float) Math.sin(this.body.getAngle())*velocityForce);
+					Logger.getInstance().log(LogType.PHYSICS, "Accelerate "+ force);
 					this.body.setLinearVelocity(force);
 					this.body.wakeUp();
 				}

@@ -1,5 +1,7 @@
 package net.gtamps.shared.game;
 
+import java.io.Serializable;
+
 
 /**
  * A new, better implementation of the Property concept, the way Tom
@@ -10,9 +12,9 @@ package net.gtamps.shared.game;
  * @author jan, tom, til
  *
  */
-public abstract class Propertay<T> extends GameObject {
+public abstract class Propertay<T> extends GameObject implements Serializable {
 	
-	private final GameObject parent;
+	private transient final GameObject parent;
 	private T value = null;
 
 	public Propertay(GameObject parent, String name, T value) {

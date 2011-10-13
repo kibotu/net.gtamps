@@ -1,31 +1,43 @@
 package net.gtamps.shared.communication;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
+public class Message implements Serializable {
 
-public class Message {
-
+    @NotNull
     private String sessionId;
 
-    public final ArrayList<Response> responses;
-    public final ArrayList<Request> requests;
-    public final ArrayList<Command> commands;
+    public final ArrayList<ISendable> sendables;
+
+    public Message(@NotNull ISendable sendable) {
+        this();
+        sendables.add(sendable);
+    }
 
     public Message() {
-        responses = new ArrayList<Response>();
-        requests= new ArrayList<Request>();
-        commands= new ArrayList<Command>();
+        sendables = new ArrayList<ISendable>();
     }
 
-    public void addRequest(Request request) {
-        requests.add(request);
+    public void addSendable(ISendable sendable) {
+        sendables.add(sendable);
     }
 
-    public void addCommando(Command command) {
-        commands.add(command);
+    public @NotNull String getSessionId() {
+        return sessionId;
     }
 
-    public void addResponse(Response response) {
-        responses.add(response);
+    public void setSessionId(@NotNull String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "sessionId='" + sessionId + '\'' +
+                ", sendables=" + sendables +
+                '}';
     }
 }

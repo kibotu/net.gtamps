@@ -4,6 +4,8 @@ import net.gtamps.shared.Utils.cache.ObjectCache;
 import net.gtamps.shared.Utils.cache.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Vector;
+
 /**
  * 3D-Vektor
  * <p>
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  */
 public final class Vector3 {
+
+    public static final float DEG = (float)(Math.PI / 180f);
 
 	/**
 	 * Instanz, die die Verwaltung nicht länger benötigter Instanzen übernimmt
@@ -469,4 +473,30 @@ public final class Vector3 {
 	public boolean isEmpty() {
 		return equals(Vector3.ZERO);
 	}
+
+    /**
+     * Computes the angle between two vectors.
+     *
+     * u * v = |u|*|v|*cos(angel)
+     * angle = acos( (u*v) / (|u|*|v|) )
+     *
+     * @param b
+     * @return angle in degrees
+     */
+    @Deprecated
+    public float angleInBetween(Vector3 b) {
+//        float angle = (float) Math.acos(dot(b)/((getLength()*b.getLength()))) / DEG;
+        return (float) (Math.atan2(x, y) - Math.atan2(b.x, b.y)) / DEG;
+    }
+
+    /**
+     * Computes the angle between two vectors.
+     *
+     * @param a
+     * @param b
+     * @return angle in degrees
+     */
+    public static float angleIntBetween(Vector3 a, Vector3 b) {
+        return a.angleInBetween(b);
+    }
 }

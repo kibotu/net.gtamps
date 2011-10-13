@@ -8,6 +8,7 @@ import android.widget.Toast;
 import net.gtamps.shared.Config;
 import net.gtamps.android.GTA;
 import net.gtamps.android.Registry;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +26,9 @@ public class Utils {
         t.show();
     }
 
-    public static void log(String tag, String message) {
-        if(Config.DEBUG_MODE) Log.i(tag, message);
+    public static void log(String tag, @Nullable String message) {
+        if(message == null && !Config.DEBUG_MODE_SHOW_NULL_EXCEPTIONS) return;
+        if(Config.DEBUG_MODE) Log.i(tag, "\n" + message + "\n\n");
     }
 
     public static void logAvailableMemory() {
@@ -48,6 +50,7 @@ public class Utils {
      * @return clamped value
      */
     public static float clamp(float value, float startRange, float endRange) {
+        if(value == Float.NaN) return 0;
         return value < startRange ? startRange : value > endRange ? endRange : value;
     }
 
@@ -70,4 +73,25 @@ public class Utils {
 
 		return bitmap;
 	}
+
+    /**
+     * Converts 2 bytes to an integer.
+     *
+     *
+     *   Utils.log("-1 0", "0 = "+Utils.convertLength(-1,0));
+     *   Utils.log("0 -1", "0 = "+Utils.convertLength(0,-1));
+     *   Utils.log("0 0", "0 = "+Utils.convertLength(0,0));
+     *   Utils.log("127 127", "32639 = "+Utils.convertLength(127,127));
+     *   Utils.log("255 255", "65536 = "+Utils.convertLength(255,255));
+     *   Utils.log("256 256", "65536 = "+Utils.convertLength(256,256));
+     *
+     * @param high byte 0...255
+     * @param low  byte 0...255
+     * @return length
+     */
+    public static int convertLength(int high, int low) {
+        high = (int) clamp(high, 0,255);
+        low = (int) clamp(low, 0,255);
+        return (high << 8) + low;
+    }
 }

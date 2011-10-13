@@ -1,7 +1,9 @@
 package net.gtamps.android.core.graph;
 
+import android.opengl.Matrix;
 import net.gtamps.android.core.utils.Frustum;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.math.Matrix4;
 import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
@@ -53,8 +55,8 @@ public class CameraNode extends RenderableNode {
     /**
      * Minimaler (kleinstes) und Maximaler (größtes) Bildwinkel (Fov) der OpenGL Kamera
      */
-    private float minFovy = 10;
-    private float maxFovy = 80;
+    private float minFovy = Config.MIN_ZOOM;
+    private float maxFovy = Config.MAX_ZOOM;
 
 
 	/**
@@ -203,6 +205,21 @@ public class CameraNode extends RenderableNode {
 		up.recycle();
 	}
 
+    /**
+     * Rotates the camera (hopefully correctly)
+     *
+     * @param angle
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void rotate(float angle, float x, float y, float z) {
+        Vector3 newView = Vector3.createNew(x, y, z);
+        Matrix4 rotMatrix = Matrix4.getRotationAxisAngle(newView,angle);
+        target.set(rotMatrix.transform(target.sub(getPosition())).add(getPosition()));
+        frustum.setCamera(getPosition(),target,getCameraUpVector());
+    }
+
 	/**
 	 * Liefert den Aufwärtsvektor der Kamera
 	 *
@@ -339,6 +356,16 @@ public class CameraNode extends RenderableNode {
         frustum.setCamera(position, target, frustum.getCameraUpVector());
     }
 
+    public void setPosition(float x, float y, float z) {
+        super.setPosition(x,y,z);
+        frustum.setCamera(getPosition(), target, frustum.getCameraUpVector());
+    }
+
+    public void setPosition(@NotNull Vector3 position) {
+        super.setPosition(position);
+        frustum.setCamera(position, target, frustum.getCameraUpVector());
+    }
+
 	/**
 	 * Verschiebt die Kamera (und ggf. den Sichtpunkt) relativ um den angegebenen Wert.
 	 *
@@ -418,9 +445,5 @@ public class CameraNode extends RenderableNode {
      */
     public void enableDepthTest(boolean isEnabled) {
         hasDepthTest = isEnabled;
-    }
-
-    public void moveXY(Vector3 position) {
-        define(position.x, position.y,getPosition().z,position.x, position.y,getTarget().z,getCameraUpVector().x,getCameraUpVector().y,getCameraUpVector().z);
     }
 }

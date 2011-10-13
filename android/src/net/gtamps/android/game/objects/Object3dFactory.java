@@ -1,19 +1,17 @@
 package net.gtamps.android.game.objects;
 
-final public class Object3dFactory {
+import net.gtamps.shared.game.entity.Entity;
 
-    public enum Type {
-        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT
-    }
+final public class Object3dFactory {
 
     private Object3dFactory() {
     }
 
     public static IObject3d create(String name) {
-        return create(Type.valueOf(name.toUpperCase()));
+        return create(Entity.Type.valueOf(name.toUpperCase()));
     }
 
-    public static IObject3d create(Type type){
+    public static IObject3d create(Entity.Type type){
         IObject3d object3d = null;
         switch (type) {
             case CAR: object3d = createCar(); break;
@@ -21,28 +19,43 @@ final public class Object3dFactory {
             case HOUSE: object3d = createHouse(); break;
             case BULLET: object3d = createBullet(); break;
             case SPAWNPOINT: object3d = createSpawnPoint(); break;
+            case WAYPOINT: object3d = createWayPoint(); break;
+            case PLACEHOLDER: object3d = createCube(); break;
             default: object3d = new Cube(); break;
         }
         return object3d;
     }
 
+    private static IObject3d createCube() {
+        return new Cube();
+    }
+
+    @Deprecated
+    public static IObject3d createParsedObject(String resource, String textureResource) {
+        return new ParsedObject(0,0);
+    }
+
+    private static IObject3d createWayPoint() {
+        return createCube();
+    }
+
     private static IObject3d createBullet() {
-        return null;
+        return createCube();
     }
 
     private static IObject3d createSpawnPoint() {
-        return null;
+        return createCube();
     }
 
     private static IObject3d createHouse() {
-        return null;
+        return createCube();
     }
 
     private static IObject3d createHuman() {
-        return null;
+        return createCube();
     }
 
     private static IObject3d createCar() {
-        return new Car();
+        return  new Car();
     }
 }

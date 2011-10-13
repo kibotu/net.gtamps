@@ -1,6 +1,9 @@
 package net.gtamps.game;
 
-import net.gtamps.Command;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.ResourceLoader;
 import net.gtamps.XmlElements;
@@ -12,12 +15,11 @@ import net.gtamps.game.world.MapParser;
 import net.gtamps.game.world.World;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.communication.Command;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-
-import java.io.IOException;
-import java.util.List;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -34,6 +36,8 @@ public class GameThread extends Thread implements IGameThread {
 	private static final long EVENT_TIMEOUT = 30;
 	private static final long THREAD_UPDATE_SLEEP_TIME = 20;
 	private static final int PHYSICS_ITERATIONS = 20;
+	
+	private static int instanceCounter = 0;
 
 	// start with value > 0
 	//private long currentRevisionId = RevisionKeeper.START_REVISION;
@@ -44,10 +48,14 @@ public class GameThread extends Thread implements IGameThread {
 	private EntityManager entityManager;
 	private World world;
 	private Box2DEngine physics;
+	
+	//temp
+	private int lastPlayerId = -1;
 
 	private long lastTime = System.nanoTime(); 
 
 	public GameThread(String mapPathOrNameOrWhatever) {
+		super("GameThread" + (++GameThread.instanceCounter));
 		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
 			mapPathOrNameOrWhatever = GTAMultiplayerServer.DEFAULT_PATH+GTAMultiplayerServer.DEFAULT_MAP;
 		}
@@ -117,6 +125,16 @@ public class GameThread extends Thread implements IGameThread {
 	}
 	
 	
+	public Iterable<Entity> getUpdates(long revisionId) {
+		ArrayList<Entity> updates = new ArrayList<Entity>();
+		if (lastPlayerId >=0) {
+			updates.add(playerManager.getPlayer(lastPlayerId).getEntity());
+		}
+		return updates;
+	}
+
+	
+	
 	@Override
 	public void command(int playeruid, Command cmd) {
 		Player player = getPlayer(playeruid);
@@ -124,7 +142,7 @@ public class GameThread extends Thread implements IGameThread {
 		assert cmd != null;
 		
 		EventType type = null;
-		switch(cmd) {
+		switch(cmd.type) {
 		case ACCELERATE:
 			type = EventType.ACTION_ACCELERATE;
 			break;
@@ -174,6 +192,10 @@ public class GameThread extends Thread implements IGameThread {
 	public int createPlayer(String name) {
 		assert name != null;
 		Player player = playerManager.createPlayer(name);
+		
+		// TEMP
+		this.lastPlayerId = player.getUid();
+		
 		return player.getUid();
 	}
 	
@@ -184,16 +206,18 @@ public class GameThread extends Thread implements IGameThread {
 
 	private int updates = 0;
 	private float lastUpdate = 0f;
+	private boolean run = true;
 	
 	@Override
 	public void run() {
-		while(true) {
+		while(run) {
 			float timeElapsedInSeceonds = (float) ((System.nanoTime()-lastTime)/1000000000.0);
 			long timeElapsedPhysicsCalculation = System.nanoTime();
 			lastTime = System.nanoTime();
 			this.physics.step(timeElapsedInSeceonds, PHYSICS_ITERATIONS);
 			this.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
 			timeElapsedPhysicsCalculation = (System.nanoTime()-lastTime)/1000000;
+
 			//for fps debugging
 //			lastUpdate += timeElapsedInSeceonds;
 //			updates++;
@@ -205,11 +229,19 @@ public class GameThread extends Thread implements IGameThread {
 			try {
 				if(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation>0){
 					Thread.sleep(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation);
+					System.out.println(timeElapsedInSeceonds);
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
 		}
+	}
+
+
+	@Override
+	public void hardstop() {
+		this.run = false;
+		this.interrupt();
 	}
 }
