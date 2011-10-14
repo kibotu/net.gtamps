@@ -9,7 +9,7 @@ public interface IGame {
 	public void start();
 	public void stop();
 	public boolean isRunning();
-	public int getId();
+	public long getId();
 	public String getName();
 	public void handleRequest(Session s, Request r);
 	public void handleCommand(Session s, Command c);
