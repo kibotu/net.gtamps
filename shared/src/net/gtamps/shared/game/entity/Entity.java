@@ -53,7 +53,6 @@ public class Entity extends GameActor implements Serializable {
 
     private Type getType(String name) {
         try {
-            Utils.LOG(TAG, "ENTITY TYPE: "+name.toUpperCase());
            return Type.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
             return Type.PLACEHOLDER;
