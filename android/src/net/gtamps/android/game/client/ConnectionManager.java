@@ -39,7 +39,7 @@ public class ConnectionManager implements IMessageManager {
     @Override
     public Message poll() {
         Message message = inbox.poll();
-        Utils.log(TAG, "outbox poll: " + message.toString());
+        Utils.log(TAG, "inbox poll: " + message.toString());
         return message;
     }
 
