@@ -28,7 +28,7 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x111111);
 
-        scene.addChild(activeObject = Object3dFactory.create(Entity.Type.CAR));
+        scene.addChild(activeObject = Object3dFactory.create(Entity.Type.CAR_RIVIERA));
 
         light = new LightNode();
         light.setPosition(0,0,30);
@@ -45,7 +45,7 @@ public class World {
         City city = new City();
         scene.add(city);
         city.setRotation(90, 0, 0);
-        city.setScaling(20, 20, 20);
+        city.setScaling(100, 2, 100);
     }
 
     public Scene getScene() {

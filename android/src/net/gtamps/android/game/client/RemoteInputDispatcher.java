@@ -48,7 +48,7 @@ public class RemoteInputDispatcher implements Runnable {
 
                 //  latency
                 try {
-                    Thread.sleep(Config.SOCKET_LATENCY);
+                    Thread.sleep(Config.SOCKET_INBOX_LATENCY);
                 } catch (InterruptedException e) {
                      Utils.log(TAG, e.getMessage());
                 }
@@ -57,7 +57,7 @@ public class RemoteInputDispatcher implements Runnable {
                 length =  (inputStream.read() << 8) + inputStream.read();
                 if(length < 0) continue;
                 response = new byte[length];
-                Utils.log(TAG, "has received "+ length + " bytes");
+                Utils.LOG(TAG, "has received "+ length + " bytes");
                 inputStream.readFully(response);
                 Message message = ConnectionManager.deserialize(response);
                 if(message != null) inbox.add(message);
