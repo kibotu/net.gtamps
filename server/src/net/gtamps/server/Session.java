@@ -2,16 +2,16 @@ package net.gtamps.server;
 
 public class Session {
 	
-	enum State { GUEST, AUTHENTICATED, PLAYING }
 	
 	private final String id;
 	private Connection connection;
-	private boolean isAuthenticated;
+	private boolean isAuthenticated = false;
+	private boolean isPlaying = false;
+	
 	
 	public Session() {
 		this.id = generateId();
 		assert id != null;
-		this.isAuthenticated = false;
 	}
 
 	public String getId() {
@@ -19,7 +19,11 @@ public class Session {
 	}
 	
 	public boolean isAuthenticated() {
-		return isAuthenticated;
+		return this.isAuthenticated;
+	}
+	
+	public boolean isPlaying() {
+		return this.isPlaying;
 	}
 	
 	public Connection getConnection() {
