@@ -2,6 +2,8 @@ package net.gtamps.server;
 
 public class Session {
 	
+	enum State { GUEST, AUTHENTICATED, PLAYING }
+	
 	private final String id;
 	private Connection connection;
 	private boolean isAuthenticated;

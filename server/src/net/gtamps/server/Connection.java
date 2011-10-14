@@ -37,6 +37,38 @@ public class Connection {
 		}
 		msgCenter.receiveMessage(this, serializer.deserializeMessage(bytes));
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nbc == null) ? 0 : nbc.getId().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Connection other = (Connection) obj;
+		if (nbc == null) {
+			if (other.nbc != null) {
+				return false;
+			}
+		} else if (!nbc.getId().equals(other.nbc.getId())) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 
 }

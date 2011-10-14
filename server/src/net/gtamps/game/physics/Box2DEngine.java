@@ -29,6 +29,7 @@ public class Box2DEngine {
 		AABB aabb = new AABB(lowerVertex, upperVertex);
 		world = new World(aabb, gravity, true);
 		world.setContactListener(RawContactHandler.getInstance());
+		world.setBoundaryListener(BoundaryListener.getInstance());
 
 		// we should create some physical bounding box for all elements so that
 		// you can't escape the world.

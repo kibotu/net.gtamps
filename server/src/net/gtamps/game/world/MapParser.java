@@ -57,6 +57,7 @@ public class MapParser {
 		int mapWidth = tileWidth * WorldConstants.TILE_SIZE_PIX;
 		int mapHeight = tileHeight* WorldConstants.TILE_SIZE_PIX;
 		
+		
 		physics = PhysicsFactory.createPhysics(mapWidth, mapHeight);
 		world = new World(mapName, mapWidth, mapHeight, physics);
 		
