@@ -34,11 +34,13 @@ public enum PhysicalProperties {
 			1f, // DENSITY
 			0.1f, // FRICTION
 			0.5f, // RESTITUTION
-			5f, // VELOCITY FORCE
+			10f, //
+			//5f, // VELOCITY FORCE
 			2f, // STEERING FORCE
 			0f, // STEERING RADIUS
 			0f, // SLIDYNESS
-			5f, // MAX SPEED
+			//5f, // MAX SPEED
+			10f, // MAX SPEED
 			0.01f, // LINEAR DAMPING
 			1.05f,	// ANGULAR DAMPING
 			Type.HUMAN

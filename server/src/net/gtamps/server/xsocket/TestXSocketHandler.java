@@ -114,7 +114,7 @@ public class TestXSocketHandler implements ISocketHandler {
 			read += 2;
 			
 			int laenge = ((((int) hi) & 0xff) << 8) + (((int) lo)  & 0xff);
-			System.out.println("expecting new message: " + laenge );
+			//System.out.println("expecting new message: " + laenge );
 			byte[] data = new byte[laenge]; 
 			this.readFully(nbc, data);
 			this.receive(nbc, data);
@@ -131,7 +131,7 @@ public class TestXSocketHandler implements ISocketHandler {
 	}
 
 	private void receive(INonBlockingConnection nbc, byte[] data) {
-		System.out.println(new String(data));
+		//System.out.println(new String(data));
 		//send(nbc, data)
 		Connection c = connections.get(nbc.getId());
 		c.onData(data);

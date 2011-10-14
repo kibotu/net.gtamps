@@ -1,5 +1,7 @@
 package net.gtamps.server;
 
+import net.gtamps.game.IGame;
+
 public class Session {
 	
 	
@@ -7,6 +9,7 @@ public class Session {
 	private Connection connection;
 	private boolean isAuthenticated = false;
 	private boolean isPlaying = false;
+	private IGame game = null;
 	
 	
 	public Session() {
@@ -37,6 +40,15 @@ public class Session {
 	private String generateId() {
 		//TODO
 		return "something";
+	}
+
+	public IGame getGame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void setGame(IGame game) {
+		this.game = game;
 	}
 
 }
