@@ -1,23 +1,28 @@
 package net.gtamps.server.xsocket;
 
-import net.gtamps.server.MessageHandler;
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
-
+//import net.gtamps.server.MessageHandler;
+//import net.gtamps.server.gui.LogType;
+//import net.gtamps.server.gui.Logger;
+//
+//import java.io.IOException;
+//import java.io.Reader;
+//import java.io.StringReader;
+//import java.io.UnsupportedEncodingException;
+//import java.nio.BufferOverflowException;
+//import java.nio.BufferUnderflowException;
+//import java.nio.channels.ClosedChannelException;
+//import java.util.concurrent.ConcurrentHashMap;
+//
+//import org.jdom.Document;
+//import org.jdom.Element;
+//import org.jdom.JDOMException;
+//import org.jdom.input.SAXBuilder;
+//import org.jdom.output.XMLOutputter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.channels.ClosedChannelException;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.xsocket.MaxReadSizeExceededException;
 import org.xsocket.connection.IConnectHandler;
 import org.xsocket.connection.IDataHandler;
 import org.xsocket.connection.IDisconnectHandler;
@@ -31,6 +36,32 @@ import org.xsocket.connection.INonBlockingConnection;
  * 
  */
 public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnectHandler {
+
+	@Override
+	public boolean onDisconnect(INonBlockingConnection connection)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onConnect(INonBlockingConnection connection)
+			throws IOException, BufferUnderflowException,
+			MaxReadSizeExceededException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onData(INonBlockingConnection connection)
+			throws IOException, BufferUnderflowException,
+			ClosedChannelException, MaxReadSizeExceededException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+}
+/*public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnectHandler {
 	private static final LogType TAG = LogType.SERVER;
 
 	// This is where we will keep all active connections
@@ -42,7 +73,7 @@ public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnec
 
 	private final XMLOutputter xmlOutputter;
 	private final SAXBuilder saxBuilder;
-	private final MessageHandler messageHandler;
+//	private final MessageHandler messageHandler;
 
 	private final String policyRequest = "<policy-file-request/>\u0000";
 	private final String policyString = "<?xml version=\"1.0\"?>"
@@ -197,14 +228,14 @@ public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnec
 		return true;
 	}
 
-	/**
+	*//**
 	 * Wraps <code>message</code> element in an xml document, and writes it in
 	 * String form to the connection with <code>connectionId</code>.
 	 * 
 	 * @param connectionId
 	 * @param message
 	 * @throws ClosedChannelException
-	 */
+	 *//*
 	public void send(String connectionID, Element message) throws ClosedChannelException {
 		if (message == null) {
 			return;
@@ -262,12 +293,6 @@ public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnec
 
 	}
 
-	/*private boolean isKnownConnection(INonBlockingConnection nbc) {
-		synchronized (connections) {
-			return connections.containsKey(nbc.getId());
-		}
-	}*/
-
 	private String bytesToStr(byte[] b) {
 		String s = "";
 		for (int i = 0; i < b.length; i++) {
@@ -276,3 +301,4 @@ public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnec
 		return s;
 	}
 }
+*/

@@ -144,11 +144,12 @@ public class ControlCenter extends Thread {
 	}
 	
 	private IGame createGame(String mapname) {
-		IGame game = new GameThread();
-		if (game != null) {
-			this.gameThreads.put(game.getId(), game);
-		}
-		return game;
+//		IGame game = new GameThread();
+//		if (game != null) {
+//			this.gameThreads.put(game.getId(), game);
+//		}
+//		return game;
+		return null;
 	}
 	
 	
