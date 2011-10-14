@@ -18,7 +18,8 @@ final public class Object3dFactory {
     public static IObject3d create(Entity.Type type){
         IObject3d object3d = null;
         switch (type) {
-            case CAR: object3d = createCar(); break;
+            case CAR_CAMARO: object3d = createCarCamaro(); break;
+            case CAR_RIVIERA: object3d = createCarRiveria(); break;
             case HUMAN: object3d = createHuman(); break;
             case HOUSE: object3d = createHouse(); break;
             case BULLET: object3d = createBullet(); break;
@@ -28,6 +29,16 @@ final public class Object3dFactory {
             default: object3d = new Cube(); break;
         }
         return object3d;
+    }
+
+    private static IObject3d createCarRiveria() {
+        IObject3d object3d = new Car(Car.Type.RIVIERA);
+        object3d.getNode().setScaling(5,5,5);
+        return object3d;
+    }
+
+    private static IObject3d createCarCamaro() {
+        return new Car(Car.Type.CAMARO);
     }
 
     private static IObject3d createCube() {
@@ -56,10 +67,6 @@ final public class Object3dFactory {
     }
 
     private static IObject3d createHuman() {
-        return new Car();
-    }
-
-    private static IObject3d createCar() {
-        return  new Car();
+        return createCarRiveria();
     }
 }

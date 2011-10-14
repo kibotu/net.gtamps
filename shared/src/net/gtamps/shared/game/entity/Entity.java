@@ -26,7 +26,7 @@ public class Entity extends GameActor implements Serializable {
 	private static final long serialVersionUID = -5466989016443709708L;
 
 	static public enum Type {
-        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
+        CAR_CAMARO, CAR_RIVIERA, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
     }
 
 	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;

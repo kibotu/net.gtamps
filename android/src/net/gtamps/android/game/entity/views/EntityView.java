@@ -45,7 +45,7 @@ public class EntityView implements IObject3d, IDirty {
     public void update(Entity serverEntity) {
         setDirtyFlag();
         entity = serverEntity;
-
+        onDirty();
     }
 
     public void setAsActiveObject() {

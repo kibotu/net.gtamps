@@ -42,7 +42,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         while(isRunning) {
             try {
-                Thread.currentThread().sleep(Config.SOCKET_LATENCY);
+                Thread.currentThread().sleep(Config.SOCKET_OUTBOX_LATENCY);
             } catch (InterruptedException e) {
                  Utils.log(TAG, e.getMessage());
             }

@@ -58,11 +58,11 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        connection.connect();
-        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
-        connection.start();
-
-        connection.add(MessageFactory.createSessionRequest());
+//        connection.connect();
+//        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+//        connection.start();
+//
+//        connection.add(MessageFactory.createSessionRequest());
 
 //        connection.add(MessageFactory.createRegisterRequest("username", "password"));
 //        connection.add(MessageFactory.createLoginRequest("username", "password"));
@@ -158,11 +158,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-            world.getActiveObject().getNode().getPosition().addInPlace(temp);
+//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
 //            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-            world.getActiveObject().getNode().setRotation(0, 0, angle);
+//            world.getActiveObject().getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);
@@ -259,7 +259,7 @@ public class Game implements IGame{
                             EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
                             if(entityView == null) {
                                 entityView = new EntityView(serverEntity);
-                                world.getScene().addChild(entityView);
+                                world.getScene().addChild(world.activeObject = entityView);
                                 Utils.log(TAG, "add new entity"+serverEntity.getUid());
                             } else {
                                 entityView.update(serverEntity);
