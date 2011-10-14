@@ -229,7 +229,7 @@ public class GameThread extends Thread implements IGameThread {
 			try {
 				if(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation>0){
 					Thread.sleep(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation);
-					System.out.println(timeElapsedInSeceonds);
+					//System.out.println(this);
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

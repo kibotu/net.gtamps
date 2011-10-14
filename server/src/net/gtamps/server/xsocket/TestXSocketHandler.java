@@ -16,6 +16,7 @@ import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.ISerializer;
 
 import org.xsocket.connection.INonBlockingConnection;
+import org.xsocket.connection.NonBlockingConnection;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
@@ -180,6 +181,8 @@ public class TestXSocketHandler implements ISocketHandler {
 		byte low = (byte) (length & 0xFF);
 
 		try {
+			//NonBlockingConnection ncv;
+			//ncv.write(buffers);
 			nbc.write(high);
 			nbc.write(low);
 			nbc.write(bytes);

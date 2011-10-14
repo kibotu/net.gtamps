@@ -103,6 +103,8 @@ public class SimplePhysicsHandler extends Handler {
 			parent.y.set(PhysicsFactory.lengthToWorld(this.body.getWorldCenter().y));
 			parent.rota.set(PhysicsFactory.angleToWorld((this.body.getAngle())));
 			
+			//DEBUG
+			//System.out.println(String.format("l=%s a=%2.2f", this.body.getLinearVelocity().toString(), this.body.getAngularVelocity()));
 //		}
 //		if (s != null) {
 			parent.getProperty("speedx").set(PhysicsFactory.lengthToWorld(this.body.getLinearVelocity().x));

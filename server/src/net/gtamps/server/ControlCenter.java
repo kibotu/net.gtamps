@@ -20,10 +20,11 @@ public class ControlCenter extends Thread {
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
+	public final BlockingQueue<Response> responsebox = new LinkedBlockingQueue<Response>();
 	
 	private boolean run = true;
 	private Map<String, IGameThread> gameThreads = new HashMap<String, IGameThread>();
-	private Map<String, Request> requestCache = new HashMap<String, Request>();
+	private Map<Integer, Session> sessionCache = new HashMap<Integer, Session>();
 	
 	private ControlCenter() {
 		super("ControlCenter");
@@ -33,16 +34,21 @@ public class ControlCenter extends Thread {
 	public void run() {
 		while(run) {
 			processInbox();
+			processResponsebox();
 			processOutbox();
 		}
 	}
 	
 	public void receiveMessage(Message msg) {
-		inbox.add(msg);
+		if (msg != null) {
+			inbox.add(msg);
+		}
 	}
 	
 	public void handleResponse(Response response) {
-		
+		if (response != null) {
+			responsebox.add(response);
+		}
 	}
 	
 	private void processInbox() {
@@ -63,16 +69,51 @@ public class ControlCenter extends Thread {
 		workingCopy.clear();
 	}
 	
+	private void processResponsebox() {
+		List<Response> workingCopy = new LinkedList<Response>();
+		responsebox.drainTo(workingCopy);
+		for (Response response : workingCopy) {
+			Session s = sessionCache.get(response.requestId);
+			if (s != null) {
+				sendInMessage(s, response);
+			}
+		}
+	}
+	
 	private void processOutbox() {
 		
 	}
 	
 	private void handleRequest(Session session, Request request) {
-		
+		switch (request.type) {
+			case SESSION:
+			case REGISTER:
+			case LOGIN:
+			case JOIN:
+			case LEAVE:
+			case GETMAPDATA:
+			case GETPLAYER:
+				break;
+			case GETUPDATE:
+				break;
+			default:
+				break;
+		}
 	}
 	
 	private void handleCommand(Session session, Command command) {
 		
+	}
+	
+	private void sendInMessage(Session s, Response r) {
+		Message msg = new Message();
+		msg.setSessionId(s.getId());
+		msg.addSendable(r);
+		s.getConnection().send(msg);
+	}
+	
+	private IGameThread getGamethreadForSession(Session s) {
+		return gameThreads.get(s.getId());
 	}
 	
 }

@@ -16,11 +16,11 @@ public final class SessionManager  {
 	}
 	
 	public void handleIncomingMessage(Connection c, Message m) {
-		String id = m.getSessionId();
 		Session s = getSessionForMessage(m);
-		
+		if (!s.getConnection().equals(c)) {
+			s.setConnection(c);
+		}
 	}
-	
 	
 	public Session getSessionForMessage(Message msg) {
 		String id = msg.getSessionId();
