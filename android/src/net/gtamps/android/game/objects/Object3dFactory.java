@@ -1,8 +1,12 @@
 package net.gtamps.android.game.objects;
 
+import net.gtamps.android.core.utils.Utils;
+import net.gtamps.android.game.Game;
 import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
+
+    private static final String TAG = Game.class.getSimpleName();
 
     private Object3dFactory() {
     }
@@ -52,7 +56,7 @@ final public class Object3dFactory {
     }
 
     private static IObject3d createHuman() {
-        return createCube();
+        return new Car();
     }
 
     private static IObject3d createCar() {

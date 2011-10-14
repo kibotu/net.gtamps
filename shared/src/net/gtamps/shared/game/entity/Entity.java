@@ -1,5 +1,7 @@
 package net.gtamps.shared.game.entity;
 
+import android.text.Html;
+import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 //import net.gtamps.game.player.PlayerManager;
@@ -15,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Entity extends GameActor implements Serializable {
+
+    private static final String TAG = Entity.class.getSimpleName();
 
     /**
 	 * 
@@ -49,7 +53,7 @@ public class Entity extends GameActor implements Serializable {
 
     private Type getType(String name) {
         try {
-           return Type.valueOf(name);
+           return Type.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
             return Type.PLACEHOLDER;
         }

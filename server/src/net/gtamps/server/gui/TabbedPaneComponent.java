@@ -24,5 +24,11 @@ public class TabbedPaneComponent extends JTextArea{
 		this.setText(sb.toString());
 //		this.repaint();
 		this.invalidate();
+		try {
+			Thread.sleep(20);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		}
 	}
 }

@@ -39,7 +39,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
     public void run() {
         Utils.log(TAG, "Starts socket- writing loop.");
         isRunning = true;
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         while(isRunning) {
             try {
                 Thread.currentThread().sleep(Config.SOCKET_LATENCY);

@@ -38,7 +38,7 @@ public class RemoteInputDispatcher implements Runnable {
     public void run() {
         Utils.log(TAG, "Starts socket-listening loop.");
         isRunning = true;
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
         byte [] response;
         int length;
