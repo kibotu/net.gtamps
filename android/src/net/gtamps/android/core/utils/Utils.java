@@ -94,4 +94,8 @@ public class Utils {
         low = (int) clamp(low, 0,255);
         return (high << 8) + low;
     }
+
+    public static void LOG(String tag, String s) {
+        log(tag, "\n\n\n\n\n"+s+"\n\n\n\n\n");
+    }
 }
