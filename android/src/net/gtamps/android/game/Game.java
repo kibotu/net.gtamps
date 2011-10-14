@@ -51,10 +51,9 @@ public class Game implements IGame{
         // create world
         scenes.add(world.getScene());
 
-        Cube cube =(Cube)Object3dFactory.create(Entity.Type.PLACEHOLDER);
-        world.getScene().addChild(cube);
-        cube.setPosition(10,10,3);
-
+        IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
+        world.getScene().addChild(object3d);
+        object3d.getNode().setPosition(10,10,3);
 
         // hud
         scenes.add(hud.getScene());
@@ -209,22 +208,34 @@ public class Game implements IGame{
 
         Message message = MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId);
 
-        // up 90° to 0° to -90°
-        if(inRange(angle, 90, -90)) {
-            message.addSendable(new Command(Command.Type.ACCELERATE,force.getLength()*(4/3)));
+        // up° 22.5 to -22.5°
+        if(inRange(angle, 22.5f, -22.5f)) {
+            message.addSendable(new Command(Command.Type.ACCELERATE,force.getLength()));
         }
-        // left 0° - 90° - 180°
-        if(inRange(angle,0,-180)) {
-            message.addSendable(new Command(Command.Type.LEFT,force.getLength()));
-        }
-        // down 90° to 180° || -180° to -90°
-        if(inRange(angle, 90, 180) || inRange(angle, -180,-90)) {
-            message.addSendable(new Command(Command.Type.DECELERATE,force.getLength()*(4/3)));
-        }
-        // right 0° to -90° - 180°
-        if(inRange(angle,0,-180)) {
+
+        // right up -22.5° to -67.5°
+
+        // right -67.5° to -112.5°
+        if(inRange(angle, -67.5f, -112.5f)) {
             message.addSendable(new Command(Command.Type.RIGHT,force.getLength()));
         }
+
+        // right down -112.5° to -157.5°
+
+        // down -157.5° to -180° and 180° to 157.5°
+        if(inRange(angle, -157.5f, -180f) || inRange(angle, 180f,157.5f)) {
+            message.addSendable(new Command(Command.Type.DECELERATE,force.getLength()));
+        }
+
+        // left down 157.5° to 112.5°
+
+        // left 112.5° to 67.5°
+        if(inRange(angle, 112.5f, 67.5f)) {
+            message.addSendable(new Command(Command.Type.LEFT,force.getLength()));
+        }
+
+        // left up 67.5° to 22.5°
+
         connection.add(message);
     }
 

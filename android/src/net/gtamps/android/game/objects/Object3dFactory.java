@@ -56,7 +56,7 @@ final public class Object3dFactory {
     }
 
     private static IObject3d createHuman() {
-        Utils.log(TAG, "create human");
+        Utils.log(TAG, "\n\n\n\n\ncreate human");
         return new Car();
     }
 
