@@ -40,6 +40,9 @@ public class ConnectionManagerII implements ICommandHandler, IRequestHandler {
 	}
 	
 	public void restartGame(){
+		if (gameThread != null) {
+			gameThread.hardstop();
+		}
 		gameThread = new GameThread();
 		playerUid = gameThread.createPlayer("test");
 		gameThread.joinPlayer(playerUid);
@@ -67,7 +70,6 @@ public class ConnectionManagerII implements ICommandHandler, IRequestHandler {
 	public void handleCommand(Session s, Command c) {
 		gameThread.command(playerUid, c);
 	}
-		
-		
+	
 
 }

@@ -1,7 +1,5 @@
 package net.gtamps.server.gui;
 
-import net.gtamps.server.ConnectionManager;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -11,18 +9,21 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import net.gtamps.server.ConnectionManager;
+import net.gtamps.server.ConnectionManagerII;
+
 /**
  * ugly-ass hacked class to easily control some server stuff...
  * @author tom
  *
  */
 public class ServerGUI {
-	private ConnectionManager connectionManager;
+	private ConnectionManagerII connectionManager;
 	private JFrame frame;
 	private NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
 	private NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
 	
-	public ServerGUI(final ConnectionManager connMng){
+	public ServerGUI(final ConnectionManagerII connMng){
 		this.connectionManager = connMng;
 		frame = new JFrame("GTA MultiServer");
 		
