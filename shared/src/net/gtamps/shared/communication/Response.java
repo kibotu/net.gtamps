@@ -13,18 +13,28 @@ public class Response implements ISendable {
     @NotNull
     public final Status status;
     @NotNull
+    public final int requestId;
+    @NotNull
     public final Request.Type requestType;
     @Nullable
     private ISendableData data;
 
-    public Response(@NotNull Request.Type requestType, @NotNull Status status, @Nullable ISendableData data) {
-        this.status = status;
-        this.requestType = requestType;
-        this.data = data;
+//    public Response(@NotNull Request.Type requestType, @NotNull Status status, @Nullable ISendableData data) {
+//        this.status = status;
+//        this.requestType = requestType;
+//        this.data = data;
+//    }
+
+    public Response(@NotNull Status status, @NotNull Request request) {
+    	this(status, request, null);    
     }
 
-    public Response(Request.Type requestType, Status status) {
-        this(requestType, status, null);
+    
+    public Response(@NotNull Status status, @NotNull Request request, @Nullable ISendableData data) {
+        this.status = status;
+        this.requestId = request.id;
+        this.requestType = request.type;
+        this.data = data;
     }
 
     @Nullable

@@ -37,6 +37,7 @@ public class Hud {
             cursor.animate(0.51f, State.Type.IDLE);
 
             InputEngine.getInstance().setCamera(camera);
+
         }
 
         return scene;

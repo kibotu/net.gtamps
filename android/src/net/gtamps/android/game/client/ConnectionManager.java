@@ -21,6 +21,8 @@ public class ConnectionManager implements IMessageManager {
     public static volatile String currentSessionId;
     public static volatile long currentRevId;
 
+    private static ISerializer serializer = new ObjectSerializer();
+
     public ConnectionManager() {
         stream = new TcpStream();
         inbox = new ConcurrentLinkedQueue<Message>();
@@ -37,7 +39,7 @@ public class ConnectionManager implements IMessageManager {
     @Override
     public Message poll() {
         Message message = inbox.poll();
-        Utils.log(TAG, "outbox poll: " + message.toString());
+        Utils.log(TAG, "inbox poll: " + message.toString());
         return message;
     }
 
@@ -80,5 +82,14 @@ public class ConnectionManager implements IMessageManager {
         if(!isConnected()) return;
         remoteInputDispatcher.stop();
         remoteOutputDispatcher.stop();
+    }
+
+    public static byte [] serialize(@NotNull Message message) {
+        message.setSessionId(currentSessionId);
+        return serializer.serializeMessage(message);
+    }
+
+    public static Message deserialize(@NotNull byte[] message) {
+        return serializer.deserializeMessage(message);
     }
 }

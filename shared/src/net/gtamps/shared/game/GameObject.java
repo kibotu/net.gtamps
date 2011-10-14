@@ -1,5 +1,6 @@
 package net.gtamps.shared.game;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,11 @@ import net.gtamps.shared.Utils.UIDGenerator;
  * @author til, tom, jan
  * 
  */
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7826642603562424002L;
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "";
 
@@ -28,7 +33,7 @@ public abstract class GameObject {
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
-	private Map<String, Propertay<?>> properties = null;
+	private HashMap<String, Propertay<?>> properties = null;
 
 	/**
 	 * 

@@ -28,7 +28,7 @@ public class Utils {
 
     public static void log(String tag, @Nullable String message) {
         if(message == null && !Config.DEBUG_MODE_SHOW_NULL_EXCEPTIONS) return;
-        if(Config.DEBUG_MODE) Log.i(tag, "\n" + message+"\n\n");
+        if(Config.DEBUG_MODE) Log.i(tag, "\n" + message + "\n\n");
     }
 
     public static void logAvailableMemory() {

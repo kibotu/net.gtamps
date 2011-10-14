@@ -1,11 +1,9 @@
-package net.gtamps.android.game.client;
+package net.gtamps.shared.communication;
 
 import net.gtamps.shared.communication.*;
 import org.jetbrains.annotations.NotNull;
 
 final public class MessageFactory {
-
-    private static ISerializer serializer = new ObjectSerializer();
 
     private MessageFactory() {
     }
@@ -14,16 +12,16 @@ final public class MessageFactory {
         return new Message(new Request(Request.Type.SESSION));
     }
 
-    public static Message createCommand(Command.Type type, int percent) {
+    public static Message createCommand(Command.Type type, float percent) {
         return new Message(new Command(type,percent));
     }
 
     public static Message createLoginRequest(String username, String password) {
-        return new Message(new Request(Request.Type.LOGIN, new Authentification(username,password)));
+        return new Message(new Request(Request.Type.LOGIN, new AuthentificationData(username,password)));
     }
 
     public static Message createRegisterRequest(String username, String password) {
-        return new Message(new Request(Request.Type.REGISTER, new Authentification(username,password)));
+        return new Message(new Request(Request.Type.REGISTER, new AuthentificationData(username,password)));
     }
 
     public static Message createJoinRequest() {
@@ -42,16 +40,7 @@ final public class MessageFactory {
         return new Message(new Request(Request.Type.GETPLAYER));
     }
 
-    public static Message createGetUpdateRequest() {
-        return new Message(new Request(Request.Type.GETUPDATE, new Revision(ConnectionManager.currentRevId)));
-    }
-
-    public static byte [] serialize(@NotNull Message message) {
-        message.setSessionId(ConnectionManager.currentSessionId);
-        return serializer.serializeMessage(message);
-    }
-
-    public static Message deserialize(@NotNull byte[] message) {
-        return serializer.deserializeMessage(message);
+    public static Message createGetUpdateRequest(long revId) {
+        return new Message(new Request(Request.Type.GETUPDATE, new RevisionData(revId)));
     }
 }

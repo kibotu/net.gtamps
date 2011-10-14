@@ -1,6 +1,7 @@
 package net.gtamps;
 
 import net.gtamps.server.ConnectionManager;
+import net.gtamps.server.ConnectionManagerII;
 import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
@@ -19,14 +20,15 @@ public class GTAMultiplayerServer {
 	 */
 	public static void main(String[] args) {
 		Logger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-		ConnectionManager cm = ServerChainFactory.createServerChain();
+		ConnectionManagerII cm = ServerChainFactory.createServerChainII();
 		ServerChainFactory.startHTTPServer(DEFAULT_PATH);
 //		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
 //		dbHandler.createPlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 //		dbHandler.deletePlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
-		new ServerGUI(cm);
+		//new ServerGUI(cm);
+		new ServerGUI(null);
 	}
 	
 	/**

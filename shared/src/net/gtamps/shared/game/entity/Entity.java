@@ -15,27 +15,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Entity extends GameActor implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5466989016443709708L;
+
+	static public enum Type {
+        CAR, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
+    }
+
 	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
-	
+
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public transient final Propertay<Integer> x = new IntProperty(this, "posx");
-	public transient final Propertay<Integer> y = new IntProperty(this, "posy");
-	public transient final Propertay<Integer> z = new IntProperty(this, "posz");
+	public final Propertay<Integer> x = new IntProperty(this, "posx");
+	public final Propertay<Integer> y = new IntProperty(this, "posy");
+	public final Propertay<Integer> z = new IntProperty(this, "posz");
 	/**
 	 * rotation about z
 	 */
-	public transient final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public final Type type;
 	
 	private transient Player owner = null;
 
 	public Entity(String name){
 		super(name);
+        type = getType(name);
 //		properties = new HashMap<Property.Type,Property>();
 //		this.physicsHandler = new PhysicsHandler(this, physicalRepresentation);
 	}
-	
-	@Override
+
+    private Type getType(String name) {
+        try {
+           return Type.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return Type.PLACEHOLDER;
+        }
+    }
+
+    @Override
 	public void receiveEvent(GameEvent event) {
 		dispatchEvent(event);
 	}
@@ -119,6 +139,13 @@ public class Entity extends GameActor implements Serializable {
 //		if (ap != null) {
 //			ap.disable();
 //		}
+	}
+	
+	@Override
+	public String toString() {
+		String s = super.toString();
+		s += String.format("x:%d y:%d r:%d", this.x.value(), this.y.value(), this.rota.value());
+		return s;
 	}
 
 	public void destroy() {

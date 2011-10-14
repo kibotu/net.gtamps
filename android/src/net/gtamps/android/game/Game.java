@@ -2,23 +2,22 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.R;
+import net.gtamps.android.World;
 import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.client.ConnectionManager;
-import net.gtamps.android.game.client.MessageFactory;
+import net.gtamps.android.game.entity.views.EntityView;
+import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.*;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.IParser;
 import net.gtamps.android.core.utils.parser.Parser;
-import net.gtamps.android.game.client.IStream;
-import net.gtamps.android.game.client.TcpStream;
 import net.gtamps.android.game.objects.*;
-import net.gtamps.shared.state.State;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -29,12 +28,13 @@ public class Game implements IGame{
     private boolean isRunning;
     private boolean isPaused;
     private long startTime;
+    private long finalDelta;
     private final InputEngine inputEngine;
     private final ArrayList<Scene> scenes;
     private boolean isDragging = false;
     private final Hud hud;
+    private final World world;
     private final ConnectionManager connection;
-    private IObject3d activeObject;
 
     public Game() {
         isRunning = true;
@@ -42,42 +42,29 @@ public class Game implements IGame{
         inputEngine = InputEngine.getInstance();
         scenes = new ArrayList<Scene>();
         hud = new Hud();
+        world = new World();
         connection = new ConnectionManager();
     }
 
     public void onCreate() {
 
-        // world
-        Scene scene = new Scene();
-        scenes.add(scene);
+        // create world
+        scenes.add(world.getScene());
 
-        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
-        scene.setActiveCamera(camera);
-        scene.getBackground().setAll(0x111111);
+        Cube cube =(Cube)Object3dFactory.create(Entity.Type.PLACEHOLDER);
+        world.getScene().addChild(cube);
+        cube.setPosition(10,10,3);
 
-        LightNode sun = new LightNode();
-        sun.setPosition(0,0,30);
-        sun.setDirection(0, 0, -1);
-        sun.ambient.setAll(64, 64, 64, 255);
-        sun.diffuse.setAll(128,128,128,255);
-        sun.specular.setAll(64,64,64,255);
-
-        scene.add(sun);
-        scene.addChild(activeObject = new Car());
-        City city = new City();
-        scene.add(city);
-        city.setRotation(90, 0, 0);
-        city.setScaling(20, 20, 20);
 
         // hud
         scenes.add(hud.getScene());
 
         // connect
-//        connection.connect();
-//        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
-//        connection.start();
-//
-//        connection.add(MessageFactory.createSessionRequest());
+        connection.connect();
+        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+        connection.start();
+
+        connection.add(MessageFactory.createSessionRequest());
 
 //        connection.add(MessageFactory.createRegisterRequest("username", "password"));
 //        connection.add(MessageFactory.createLoginRequest("username", "password"));
@@ -91,7 +78,7 @@ public class Game implements IGame{
         Scene scene = new Scene();
         scenes.add(scene);
 
-        CameraNode camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 1, 0);
+        CameraNode camera =  new CameraNode(0, 0,10, 0, 0, 0, 0, 1, 0);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x222222);
 
@@ -158,7 +145,6 @@ public class Game implements IGame{
 //            Utils.log(TAG, "finger down");
             isDragging = true;
 //            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
-            if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest());
         }
 
         // on release
@@ -168,30 +154,82 @@ public class Game implements IGame{
             hud.getCursor().setPosition(inputEngine.getPointerPosition());
         }
 
+
         if(isDragging) {
 //            Utils.log(TAG, "is dragging");
             Vector3 viewportSize = scenes.get(1).getActiveCamera().getViewportSize();
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-            activeObject.getNode().getPosition().addInPlace(temp);
-            scenes.get(0).getActiveCamera().moveXY(activeObject.getNode().getPosition());
-
+//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
+//            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-            activeObject.getNode().setRotation(0, 0, angle);
+//            world.getActiveObject().getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
-            temp.recycle();
+            Vector3 temp2 = Vector3.createNew(temp);
+            temp2.normalize();
+            temp2.invert();
+            temp2.mulInPlace(40);
+
+            Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
+            Vector3 temp3 = Vector3.createNew(temp2.x, temp2.y, camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
+
+
+            scenes.get(0).getActiveCamera().setPosition(temp3);
+
+            // send driving impulses
+            fireImpulse(angle, temp);
+
+//            temp.recycle();
         }
 
+        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
+
         // Compute elapsed time
-        final long finalDelta = SystemClock.elapsedRealtime() - startTime;
+        finalDelta = SystemClock.elapsedRealtime() - startTime;
 
         // new start time
         startTime = SystemClock.elapsedRealtime();
 
         // animate
+    }
+
+
+    private long impulse = 0;
+    private void fireImpulse(float angle, Vector3 force) {
+        if(!connection.isConnected()) return;
+
+        impulse += finalDelta;
+        if(impulse <= Config.IMPULS_FREQUENCY) {
+            return;
+        }
+        impulse = 0;
+
+        Message message = MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId);
+
+        // up 90° to 0° to -90°
+        if(inRange(angle, 90, -90)) {
+            message.addSendable(new Command(Command.Type.ACCELERATE,force.getLength()*(4/3)));
+        }
+        // left 0° - 90° - 180°
+        if(inRange(angle,0,-180)) {
+            message.addSendable(new Command(Command.Type.LEFT,force.getLength()));
+        }
+        // down 90° to 180° || -180° to -90°
+        if(inRange(angle, 90, 180) || inRange(angle, -180,-90)) {
+            message.addSendable(new Command(Command.Type.DECELERATE,force.getLength()*(4/3)));
+        }
+        // right 0° to -90° - 180°
+        if(inRange(angle,0,-180)) {
+            message.addSendable(new Command(Command.Type.RIGHT,force.getLength()));
+        }
+        connection.add(message);
+    }
+
+    private boolean inRange(float value, float startRange, float endRange) {
+        return value >= Math.min(startRange,endRange) && value <= Math.max(startRange,endRange);
     }
 
     private void handleResponse(Response response, Message message) {
@@ -201,10 +239,27 @@ public class Game implements IGame{
         switch (response.requestType) {
             case GETUPDATE:
                 if(response.getData() == null) break;
-                if(response.getData() instanceof UpdateResponse) break;
+                if(!(response.getData() instanceof UpdateData)) break;
                 switch (response.status) {
                     case OK:
-                        ConnectionManager.currentRevId = ((UpdateResponse)response.getData()).revId;
+                        UpdateData updateData = ((UpdateData)response.getData());
+                        ConnectionManager.currentRevId = updateData.revId;
+
+                        ArrayList<Entity> entities = updateData.entites;
+                        for(int i = 0; i < entities.size(); i++) {
+                            Entity serverEntity = entities.get(i);
+
+                            // contains?
+                            EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
+                            if(entityView == null) {
+                                entityView = new EntityView(serverEntity);
+                                world.getScene().addChild(entityView);
+                                entityView.setAsActiveObject();
+                                Utils.log(TAG, "add new entity"+serverEntity.getUid());
+                            } else {
+                                entityView.update(serverEntity);
+                            }
+                        }
                         break;
                     case BAD: break;
                     case NEED: break;
