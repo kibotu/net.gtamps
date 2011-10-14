@@ -42,8 +42,8 @@ public class MapParser {
 	
 	public void populateWorld(EntityManager em) {
 		createSpawnPoints(em);
-		createCars(em);
-		createBuildings(em);
+		//createCars(em);
+//		createBuildings(em);
 	}
 	
 	private void parseXmlMap() {
@@ -56,6 +56,7 @@ public class MapParser {
 		int tileWidth = tiles.size();
 		int mapWidth = tileWidth * WorldConstants.TILE_SIZE_PIX;
 		int mapHeight = tileHeight* WorldConstants.TILE_SIZE_PIX;
+		
 		
 		physics = PhysicsFactory.createPhysics(mapWidth, mapHeight);
 		world = new World(mapName, mapWidth, mapHeight, physics);

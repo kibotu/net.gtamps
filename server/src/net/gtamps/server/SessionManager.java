@@ -1,25 +1,42 @@
 package net.gtamps.server;
 
-import net.gtamps.shared.communication.Request;
-import net.gtamps.shared.communication.Response;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SessionManager extends AbstractChainedRequestHandler {
+import net.gtamps.shared.communication.Message;
+
+
+public final class SessionManager  {
 	
-	public SessionManager(IResponseHandler rh, IRequestHandler next) {
-		super(rh, next);
+	public static final SessionManager instance = new SessionManager();
+	
+	private Map<String, Session> sessions = new HashMap<String, Session>();
+	
+	private SessionManager() {
 	}
-
-	@Override
-	protected boolean handleLocally(Session s, Request r) {
-		boolean outcome = false;
-		if (r.type.equals(Request.Type.SESSION)) {
-			if (s == null) {
-				s = new Session();
-			}
-			responseHandler.handleResponse(s, new Response(Response.Status.OK, r));
-			outcome = true;
+	
+	public void handleIncomingMessage(Connection c, Message m) {
+		Session s = getSessionForMessage(m);
+		if (!s.getConnection().equals(c)) {
+			s.setConnection(c);
 		}
-		return outcome;
 	}
-
+	
+	public Session getSessionForMessage(Message msg) {
+		String id = msg.getSessionId();
+		Session s = null;
+		if (id == null || id == "" || !sessions.containsKey(id)) {
+			s = createSession();
+		} else {
+			s = sessions.get(id); 
+		}
+		return s;
+	}
+	
+	public Session createSession() {
+		Session s = new Session();
+		sessions.put(s.getId(), s);
+		return s;
+	}
+	
 }

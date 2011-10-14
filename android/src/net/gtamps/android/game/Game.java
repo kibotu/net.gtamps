@@ -19,7 +19,6 @@ import net.gtamps.android.core.utils.parser.Parser;
 import net.gtamps.android.game.objects.*;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Game implements IGame{
 
@@ -143,7 +142,7 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-//            if(connection.isConnected()) connection.add(MessageFactory.createCommand(Command.Type.ACCELERATE,30));
+	        if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
         }
 
         // on release
@@ -153,18 +152,17 @@ public class Game implements IGame{
             hud.getCursor().setPosition(inputEngine.getPointerPosition());
         }
 
-
         if(isDragging) {
 //            Utils.log(TAG, "is dragging");
             Vector3 viewportSize = scenes.get(1).getActiveCamera().getViewportSize();
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
+            world.getActiveObject().getNode().getPosition().addInPlace(temp);
 //            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveObject().getNode().setRotation(0, 0, angle);
+            world.getActiveObject().getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);
@@ -173,18 +171,16 @@ public class Game implements IGame{
             temp2.mulInPlace(40);
 
             Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
-            Vector3 temp3 = Vector3.createNew(temp2.x, temp2.y, camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
-
+            Vector3 temp3 = Vector3.createNew(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
 
             scenes.get(0).getActiveCamera().setPosition(temp3);
+            scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
 
             // send driving impulses
             fireImpulse(angle, temp);
 
 //            temp.recycle();
         }
-
-        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
 
         // Compute elapsed time
         finalDelta = SystemClock.elapsedRealtime() - startTime;
@@ -201,9 +197,7 @@ public class Game implements IGame{
         if(!connection.isConnected()) return;
 
         impulse += finalDelta;
-        if(impulse <= Config.IMPULS_FREQUENCY) {
-            return;
-        }
+        if(impulse <= Config.IMPULS_FREQUENCY) return;
         impulse = 0;
 
         Message message = MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId);
@@ -258,6 +252,7 @@ public class Game implements IGame{
 
                         ArrayList<Entity> entities = updateData.entites;
                         for(int i = 0; i < entities.size(); i++) {
+                            Utils.log(TAG, "response size"+entities.size());
                             Entity serverEntity = entities.get(i);
 
                             // contains?
@@ -265,10 +260,10 @@ public class Game implements IGame{
                             if(entityView == null) {
                                 entityView = new EntityView(serverEntity);
                                 world.getScene().addChild(entityView);
-                                entityView.setAsActiveObject();
                                 Utils.log(TAG, "add new entity"+serverEntity.getUid());
                             } else {
                                 entityView.update(serverEntity);
+                                Utils.log(TAG, "update entity"+serverEntity.getUid());
                             }
                         }
                         break;

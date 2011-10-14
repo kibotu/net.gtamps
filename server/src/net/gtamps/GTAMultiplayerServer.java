@@ -28,7 +28,7 @@ public class GTAMultiplayerServer {
 //		dbHandler.deletePlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 		//new ServerGUI(cm);
-		new ServerGUI(null);
+		new ServerGUI(cm);
 	}
 	
 	/**

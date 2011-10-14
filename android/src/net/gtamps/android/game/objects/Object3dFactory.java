@@ -1,12 +1,8 @@
 package net.gtamps.android.game.objects;
 
-import android.text.Html;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
-
-    private static final String TAG = Object3dFactory.class.getSimpleName();
 
     private Object3dFactory() {
     }

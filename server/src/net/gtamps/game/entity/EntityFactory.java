@@ -61,8 +61,8 @@ public class EntityFactory {
 //		entity.addProperty(new ActivationProperty(entity));
 		PhysicsHandler physicsHandler = new PhysicsHandler(entity, humanBody, PhysicalProperties.Human); 
 		entity.setHandler(physicsHandler);
-		entity.setHandler(new SensorDoorHandler(entity));
-		entity.setHandler(new ShootingHandler(entity, em));
+		//entity.setHandler(new SensorDoorHandler(entity));
+		//entity.setHandler(new ShootingHandler(entity, em));
 		return entity;
 	}
 	
@@ -82,6 +82,9 @@ public class EntityFactory {
 		spawnBody.setUserData(entity);
 		entity.setSilent(true);
 //		entity.addProperty(new PositionProperty(pixX,pixY,0, entity));
+		entity.x.set(pixX);
+		entity.y.set(pixY);
+		entity.rota.set(rotation);
 		// TODO collisionHandler
 		return entity;
 	}
