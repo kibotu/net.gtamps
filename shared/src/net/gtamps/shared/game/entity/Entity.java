@@ -1,5 +1,7 @@
 package net.gtamps.shared.game.entity;
 
+import android.text.Html;
+import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 //import net.gtamps.game.player.PlayerManager;
@@ -51,7 +53,6 @@ public class Entity extends GameActor implements Serializable {
 
     private Type getType(String name) {
         try {
-            System.out.println("ENTITY TYPE: "+name.toUpperCase());
            return Type.valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
             return Type.PLACEHOLDER;
