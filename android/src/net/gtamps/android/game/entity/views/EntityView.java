@@ -32,7 +32,6 @@ public class EntityView implements IObject3d, IDirty {
      */
     public EntityView(@NotNull Entity entity) {
         this.entity = entity;
-        Utils.log(TAG, "\n\n\nENTITY TYPE: "+entity.type+"\n\n");
         object3d = Object3dFactory.create(entity.type);
         isDirty = true;
         onDirty();
