@@ -86,15 +86,16 @@ public class PureVboNode extends VboBaseNode {
 		final GL11 gl11 = (GL11) gl;
 
 		// enable texture
-		gl11.glEnable(GL10.GL_TEXTURE_2D);
-
-        if(hasMipMap && gl instanceof GL11) {
+        if(texturesEnabled) {
+            gl11.glEnable(GL10.GL_TEXTURE_2D);
+            if(hasMipMap && gl instanceof GL11) {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR_MIPMAP_NEAREST);
-		} else {
-            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-		}
+            } else {
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+            }
+        }
 
-		gl11.glEnable(GL11.GL_COLOR_MATERIAL);
+        gl11.glEnable(GL11.GL_COLOR_MATERIAL);
 
 		// set active texture
 		// gl.glActiveTexture(_currentTextureId);
