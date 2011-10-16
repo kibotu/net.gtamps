@@ -1,5 +1,6 @@
 package net.gtamps.android.game.objects;
 
+import net.gtamps.android.core.graph.PureVboNode;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
 import net.gtamps.shared.game.entity.Entity;
@@ -20,6 +21,7 @@ final public class Object3dFactory {
         switch (type) {
             case CAR_CAMARO: object3d = createCarCamaro(); break;
             case CAR_RIVIERA: object3d = createCarRiveria(); break;
+            case CAR_CHEVROLET_CORVETTE: object3d = createCarChevroletCorvette(); break;
             case HUMAN: object3d = createHuman(); break;
             case HOUSE: object3d = createHouse(); break;
             case BULLET: object3d = createBullet(); break;
@@ -29,6 +31,12 @@ final public class Object3dFactory {
             default: object3d = new Cube(); break;
         }
         return object3d;
+    }
+
+    private static IObject3d createCarChevroletCorvette() {
+        IObject3d car = new Car(Car.Type.CHEVROLET_CORVETTE);
+        ((PureVboNode)car.getNode()).enableTextures(false);
+        return car;
     }
 
     private static IObject3d createCarRiveria() {

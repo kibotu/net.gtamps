@@ -10,7 +10,8 @@ public class Car extends PureVboNode implements IObject3d {
 
     public enum Type {
         CAMARO(R.raw.camaro2, R.drawable.camaro),
-        RIVIERA(R.raw.riviera, R.drawable.riviera);
+        RIVIERA(R.raw.riviera, R.drawable.riviera),
+        CHEVROLET_CORVETTE(R.raw.chevroletcorvette,R.drawable.placeholder);
         public final int rawId;
         public final int drawableId;
         private Type(final int rawId, final int drawableId) {
