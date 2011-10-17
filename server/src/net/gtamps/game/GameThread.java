@@ -75,7 +75,7 @@ public class GameThread extends Thread implements IGameThread {
 		{
 			world = mapParser.getWorld();
 			physics = mapParser.getPhysics();
-			eventManager = new EventManager(EVENT_TIMEOUT);
+			eventManager = new EventManager();
 			entityManager = new EntityManager(world);
 			playerManager = new PlayerManager(world, entityManager);
 			
@@ -104,24 +104,25 @@ public class GameThread extends Thread implements IGameThread {
 
 	@Override
 	public Element getUpdatesAsXML(long revisionId) {
-		List<Element> entityElements = entityManager.getUpdate(revisionId, revisionKeeper);
-		List<Element> eventElements = eventManager.getUpdate(revisionId, revisionKeeper);
+//		List<Element> entityElements = entityManager.getUpdate(revisionId, revisionKeeper);
+//		List<Element> eventElements = eventManager.getUpdate(revisionId, revisionKeeper);
 
 //		if (revisionKeeper.updateIsRequired()) {
 //			Logger.i().log(TAG, "returning update " + revisionKeeper);
 //		}
 
-		revisionKeeper.updateRevision(this);
-		if (entityElements.size() == 0 && eventElements.size() == 0) {
-			return null;
-		}
-		Element update = new Element(XmlElements.UPDATE.tagName());
-		update.addContent(entityElements);
-		update.addContent(eventElements);
-		String revTag = XmlElements.ATTRIB_REVISION.tagName();
-		Attribute rev = new Attribute(revTag, ""+revisionKeeper.getCurrentRevision());
-		update.setAttribute(rev);
-		return update;
+//		revisionKeeper.updateRevision(this);
+//		if (entityElements.size() == 0 && eventElements.size() == 0) {
+//			return null;
+//		}
+//		Element update = new Element(XmlElements.UPDATE.tagName());
+//		update.addContent(entityElements);
+//		update.addContent(eventElements);
+//		String revTag = XmlElements.ATTRIB_REVISION.tagName();
+//		Attribute rev = new Attribute(revTag, ""+revisionKeeper.getCurrentRevision());
+//		update.setAttribute(rev);
+//		return update;
+		return null;
 	}
 	
 	
@@ -241,7 +242,7 @@ public class GameThread extends Thread implements IGameThread {
 
 
 	@Override
-	public void hardstop() {int uidDelta =
+	public void hardstop() {
 		this.run = false;
 		this.interrupt();
 	}

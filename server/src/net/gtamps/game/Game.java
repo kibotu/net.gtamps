@@ -70,11 +70,11 @@ public class Game extends Thread implements IGame {
 	private boolean isRunning = false;
 	private boolean run = true;
 	
-	private EventManager eventManager;
-	private PlayerManager playerManager;
-	private EntityManager entityManager;
+//	private EventManager eventManager;
+//	private PlayerManager playerManager;
+//	private EntityManager entityManager;
+//	private Box2DEngine physics;
 	private World world;
-	private Box2DEngine physics;
 	
 	//temp
 	private int lastPlayerId = -1;
@@ -101,20 +101,15 @@ public class Game extends Thread implements IGame {
 		MapParser mapParser = new MapParser(mapXML);
 		{
 			world = mapParser.getWorld();
-			physics = mapParser.getPhysics();
-			eventManager = new EventManager(EVENT_TIMEOUT);
-			entityManager = new EntityManager(world);
-			playerManager = new PlayerManager(world, entityManager);
+//			physics = mapParser.getPhysics();
+//			eventManager = new EventManager();
+//			entityManager = new EntityManager(world);
+//			playerManager = new PlayerManager(world, entityManager);
 			
-			eventManager.addEventListener(EventType.ACTION_EVENT, playerManager);
-			eventManager.addEventListener(EventType.SESSION_EVENT, entityManager);
-			eventManager.addEventListener(EventType.SESSION_EVENT, playerManager);
-			playerManager.addEventListener(EventType.PLAYER_EVENT, eventManager);
-			entityManager.addEventListener(EventType.ENTITY_EVENT, eventManager);
 			
-			mapParser.populateWorld(entityManager);
+			mapParser.populateWorld(world.entityManager);
 			
-			eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
+			world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
 			this.start();
 		}
 	}
@@ -134,15 +129,10 @@ public class Game extends Thread implements IGame {
 	private Iterable<Entity> getUpdates(long revisionId) {
 		ArrayList<Entity> updates = new ArrayList<Entity>();
 		if (lastPlayerId >=0) {
-			updates.add(playerManager.getPlayer(lastPlayerId).getEntity());
+			updates.add(world.playerManager.getPlayer(lastPlayerId).getEntity());
 		}
 		return updates;
 	}
-
-	
-	
-
-
 	
 	@Override
 	public void run() {
@@ -150,8 +140,8 @@ public class Game extends Thread implements IGame {
 			float timeElapsedInSeconds = (float) ((System.nanoTime()-lastTime)/1000000000.0);
 			long timeElapsedPhysicsCalculation = System.nanoTime();
 			lastTime = System.nanoTime();
-			this.physics.step(timeElapsedInSeconds, PHYSICS_ITERATIONS);
-			this.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
+			world.physics.step(timeElapsedInSeconds, PHYSICS_ITERATIONS);
+			world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
 			timeElapsedPhysicsCalculation = (System.nanoTime()-lastTime)/1000000;
 
 			//for fps debugging
@@ -249,14 +239,13 @@ public class Game extends Thread implements IGame {
 	
 	private Response update(int puid, Request sendable) {
 		long baseRevision = ((RevisionData) sendable.getData()).revisionId;
-		List<Entity> entities = entityManager.getUpdate(baseRevision);
-		UpdateData update = new UpdateData(entityManager.getCurrentRevision());
+		ArrayList<Entity> entities = world.entityManager.getUpdate(baseRevision);
+		UpdateData update = new UpdateData(world.getRevision());
 		update.entites = entities;
 		Response updateResponse = new Response(Response.Status.OK, sendable);
 		updateResponse.setData(update);
 		return updateResponse;
 	}
-
 
 	private void handleResponse(Session s, Response r) {
 		assert s != null;
@@ -270,7 +259,7 @@ public class Game extends Thread implements IGame {
 	}
 	
 	private void command(int playeruid, Command cmd) {
-		Player player = playerManager.getPlayer(playeruid);
+		Player player = world.playerManager.getPlayer(playeruid);
 		assert player != null;
 		assert cmd != null;
 		
@@ -300,33 +289,32 @@ public class Game extends Thread implements IGame {
 			break;
 		}
 		if (type != null) {
-			eventManager.dispatchEvent(new GameEvent(type, player));
+			world.eventManager.dispatchEvent(new GameEvent(type, player));
 		}
 	}
 
 	private void getMapData() {
 		//return world.toXMLElement(0, revisionKeeper);
 		// TODO
-		return null;
 	}
 
 	private Response joinPlayer(int uid, Request sendable) {
-		if (!playerManager.hasPlayer(uid)) {
+		if (!world.playerManager.hasPlayer(uid)) {
 			return new Response(Response.Status.NEED, sendable);
 		}
-		boolean ok = playerManager.spawnPlayer(uid);
+		boolean ok = world.playerManager.spawnPlayer(uid);
 		Response.Status status = ok ? Response.Status.OK : Response.Status.BAD;
 		return new Response(status, sendable);
 	}
 
 	private Response leavePlayer(int uid, Request sendable) {
-		playerManager.deactivatePlayer(uid);
+		world.playerManager.deactivatePlayer(uid);
 		return new Response(Response.Status.OK, sendable);
 	}
 
 	private int createPlayer(String name) {
 		assert name != null;
-		Player player = playerManager.createPlayer(name);
+		Player player = world.playerManager.createPlayer(name);
 		
 		// TEMP
 		this.lastPlayerId = player.getUid();
@@ -335,7 +323,8 @@ public class Game extends Thread implements IGame {
 	}
 	
 	private void getPlayer(int uid) {
-		return playerManager.getPlayer(uid);
+		//TODO
+//		return playerManager.getPlayer(uid);
 	}
 	
 

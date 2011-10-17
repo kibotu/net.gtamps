@@ -16,15 +16,10 @@ import org.jdom.Element;
 
 public class EventManager extends GameActor {
 	
-	private final long eventTimeout;
 	private final Set<GameEvent> archive = Collections.synchronizedSet(new HashSet<GameEvent>());
 	
-	public EventManager(long eventTimeout) {
+	public EventManager() {
 		super("EventManager");
-		if (eventTimeout < 0) {
-			throw new IllegalArgumentException("'eventTimeout' must be > 0");
-		}
-		this.eventTimeout = eventTimeout;
 		
 		// all received events will be communicated via getUpdate()
 		this.addEventListener(EventType.GAME_EVENT, this);

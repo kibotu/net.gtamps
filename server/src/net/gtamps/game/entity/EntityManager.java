@@ -1,5 +1,6 @@
 package net.gtamps.game.entity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -112,8 +113,8 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 	}
 
 	//TODO
-	public List<Entity> getUpdate(long baseRevision) {
-		List<Entity> update = new LinkedList<Entity>();
+	public ArrayList<Entity> getUpdate(long baseRevision) {
+		ArrayList<Entity> update = new ArrayList<Entity>();
 //		for (Entity entity: entities.values()) {
 //			Element xml = entity.toXMLElement(baseRevision, keeper);
 //			if (xml != null) {
