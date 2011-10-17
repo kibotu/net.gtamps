@@ -1,4 +1,4 @@
-package net.gtamps.shared.communication;
+package net.gtamps.shared.communication.data;
 
 import net.gtamps.shared.game.entity.Entity;
 

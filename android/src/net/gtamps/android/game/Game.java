@@ -11,6 +11,7 @@ import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.*;
+import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
@@ -121,15 +122,7 @@ public class Game implements IGame{
         while(!connection.isEmpty()) {
             Message message = connection.poll();
             for(int i = 0; i < message.sendables.size(); i++) {
-                ISendable sendable = message.sendables.get(i);
-                // message is request
-//                if(sendable instanceof Request) {
-//                    handleRequest((Request) sendable, message);
-//                }
-                // message is response
-                if(sendable instanceof Response) {
-                    handleResponse((Response) sendable, message);
-                }
+                handleMessage(message.sendables.get(i));
             }
         }
 
@@ -191,7 +184,6 @@ public class Game implements IGame{
         // animate
     }
 
-
     private long impulse = 0;
     private void fireImpulse(float angle, Vector3 force) {
         if(!connection.isConnected()) return;
@@ -237,9 +229,16 @@ public class Game implements IGame{
         return value >= Math.min(startRange,endRange) && value <= Math.max(startRange,endRange);
     }
 
+    private void handleMessage(Sendable sendable) {
+        Utils.log(TAG, "Handles message.");
+        Utils.log(TAG, ""+sendable);
+
+        switch (sendable.type) {
+
+        }
+    }
+
     private void handleResponse(Response response, Message message) {
-        Utils.log(TAG, "Handles response.");
-        Utils.log(TAG, ""+response.toString());
 
         switch (response.requestType) {
             case GETUPDATE:
