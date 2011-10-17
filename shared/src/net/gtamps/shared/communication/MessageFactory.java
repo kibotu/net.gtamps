@@ -1,6 +1,7 @@
 package net.gtamps.shared.communication;
 
 import net.gtamps.shared.communication.data.AuthentificationData;
+import net.gtamps.shared.communication.data.FloatData;
 import net.gtamps.shared.communication.data.RevisionData;
 
 final public class MessageFactory {
@@ -40,19 +41,31 @@ final public class MessageFactory {
         return new Message(new Sendable(SendableType.GETUPDATE, new RevisionData(revId)));
     }
 
-    public static Message createOkCommand() {
-        return new Message(new Sendable(SendableType.OK));
+    public static Message createAccelerateCommand(float value) {
+        return new Message(new Sendable(SendableType.ACCELERATE, new FloatData(value)));
     }
 
-    public static Message createNeedCommand() {
-        return new Message(new Sendable(SendableType.NEED));
+    public static Message createDecelerateCommand(float value) {
+        return new Message(new Sendable(SendableType.DECELERATE, new FloatData(value)));
     }
 
-    public static Message createBadCommand() {
-        return new Message(new Sendable(SendableType.BAD));
+    public static Message createRightCommand(float value) {
+        return new Message(new Sendable(SendableType.RIGHT, new FloatData(value)));
     }
 
-    public static Message createErrorCommand() {
-        return new Message(new Sendable(SendableType.ERROR));
+    public static Message createLeftCommand(float value) {
+        return new Message(new Sendable(SendableType.LEFT, new FloatData(value)));
+    }
+
+    public static Message createJoinCommand() {
+        return new Message(new Sendable(SendableType.ENTEREXIT));
+    }
+
+    public static Message createRegisterCommand() {
+        return new Message(new Sendable(SendableType.SHOOT));
+    }
+
+    public static Message createLoginCommand() {
+        return new Message(new Sendable(SendableType.HANDBRAKE));
     }
 }
