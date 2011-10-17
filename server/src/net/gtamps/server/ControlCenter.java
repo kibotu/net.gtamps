@@ -110,13 +110,26 @@ public class ControlCenter extends Thread {
 	}
 	
 	private void handleUnauthenticatedRequest(Session s, Request request) {
-		// TODO Auto-generated method stub
-		
+		switch(request.type) {
+			case SESSION:
+			case REGISTER:
+			case LOGIN:
+			default:
+				break;
+		}
 	}
 
 	private void handleAuthenticatedRequest(Session s, Request request) {
-		// TODO Auto-generated method stub
-		
+		if (!s.isAuthenticated()) {
+			Response resp = new Response(Response.Status.NEED, request);
+			this.handleResponse(resp);
+			return;
+		}
+		switch(request.type) {
+			case JOIN:
+			default:
+				break;
+		}
 	}
 
 	private void handlePlayingRequest(Session s, Request request) {
@@ -151,6 +164,8 @@ public class ControlCenter extends Thread {
 //		return game;
 		return null;
 	}
+	
+
 	
 	
 }
