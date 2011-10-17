@@ -234,13 +234,14 @@ public class GameThread extends Thread implements IGameThread {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
 
 
 	@Override
-	public void hardstop() {
+	public void hardstop() {int uidDelta =
 		this.run = false;
 		this.interrupt();
 	}

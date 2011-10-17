@@ -23,6 +23,9 @@ import net.gtamps.shared.communication.Command;
 import net.gtamps.shared.communication.ISendable;
 import net.gtamps.shared.communication.Request;
 import net.gtamps.shared.communication.Response;
+import net.gtamps.shared.communication.RevisionData;
+import net.gtamps.shared.communication.UpdateData;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -225,7 +228,8 @@ public class Game extends Thread implements IGame {
 			Response response = null;
 			switch(pair.sendable.type) {
 				case JOIN:
-					response = joinPlayer(session, pair.sendable); 
+					puid = createPlayer("test");
+					response = joinPlayer(puid, pair.sendable); 
 					break;
 				case LEAVE: 
 					response = leavePlayer(puid, pair.sendable); 
@@ -243,6 +247,17 @@ public class Game extends Thread implements IGame {
 		requestPairs.clear();
 	}
 	
+	private Response update(int puid, Request sendable) {
+		long baseRevision = ((RevisionData) sendable.getData()).revisionId;
+		List<Entity> entities = entityManager.getUpdate(baseRevision);
+		UpdateData update = new UpdateData(entityManager.getCurrentRevision());
+		update.entites = entities;
+		Response updateResponse = new Response(Response.Status.OK, sendable);
+		updateResponse.setData(update);
+		return updateResponse;
+	}
+
+
 	private void handleResponse(Session s, Response r) {
 		assert s != null;
 		assert r != null;
@@ -304,8 +319,9 @@ public class Game extends Thread implements IGame {
 		return new Response(status, sendable);
 	}
 
-	private void leavePlayer(int uid) {
+	private Response leavePlayer(int uid, Request sendable) {
 		playerManager.deactivatePlayer(uid);
+		return new Response(Response.Status.OK, sendable);
 	}
 
 	private int createPlayer(String name) {
