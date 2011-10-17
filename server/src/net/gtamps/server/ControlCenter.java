@@ -16,9 +16,9 @@ import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.Request;
 import net.gtamps.shared.communication.Response;
 
-public class ControlCenter extends Thread {
+public class ControlCenter extends Thread implements IMessageHandler {
 
-	public static final ControlCenter instance = new ControlCenter();
+	public static final IMessageHandler instance = new ControlCenter();
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
@@ -41,7 +41,11 @@ public class ControlCenter extends Thread {
 		}
 	}
 	
-	public void receiveMessage(Message msg) {
+	/* (non-Javadoc)
+	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
+	 */
+	@Override
+	public void receiveMessage(Connection c, Message msg) {
 		if (msg != null) {
 			inbox.add(msg);
 		}

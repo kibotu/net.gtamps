@@ -7,6 +7,6 @@ import org.xsocket.connection.INonBlockingConnection;
 
 public interface ISocketHandler extends IDataHandler, IConnectHandler, IDisconnectHandler {
 	
-	public void send(INonBlockingConnection nbc, byte[] bytes);
+	public void send(String connectionId, byte[] bytes);
 
 }

@@ -25,7 +25,7 @@ import org.xsocket.connection.NonBlockingConnection;
  * @author til
  * 
  */
-public class TestXSocketHandler implements ISocketHandler {
+public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler {
 	private static final LogType TAG = LogType.SERVER;
 
 	// This is where we will keep all active connections
@@ -33,19 +33,15 @@ public class TestXSocketHandler implements ISocketHandler {
 	// Collections.synchronizedSet(new HashSet<INonBlockingConnection>());
 
 	// ConnectionID, Connection
-	//private ConcurrentHashMap<String, INonBlockingConnection> connections =  new ConcurrentHashMap<String, INonBlockingConnection>();
-	private ConcurrentHashMap<String, Connection> connections =  new ConcurrentHashMap<String, Connection>();
-	private MessageCenter msgCenter;
-	private ISerializer serializer;
+	private ConcurrentHashMap<String, INonBlockingConnection> actualConnections =  new ConcurrentHashMap<String, INonBlockingConnection>();
+	private final ConcurrentHashMap<String, Connection<?,?>> abstractConnections =  new ConcurrentHashMap<String, Connection<?,?>>();
+	
+	private final S serializer;
 
-	public TestXSocketHandler(MessageCenter msgCenter, ISerializer serializer) {
-		if (msgCenter == null) {
-			throw new IllegalArgumentException("'msgCenter' must not be null");
-		}
+	public TestXSocketHandler(S serializer) {
 		if (serializer == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
-		this.msgCenter = msgCenter;
 		this.serializer = serializer;
 	}
 
@@ -133,7 +129,7 @@ public class TestXSocketHandler implements ISocketHandler {
 	private void receive(INonBlockingConnection nbc, byte[] data) {
 		//System.out.println(new String(data));
 		//send(nbc, data)
-		Connection c = connections.get(nbc.getId());
+		Connection<?,?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
 	}
 	
@@ -143,7 +139,7 @@ public class TestXSocketHandler implements ISocketHandler {
 			String id = nbc.getId();
 			System.out.println("Closed Connection: " + id);
 			Logger.i().log(LogType.SERVER, "Closed Connection: " + id);
-			connections.remove(id);
+			abstractConnections.remove(id);
 //		}
 		return true;
 	}
@@ -163,12 +159,13 @@ public class TestXSocketHandler implements ISocketHandler {
 			String id = nbc.getId();
 			System.out.println("New Connection: " + id);
 			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-			connections.put(id, new Connection(nbc, this, serializer, msgCenter));
+			abstractConnections.put(id, new Connection<TestXSocketHandler<S>,S>(nbc.getId(), this, serializer));
 //		}
 		return true;
 	}
 
-	public void send(INonBlockingConnection nbc, byte[] bytes) {
+	public void send(String connectionId, byte[] bytes) {
+		INonBlockingConnection nbc = actualConnections.get(connectionId);
 		int length = bytes.length;
 		if (length < 1) {
 			return;

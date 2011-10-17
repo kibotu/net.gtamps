@@ -20,7 +20,7 @@ public class XSocketServer implements Runnable
 	
 //	MessageHandler messageHandler;
   
-    public XSocketServer(ISerializer serializer, MessageCenter msgCenter) {
+    public XSocketServer(ISerializer serializer) {
     	if (serializer == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
@@ -49,7 +49,7 @@ public class XSocketServer implements Runnable
 	public void run() {
 		try
         {
-            srv = new Server(PORT, new TestXSocketHandler(msgCenter, serializer));
+            srv = new Server(PORT, new TestXSocketHandler(serializer));
             srv.run();
             isOnline = true;
         }

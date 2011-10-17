@@ -1,19 +1,21 @@
 package net.gtamps.server;
 
-import org.xsocket.connection.INonBlockingConnection;
-
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 
-public class Connection {
-	private final ISocketHandler socketHandler;
-	private final ISerializer serializer;
-	private final INonBlockingConnection nbc;
-	private final MessageCenter msgCenter;
+/**
+ * immutable!
+ * 
+ *
+ */
+public final class Connection<H extends ISocketHandler, S extends ISerializer> {
+	private final H socketHandler;
+	private final S serializer;
+	private final String id;
 
-	public Connection(INonBlockingConnection nbc, ISocketHandler socketHandler, ISerializer serializer, MessageCenter msgCenter) {
-		if (nbc == null) {
-			throw new IllegalArgumentException("'nbc' must not be null");
+	public Connection(String id, H socketHandler, S serializer) {
+		if (id == null) {
+			throw new IllegalArgumentException("'id' must not be null");
 		}
 		if (socketHandler == null) {
 			throw new IllegalArgumentException("'socketHandler' must not be null");
@@ -23,26 +25,27 @@ public class Connection {
 		}
 		this.socketHandler = socketHandler;
 		this.serializer = serializer;
-		this.nbc = nbc;
-		this.msgCenter = msgCenter;
+		this.id = id;
 	}
 	
 	public void send(Message msg) {
-		socketHandler.send(nbc, serializer.serializeMessage(msg));
+		socketHandler.send(id, serializer.serializeMessage(msg));
 	}
 	
 	public void onData(byte[] bytes) {
 		if (bytes == null) {
 			throw new IllegalArgumentException("'bytes' must not be null");
 		}
-		msgCenter.receiveMessage(this, serializer.deserializeMessage(bytes));
+		Message m = serializer.deserializeMessage(bytes);
+		SessionManager.instance.receiveMessage(this, m);
+		ControlCenter.instance.receiveMessage(this, m);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((nbc == null) ? 0 : nbc.getId().hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -57,12 +60,18 @@ public class Connection {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Connection other = (Connection) obj;
-		if (nbc == null) {
-			if (other.nbc != null) {
+		Connection<?,?> other = (Connection<?,?>) obj;
+		if (this.socketHandler.getClass() != other.socketHandler.getClass()) {
+			return false;
+		}
+		if (this.serializer.getClass() != other.serializer.getClass()) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
 				return false;
 			}
-		} else if (!nbc.getId().equals(other.nbc.getId())) {
+		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		return true;
