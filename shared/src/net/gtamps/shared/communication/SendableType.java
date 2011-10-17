@@ -2,7 +2,7 @@ package net.gtamps.shared.communication;
 
 public enum SendableType {
 
-    // requests
+    // requests / responses
     GETUPDATE,
     GETPLAYER,
     JOIN,
@@ -12,11 +12,41 @@ public enum SendableType {
     SESSION,
     GETMAPDATA,
 
-    // responses
-    OK,
-    NEED,
-    BAD,
-    ERROR,
+    GETUPDATE_OK,
+    GETPLAYER_OK,
+    JOIN_OK,
+    LEAVE_OK,
+    LOGIN_OK,
+    REGISTER_OK,
+    SESSION_OK,
+    GETMAPDATA_OK,
+
+    GETUPDATE_NEED,
+    GETPLAYER_NEED,
+    JOIN_NEED,
+    LEAVE_NEED,
+    LOGIN_NEED,
+    REGISTER_NEED,
+    SESSION_NEED,
+    GETMAPDATA_NEED,
+
+    GETUPDATE_BAD,
+    GETPLAYER_BAD,
+    JOIN_BAD,
+    LEAVE_BAD,
+    LOGIN_BAD,
+    REGISTER_BAD,
+    SESSION_BAD,
+    GETMAPDATA_BAD,
+
+    GETUPDATE_ERROR,
+    GETPLAYER_ERROR,
+    JOIN_ERROR,
+    LEAVE_ERROR,
+    LOGIN_ERROR,
+    REGISTER_ERROR,
+    SESSION_ERROR,
+    GETMAPDATA_ERROR,
 
     // commands
     ACCELERATE,
