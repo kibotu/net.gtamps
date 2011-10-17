@@ -1,7 +1,7 @@
 package net.gtamps.shared.communication;
 
-import net.gtamps.shared.communication.*;
-import org.jetbrains.annotations.NotNull;
+import net.gtamps.shared.communication.data.AuthentificationData;
+import net.gtamps.shared.communication.data.RevisionData;
 
 final public class MessageFactory {
 
@@ -9,38 +9,50 @@ final public class MessageFactory {
     }
 
     public static Message createSessionRequest() {
-        return new Message(new Request(Request.Type.SESSION));
-    }
-
-    public static Message createCommand(Command.Type type, float percent) {
-        return new Message(new Command(type,percent));
+        return new Message(new Sendable(SendableType.SESSION));
     }
 
     public static Message createLoginRequest(String username, String password) {
-        return new Message(new Request(Request.Type.LOGIN, new AuthentificationData(username,password)));
+        return new Message(new Sendable(SendableType.LOGIN, new AuthentificationData(username,password)));
     }
 
     public static Message createRegisterRequest(String username, String password) {
-        return new Message(new Request(Request.Type.REGISTER, new AuthentificationData(username,password)));
+        return new Message(new Sendable(SendableType.REGISTER, new AuthentificationData(username,password)));
     }
 
     public static Message createJoinRequest() {
-        return new Message(new Request(Request.Type.JOIN));
+        return new Message(new Sendable(SendableType.JOIN));
     }
 
     public static Message createLeaveRequest() {
-        return new Message(new Request(Request.Type.LEAVE));
+        return new Message(new Sendable(SendableType.LEAVE));
     }
 
     public static Message createGetMapDataRequest() {
-        return new Message(new Request(Request.Type.GETMAPDATA));
+        return new Message(new Sendable(SendableType.GETMAPDATA));
     }
 
     public static Message createGetPlayerRequest() {
-        return new Message(new Request(Request.Type.GETPLAYER));
+        return new Message(new Sendable(SendableType.GETPLAYER));
     }
 
     public static Message createGetUpdateRequest(long revId) {
-        return new Message(new Request(Request.Type.GETUPDATE, new RevisionData(revId)));
+        return new Message(new Sendable(SendableType.GETUPDATE, new RevisionData(revId)));
+    }
+
+    public static Message createOkCommand() {
+        return new Message(new Sendable(SendableType.OK));
+    }
+
+    public static Message createNeedCommand() {
+        return new Message(new Sendable(SendableType.NEED));
+    }
+
+    public static Message createBadCommand() {
+        return new Message(new Sendable(SendableType.BAD));
+    }
+
+    public static Message createErrorCommand() {
+        return new Message(new Sendable(SendableType.ERROR));
     }
 }
