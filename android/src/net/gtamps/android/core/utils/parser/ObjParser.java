@@ -1,18 +1,18 @@
 package net.gtamps.android.core.utils.parser;
 
+import android.graphics.Bitmap;
+import net.gtamps.android.Registry;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.android.core.utils.Utils;
+import net.gtamps.android.game.objects.ParsedObject;
+import net.gtamps.shared.math.Vector3;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.StringTokenizer;
-
-import android.graphics.Bitmap;
-import net.gtamps.android.Registry;
-import net.gtamps.android.core.utils.Color4;
-import net.gtamps.shared.math.Vector3;
-import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.game.objects.ParsedObject;
 
 /**
  * Parses Wavefront OBJ files. Basic version, this is still a work in progress!
@@ -48,7 +48,8 @@ public class ObjParser extends AParser implements IParser {
 	public void parse() {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 
-		InputStream fileIn = Registry.getContext().getResources().openRawResource(Registry.getContext().getResources().getIdentifier(resourceID, null, null));
+		InputStream fileIn = Registry.getContext().getResources().openRawResource(Registry.getContext().getResources().getIdentifier(resourceID, null, packageID));
+
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(fileIn));
 		String line;
 		co = new ParseObjectData(vertices, texCoords, normals);
@@ -59,6 +60,9 @@ public class ObjParser extends AParser implements IParser {
 
 		try {
 			while ((line = buffer.readLine()) != null) {
+
+                Utils.log(TAG,  line);
+
 				// remove duplicate whitespace
 				// line = line.replaceAll("\\s+", " ");
 				// String[] parts = line.split(" ");
@@ -114,6 +118,8 @@ public class ObjParser extends AParser implements IParser {
 		} catch (IOException e) {
 			Utils.log(TAG, "" + e.getMessage());
 		}
+
+        Utils.log("ObjParser", ""+co);
 
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		Utils.log(TAG, "End time " + (endTime - startTime));
