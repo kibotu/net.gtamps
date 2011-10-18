@@ -20,7 +20,7 @@ public class GTAMultiplayerServer {
 	 */
 	public static void main(String[] args) {
 		Logger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-		ConnectionManagerII cm = ServerChainFactory.createServerChainII();
+		ServerChainFactory.createServerChainII();
 		ServerChainFactory.startHTTPServer(DEFAULT_PATH);
 //		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
 //		dbHandler.createPlayer("tom", "mysecretpassword");
@@ -28,7 +28,7 @@ public class GTAMultiplayerServer {
 //		dbHandler.deletePlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 		//new ServerGUI(cm);
-		new ServerGUI(cm);
+		new ServerGUI();
 	}
 	
 	/**

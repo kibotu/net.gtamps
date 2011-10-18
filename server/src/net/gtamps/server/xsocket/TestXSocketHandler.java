@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.gtamps.server.Connection;
 import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.MessageCenter;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.ISerializer;
@@ -34,7 +33,7 @@ public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler
 
 	// ConnectionID, Connection
 	private ConcurrentHashMap<String, INonBlockingConnection> actualConnections =  new ConcurrentHashMap<String, INonBlockingConnection>();
-	private final ConcurrentHashMap<String, Connection<?,?>> abstractConnections =  new ConcurrentHashMap<String, Connection<?,?>>();
+	private final ConcurrentHashMap<String, Connection<?>> abstractConnections =  new ConcurrentHashMap<String, Connection<?>>();
 	
 	private final S serializer;
 
@@ -129,7 +128,7 @@ public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler
 	private void receive(INonBlockingConnection nbc, byte[] data) {
 		//System.out.println(new String(data));
 		//send(nbc, data)
-		Connection<?,?> c = abstractConnections.get(nbc.getId());
+		Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
 	}
 	
@@ -159,7 +158,7 @@ public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler
 			String id = nbc.getId();
 			System.out.println("New Connection: " + id);
 			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-			abstractConnections.put(id, new Connection<TestXSocketHandler<S>,S>(nbc.getId(), this, serializer));
+			abstractConnections.put(id, new Connection<TestXSocketHandler<S>>(nbc.getId(), this, serializer));
 //		}
 		return true;
 	}

@@ -51,15 +51,9 @@ public class ServerChainFactory {
 		}
 	}
 
-	public static ConnectionManagerII createServerChainII() {
-		MessageCenter msgCenter = new MessageCenter();
-		ConnectionManagerII connectionManager = new ConnectionManagerII(msgCenter);
-		msgCenter.setRequestHandler(connectionManager);
-		msgCenter.setCommandHandler(connectionManager);
+	public static void createServerChainII() {
 		ISerializer serializer = new ObjectSerializer();
-		ISocketHandler socketHandler = new TestXSocketHandler(msgCenter, serializer);
-		new Thread(new XSocketServer(serializer, msgCenter)).start();
-		return connectionManager;
+		new Thread(new XSocketServer(serializer)).start();
 	}
 
 }

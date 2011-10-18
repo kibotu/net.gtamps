@@ -6,7 +6,7 @@ public class Session {
 	
 	
 	private final String id;
-	private volatile Connection<?,?> connection;
+	private volatile Connection<?> connection;
 	private volatile boolean isAuthenticated = false;
 	private volatile boolean isPlaying = false;
 	private volatile IGame game = null;
@@ -38,7 +38,7 @@ public class Session {
 		return this.isPlaying;
 	}
 	
-	public Connection<?,?> getConnection() {
+	public Connection<?> getConnection() {
 		return this.connection;
 	}
 	
@@ -81,7 +81,7 @@ public class Session {
 		return true;
 	}
 	
-	void setConnection(Connection<?,?> connection) {
+	void setConnection(Connection<?> connection) {
 		this.connection = connection;
 	}
 	

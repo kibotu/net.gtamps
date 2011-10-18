@@ -7,18 +7,17 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.gtamps.game.GameThread;
+import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
-import net.gtamps.game.IGameThread;
 import net.gtamps.shared.communication.Command;
 import net.gtamps.shared.communication.ISendable;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.Request;
 import net.gtamps.shared.communication.Response;
 
-public class ControlCenter extends Thread implements IMessageHandler {
+public class ControlCenter implements Runnable, IMessageHandler {
 
-	public static final IMessageHandler instance = new ControlCenter();
+	public static final ControlCenter instance = new ControlCenter();
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
@@ -28,9 +27,10 @@ public class ControlCenter extends Thread implements IMessageHandler {
 	private Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
 	private Map<Integer, Session> sessionCache = new HashMap<Integer, Session>();
 	
+	private IGame game;
+	
 	private ControlCenter() {
-		super("ControlCenter");
-		this.start();
+		new Thread(this, "ControlCenter").start();
 	}
 	
 	public void run() {
@@ -45,7 +45,7 @@ public class ControlCenter extends Thread implements IMessageHandler {
 	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
 	 */
 	@Override
-	public void receiveMessage(Connection c, Message msg) {
+	public void receiveMessage(Connection<?> c, Message msg) {
 		if (msg != null) {
 			inbox.add(msg);
 		}
@@ -55,6 +55,12 @@ public class ControlCenter extends Thread implements IMessageHandler {
 		if (response != null) {
 			responsebox.add(response);
 		}
+	}
+	
+	@Deprecated
+	public void restart() {
+		game.hardstop();
+		createGame(null);
 	}
 	
 	private void processInbox() {
@@ -166,7 +172,8 @@ public class ControlCenter extends Thread implements IMessageHandler {
 //			this.gameThreads.put(game.getId(), game);
 //		}
 //		return game;
-		return null;
+		game = new Game();
+		return game;
 	}
 	
 

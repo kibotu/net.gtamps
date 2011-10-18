@@ -8,12 +8,12 @@ import net.gtamps.shared.communication.Message;
  * 
  *
  */
-public final class Connection<H extends ISocketHandler, S extends ISerializer> {
+public final class Connection<H extends ISocketHandler> {
 	private final H socketHandler;
-	private final S serializer;
+	private final ISerializer serializer;
 	private final String id;
 
-	public Connection(String id, H socketHandler, S serializer) {
+	public Connection(String id, H socketHandler, ISerializer serializer) {
 		if (id == null) {
 			throw new IllegalArgumentException("'id' must not be null");
 		}
@@ -60,7 +60,7 @@ public final class Connection<H extends ISocketHandler, S extends ISerializer> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Connection<?,?> other = (Connection<?,?>) obj;
+		Connection<?> other = (Connection<?>) obj;
 		if (this.socketHandler.getClass() != other.socketHandler.getClass()) {
 			return false;
 		}

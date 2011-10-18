@@ -4,6 +4,6 @@ import net.gtamps.shared.communication.Message;
 
 public interface IMessageHandler {
 
-	public abstract void receiveMessage(Connection<?,?> c, Message msg);
+	public abstract void receiveMessage(Connection<?> c, Message msg);
 
 }

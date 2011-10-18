@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.gtamps.shared.communication.Message;
 
-
 public final class SessionManager implements IMessageHandler {
 	
 	public static final SessionManager instance = new SessionManager();
@@ -16,7 +15,7 @@ public final class SessionManager implements IMessageHandler {
 	}
 	
 	@Override
-	public void receiveMessage(Connection<?, ?> c, Message m) {
+	public void receiveMessage(Connection<?>c, Message m) {
 		Session s = getSessionForMessage(m);
 		s.setConnection(c);
 	}

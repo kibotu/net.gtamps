@@ -47,7 +47,7 @@ public class Game extends Thread implements IGame {
 	private static final long THREAD_UPDATE_SLEEP_TIME = 20;
 	private static final int PHYSICS_ITERATIONS = 20;
 	
-	private static int instanceCounter = 0;
+	private static volatile int instanceCounter = 0;
 
 	// start with value > 0
 	//private long currentRevisionId = RevisionKeeper.START_REVISION;
@@ -67,8 +67,8 @@ public class Game extends Thread implements IGame {
 	private final BlockingQueue<Response> responseQueue = new LinkedBlockingQueue<Response>();
 	
 	
-	private boolean isRunning = false;
-	private boolean run = true;
+	private volatile boolean isRunning = false;
+	private volatile boolean run = true;
 	
 //	private EventManager eventManager;
 //	private PlayerManager playerManager;
@@ -152,6 +152,10 @@ public class Game extends Thread implements IGame {
 //				lastUpdate = 0f;
 //				updates = 0;
 //			}
+			
+			processCommandQueue();
+			processRequestQueue();
+			
 			try {
 				if(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation>0){
 					Thread.sleep(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation);
@@ -167,8 +171,7 @@ public class Game extends Thread implements IGame {
 
 	@Override
 	public boolean isRunning() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.isRunning;
 	}
 
 
@@ -325,6 +328,13 @@ public class Game extends Thread implements IGame {
 	private void getPlayer(int uid) {
 		//TODO
 //		return playerManager.getPlayer(uid);
+	}
+
+
+	@Override
+	public void hardstop() {
+		this.run = false;
+		
 	}
 	
 

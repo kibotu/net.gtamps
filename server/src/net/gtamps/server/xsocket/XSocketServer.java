@@ -1,7 +1,6 @@
 package net.gtamps.server.xsocket;
 
 import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.MessageCenter;
 import net.gtamps.shared.communication.ISerializer;
 
 import org.xsocket.connection.*;
@@ -14,8 +13,6 @@ public class XSocketServer implements Runnable
 	private static boolean wasStarted = false;
 	
 	private  ISerializer serializer;
-	private  MessageCenter msgCenter;
-
 	
 	
 //	MessageHandler messageHandler;
@@ -24,11 +21,7 @@ public class XSocketServer implements Runnable
     	if (serializer == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
-    	if (msgCenter == null) {
-			throw new IllegalArgumentException("'msgCenter' must not be null");
-		}
     	this.serializer = serializer;
-    	this.msgCenter = msgCenter;
 	}
 
 	public static void shutdownServer()

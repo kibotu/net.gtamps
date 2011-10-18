@@ -10,7 +10,7 @@ import net.gtamps.shared.communication.Response;
 public interface IGame {
 	
 	public void start();
-	public void stop();
+	public void hardstop();
 	public boolean isRunning();
 	public long getId();
 	public String getName();
