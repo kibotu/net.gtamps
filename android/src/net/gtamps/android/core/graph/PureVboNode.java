@@ -95,10 +95,10 @@ public class PureVboNode extends VboBaseNode {
             }
         }
 
-        gl11.glEnable(GL11.GL_COLOR_MATERIAL);
+        gl11.glDisable(GL11.GL_COLOR_MATERIAL);
 
 		// set active texture
-		// gl.glActiveTexture(_currentTextureId);
+//		gl.glActiveTexture(_currentTextureId);
 		bindTexture(gl11);
 
 		// alpha blending

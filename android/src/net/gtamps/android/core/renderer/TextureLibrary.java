@@ -24,6 +24,14 @@ public class TextureLibrary {
      */
     private GL10 gl;
 
+    public HashMap<String, Integer> getTextureResourceIds() {
+        return textureResourceIds;
+    }
+
+    public HashMap<Integer, BufferedTexture> getTextureCoordinatesResourceIds() {
+        return textureCoordinatesResourceIds;
+    }
+
     /**
      * Holds loaded TextureIds. In order to keep track of loaded textures.
      */
