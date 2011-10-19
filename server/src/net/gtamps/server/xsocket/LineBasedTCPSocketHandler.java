@@ -26,6 +26,9 @@ import org.xsocket.connection.NonBlockingConnection;
  */
 public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocketHandler {
 	private static final LogType TAG = LogType.SERVER;
+	
+	private static final String PROMPT = "> ";
+	private static final String RETURN = "< ";
 
 	// This is where we will keep all active connections
 	// private Set<INonBlockingConnection> sessions =
@@ -46,14 +49,15 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 
 	@Override
 	public boolean onData(INonBlockingConnection nbc) {
-		int read = 0;
 		byte[] data;
 		try {
 			data = nbc.readBytesByDelimiter("\n");
 			this.receive(nbc, data);
 			Logger.i().indicateNetworkReceiveActivity();
+			nbc.write(PROMPT);
+			nbc.flush();
 		} catch (ClosedChannelException e) {
-			e.printStackTrace();
+				disconnect(nbc);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -64,39 +68,28 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 	}
 
 	private void receive(INonBlockingConnection nbc, byte[] data) {
-		//System.out.println(new String(data));
-		//send(nbc, data)
 		Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
 	}
 	
 	@Override
 	public boolean onDisconnect(INonBlockingConnection nbc) throws IOException {
-//		synchronized (connections) {
-			String id = nbc.getId();
-			System.out.println("Closed Connection: " + id);
-			Logger.i().log(LogType.SERVER, "Closed Connection: " + id);
-			abstractConnections.remove(id);
-//		}
+		disconnect(nbc);
 		return true;
 	}
 
 	@Override
 	public boolean onConnect(INonBlockingConnection nbc) {
-//		synchronized (connections) {
-			// try {
-			// nbc.write("Hello and welcome to the server!\n\0");
-			// } catch (BufferOverflowException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			String id = nbc.getId();
-			System.out.println("New Connection: " + id);
-			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-			abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
+		connect(nbc);
+			try {
+				nbc.write(PROMPT);
+			} catch (BufferOverflowException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //		}
 		return true;
 	}
@@ -104,6 +97,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 	public void send(String connectionId, byte[] bytes) {
 		INonBlockingConnection nbc = actualConnections.get(connectionId);
 		try {
+			nbc.write(RETURN);
 			nbc.write(bytes);
 			nbc.write((byte)0x0A);
 			nbc.flush();
@@ -118,12 +112,22 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 		}
 	}
 
-	/*private boolean isKnownConnection(INonBlockingConnection nbc) {
-		synchronized (connections) {
-			return connections.containsKey(nbc.getId());
-		}
-	}*/
-
+	private void connect(INonBlockingConnection nbc) {
+		String id = nbc.getId();
+		System.out.println("New Connection: " + id);
+		Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
+		abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
+		actualConnections.put(id, nbc);
+	}
+	
+	private void disconnect(INonBlockingConnection nbc) {
+		String id = nbc.getId();
+		System.out.println("Closed Connection: " + id);
+		Logger.i().log(LogType.SERVER, "Closed Connection: " + id);
+		abstractConnections.remove(id);
+		actualConnections.remove(id);
+	}
+	
 	private String bytesToStr(byte[] b) {
 		String s = "";
 		for (int i = 0; i < b.length; i++) {

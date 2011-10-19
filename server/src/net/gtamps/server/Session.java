@@ -51,6 +51,10 @@ public class Session {
 		this.game = game;
 	}
 	
+	public User getUser() {
+		return this.user;
+	}
+	
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -92,6 +96,9 @@ public class Session {
 	}
 
 	void setConnection(Connection<?> connection) {
+		if (connection == null) {
+			throw new IllegalArgumentException("'connection' must not be null");
+		}
 		this.connection = connection;
 	}
 	

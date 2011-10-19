@@ -18,9 +18,6 @@ public class Entity extends GameActor implements Serializable {
 
     private static final String TAG = Entity.class.getSimpleName();
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -5466989016443709708L;
 
 	static public enum Type {
@@ -31,13 +28,13 @@ public class Entity extends GameActor implements Serializable {
 
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final Propertay<Integer> x = new IntProperty(this, "posx");
-	public final Propertay<Integer> y = new IntProperty(this, "posy");
-	public final Propertay<Integer> z = new IntProperty(this, "posz");
+	public final Propertay<Integer> x;
+	public final Propertay<Integer> y;
+	public final Propertay<Integer> z;
 	/**
 	 * rotation about z
 	 */
-	public final Propertay<Integer> rota = new IntProperty(this, "rota");
+	public final Propertay<Integer> rota;
 	public final Type type;
 	
 	private transient Player owner = null;
@@ -45,8 +42,14 @@ public class Entity extends GameActor implements Serializable {
 	public Entity(String name){
 		super(name);
         type = getType(name);
-//		properties = new HashMap<Property.Type,Property>();
-//		this.physicsHandler = new PhysicsHandler(this, physicalRepresentation);
+        x = new IntProperty(this, "posx");
+        y = new IntProperty(this, "posy");
+        rota = new IntProperty(this, "rota");
+        z = new IntProperty(this, "posz");
+        this.addProperty(x);
+        this.addProperty(y);
+        this.addProperty(z);
+        this.addProperty(rota);
 	}
 
     private Type getType(String name) {

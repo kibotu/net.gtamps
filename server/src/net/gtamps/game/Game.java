@@ -17,6 +17,7 @@ import net.gtamps.game.player.PlayerManager;
 import net.gtamps.game.world.MapParser;
 import net.gtamps.game.world.World;
 import net.gtamps.server.Session;
+import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.Sendable;
@@ -48,10 +49,6 @@ public class Game extends Thread implements IGame {
 	
 	private static volatile int instanceCounter = 0;
 
-	// start with value > 0
-	//private long currentRevisionId = RevisionKeeper.START_REVISION;
-//	private RevisionKeeper revisionKeeper = new RevisionKeeper(this);
-	
 	private class MessagePair<T extends Sendable> {
 		public T sendable;
 		public Session session;
@@ -73,10 +70,6 @@ public class Game extends Thread implements IGame {
 	
 	private World world;
 	
-	//temp
-	private int lastPlayerId = -1;
-
-
 	public Game(String mapPathOrNameOrWhatever) {
 		super("GameThread" + (++Game.instanceCounter));
 		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
@@ -86,11 +79,9 @@ public class Game extends Thread implements IGame {
 			try {
 				mapXML = ResourceLoader.getFileAsXml(mapPathOrNameOrWhatever);
 			} catch (JDOMException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
@@ -121,14 +112,6 @@ public class Game extends Thread implements IGame {
 	}
 
 	
-	
-	private Iterable<Entity> getUpdates(long revisionId) {
-		ArrayList<Entity> updates = new ArrayList<Entity>();
-		if (lastPlayerId >=0) {
-			updates.add(world.playerManager.getPlayer(lastPlayerId).getEntity());
-		}
-		return updates;
-	}
 	
 	@Override
 	public void run() {
@@ -193,6 +176,8 @@ public class Game extends Thread implements IGame {
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
+			case JOIN:
+			case LEAVE:
 				this.requestQueue.add(new MessagePair<Sendable>(r, s));
 				break;
 			default:
@@ -209,7 +194,7 @@ public class Game extends Thread implements IGame {
 		List<MessagePair<Sendable>> commandPairs = new LinkedList<MessagePair<Sendable>>();
 		this.commandQueue.drainTo(commandPairs);
 		for (MessagePair<Sendable> pair : commandPairs) {
-			int puid = getPlayerUid(pair.session);
+			int puid = getPlayer(pair.session).getUid();
 			this.command(puid, pair.sendable);
 		}
 		commandPairs.clear();
@@ -219,22 +204,22 @@ public class Game extends Thread implements IGame {
 		List<MessagePair<Sendable>> requestPairs = new LinkedList<MessagePair<Sendable>>();
 		this.requestQueue.drainTo(requestPairs);
 		for (MessagePair<Sendable> pair: requestPairs) {
-			int puid = getPlayerUid(pair.session);
+			int puid = getPlayer(pair.session).getUid();
 			Sendable response = null;
 			switch(pair.sendable.type) {
 				case JOIN:
-					puid = createPlayer("test");
 					response = joinPlayer(puid, pair.sendable); 
 					break;
 				case LEAVE: 
 					response = leavePlayer(puid, pair.sendable); 
 					break;
-				case GETMAPDATA: break;
-				case GETPLAYER: break;
+//				case GETMAPDATA: break;
+//				case GETPLAYER: break;
 				case GETUPDATE: 
 					response = update(puid, pair.sendable); 
 					break;
 				default:
+					response = pair.sendable.createResponse(SendableType.BAD_SENDABLE);
 					break;
 			}
 			this.handleResponse(pair.session, response);
@@ -258,9 +243,9 @@ public class Game extends Thread implements IGame {
 		this.responseQueue.add(r);
 	}
 	
-	private int getPlayerUid(Session s) {
-		//TODO
-		return lastPlayerId;
+	private Player getPlayer(Session s) {
+		Player p = world.playerManager.getPlayerForUser(s.getUser()); 
+		return p;
 	}
 	
 	private void command(int playeruid, Sendable cmd) {
@@ -317,27 +302,10 @@ public class Game extends Thread implements IGame {
 		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
 
-	private int createPlayer(String name) {
-		assert name != null;
-		Player player = world.playerManager.createPlayer(name);
-		
-		// TEMP
-		this.lastPlayerId = player.getUid();
-		
-		return player.getUid();
-	}
-	
-	private void getPlayer(int uid) {
-		//TODO
-//		return playerManager.getPlayer(uid);
-	}
-
-
 	@Override
 	public void hardstop() {
 		this.run = false;
 		this.thread.interrupt();
 	}
-	
 
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Message implements Serializable {
 
     @NotNull
-    private String sessionId;
+    private volatile String sessionId;
 
     public final ArrayList<Sendable> sendables;
 
@@ -31,6 +31,9 @@ public class Message implements Serializable {
 
     public void setSessionId(@NotNull String sessionId) {
         this.sessionId = sessionId;
+        for (Sendable s : sendables) {
+        	s.sessionId = sessionId;
+        }
     }
 
     @Override

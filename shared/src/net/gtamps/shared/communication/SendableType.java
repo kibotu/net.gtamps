@@ -2,6 +2,9 @@ package net.gtamps.shared.communication;
 
 public enum SendableType {
 
+	BAD_MESSAGE,
+	BAD_SENDABLE,
+	
     // requests / responses
     GETUPDATE,
     GETPLAYER,

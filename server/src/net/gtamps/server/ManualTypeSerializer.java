@@ -1,6 +1,8 @@
 package net.gtamps.server;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import net.gtamps.server.gui.LogType;
@@ -12,7 +14,9 @@ import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.AuthentificationData;
 import net.gtamps.shared.communication.data.ISendableData;
 import net.gtamps.shared.communication.data.RevisionData;
+import net.gtamps.shared.communication.data.StringData;
 import net.gtamps.shared.communication.data.UpdateData;
+import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -40,7 +44,9 @@ public class ManualTypeSerializer implements ISerializer {
 	public static String GETPLAYER  = "GETPLAYER";
 	public static String ENTITY = "ENTITY";
 	public static String PROPERTY = "PROP";
-	
+	public static String INTEGER = "INT";
+	public static String BAD_SENDABLE = "BAD SENDABLE";
+	public static String BAD_MESSAGE = "BAD MESSAGE";
 
     @Override
     public byte[] serializeMessage(@NotNull Message message) {
@@ -136,14 +142,39 @@ public class ManualTypeSerializer implements ISerializer {
     		case SESSION_BAD:addToken(bld, SESSION); addToken(bld, STATUS_BAD); break;
     		case SESSION_ERROR: addToken(bld, SESSION); addToken(bld, STATUS_ERROR); break;
     		case SESSION_NEED: addToken(bld, SESSION); addToken(bld, STATUS_NEED); break;
-    		case SESSION_OK: addToken(bld, SESSION); addToken(bld, STATUS_OK); break;
+    		case SESSION_OK: 
+    			addToken(bld, SESSION); 
+    			addToken(bld, STATUS_OK);
+    			StringData sdata = (StringData) s.data;
+    			addToken(bld, sdata.value);
+    			break;
+    			
+    		default:
+    			addToken(bld, BAD_SENDABLE);
+    			break;
     	}
     }
     
     private void serializeUpdateData(StringBuilder bld, UpdateData udata) {
     	for (Entity e : udata.entites) {
-    		
-    		// TODO
+    		addToken(bld, ENTITY);
+    		addToken(bld, Integer.toString(e.getUid()));
+    		addToken(bld, e.getName());
+    		for (Propertay<?> p : e.getAllProperties()) {
+    			serializeProperty(bld, p);
+    		}
+    	}
+    }
+    
+    private void serializeProperty(StringBuilder bld, Propertay<?> p) {
+    	if (p instanceof IntProperty) {
+    		IntProperty ip = (IntProperty)p;
+    		addToken(bld, PROPERTY);
+    		addToken(bld, INTEGER);
+    		addToken(bld, ip.getName());
+    		addToken(bld, Integer.toString(ip.value()));
+    	} else {
+    		// error
     	}
     }
     
@@ -159,6 +190,7 @@ public class ManualTypeSerializer implements ISerializer {
     	while(scanner.hasNext(SENDABLE)) {
     		scanner.next();
     		Sendable s = getSendable(scanner);
+    		s.sessionId = sessId;
     		m.addSendable(s);
     	}
     	Logger.getInstance().log(TAG, "finished deserializing message: " + m);
@@ -168,19 +200,23 @@ public class ManualTypeSerializer implements ISerializer {
     private Sendable getSendable(Scanner scanner) {
     	Sendable s = null;
     	int id = scanner.nextInt();
-    	String type = scanner.next();
-    	if (type.equals(LOGIN)) {
-    		s = getLogin(scanner, id);
-    	} else if (type.equals(REGISTER)) {
-    		s = getRegister(scanner, id);
-    	} else if (type.equals(SESSION)) {
-    		s = getSession(scanner, id);
-    	} else if (type.equals(JOIN)) {
-    		s = getJoin(scanner, id);
-    	} else if (type.equals(LEAVE)) {
-    		s = getLeave(scanner, id);
-    	} else if (type.equals(UPDATE)) {
-    		s = getUpdate(scanner, id);
+    	try {
+	    	String type = scanner.next();
+	    	if (type.equals(LOGIN)) {
+	    		s = getLogin(scanner, id);
+	    	} else if (type.equals(REGISTER)) {
+	    		s = getRegister(scanner, id);
+	    	} else if (type.equals(SESSION)) {
+	    		s = getSession(scanner, id);
+	    	} else if (type.equals(JOIN)) {
+	    		s = getJoin(scanner, id);
+	    	} else if (type.equals(LEAVE)) {
+	    		s = getLeave(scanner, id);
+	    	} else if (type.equals(UPDATE)) {
+	    		s = getUpdate(scanner, id);
+	    	}
+    	} catch (NoSuchElementException nse) {
+    		s = new Sendable(SendableType.BAD_SENDABLE, id, null);
     	}
     	return s;
     }

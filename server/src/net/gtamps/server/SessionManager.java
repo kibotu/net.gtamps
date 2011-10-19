@@ -2,12 +2,14 @@ package net.gtamps.server;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import net.gtamps.shared.communication.Message;
 
 public final class SessionManager implements IMessageHandler {
 	
 	public static final SessionManager instance = new SessionManager();
+	public static final Pattern ID_PATTERN = Pattern.compile("[0-9A-Fa-f]{16}");
 	
 	private ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<String, Session>();
 	
@@ -35,14 +37,21 @@ public final class SessionManager implements IMessageHandler {
 	
 	private String getSessionIdForMessage(Message msg) {
 		final String presumptiveId = msg.getSessionId();
-		return (isValidId(presumptiveId) ? presumptiveId : generateSessionId());
+		if (isValidId(presumptiveId)) {
+			return presumptiveId;
+		} 
+		String newId = generateSessionId();
+		msg.setSessionId(newId);
+		return newId;
 	}
 	
 	private boolean isValidId(String id) {
-		return (id != null && id.length() > 0);
+		return (id != null && id.length() > 0 && ID_PATTERN.matcher(id).matches());
 	}
 	
 	private String generateSessionId() {
-		return Long.toHexString(UUID.randomUUID().getLeastSignificantBits());
+		String id = Long.toHexString(UUID.randomUUID().getLeastSignificantBits());
+		assert isValidId(id);
+		return id;
 	}
 }
