@@ -1,19 +1,20 @@
 package net.gtamps.game.entity;
 
-import net.gtamps.game.RevisionKeeper;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import net.gtamps.game.world.World;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.jdom.Element;
 
 /**
  * A class to manage the game entities. Obviously.
@@ -23,9 +24,22 @@ import org.jdom.Element;
  */
 public class EntityManager extends GameEventDispatcher implements IGameEventListener {
 	
+	private final Comparator<Entity> reverseRevisionComparator = new Comparator<Entity>() {
+
+		@Override
+		public int compare(Entity o1, Entity o2) {
+			long revisionDelta = o2.getRevision() - o1.getRevision();
+			if (revisionDelta != 0) {
+				return (revisionDelta < 0) ? -1 : 1;
+			}
+			return o2.getUid() - o1.getUid(); 
+		}
+		
+	};
 	
 	private final World world;
 	private final Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private final SortedSet<Entity> updated = new TreeSet<Entity>(reverseRevisionComparator);
 	
 	public EntityManager(World world) {
 		this.world = world;
@@ -99,8 +113,8 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 	}
 
 	//TODO
-	public List<Element> getUpdate(long baseRevision, RevisionKeeper keeper) {
-		List<Element> update = new LinkedList<Element>();
+	public ArrayList<Entity> getUpdate(long baseRevision) {
+		ArrayList<Entity> update = new ArrayList<Entity>();
 //		for (Entity entity: entities.values()) {
 //			Element xml = entity.toXMLElement(baseRevision, keeper);
 //			if (xml != null) {

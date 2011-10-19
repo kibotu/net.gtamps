@@ -1,7 +1,5 @@
 package net.gtamps.shared.game.entity;
 
-import android.text.Html;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 //import net.gtamps.game.player.PlayerManager;
