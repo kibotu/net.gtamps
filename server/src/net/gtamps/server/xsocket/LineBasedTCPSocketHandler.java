@@ -24,7 +24,7 @@ import org.xsocket.connection.NonBlockingConnection;
  * @author til
  * 
  */
-public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler {
+public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocketHandler {
 	private static final LogType TAG = LogType.SERVER;
 
 	// This is where we will keep all active connections
@@ -37,81 +37,19 @@ public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler
 	
 	private final S serializer;
 
-	public TestXSocketHandler(S serializer) {
+	public LineBasedTCPSocketHandler(S serializer) {
 		if (serializer == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
 		this.serializer = serializer;
 	}
 
-	private byte readByte(INonBlockingConnection nbc) {
-		Byte b = null;
-		while (b == null) {
-			try {
-				if (nbc.available() > 0) {
-					b = nbc.readByte();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return b;
-
-	}
-
-	private void readFully(INonBlockingConnection nbc, byte[] data) throws IOException {
-		assert nbc != null;
-		assert data != null;
-		int need = data.length;
-		int read = 0;
-		while (need > 0) {
-			int offered = Math.min(nbc.available(), need);
-			ByteBuffer[] buffers = null;
-			try {
-				buffers = nbc.readByteBufferByLength(offered);
-			} catch (BufferUnderflowException bue) {
-				if (nbc.isOpen()) {
-					try {
-						Thread.sleep(50l);
-					} catch (InterruptedException e) {
-						// we're fine.
-					}
-				} else {
-					throw new ClosedChannelException();
-				}
-			}
-			if (buffers == null) {
-				continue;
-			}
-			for (ByteBuffer b : buffers) {
-				if (b == null) {
-					continue;
-				}
-				int has = b.remaining();
-				b.get(data, read, has);
-				read += has;
-				need -= has;
-			}
-		}
-
-//		t[0].ge t(dst, offset, length)
-//		nbc.readBytesByLength(laenge);
-	}
-	
 	@Override
 	public boolean onData(INonBlockingConnection nbc) {
 		int read = 0;
+		byte[] data;
 		try {
-
-			byte hi = readByte(nbc);
-			byte lo = readByte(nbc);
-			read += 2;
-			
-			int laenge = ((((int) hi) & 0xff) << 8) + (((int) lo)  & 0xff);
-			//System.out.println("expecting new message: " + laenge );
-			byte[] data = new byte[laenge]; 
-			this.readFully(nbc, data);
+			data = nbc.readBytesByDelimiter("\n");
 			this.receive(nbc, data);
 			Logger.i().indicateNetworkReceiveActivity();
 		} catch (ClosedChannelException e) {
@@ -158,32 +96,18 @@ public class TestXSocketHandler<S extends ISerializer> implements ISocketHandler
 			String id = nbc.getId();
 			System.out.println("New Connection: " + id);
 			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-			abstractConnections.put(id, new Connection<TestXSocketHandler<S>>(nbc.getId(), this, serializer));
+			abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
 //		}
 		return true;
 	}
 
 	public void send(String connectionId, byte[] bytes) {
 		INonBlockingConnection nbc = actualConnections.get(connectionId);
-		int length = bytes.length;
-		if (length < 1) {
-			return;
-		}
-		if (length > 65535) {
-			throw new IllegalArgumentException("bla!");
-		}
-
-		byte high = (byte) (length >> 8);
-		byte low = (byte) (length & 0xFF);
-
 		try {
-			//NonBlockingConnection ncv;
-			//ncv.write(buffers);
-			nbc.write(high);
-			nbc.write(low);
 			nbc.write(bytes);
+			nbc.write((byte)0x0A);
 			nbc.flush();
-			System.out.println(length + " + 2 bytes send");
+			System.out.println(bytes.length + " + 1 bytes send");
 			// System.out.println(msg);
 		} catch (BufferOverflowException e) {
 			// TODO Auto-generated catch block

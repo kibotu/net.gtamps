@@ -174,27 +174,32 @@ public class Game extends Thread implements IGame {
 
 
 	@Override
-	public void handleRequest(Session s, Sendable r) {
+	public void handleSendable(Session s, Sendable r) {
 		if (s == null) {
 			throw new IllegalArgumentException("'s' must not be null");
 		}
 		if (r == null) {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
-		this.requestQueue.add(new MessagePair<Sendable>(r, s));
+		switch(r.type) {
+			case ACCELERATE:
+			case DECELERATE:
+			case ENTEREXIT:
+			case LEFT:
+			case RIGHT:
+			case SHOOT:
+				this.commandQueue.add(new MessagePair<Sendable>(r, s));
+				break;
+			case GETMAPDATA:
+			case GETPLAYER:
+			case GETUPDATE:
+				this.requestQueue.add(new MessagePair<Sendable>(r, s));
+				break;
+			default:
+				break;
+		}
 	}
 
-
-	public void handleCommand(Session s, Sendable c) {
-		if (s == null) {
-			throw new IllegalArgumentException("'s' must not be null");
-		}
-		if (c == null) {
-			throw new IllegalArgumentException("'c' must not be null");
-		}
-		this.commandQueue.add(new MessagePair<Sendable>(c, s));
-	}
-	
 	@Override
 	public void drainResponseQueue(Collection<Sendable> target) {
 		this.responseQueue.drainTo(target);

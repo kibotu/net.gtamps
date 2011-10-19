@@ -12,7 +12,7 @@ public interface IGame {
 	public boolean isActive();
 	public long getId();
 	public String getName();
-	public void handleRequest(Session s, Sendable r);
+	public void handleSendable(Session s, Sendable r);
 	void drainResponseQueue(Collection<Sendable> target);
 	
 

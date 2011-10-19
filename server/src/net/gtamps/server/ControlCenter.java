@@ -27,6 +27,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	private IGame game;
 	
 	private ControlCenter() {
+		this.createGame(null);
 		new Thread(this, "ControlCenter").start();
 	}
 	
@@ -128,7 +129,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 
 
 	private void handlePlayingRequest(Session s, Sendable request) {
-		
+		this.game.handleSendable(s, request);
 	}
 	
 	private void sendInMessage(Sendable r) {

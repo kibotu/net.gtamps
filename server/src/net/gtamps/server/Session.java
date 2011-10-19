@@ -86,6 +86,11 @@ public class Session {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "Session [id=" + id + ", game=" + game + ", user=" + user + "]";
+	}
+
 	void setConnection(Connection<?> connection) {
 		this.connection = connection;
 	}

@@ -26,7 +26,7 @@ public class Sendable {
         this(type, null);
     }
     
-    private Sendable(final SendableType type, int id, final ISendableData data) {
+    public Sendable(final SendableType type, int id, final ISendableData data) {
         this.type = type;
         this.data = data;
         this.id = id;
@@ -39,6 +39,11 @@ public class Sendable {
     	Sendable response = new Sendable(type, this.id, null);
     	response.sessionId = this.sessionId;
     	return response;
+    }
+    
+    @Override
+    public String toString() {
+    	return String.format("%s (%d) [%s]", type.toString(), id, data != null ? data.toString() : "");
     }
     
     private int createId() {

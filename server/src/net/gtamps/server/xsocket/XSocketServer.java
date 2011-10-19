@@ -12,16 +12,16 @@ public class XSocketServer implements Runnable
 	private static boolean isOnline = true;
 	private static boolean wasStarted = false;
 	
-	private  ISerializer serializer;
+	private  ISocketHandler socketHandler;
 	
 	
 //	MessageHandler messageHandler;
   
-    public XSocketServer(ISerializer serializer) {
-    	if (serializer == null) {
+    public XSocketServer(ISocketHandler socketHandler) {
+    	if (socketHandler == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
-    	this.serializer = serializer;
+    	this.socketHandler = socketHandler;
 	}
 
 	public static void shutdownServer()
@@ -42,7 +42,7 @@ public class XSocketServer implements Runnable
 	public void run() {
 		try
         {
-            srv = new Server(PORT, new TestXSocketHandler(serializer));
+            srv = new Server(PORT, this.socketHandler);
             srv.run();
             isOnline = true;
         }
