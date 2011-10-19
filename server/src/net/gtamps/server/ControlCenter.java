@@ -12,6 +12,8 @@ import net.gtamps.game.IGame;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.communication.data.AuthentificationData;
+import net.gtamps.shared.communication.data.StringData;
 
 public class ControlCenter implements Runnable, IMessageHandler {
 
@@ -75,7 +77,13 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	
 	private void processResponsebox() {
 		List<Sendable> workingCopy = new LinkedList<Sendable>();
-		responsebox.drainTo(workingCopy);
+		//responsebox.drainTo(workingCopy);
+		this.responsebox.drainTo(workingCopy);
+		for (Sendable response : workingCopy) {
+			sendInMessage(response);
+		}
+		workingCopy.clear();
+		this.game.drainResponseQueue(workingCopy);
 		for (Sendable response : workingCopy) {
 				sendInMessage(response);
 		}
@@ -89,6 +97,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		switch (request.type) {
 			case SESSION:
 				handleSession(request);
+				break;
 			case REGISTER:
 				handleRegister(session, request);
 				break;
@@ -97,6 +106,8 @@ public class ControlCenter implements Runnable, IMessageHandler {
 				break;
 			case JOIN:
 			case LEAVE:
+				handleAuthenticatedRequest(session, request);
+				break;
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
@@ -110,25 +121,58 @@ public class ControlCenter implements Runnable, IMessageHandler {
 				handlePlayingRequest(session, request);
 				break;
 			default:
+				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
 				break;
 		}
 	}
 	
 	private void handleSession(Sendable s) {
-		
+		Sendable response = s.createResponse(SendableType.SESSION_OK);
+		response.data = new StringData(s.sessionId); 
+		handleResponse(response);
 	}
 	
 	private void handleRegister(Session s, Sendable request) {
+		AuthentificationData adata = (AuthentificationData) request.data;
+		if (adata == null || adata.username == null || adata.username.length() == 0 ||
+				adata.password == null || adata.password.length() == 0) {
+			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
+			return;
+		}
+		handleResponse(request.createResponse(SendableType.REGISTER_OK));
 	}
 
 	
 	private void handleLogin(Session s, Sendable request) {
-		User debugUser = new User(1, "testUser"); 
+		if (s.isAuthenticated()) {
+			handleResponse(request.createResponse(SendableType.LOGIN_OK));
+			return;
+		}
+		AuthentificationData adata = (AuthentificationData) request.data;
+		if (adata == null || adata.username == null || adata.username.length() == 0 ||
+				adata.password == null || adata.password.length() == 0) {
+			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
+			return;
+		}
+		User debugUser = new User(1, adata.username); 
 		s.setUser(debugUser);
+		handleResponse(request.createResponse(SendableType.LOGIN_OK));
 	}
 
+	private void handleAuthenticatedRequest(Session s, Sendable request) {
+		if (!s.isAuthenticated()) {
+			handleResponse(request.createResponse(request.type.getNeedResponse()));
+			return;
+		}
+		this.game.handleSendable(s, request);
+	}
+	
 
 	private void handlePlayingRequest(Session s, Sendable request) {
+		if (!s.isAuthenticated() || !s.isPlaying()) {
+			handleResponse(request.createResponse(request.type.getNeedResponse()));
+			return;
+		}
 		this.game.handleSendable(s, request);
 	}
 	

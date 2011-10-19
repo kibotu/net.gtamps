@@ -115,12 +115,12 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 	//TODO
 	public ArrayList<Entity> getUpdate(long baseRevision) {
 		ArrayList<Entity> update = new ArrayList<Entity>();
-//		for (Entity entity: entities.values()) {
-//			Element xml = entity.toXMLElement(baseRevision, keeper);
-//			if (xml != null) {
-//				update.add(xml);
-//			}
-//		}
+		for (Entity e: entities.values()) {
+			if (e.getRevision() > baseRevision || e.hasChanged()) {
+				e.updateRevision(world.getRevision());
+				update.add(e);
+			}
+		}
 		return update;
 	}
 

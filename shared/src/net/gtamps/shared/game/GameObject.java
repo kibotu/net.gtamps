@@ -2,7 +2,9 @@ package net.gtamps.shared.game;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import net.gtamps.shared.Utils.UIDGenerator;
 
@@ -149,6 +151,32 @@ public abstract class GameObject implements Serializable {
 			return null;
 		}
 		return p;
+	}
+	
+	public Iterable<Propertay<?>> getAllProperties() {
+		if (this.properties == null) {
+			return new Iterable<Propertay<?>>() {
+				@Override
+				public Iterator<Propertay<?>> iterator() {
+					return new Iterator<Propertay<?>>(){
+						@Override
+						public boolean hasNext() {
+							return false;
+						}
+						@Override
+						public Propertay<?> next() {
+							throw new NoSuchElementException();
+						}
+						@Override
+						public void remove() {
+							throw new UnsupportedOperationException();
+							
+						}
+					};
+				}
+			};
+		}
+		return this.properties.values();
 	}
 
 	@Override
