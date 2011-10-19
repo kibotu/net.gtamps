@@ -2,6 +2,8 @@ package net.gtamps.android;
 
 import net.gtamps.android.core.graph.CameraNode;
 import net.gtamps.android.core.graph.LightNode;
+import net.gtamps.android.core.utils.parser.IParser;
+import net.gtamps.android.core.utils.parser.Parser;
 import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
@@ -27,19 +29,8 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0x111111);
 
-        scene.addChild(activeObject = Object3dFactory.create(Entity.Type.CAR_CHEVROLET_CORVETTE));
-        IObject3d camaro = Object3dFactory.create(Entity.Type.CAR_CAMARO);
-        camaro.getNode().setPosition(-15,0,0);
-        camaro.getNode().setScaling(5,5,5);
-        IObject3d riviera = Object3dFactory.create(Entity.Type.CAR_RIVIERA);
-        riviera.getNode().setPosition(15,0,0);
-        riviera.getNode().setScaling(35,35,35);
-        scene.addChild(camaro);
-        scene.addChild(riviera);
-//
-//        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
-//        objParser.parse();
-//        scene.addChild(objParser.getParsedObject());
+//        addCars();
+        addParsedObject();
 
         light = new LightNode();
         light.setPosition(0,0,0);
@@ -50,6 +41,24 @@ public class World {
         scene.add(light);
 
         addCity();
+    }
+
+    private void addParsedObject() {
+        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
+        objParser.parse();
+        scene.addChild(objParser.getParsedObject());
+    }
+
+    private void addCars() {
+        scene.addChild(activeObject = Object3dFactory.create(Entity.Type.CAR_CHEVROLET_CORVETTE));
+        IObject3d camaro = Object3dFactory.create(Entity.Type.CAR_CAMARO);
+        camaro.getNode().setPosition(-15,0,0);
+        camaro.getNode().setScaling(5,5,5);
+        IObject3d riviera = Object3dFactory.create(Entity.Type.CAR_RIVIERA);
+        riviera.getNode().setPosition(15,0,0);
+        riviera.getNode().setScaling(35,35,35);
+        scene.addChild(camaro);
+        scene.addChild(riviera);
     }
 
     private void addCity() {
