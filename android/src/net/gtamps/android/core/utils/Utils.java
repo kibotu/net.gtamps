@@ -102,4 +102,8 @@ public class Utils {
     public static void LOG(String tag, String s) {
         log(tag, "\n\n\n\n\n"+s+"\n\n\n\n\n");
     }
+
+    public static void LOG(Object o, String s) {
+        log(o, "\n\n\n\n\n"+s+"\n\n\n\n\n");
+    }
 }

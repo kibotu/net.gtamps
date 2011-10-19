@@ -143,7 +143,6 @@ public class ObjParser extends AParser implements IParser {
 			if(texture != null) texture.recycle();
 		}
 		Utils.log(this, "Object creation finished");
-        Utils.log(this, "parsedobject " +obj.children.size());
 
 		cleanup();
 		

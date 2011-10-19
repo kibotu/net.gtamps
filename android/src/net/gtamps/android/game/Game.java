@@ -52,9 +52,9 @@ public class Game implements IGame{
         // create world
         scenes.add(world.getScene());
 
-        IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
-        world.getScene().addChild(object3d);
-        object3d.getNode().setPosition(10, 10, 3);
+//        IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
+//        world.getScene().addChild(object3d);
+//        object3d.getNode().setPosition(10, 10, 3);
 
         // hud
         scenes.add(hud.getScene());
