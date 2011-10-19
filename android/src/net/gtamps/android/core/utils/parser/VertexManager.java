@@ -15,15 +15,7 @@ public class VertexManager {
 	private boolean hasColors;
 
 	public VertexManager(int maxElements) {
-		vertices = new Vector3BufferManager(maxElements);
-
-		hasUvs = true;
-		hasNormals = true;
-		hasColors = true;
-
-		if (hasUvs) uvs = new UvBufferManager(maxElements);
-		if (hasNormals) normals = new Vector3BufferManager(maxElements);
-		if (hasColors) colors = new Color4BufferManager(maxElements);
+		this(maxElements,true,true,true);
 	}
 
 	public VertexManager(int maxElements, Boolean useUvs, Boolean useNormals, Boolean useColors) {
@@ -40,9 +32,9 @@ public class VertexManager {
 
 	public VertexManager(Vector3BufferManager points, UvBufferManager uvs, Vector3BufferManager normals, Color4BufferManager colors){
 		vertices = points;
-		uvs = uvs;
-		normals = normals;
-		colors = colors;
+		this.uvs = uvs;
+		this.normals = normals;
+		this.colors = colors;
 
 		hasUvs = uvs != null && uvs.size() > 0;
 		hasNormals = normals != null && normals.size() > 0;

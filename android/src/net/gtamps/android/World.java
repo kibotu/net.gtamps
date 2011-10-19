@@ -8,6 +8,7 @@ import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.Object3dFactory;
+import net.gtamps.android.game.objects.ParsedObject;
 import net.gtamps.shared.game.entity.Entity;
 
 public class World {
@@ -40,13 +41,25 @@ public class World {
         light.specular.setAll(64,64,64,255);
         scene.add(light);
 
-        addCity();
+        addPlane();
+
+//        addCity();
+    }
+
+    private void addPlane() {
+        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/plane_obj", true);
+        objParser.parse();
+        ParsedObject parsedObject = objParser.getParsedObject();
+        parsedObject.updateVbo();
+        scene.addChild(parsedObject);
     }
 
     private void addParsedObject() {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
         objParser.parse();
-        scene.addChild(objParser.getParsedObject());
+        ParsedObject parsedObject = objParser.getParsedObject();
+        parsedObject.updateVbo();
+        scene.addChild(activeObject =parsedObject);
     }
 
     private void addCars() {

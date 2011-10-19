@@ -1,7 +1,6 @@
 package net.gtamps.android.core.utils.parser;
 
 import net.gtamps.android.core.utils.Color4;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.parser.AParser.BitmapAsset;
 import net.gtamps.android.core.utils.parser.AParser.Material;
 import net.gtamps.android.core.utils.parser.AParser.TextureAtlas;
@@ -51,7 +50,7 @@ public class ParseObjectData {
 	public ParsedObject getParsedObject(HashMap<String, Material> materialMap, TextureAtlas textureAtlas) {
 		ParsedObject obj = new ParsedObject(numFaces * 3, numFaces);
 		obj.name = name;
-		
+
 		parseObject(obj, materialMap, textureAtlas);
 		
 		return obj;
