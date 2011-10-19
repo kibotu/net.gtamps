@@ -61,8 +61,6 @@ public class ObjParser extends AParser implements IParser {
 		try {
 			while ((line = buffer.readLine()) != null) {
 
-                Utils.log(TAG,  line);
-
 				// remove duplicate whitespace
 				// line = line.replaceAll("\\s+", " ");
 				// String[] parts = line.split(" ");
@@ -119,8 +117,6 @@ public class ObjParser extends AParser implements IParser {
 			Utils.log(TAG, "" + e.getMessage());
 		}
 
-        Utils.log("ObjParser", ""+co);
-
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		Utils.log(TAG, "End time " + (endTime - startTime));
 	}
@@ -146,8 +142,9 @@ public class ObjParser extends AParser implements IParser {
 		if(textureAtlas.hasBitmaps()) {
 			if(texture != null) texture.recycle();
 		}
-		Utils.log(TAG, "Object creation finished");
-		
+		Utils.log(this, "Object creation finished");
+        Utils.log(this, "parsedobject " +obj.children.size());
+
 		cleanup();
 		
 		return obj;
