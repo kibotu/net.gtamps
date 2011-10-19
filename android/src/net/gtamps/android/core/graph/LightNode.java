@@ -15,8 +15,6 @@ import java.util.ArrayList;
  */
 public class LightNode extends RenderableNode {
 
-    private static final String TAG = LightNode.class.getSimpleName();
-
     public enum Type {
         /**
          * directional light (x,y,z is the light direction) like the sun
@@ -120,11 +118,10 @@ public class LightNode extends RenderableNode {
             }
          }
         if (availableLightIndices.isEmpty()) {
-            Utils.log(TAG, "GL_LIGHT resources exceeded.");
+            Utils.log(this, "GL_LIGHT resources exceeded.");
         }
         lightId = availableLightIndices.get(0);
         availableLightIndices.remove(0);
-        Utils.log(TAG, "Light "+lightId+ " added.");
     }
 
     public void release() {
@@ -228,5 +225,19 @@ public class LightNode extends RenderableNode {
     public void setType(Type type) {
         commitPositionAndTypeBuffer();
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Light_"+lightId+"[" +
+                "type=" + type +
+                ", ambient=" + ambient +
+                ", diffuse=" + diffuse +
+                ", specular=" + specular +
+                ", emissive=" + emissive +
+                ", spotCutoffAngle=" + spotCutoffAngle +
+                ", spotExponent=" + spotExponent +
+                ", attenuation=" + attenuation +
+                "] successfully added.";
     }
 }
