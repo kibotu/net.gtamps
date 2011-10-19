@@ -70,6 +70,7 @@ public class Game implements IGame{
 //        connection.add(MessageFactory.createLoginRequest("username", "password"));
 //        connection.add(MessageFactory.createJoinRequest());
 //        connection.add(MessageFactory.createGetPlayerRequest());
+
     }
 
     @Deprecated

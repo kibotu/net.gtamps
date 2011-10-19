@@ -3,7 +3,6 @@ package net.gtamps.android;
 import net.gtamps.android.core.graph.CameraNode;
 import net.gtamps.android.core.graph.LightNode;
 import net.gtamps.android.game.Scene;
-import net.gtamps.android.game.objects.Car;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.Object3dFactory;
@@ -37,9 +36,13 @@ public class World {
         riviera.getNode().setScaling(35,35,35);
         scene.addChild(camaro);
         scene.addChild(riviera);
+//
+//        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
+//        objParser.parse();
+//        scene.addChild(objParser.getParsedObject());
 
         light = new LightNode();
-        light.setPosition(0,0,30);
+        light.setPosition(0,0,0);
         light.setDirection(0, 0, -1);
         light.ambient.setAll(64, 64, 64, 255);
         light.diffuse.setAll(128,128,128,255);
