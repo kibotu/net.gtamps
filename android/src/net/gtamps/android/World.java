@@ -2,6 +2,7 @@ package net.gtamps.android;
 
 import net.gtamps.android.core.graph.CameraNode;
 import net.gtamps.android.core.graph.LightNode;
+import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.parser.IParser;
 import net.gtamps.android.core.utils.parser.Parser;
 import net.gtamps.android.game.Scene;
@@ -33,24 +34,42 @@ public class World {
 //        addCars();
         addParsedObject();
 
-        light = new LightNode();
-        light.setPosition(0,0,0);
-        light.setDirection(0, 0, -1);
-        light.ambient.setAll(64, 64, 64, 255);
-        light.diffuse.setAll(128,128,128,255);
-        light.specular.setAll(64,64,64,255);
-        scene.add(light);
+//        light = new LightNode();
+//        light.setPosition(0,0,10);
+//        light.setDirection(0, 0, -1);
+//        light.ambient.setAll(64, 64, 64, 255);
+//        light.diffuse.setAll(128,128,128,255);
+//        light.specular.setAll(64,64,64,255);
+//        scene.add(light);
+
+
+//
+		LightNode spot = new LightNode();
+		spot.setPosition(0, 0, 10);
+        spot.setDirection(0,0,-1);
+		spot.diffuse.setAll(255,255,255, 255);
+		spot.ambient.setAll(0, 0, 0, 0);
+		spot.specular.setAll(128, 128, 128, 255);
+		spot.emissive.setAll(0, 0, 0, 0);
+        spot.setType(LightNode.Type.POSITIONAL);
+        spot.setSpotCutoffAngle(60);
+        spot.setSpotExponent(4);
+        spot.setAttenuation(1,0,0);
+		scene.add(spot);
 
         addPlane();
-
 //        addCity();
     }
 
     private void addPlane() {
-        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/plane_obj", true);
+        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/grid_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
         parsedObject.updateVbo();
+        parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
+        parsedObject.setScaling(10, 10, 1);
+//        parsedObject.setDrawingStyle(OpenGLUtils.DrawingStyle.GL_LINES);
+        parsedObject.setShadingStyle(OpenGLUtils.ShadeStyle.SMOOTH);
         scene.addChild(parsedObject);
     }
 
@@ -59,7 +78,8 @@ public class World {
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
         parsedObject.updateVbo();
-        scene.addChild(activeObject =parsedObject);
+        parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.camaro, true));
+        scene.addChild(activeObject = parsedObject);
     }
 
     private void addCars() {
