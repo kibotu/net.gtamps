@@ -9,11 +9,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
-import net.gtamps.shared.communication.Command;
-import net.gtamps.shared.communication.ISendable;
 import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.Request;
-import net.gtamps.shared.communication.Response;
+import net.gtamps.shared.communication.Sendable;
+import net.gtamps.shared.communication.SendableType;
 
 public class ControlCenter implements Runnable, IMessageHandler {
 
@@ -21,11 +19,10 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Response> responsebox = new LinkedBlockingQueue<Response>();
+	public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
 	
 	private boolean run = true;
 	private Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
-	private Map<Integer, Session> sessionCache = new HashMap<Integer, Session>();
 	
 	private IGame game;
 	
@@ -51,7 +48,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 	
-	public void handleResponse(Response response) {
+	public void handleResponse(Sendable response) {
 		if (response != null) {
 			responsebox.add(response);
 		}
@@ -68,28 +65,18 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		inbox.drainTo(workingCopy);
 		for (Message msg : workingCopy) {
 			Session session = SessionManager.instance.getSessionForMessage(msg);
-			for (ISendable i : msg.sendables) {
-				if (i instanceof Request) {
-					handleRequest(session, (Request) i);
-				} else if (i instanceof Command) {
-					handleCommand(session, (Command) i);
-				} else {
-					
-				}
+			for (Sendable i : msg.sendables) {
+					handleSendable(session, i);
 			}
 		}
 		workingCopy.clear();
 	}
 	
 	private void processResponsebox() {
-		List<Response> workingCopy = new LinkedList<Response>();
+		List<Sendable> workingCopy = new LinkedList<Sendable>();
 		responsebox.drainTo(workingCopy);
-		for (Response response : workingCopy) {
-			Session s = sessionCache.get(response.requestId);
-			sessionCache.remove(response.requestId);
-			if (s != null) {
-				sendInMessage(s, response);
-			}
+		for (Sendable response : workingCopy) {
+				sendInMessage(response);
 		}
 	}
 	
@@ -97,21 +84,28 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		
 	}
 	
-	private void handleRequest(Session session, Request request) {
-		sessionCache.put(request.id, session);
+	private void handleSendable(Session session, Sendable request) {
 		switch (request.type) {
 			case SESSION:
+				handleSession(request);
 			case REGISTER:
+				handleRegister(session, request);
+				break;
 			case LOGIN:
-				handleUnauthenticatedRequest(session, request);
+				handleLogin(session, request);
 				break;
 			case JOIN:
-				handleAuthenticatedRequest(session, request);
-				break;
 			case LEAVE:
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
+			case ACCELERATE:
+			case DECELERATE:
+			case HANDBRAKE:
+			case ENTEREXIT:
+			case LEFT:
+			case RIGHT:
+			case SHOOT:
 				handlePlayingRequest(session, request);
 				break;
 			default:
@@ -119,47 +113,26 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 	
-	private void handleUnauthenticatedRequest(Session s, Request request) {
-		switch(request.type) {
-			case SESSION:
-			case REGISTER:
-			case LOGIN:
-			default:
-				break;
-		}
+	private void handleSession(Sendable s) {
+		
 	}
-
-	private void handleAuthenticatedRequest(Session s, Request request) {
-		if (!s.isAuthenticated()) {
-			Response resp = new Response(Response.Status.NEED, request);
-			this.handleResponse(resp);
-			return;
-		}
-		switch(request.type) {
-			case JOIN:
-			default:
-				break;
-		}
-	}
-
-	private void handlePlayingRequest(Session s, Request request) {
-		if (!s.isAuthenticated() || !s.isPlaying()) {
-			Response resp = new Response(Response.Status.NEED, request);
-			this.handleResponse(resp);
-			return;
-		}
-		s.getGame().handleRequest(s, request);
+	
+	private void handleRegister(Session s, Sendable request) {
 	}
 
 	
-	private void handleCommand(Session s, Command command) {
-		if (!s.isAuthenticated() || !s.isPlaying()) {
-			return;
-		}
-		s.getGame().handleCommand(s, command);
+	private void handleLogin(Session s, Sendable request) {
+		User debugUser = new User(1, "testUser"); 
+		s.setUser(debugUser);
+	}
+
+
+	private void handlePlayingRequest(Session s, Sendable request) {
+		
 	}
 	
-	private void sendInMessage(Session s, Response r) {
+	private void sendInMessage(Sendable r) {
+		Session s = SessionManager.instance.getSessionById(r.sessionId);
 		Message msg = new Message();
 		msg.setSessionId(s.getId());
 		msg.addSendable(r);

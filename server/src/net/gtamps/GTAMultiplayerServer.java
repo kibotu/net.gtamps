@@ -1,7 +1,5 @@
 package net.gtamps;
 
-import net.gtamps.server.ConnectionManager;
-import net.gtamps.server.ConnectionManagerII;
 import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;

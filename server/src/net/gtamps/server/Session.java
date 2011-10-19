@@ -7,9 +7,9 @@ public class Session {
 	
 	private final String id;
 	private volatile Connection<?> connection;
-	private volatile boolean isAuthenticated = false;
-	private volatile boolean isPlaying = false;
 	private volatile IGame game = null;
+	private volatile User user = null;
+	
 	
 	
 	/**
@@ -31,11 +31,11 @@ public class Session {
 	}
 	
 	public boolean isAuthenticated() {
-		return this.isAuthenticated;
+		return this.user != null;
 	}
 	
 	public boolean isPlaying() {
-		return this.isPlaying;
+		return this.game != null;
 	}
 	
 	public Connection<?> getConnection() {
@@ -50,6 +50,11 @@ public class Session {
 	public void setGame(IGame game) {
 		this.game = game;
 	}
+	
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 
 	@Override
 	public int hashCode() {

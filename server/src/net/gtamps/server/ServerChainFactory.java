@@ -2,7 +2,6 @@ package net.gtamps.server;
 
 import java.io.FileNotFoundException;
 
-import net.gtamps.server.ConnectionManagerII;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.http.SimpleHttpServer;

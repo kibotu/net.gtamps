@@ -23,8 +23,14 @@ public final class SessionManager implements IMessageHandler {
 	public Session getSessionForMessage(Message msg) {
 		// this assumes the id fields to be immutable for concurrency
 		final String id = getSessionIdForMessage(msg);
-		final Session s = sessions.putIfAbsent(id, new Session(id));
-		return s;
+		//FIXME putIfAbsent returns 'null' if put
+		final Session newSession = new Session(id);
+		final Session existing = sessions.putIfAbsent(id, newSession);
+		return (existing == null) ? newSession : existing;
+	}
+	
+	public Session getSessionById(String id) {
+		return sessions.get(id);
 	}
 	
 	private String getSessionIdForMessage(Message msg) {

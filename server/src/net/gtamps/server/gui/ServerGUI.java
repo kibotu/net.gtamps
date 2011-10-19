@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import net.gtamps.server.ConnectionManager;
-import net.gtamps.server.ConnectionManagerII;
 import net.gtamps.server.ControlCenter;
 
 /**
