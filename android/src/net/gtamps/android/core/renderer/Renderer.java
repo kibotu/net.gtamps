@@ -76,7 +76,7 @@ public class Renderer implements GLSurfaceView.Renderer{
         }
         game.onDrawFrame();
 
-        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
         // Compute elapsed time
         final long finalDelta = SystemClock.elapsedRealtime() - startTime;

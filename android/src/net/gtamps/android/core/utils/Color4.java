@@ -1,8 +1,5 @@
 package net.gtamps.android.core.utils;
 
-import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.core.utils.OpenGLUtils;
-
 import java.nio.FloatBuffer;
 
 public class Color4 {
@@ -39,6 +36,7 @@ public class Color4 {
 		this.g = (short)g;
 		this.b = (short)b;
 		this.a = (short)a;
+        toFloatBuffer(colorBuffer);
 	}
 
 	/**
@@ -49,6 +47,7 @@ public class Color4 {
 		r = (short) ((argb32 >> 16) & 0x000000FF);
 		g = (short) ((argb32 >> 8) & 0x000000FF);
 		b = (short) ((argb32) & 0x000000FF);
+        toFloatBuffer(colorBuffer);
 	}
 
 	public short getRed() {

@@ -5,7 +5,6 @@ import net.gtamps.android.core.graph.CameraNode;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.objects.Sprite;
-import net.gtamps.shared.IDirty;
 import net.gtamps.shared.state.State;
 
 public class Hud {
@@ -28,8 +27,10 @@ public class Hud {
             camera.enableDepthTest(false);
 
             ring = new Sprite();
+            ring.setVisible(false);
             scene.add(ring);
             cursor = new Sprite();
+            cursor.setVisible(false);
             scene.add(cursor);
 
             ring.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);
