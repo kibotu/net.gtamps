@@ -1,4 +1,4 @@
-package net.gtamps.shared.communication;
+package net.gtamps.shared.communication.data;
 
 public class RevisionData implements ISendableData {
 

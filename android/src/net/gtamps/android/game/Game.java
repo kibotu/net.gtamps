@@ -11,6 +11,8 @@ import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.communication.*;
+import net.gtamps.shared.communication.data.FloatData;
+import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.Utils;
@@ -52,7 +54,7 @@ public class Game implements IGame{
 
         IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
         world.getScene().addChild(object3d);
-        object3d.getNode().setPosition(10,10,3);
+        object3d.getNode().setPosition(10, 10, 3);
 
         // hud
         scenes.add(hud.getScene());
@@ -121,15 +123,7 @@ public class Game implements IGame{
         while(!connection.isEmpty()) {
             Message message = connection.poll();
             for(int i = 0; i < message.sendables.size(); i++) {
-                ISendable sendable = message.sendables.get(i);
-                // message is request
-//                if(sendable instanceof Request) {
-//                    handleRequest((Request) sendable, message);
-//                }
-                // message is response
-                if(sendable instanceof Response) {
-                    handleResponse((Response) sendable, message);
-                }
+                handleMessage(message.sendables.get(i),message);
             }
         }
 
@@ -191,7 +185,6 @@ public class Game implements IGame{
         // animate
     }
 
-
     private long impulse = 0;
     private void fireImpulse(float angle, Vector3 force) {
         if(!connection.isConnected()) return;
@@ -204,28 +197,28 @@ public class Game implements IGame{
 
         // up° 22.5 to -22.5°
         if(inRange(angle, 22.5f, -22.5f)) {
-            message.addSendable(new Command(Command.Type.ACCELERATE,force.getLength()));
+            message.addSendable(new Sendable(SendableType.ACCELERATE,new FloatData(force.getLength())));
         }
 
         // right up -22.5° to -67.5°
 
         // right -67.5° to -112.5°
         if(inRange(angle, -67.5f, -112.5f)) {
-            message.addSendable(new Command(Command.Type.RIGHT,force.getLength()));
+            message.addSendable(new Sendable(SendableType.RIGHT,new FloatData(force.getLength())));
         }
 
         // right down -112.5° to -157.5°
 
         // down -157.5° to -180° and 180° to 157.5°
         if(inRange(angle, -157.5f, -180f) || inRange(angle, 180f,157.5f)) {
-            message.addSendable(new Command(Command.Type.DECELERATE,force.getLength()));
+            message.addSendable(new Sendable(SendableType.DECELERATE,new FloatData(force.getLength())));
         }
 
         // left down 157.5° to 112.5°
 
         // left 112.5° to 67.5°
         if(inRange(angle, 112.5f, 67.5f)) {
-            message.addSendable(new Command(Command.Type.LEFT,force.getLength()));
+            message.addSendable(new Sendable(SendableType.LEFT,new FloatData(force.getLength())));
         }
 
         // left up 67.5° to 22.5°
@@ -237,124 +230,73 @@ public class Game implements IGame{
         return value >= Math.min(startRange,endRange) && value <= Math.max(startRange,endRange);
     }
 
-    private void handleResponse(Response response, Message message) {
-        Utils.log(TAG, "Handles response.");
-        Utils.log(TAG, ""+response.toString());
+    private void handleMessage(Sendable sendable, Message message) {
+        Utils.log(TAG, "Handles message.");
+        Utils.log(TAG, ""+sendable);
 
-        switch (response.requestType) {
-            case GETUPDATE:
-                if(response.getData() == null) break;
-                if(!(response.getData() instanceof UpdateData)) break;
-                switch (response.status) {
-                    case OK:
-                        UpdateData updateData = ((UpdateData)response.getData());
-                        ConnectionManager.currentRevId = updateData.revId;
+        switch (sendable.type) {
+            case GETUPDATE_OK:
 
-                        ArrayList<Entity> entities = updateData.entites;
-                        for(int i = 0; i < entities.size(); i++) {
-                            Utils.log(TAG, "response size"+entities.size());
-                            Entity serverEntity = entities.get(i);
+                if(sendable.data == null) break;
+                if(!(sendable.data instanceof UpdateData)) break;
+                UpdateData updateData = ((UpdateData)sendable.data);
+                ConnectionManager.currentRevId = updateData.revId;
 
-                            // contains?
-                            EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
-                            if(entityView == null) {
-                                entityView = new EntityView(serverEntity);
-                                world.getScene().addChild(world.activeObject = entityView);
-                                Utils.log(TAG, "add new entity"+serverEntity.getUid());
-                            } else {
-                                entityView.update(serverEntity);
-                                Utils.log(TAG, "update entity"+serverEntity.getUid());
-                            }
-                        }
-                        break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case GETPLAYER:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case SESSION:
-                switch (response.status) {
-                    case OK:
-                        ConnectionManager.currentSessionId = message.getSessionId();
-                        break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case JOIN:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case GETMAPDATA:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case LEAVE:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case LOGIN:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            case REGISTER:
-                switch (response.status) {
-                    case OK: break;
-                    case BAD: break;
-                    case NEED: break;
-                    case ERROR: break;
-                    default: break;
-                }
-                break;
-            default: break;
-        }
-    }
+                ArrayList<Entity> entities = updateData.entites;
+                for(int i = 0; i < entities.size(); i++) {
+                    Utils.log(TAG, "response size"+entities.size());
+                    Entity serverEntity = entities.get(i);
 
-    private void handleRequest(Request request, Message message) {
-        Utils.log(TAG, "Handles request.");
-        Utils.log(TAG, ""+request.toString());
+                    // contains?
+                    EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
+                    if(entityView == null) {
+                        entityView = new EntityView(serverEntity);
+                        world.getScene().addChild(world.activeObject = entityView);
+                        Utils.log(TAG, "add new entity"+serverEntity.getUid());
+                    } else {
+                        entityView.update(serverEntity);
+                        Utils.log(TAG, "update entity"+serverEntity.getUid());
+                    }
+                }
 
-        switch (request.type) {
-            case GETUPDATE: break;
-            case GETPLAYER: break;
-            case JOIN: break;
-            case SESSION: break;
-            case GETMAPDATA: break;
-            case LEAVE: break;
-            case LOGIN: break;
-            case REGISTER: break;
+            case GETUPDATE_NEED: break;
+            case GETUPDATE_BAD: break;
+            case GETUPDATE_ERROR: break;
+
+            case GETPLAYER_OK: break;
+            case GETPLAYER_NEED: break;
+            case GETPLAYER_BAD: break;
+            case GETPLAYER_ERROR: break;
+
+            case SESSION_OK: ConnectionManager.currentSessionId = message.getSessionId(); break;
+            case SESSION_NEED: break;
+            case SESSION_BAD: break;
+            case SESSION_ERROR: break;
+
+            case JOIN_OK: break;
+            case JOIN_NEED: break;
+            case JOIN_BAD: break;
+            case JOIN_ERROR: break;
+
+            case GETMAPDATA_OK: break;
+            case GETMAPDATA_NEED: break;
+            case GETMAPDATA_BAD: break;
+            case GETMAPDATA_ERROR: break;
+
+            case LEAVE_OK: break;
+            case LEAVE_NEED: break;
+            case LEAVE_BAD: break;
+            case LEAVE_ERROR: break;
+
+            case LOGIN_OK: break;
+            case LOGIN_NEED: break;
+            case LOGIN_BAD: break;
+            case LOGIN_ERROR: break;
+
+            case REGISTER_OK: break;
+            case REGISTER_NEED: break;
+            case REGISTER_BAD: break;
+            case REGISTER_ERROR: break;
             default: break;
         }
     }
