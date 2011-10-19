@@ -9,8 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import net.gtamps.server.ConnectionManager;
-import net.gtamps.server.ConnectionManagerII;
+import net.gtamps.server.ControlCenter;
 
 /**
  * ugly-ass hacked class to easily control some server stuff...
@@ -18,13 +17,11 @@ import net.gtamps.server.ConnectionManagerII;
  *
  */
 public class ServerGUI {
-	private ConnectionManagerII connectionManager;
 	private JFrame frame;
 	private NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
 	private NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
 	
-	public ServerGUI(final ConnectionManagerII connMng){
-		this.connectionManager = connMng;
+	public ServerGUI(){
 		frame = new JFrame("GTA MultiServer");
 		
 //		JButton startServer = new JButton("start Server");
@@ -61,7 +58,7 @@ public class ServerGUI {
 		restartGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				connectionManager.restartGame();
+				ControlCenter.instance.restart();
 			}
 		});
 		

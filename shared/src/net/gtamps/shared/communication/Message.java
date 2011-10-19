@@ -8,20 +8,20 @@ import java.util.ArrayList;
 public class Message implements Serializable {
 
     @NotNull
-    private String sessionId;
+    private volatile String sessionId;
 
-    public final ArrayList<ISendable> sendables;
+    public final ArrayList<Sendable> sendables;
 
-    public Message(@NotNull ISendable sendable) {
+    public Message(@NotNull Sendable sendable) {
         this();
         sendables.add(sendable);
     }
 
     public Message() {
-        sendables = new ArrayList<ISendable>();
+        sendables = new ArrayList<Sendable>();
     }
 
-    public void addSendable(ISendable sendable) {
+    public void addSendable(Sendable sendable) {
         sendables.add(sendable);
     }
 
@@ -31,6 +31,9 @@ public class Message implements Serializable {
 
     public void setSessionId(@NotNull String sessionId) {
         this.sessionId = sessionId;
+        for (Sendable s : sendables) {
+        	s.sessionId = sessionId;
+        }
     }
 
     @Override

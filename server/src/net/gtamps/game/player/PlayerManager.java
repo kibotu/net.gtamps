@@ -5,6 +5,7 @@ import net.gtamps.game.property.HealthProperty;
 import net.gtamps.game.property.PositionProperty;
 import net.gtamps.game.property.Property.Type;
 import net.gtamps.game.world.World;
+import net.gtamps.server.User;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -28,6 +29,7 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 	
 	private final World world;
 	private final EntityManager entityManager;
+	private final Map<Integer, Integer> users = new HashMap<Integer, Integer>();
 	private final Map<Integer, Player> players = new HashMap<Integer, Player>();
 	private final Map<Integer, Player> inactivePlayers = new HashMap<Integer, Player>();
 	
@@ -37,13 +39,29 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 		players.put(WORLD_PSEUDOPLAYER.getUid(), WORLD_PSEUDOPLAYER);
 	}
 	
-	public Player createPlayer(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("'name' must not be null");
+	public Player getPlayerForUser(User user) {
+		int uid = user.uid;
+		Player p = null;
+		if (users.containsKey(uid)) {
+			Integer puid = users.get(uid);
+			if (puid != null) {
+				p = getPlayer(puid);
+			} else {
+				// TODO exception
+			}
 		}
+		return p != null ? p : createPlayer(user);
+	}
+	
+	public Player createPlayer(User user) {
+		if (user == null) {
+			throw new IllegalArgumentException("'user' must not be null");
+		}
+		String name = user.name;
 		Player player = PlayerFactory.createPlayer(name);
 		assert player != null : "PlayerFactory.createPlayer() returned null";
 		int uid = player.getUid();
+		users.put(user.uid, uid);
 		players.put(uid, player);
 		coupleEventLinks(player);
 		dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));

@@ -8,8 +8,20 @@ import net.gtamps.android.core.utils.VboLoader;
 
 public class Car extends PureVboNode implements IObject3d {
 
-    public Car() {
-        this(R.raw.camaro2,R.drawable.camaro,true);
+    public enum Type {
+        CAMARO(R.raw.camaro2, R.drawable.camaro),
+        RIVIERA(R.raw.riviera, R.drawable.riviera),
+        CHEVROLET_CORVETTE(R.raw.chevroletcorvette,R.drawable.placeholder);
+        public final int rawId;
+        public final int drawableId;
+        private Type(final int rawId, final int drawableId) {
+            this.rawId = rawId;
+            this.drawableId = drawableId;
+        }
+    }
+
+    public Car(Type type) {
+        this(type.rawId,type.drawableId,true);
     }
 
     public Car(int vboResourceId, int textureResourceId, boolean generateMipMap) {

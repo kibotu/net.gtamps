@@ -1,14 +1,14 @@
 package net.gtamps.android.core.utils.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import net.gtamps.android.core.utils.Color4;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.android.core.utils.parser.AParser.BitmapAsset;
 import net.gtamps.android.core.utils.parser.AParser.Material;
 import net.gtamps.android.core.utils.parser.AParser.TextureAtlas;
-import net.gtamps.android.core.utils.parser.AParser.BitmapAsset;
 import net.gtamps.android.game.objects.ParsedObject;
+import net.gtamps.shared.math.Vector3;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ParseObjectData {
 
@@ -50,7 +50,7 @@ public class ParseObjectData {
 	public ParsedObject getParsedObject(HashMap<String, Material> materialMap, TextureAtlas textureAtlas) {
 		ParsedObject obj = new ParsedObject(numFaces * 3, numFaces);
 		obj.name = name;
-		
+
 		parseObject(obj, materialMap, textureAtlas);
 		
 		return obj;

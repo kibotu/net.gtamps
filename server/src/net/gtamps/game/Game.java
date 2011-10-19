@@ -17,14 +17,14 @@ import net.gtamps.game.player.PlayerManager;
 import net.gtamps.game.world.MapParser;
 import net.gtamps.game.world.World;
 import net.gtamps.server.Session;
+import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.Command;
+import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.ISendable;
-import net.gtamps.shared.communication.Request;
-import net.gtamps.shared.communication.Response;
-import net.gtamps.shared.communication.RevisionData;
-import net.gtamps.shared.communication.UpdateData;
+import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.communication.data.RevisionData;
+import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -47,13 +47,9 @@ public class Game extends Thread implements IGame {
 	private static final long THREAD_UPDATE_SLEEP_TIME = 20;
 	private static final int PHYSICS_ITERATIONS = 20;
 	
-	private static int instanceCounter = 0;
+	private static volatile int instanceCounter = 0;
 
-	// start with value > 0
-	//private long currentRevisionId = RevisionKeeper.START_REVISION;
-//	private RevisionKeeper revisionKeeper = new RevisionKeeper(this);
-	
-	private class MessagePair<T extends ISendable> {
+	private class MessagePair<T extends Sendable> {
 		public T sendable;
 		public Session session;
 		public MessagePair(T sendable, Session session) {
@@ -62,25 +58,18 @@ public class Game extends Thread implements IGame {
 		}
 	}
 	
-	private final BlockingQueue<MessagePair<Request>> requestQueue = new LinkedBlockingQueue<MessagePair<Request>>();
-	private final BlockingQueue<MessagePair<Command>> commandQueue = new LinkedBlockingQueue<MessagePair<Command>>();
-	private final BlockingQueue<Response> responseQueue = new LinkedBlockingQueue<Response>();
+	private final BlockingQueue<MessagePair<Sendable>> requestQueue = new LinkedBlockingQueue<MessagePair<Sendable>>();
+	private final BlockingQueue<MessagePair<Sendable>> commandQueue = new LinkedBlockingQueue<MessagePair<Sendable>>();
+	private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
 	
+	private volatile boolean run = true;
+	private volatile Thread thread; 
+	private volatile boolean isActive; 
+
+	private long lastTime = System.nanoTime();
 	
-	private boolean isRunning = false;
-	private boolean run = true;
-	
-	private EventManager eventManager;
-	private PlayerManager playerManager;
-	private EntityManager entityManager;
 	private World world;
-	private Box2DEngine physics;
 	
-	//temp
-	private int lastPlayerId = -1;
-
-	private long lastTime = System.nanoTime(); 
-
 	public Game(String mapPathOrNameOrWhatever) {
 		super("GameThread" + (++Game.instanceCounter));
 		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
@@ -90,31 +79,24 @@ public class Game extends Thread implements IGame {
 			try {
 				mapXML = ResourceLoader.getFileAsXml(mapPathOrNameOrWhatever);
 			} catch (JDOMException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
 		MapParser mapParser = new MapParser(mapXML);
 		{
 			world = mapParser.getWorld();
-			physics = mapParser.getPhysics();
-			eventManager = new EventManager(EVENT_TIMEOUT);
-			entityManager = new EntityManager(world);
-			playerManager = new PlayerManager(world, entityManager);
+//			physics = mapParser.getPhysics();
+//			eventManager = new EventManager();
+//			entityManager = new EntityManager(world);
+//			playerManager = new PlayerManager(world, entityManager);
 			
-			eventManager.addEventListener(EventType.ACTION_EVENT, playerManager);
-			eventManager.addEventListener(EventType.SESSION_EVENT, entityManager);
-			eventManager.addEventListener(EventType.SESSION_EVENT, playerManager);
-			playerManager.addEventListener(EventType.PLAYER_EVENT, eventManager);
-			entityManager.addEventListener(EventType.ENTITY_EVENT, eventManager);
 			
-			mapParser.populateWorld(entityManager);
+			mapParser.populateWorld(world.entityManager);
 			
-			eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
+			world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
 			this.start();
 		}
 	}
@@ -131,27 +113,15 @@ public class Game extends Thread implements IGame {
 
 	
 	
-	private Iterable<Entity> getUpdates(long revisionId) {
-		ArrayList<Entity> updates = new ArrayList<Entity>();
-		if (lastPlayerId >=0) {
-			updates.add(playerManager.getPlayer(lastPlayerId).getEntity());
-		}
-		return updates;
-	}
-
-	
-	
-
-
-	
 	@Override
 	public void run() {
+		this.isActive = true;
 		while(run) {
 			float timeElapsedInSeconds = (float) ((System.nanoTime()-lastTime)/1000000000.0);
 			long timeElapsedPhysicsCalculation = System.nanoTime();
 			lastTime = System.nanoTime();
-			this.physics.step(timeElapsedInSeconds, PHYSICS_ITERATIONS);
-			this.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
+			world.physics.step(timeElapsedInSeconds, PHYSICS_ITERATIONS);
+			world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
 			timeElapsedPhysicsCalculation = (System.nanoTime()-lastTime)/1000000;
 
 			//for fps debugging
@@ -162,84 +132,94 @@ public class Game extends Thread implements IGame {
 //				lastUpdate = 0f;
 //				updates = 0;
 //			}
+			
+			processCommandQueue();
+			processRequestQueue();
+			
 			try {
 				if(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation>0){
 					Thread.sleep(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation);
 					//System.out.println(this);
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				// reset interrupted status?
+				//Thread.currentThread().interrupt();
 			}
 		}
+		this.isActive = false;
 	}
 
 
 	@Override
-	public boolean isRunning() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isActive() {
+		return this.isActive;
 	}
 
 
 	@Override
-	public void handleRequest(Session s, Request r) {
+	public void handleSendable(Session s, Sendable r) {
 		if (s == null) {
 			throw new IllegalArgumentException("'s' must not be null");
 		}
 		if (r == null) {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
-		this.requestQueue.add(new MessagePair<Request>(r, s));
+		switch(r.type) {
+			case ACCELERATE:
+			case DECELERATE:
+			case ENTEREXIT:
+			case LEFT:
+			case RIGHT:
+			case SHOOT:
+				this.commandQueue.add(new MessagePair<Sendable>(r, s));
+				break;
+			case GETMAPDATA:
+			case GETPLAYER:
+			case GETUPDATE:
+			case JOIN:
+			case LEAVE:
+				this.requestQueue.add(new MessagePair<Sendable>(r, s));
+				break;
+			default:
+				break;
+		}
 	}
 
-
 	@Override
-	public void handleCommand(Session s, Command c) {
-		if (s == null) {
-			throw new IllegalArgumentException("'s' must not be null");
-		}
-		if (c == null) {
-			throw new IllegalArgumentException("'c' must not be null");
-		}
-		this.commandQueue.add(new MessagePair<Command>(c, s));
-	}
-	
-	@Override
-	public void drainResponseQueue(Collection<Response> target) {
+	public void drainResponseQueue(Collection<Sendable> target) {
 		this.responseQueue.drainTo(target);
 	}
 
 	private void processCommandQueue() {
-		List<MessagePair<Command>> commandPairs = new LinkedList<MessagePair<Command>>();
+		List<MessagePair<Sendable>> commandPairs = new LinkedList<MessagePair<Sendable>>();
 		this.commandQueue.drainTo(commandPairs);
-		for (MessagePair<Command> pair : commandPairs) {
-			int puid = getPlayerUid(pair.session);
+		for (MessagePair<Sendable> pair : commandPairs) {
+			int puid = getPlayer(pair.session).getUid();
 			this.command(puid, pair.sendable);
 		}
 		commandPairs.clear();
 	}
 	
 	private void processRequestQueue() {
-		List<MessagePair<Request>> requestPairs = new LinkedList<MessagePair<Request>>();
+		List<MessagePair<Sendable>> requestPairs = new LinkedList<MessagePair<Sendable>>();
 		this.requestQueue.drainTo(requestPairs);
-		for (MessagePair<Request> pair: requestPairs) {
-			int puid = getPlayerUid(pair.session);
-			Response response = null;
+		for (MessagePair<Sendable> pair: requestPairs) {
+			int puid = getPlayer(pair.session).getUid();
+			Sendable response = null;
 			switch(pair.sendable.type) {
 				case JOIN:
-					puid = createPlayer("test");
 					response = joinPlayer(puid, pair.sendable); 
 					break;
 				case LEAVE: 
 					response = leavePlayer(puid, pair.sendable); 
 					break;
-				case GETMAPDATA: break;
-				case GETPLAYER: break;
+//				case GETMAPDATA: break;
+//				case GETPLAYER: break;
 				case GETUPDATE: 
 					response = update(puid, pair.sendable); 
 					break;
 				default:
+					response = pair.sendable.createResponse(SendableType.BAD_SENDABLE);
 					break;
 			}
 			this.handleResponse(pair.session, response);
@@ -247,30 +227,29 @@ public class Game extends Thread implements IGame {
 		requestPairs.clear();
 	}
 	
-	private Response update(int puid, Request sendable) {
-		long baseRevision = ((RevisionData) sendable.getData()).revisionId;
-		List<Entity> entities = entityManager.getUpdate(baseRevision);
-		UpdateData update = new UpdateData(entityManager.getCurrentRevision());
+	private Sendable update(int puid, Sendable sendable) {
+		long baseRevision = ((RevisionData) sendable.data).revisionId;
+		ArrayList<Entity> entities = world.entityManager.getUpdate(baseRevision);
+		UpdateData update = new UpdateData(world.getRevision());
 		update.entites = entities;
-		Response updateResponse = new Response(Response.Status.OK, sendable);
-		updateResponse.setData(update);
+		Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
+		updateResponse.data = update;
 		return updateResponse;
 	}
 
-
-	private void handleResponse(Session s, Response r) {
+	private void handleResponse(Session s, Sendable r) {
 		assert s != null;
 		assert r != null;
 		this.responseQueue.add(r);
 	}
 	
-	private int getPlayerUid(Session s) {
-		//TODO
-		return lastPlayerId;
+	private Player getPlayer(Session s) {
+		Player p = world.playerManager.getPlayerForUser(s.getUser()); 
+		return p;
 	}
 	
-	private void command(int playeruid, Command cmd) {
-		Player player = playerManager.getPlayer(playeruid);
+	private void command(int playeruid, Sendable cmd) {
+		Player player = world.playerManager.getPlayer(playeruid);
 		assert player != null;
 		assert cmd != null;
 		
@@ -300,43 +279,33 @@ public class Game extends Thread implements IGame {
 			break;
 		}
 		if (type != null) {
-			eventManager.dispatchEvent(new GameEvent(type, player));
+			world.eventManager.dispatchEvent(new GameEvent(type, player));
 		}
 	}
 
 	private void getMapData() {
 		//return world.toXMLElement(0, revisionKeeper);
 		// TODO
-		return null;
 	}
 
-	private Response joinPlayer(int uid, Request sendable) {
-		if (!playerManager.hasPlayer(uid)) {
-			return new Response(Response.Status.NEED, sendable);
+	private Sendable joinPlayer(int uid, Sendable sendable) {
+		if (!world.playerManager.hasPlayer(uid)) {
+			return sendable.createResponse(SendableType.JOIN_NEED);
 		}
-		boolean ok = playerManager.spawnPlayer(uid);
-		Response.Status status = ok ? Response.Status.OK : Response.Status.BAD;
-		return new Response(status, sendable);
+		boolean ok = world.playerManager.spawnPlayer(uid);
+		SendableType status = ok ? SendableType.JOIN_OK : SendableType.JOIN_BAD;
+		return sendable.createResponse(status);
 	}
 
-	private Response leavePlayer(int uid, Request sendable) {
-		playerManager.deactivatePlayer(uid);
-		return new Response(Response.Status.OK, sendable);
+	private Sendable leavePlayer(int uid, Sendable sendable) {
+		world.playerManager.deactivatePlayer(uid);
+		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
 
-	private int createPlayer(String name) {
-		assert name != null;
-		Player player = playerManager.createPlayer(name);
-		
-		// TEMP
-		this.lastPlayerId = player.getUid();
-		
-		return player.getUid();
+	@Override
+	public void hardstop() {
+		this.run = false;
+		this.thread.interrupt();
 	}
-	
-	private void getPlayer(int uid) {
-		return playerManager.getPlayer(uid);
-	}
-	
 
 }

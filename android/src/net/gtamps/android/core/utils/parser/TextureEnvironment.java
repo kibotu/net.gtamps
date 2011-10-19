@@ -19,7 +19,7 @@ public class TextureEnvironment {
 	 * Convenience method
 	 */
 	public void setAll(int pname, int param)	{
-		pname = pname;
-		param = param;
+		this.pname = pname;
+		this.param = param;
 	}
 }
