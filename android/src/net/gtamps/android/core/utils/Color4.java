@@ -98,7 +98,7 @@ public class Color4 {
 	 * Convenience method
 	 */
 	public void toFloatBuffer(FloatBuffer floatBuffer)	{
-        OpenGLUtils.addFloat4PositionZero(floatBuffer,r/255,g/255,b/255,a/255);
+        OpenGLUtils.addFloat4PositionZero(floatBuffer,(float)r/255f,(float)g/255f,(float)b/255f,(float)a/255f);
 	}
 
 	public FloatBuffer getColorBuffer() {
