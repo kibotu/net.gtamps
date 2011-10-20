@@ -45,17 +45,31 @@ public class World {
 
 //
 		LightNode spot = new LightNode();
-		spot.setPosition(0, 0, 10);
+		spot.setPosition(0, 2, 3);
         spot.setDirection(0,0,-1);
-		spot.diffuse.setAll(255,255,255, 255);
+		spot.diffuse.setAll(255,0,0, 255);
 		spot.ambient.setAll(0, 0, 0, 0);
-		spot.specular.setAll(128, 128, 128, 255);
+		spot.specular.setAll(255, 255, 255, 255);
 		spot.emissive.setAll(0, 0, 0, 0);
         spot.setType(LightNode.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
         spot.setSpotExponent(4);
-        spot.setAttenuation(1,0,0);
-		scene.add(spot);
+        spot.setAttenuation(0.5f,0,0);
+		activeObject.getNode().add(spot);
+        spot.setRotation(60,0,0);
+
+        LightNode sun = new LightNode();
+		sun.setPosition(0, 0, 10);
+        sun.setDirection(0,0,-1);
+		sun.diffuse.setAll(128,128,128, 255);
+		sun.ambient.setAll(0, 0, 0, 0);
+		sun.specular.setAll(128, 128, 128, 255);
+		sun.emissive.setAll(0, 0, 0, 0);
+        sun.setType(LightNode.Type.POSITIONAL);
+        sun.setSpotCutoffAngle(60);
+        sun.setSpotExponent(4);
+        sun.setAttenuation(0.5f,0,0);
+		scene.add(sun);
 
         addPlane();
 //        addCity();

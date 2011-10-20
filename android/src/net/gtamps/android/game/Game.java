@@ -153,11 +153,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().move(temp);
+            world.getActiveObject().getNode().getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveObject().getNode().setRotation(0, 0, angle);
+            world.getActiveObject().getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);
