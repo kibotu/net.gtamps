@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ILogger {
 
+    public void toast(String message);
+
     /** DEBUG **/
     public void d(@NotNull String id, @Nullable String message);
 
