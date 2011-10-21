@@ -1,10 +1,13 @@
 package net.gtamps.shared.communication;
 
+
 import net.gtamps.shared.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Sendable {
+public class Sendable implements ISendable {
+
+	private static final long serialVersionUID = 5034854192792203952L;
 
 	private static int idCounter = 0;
 	
