@@ -6,7 +6,6 @@ import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConnectionManager implements IMessageManager {
@@ -39,12 +38,14 @@ public class ConnectionManager implements IMessageManager {
     @Override
     public Message poll() {
         Message message = inbox.poll();
+        currentSessionId = message.getSessionId();
         Utils.log(TAG, "outbox poll: " + message.toString());
         return message;
     }
 
     @Override
     public boolean add(@NotNull Message message) {
+        message.setSessionId(currentSessionId);
         Utils.log(TAG, "outbox add: " + message.toString());
         return outbox.add(message);
     }

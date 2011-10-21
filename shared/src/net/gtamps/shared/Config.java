@@ -1,10 +1,13 @@
 package net.gtamps.shared;
 
+import net.gtamps.shared.Utils.Logger;
+
 final public class Config {
 
     /**
      * DEBUG
      */
+    public static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
     public static final boolean DEBUG_MODE = true;
     public static final boolean DEBUG_MODE_SHOW_NULL_EXCEPTIONS = false;
 

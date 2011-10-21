@@ -13,6 +13,7 @@ public class Color4 {
 
 	public Color4()	{
         this(255,255,255,255);
+        net.gtamps.shared.Utils.Logger.D(this, "test");
 	}
 
 	public Color4(int r, int g, int b, int a) {
