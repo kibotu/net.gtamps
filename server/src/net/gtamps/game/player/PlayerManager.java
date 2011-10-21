@@ -1,9 +1,9 @@
 package net.gtamps.game.player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.gtamps.game.entity.EntityManager;
-import net.gtamps.game.property.HealthProperty;
-import net.gtamps.game.property.PositionProperty;
-import net.gtamps.game.property.Property.Type;
 import net.gtamps.game.world.World;
 import net.gtamps.server.User;
 import net.gtamps.shared.game.entity.Entity;
@@ -12,9 +12,6 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 import net.gtamps.shared.game.player.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Manages player. Players once created cannot be removed from the game,
@@ -29,50 +26,35 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 	
 	private final World world;
 	private final EntityManager entityManager;
-	private final Map<Integer, Integer> users = new HashMap<Integer, Integer>();
 	private final Map<Integer, Player> players = new HashMap<Integer, Player>();
 	private final Map<Integer, Player> inactivePlayers = new HashMap<Integer, Player>();
 	
-	public PlayerManager(World world, EntityManager entityManager) {
+	public PlayerManager(final World world, final EntityManager entityManager) {
 		this.world = world;
 		this.entityManager = entityManager;
 		players.put(WORLD_PSEUDOPLAYER.getUid(), WORLD_PSEUDOPLAYER);
 	}
 	
-	public Player getPlayerForUser(User user) {
-		int uid = user.uid;
-		Player p = null;
-		if (users.containsKey(uid)) {
-			Integer puid = users.get(uid);
-			if (puid != null) {
-				p = getPlayer(puid);
-			} else {
-				// TODO exception
-			}
-		}
-		return p != null ? p : createPlayer(user);
-	}
 	
-	public Player createPlayer(User user) {
+	public Player createPlayer(final User user) {
 		if (user == null) {
 			throw new IllegalArgumentException("'user' must not be null");
 		}
-		String name = user.name;
-		Player player = PlayerFactory.createPlayer(name);
+		final String name = user.name;
+		final Player player = PlayerFactory.createPlayer(name);
 		assert player != null : "PlayerFactory.createPlayer() returned null";
-		int uid = player.getUid();
-		users.put(user.uid, uid);
+		final int uid = player.getUid();
 		players.put(uid, player);
 		coupleEventLinks(player);
 		dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));
 		return player;
 	}
 	
-	public boolean hasPlayer(int uid) {
+	public boolean hasPlayer(final int uid) {
 		return players.containsKey(uid);
 	}
 	
-	public Player getPlayer(int uid) {
+	public Player getPlayer(final int uid) {
 		Player player = null;
 		player = players.get(uid);
 		if (player == null && inactivePlayers.containsKey(uid)) {
@@ -82,8 +64,8 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 		return player;
 	}
 	
-	public void deactivatePlayer(int uid) {
-		Player player = players.get(uid);
+	public void deactivatePlayer(final int uid) {
+		final Player player = players.get(uid);
 		if (player == null) {
 			return;
 		}
@@ -93,8 +75,8 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 		dispatchEvent(new GameEvent(EventType.PLAYER_LEAVES, player));
 	}
 	
-	public void activatePlayer(int uid) {
-		Player player = inactivePlayers.get(uid);
+	public void activatePlayer(final int uid) {
+		final Player player = inactivePlayers.get(uid);
 		if (player == null) {
 			return;
 		}
@@ -109,8 +91,8 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 	 * @param uid
 	 * @return	<code>true</code> if an entity was spawned for player
 	 */
-	public boolean spawnPlayer(int uid) {
-		Player p = getPlayer(uid);
+	public boolean spawnPlayer(final int uid) {
+		final Player p = getPlayer(uid);
 		assert p != null : "invalid player uid: " + uid;
 		//if the player has an entity and his entity is still alive...
 		//FIXME
@@ -120,23 +102,23 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 		//TODO create proper entity
 		// create default entity at default location and add
 		//PositionProperty pp = (PositionProperty) world.getRandomSpawnPoint().getProperty(Type.POSITION);
-		Entity spawn = world.getRandomSpawnPoint();
-		Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
+		final Entity spawn = world.getRandomSpawnPoint();
+		final Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
 		p.setEntity(e);
 		dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
 		return true;
 	}
 
 	@Override
-	public void receiveEvent(GameEvent event) {
+	public void receiveEvent(final GameEvent event) {
 		if (event == null) {
 			// TODO log warning
 			// TODO log system :)
 			return;
 		}
-		EventType type = event.getType();
+		final EventType type = event.getType();
 		if (type.isType(EventType.ACTION_EVENT)) {
-			Player player = getPlayer(event.getSourceUid());
+			final Player player = getPlayer(event.getSourceUid());
 			assert player != null : "event source uid does not match any active player; #players: " + players.size();
 			player.receiveEvent(event);
 		} else if (type.isType(EventType.PLAYER_EVENT)) {
@@ -156,11 +138,11 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 //		}
 	}
 
-	private void coupleEventLinks(Player player) {
+	private void coupleEventLinks(final Player player) {
 		player.addEventListener(EventType.PLAYER_EVENT, this);
 	}
 	
-	private void decoupleEventLinks(Player player) {
+	private void decoupleEventLinks(final Player player) {
 		player.removeEventListener(EventType.PLAYER_EVENT, this);
 	}
 
