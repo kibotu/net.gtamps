@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-public abstract class AObjectSerializer implements ISerializer{
+public class ObjectSerializer implements ISerializer{
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -14,7 +14,7 @@ public abstract class AObjectSerializer implements ISerializer{
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
 
-    public AObjectSerializer() {
+    public ObjectSerializer() {
     }
 
     @Override

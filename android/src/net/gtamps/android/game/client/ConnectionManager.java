@@ -4,6 +4,7 @@ import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.communication.ObjectSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
