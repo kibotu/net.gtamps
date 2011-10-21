@@ -23,16 +23,17 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
 	
-	private boolean run = true;
-	private Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
+	private final boolean run = true;
+	private final Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
 	
-	private IGame game;
+	private IGame game; //tmp
 	
 	private ControlCenter() {
-		this.createGame(null);
+		createGame(null); // tmp
 		new Thread(this, "ControlCenter").start();
 	}
 	
+	@Override
 	public void run() {
 		while(run) {
 			processInbox();
@@ -45,13 +46,13 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
 	 */
 	@Override
-	public void receiveMessage(Connection<?> c, Message msg) {
+	public void receiveMessage(final Connection<?> c, final Message msg) {
 		if (msg != null) {
 			inbox.add(msg);
 		}
 	}
 	
-	public void handleResponse(Sendable response) {
+	public void handleResponse(final Sendable response) {
 		if (response != null) {
 			responsebox.add(response);
 		}
@@ -64,11 +65,11 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	}
 	
 	private void processInbox() {
-		List<Message> workingCopy = new LinkedList<Message>();
+		final List<Message> workingCopy = new LinkedList<Message>();
 		inbox.drainTo(workingCopy);
-		for (Message msg : workingCopy) {
-			Session session = SessionManager.instance.getSessionForMessage(msg);
-			for (Sendable i : msg.sendables) {
+		for (final Message msg : workingCopy) {
+			final Session session = SessionManager.instance.getSessionForMessage(msg);
+			for (final Sendable i : msg.sendables) {
 					handleSendable(session, i);
 			}
 		}
@@ -76,15 +77,15 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	}
 	
 	private void processResponsebox() {
-		List<Sendable> workingCopy = new LinkedList<Sendable>();
+		final List<Sendable> workingCopy = new LinkedList<Sendable>();
 		//responsebox.drainTo(workingCopy);
-		this.responsebox.drainTo(workingCopy);
-		for (Sendable response : workingCopy) {
+		responsebox.drainTo(workingCopy);
+		for (final Sendable response : workingCopy) {
 			sendInMessage(response);
 		}
 		workingCopy.clear();
-		this.game.drainResponseQueue(workingCopy);
-		for (Sendable response : workingCopy) {
+		game.drainResponseQueue(workingCopy);
+		for (final Sendable response : workingCopy) {
 				sendInMessage(response);
 		}
 	}
@@ -93,7 +94,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		
 	}
 	
-	private void handleSendable(Session session, Sendable request) {
+	private void handleSendable(final Session session, final Sendable request) {
 		switch (request.type) {
 			case SESSION:
 				handleSession(request);
@@ -126,14 +127,14 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 	
-	private void handleSession(Sendable s) {
-		Sendable response = s.createResponse(SendableType.SESSION_OK);
-		response.data = new StringData(s.sessionId); 
+	private void handleSession(final Sendable s) {
+		final Sendable response = s.createResponse(SendableType.SESSION_OK);
+		response.data = new StringData(s.sessionId);
 		handleResponse(response);
 	}
 	
-	private void handleRegister(Session s, Sendable request) {
-		AuthentificationData adata = (AuthentificationData) request.data;
+	private void handleRegister(final Session s, final Sendable request) {
+		final AuthentificationData adata = (AuthentificationData) request.data;
 		if (adata == null || adata.username == null || adata.username.length() == 0 ||
 				adata.password == null || adata.password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
@@ -143,48 +144,48 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	
-	private void handleLogin(Session s, Sendable request) {
+	private void handleLogin(final Session s, final Sendable request) {
 		if (s.isAuthenticated()) {
 			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
 		}
-		AuthentificationData adata = (AuthentificationData) request.data;
+		final AuthentificationData adata = (AuthentificationData) request.data;
 		if (adata == null || adata.username == null || adata.username.length() == 0 ||
 				adata.password == null || adata.password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
 			return;
 		}
-		User debugUser = new User(1, adata.username); 
+		final User debugUser = new User(1, adata.username);
 		s.setUser(debugUser);
 		handleResponse(request.createResponse(SendableType.LOGIN_OK));
 	}
 
-	private void handleAuthenticatedRequest(Session s, Sendable request) {
+	private void handleAuthenticatedRequest(final Session s, final Sendable request) {
 		if (!s.isAuthenticated()) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
 		}
-		this.game.handleSendable(s, request);
+		game.handleSendable(s, request);
 	}
 	
 
-	private void handlePlayingRequest(Session s, Sendable request) {
+	private void handlePlayingRequest(final Session s, final Sendable request) {
 		if (!s.isAuthenticated() || !s.isPlaying()) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
 		}
-		this.game.handleSendable(s, request);
+		game.handleSendable(s, request);
 	}
 	
-	private void sendInMessage(Sendable r) {
-		Session s = SessionManager.instance.getSessionById(r.sessionId);
-		Message msg = new Message();
+	private void sendInMessage(final Sendable r) {
+		final Session s = SessionManager.instance.getSessionById(r.sessionId);
+		final Message msg = new Message();
 		msg.setSessionId(s.getId());
 		msg.addSendable(r);
 		s.getConnection().send(msg);
 	}
 	
-	private IGame createGame(String mapname) {
+	private IGame createGame(final String mapname) {
 //		IGame game = new GameThread();
 //		if (game != null) {
 //			this.gameThreads.put(game.getId(), game);
