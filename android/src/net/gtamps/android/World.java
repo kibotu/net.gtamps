@@ -59,16 +59,16 @@ public class World {
         spot.setRotation(60,0,0);
 
         LightNode sun = new LightNode();
-		sun.setPosition(0, 0, 20);
+		sun.setPosition(0, 0, 15);
         sun.setDirection(0,0,-1);
 		sun.diffuse.setAll(128,128,128, 255);
 		sun.ambient.setAll(0, 0, 0, 0);
 		sun.specular.setAll(128, 128, 128, 255);
 		sun.emissive.setAll(0, 0, 0, 0);
         sun.setType(LightNode.Type.POSITIONAL);
-        sun.setSpotCutoffAngle(60);
+        sun.setSpotCutoffAngle(30);
         sun.setSpotExponent(4);
-        sun.setAttenuation(1f,0,0);
+        sun.setAttenuation(0.1f,0,0);
 		scene.add(sun);
 
         addPlane();
@@ -82,8 +82,8 @@ public class World {
         parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
         parsedObject.setScaling(15, 15, 1);
-//        parsedObject.setDrawingStyle(OpenGLUtils.DrawingStyle.GL_LINES);
-        parsedObject.setShadingStyle(OpenGLUtils.ShadeStyle.SMOOTH);
+        parsedObject.setDrawingStyle(OpenGLUtils.DrawingStyle.GL_LINES);
+//        parsedObject.setShadingStyle(OpenGLUtils.ShadeStyle.SMOOTH);
         scene.addChild(parsedObject);
     }
 
