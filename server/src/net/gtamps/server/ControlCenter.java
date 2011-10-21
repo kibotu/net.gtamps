@@ -9,6 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.SendableType;
@@ -16,7 +18,9 @@ import net.gtamps.shared.communication.data.AuthentificationData;
 import net.gtamps.shared.communication.data.StringData;
 
 public class ControlCenter implements Runnable, IMessageHandler {
-
+	private static final LogType TAG = LogType.SERVER;
+	private static final long TARGET_CYCLE_TIME = 20;
+	
 	public static final ControlCenter instance = new ControlCenter();
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
@@ -35,10 +39,21 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	
 	@Override
 	public void run() {
+		long markTime = 0;
+		long cycleTime = 0;
 		while(run) {
-			processInbox();
-			processResponsebox();
-			processOutbox();
+			markTime = System.nanoTime();
+			{
+				processInbox();
+				processResponsebox();
+				processOutbox();
+			}
+			cycleTime = (System.nanoTime() - markTime) / 1000000;
+			try {
+				Thread.sleep(Math.max(TARGET_CYCLE_TIME - cycleTime, 0));
+			} catch (final InterruptedException e) {
+				// do nothing;
+			}
 		}
 	}
 	
@@ -48,6 +63,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	@Override
 	public void receiveMessage(final Connection<?> c, final Message msg) {
 		if (msg != null) {
+			Logger.getInstance().log(TAG, msg.toString());
 			inbox.add(msg);
 		}
 	}

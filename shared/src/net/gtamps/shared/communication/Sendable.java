@@ -1,6 +1,5 @@
 package net.gtamps.shared.communication;
 
-
 import net.gtamps.shared.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

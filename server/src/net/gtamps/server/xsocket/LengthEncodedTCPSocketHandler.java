@@ -14,8 +14,8 @@ import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.ISerializer;
 
+import org.jetbrains.annotations.NotNull;
 import org.xsocket.connection.INonBlockingConnection;
-import org.xsocket.connection.NonBlockingConnection;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
@@ -32,26 +32,26 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	// Collections.synchronizedSet(new HashSet<INonBlockingConnection>());
 
 	// ConnectionID, Connection
-	private ConcurrentHashMap<String, INonBlockingConnection> actualConnections =  new ConcurrentHashMap<String, INonBlockingConnection>();
+	private final ConcurrentHashMap<String, INonBlockingConnection> actualConnections =  new ConcurrentHashMap<String, INonBlockingConnection>();
 	private final ConcurrentHashMap<String, Connection<?>> abstractConnections =  new ConcurrentHashMap<String, Connection<?>>();
 	
 	private final S serializer;
 
-	public LengthEncodedTCPSocketHandler(S serializer) {
+	public LengthEncodedTCPSocketHandler(final S serializer) {
 		if (serializer == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
 		this.serializer = serializer;
 	}
 
-	private byte readByte(INonBlockingConnection nbc) {
+	private byte readByte(final INonBlockingConnection nbc) {
 		Byte b = null;
 		while (b == null) {
 			try {
 				if (nbc.available() > 0) {
 					b = nbc.readByte();
 				}
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -60,21 +60,21 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 
 	}
 
-	private void readFully(INonBlockingConnection nbc, byte[] data) throws IOException {
+	private void readFully(final INonBlockingConnection nbc, final byte[] data) throws IOException {
 		assert nbc != null;
 		assert data != null;
 		int need = data.length;
 		int read = 0;
 		while (need > 0) {
-			int offered = Math.min(nbc.available(), need);
+			final int offered = Math.min(nbc.available(), need);
 			ByteBuffer[] buffers = null;
 			try {
 				buffers = nbc.readByteBufferByLength(offered);
-			} catch (BufferUnderflowException bue) {
+			} catch (final BufferUnderflowException bue) {
 				if (nbc.isOpen()) {
 					try {
 						Thread.sleep(50l);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						// we're fine.
 					}
 				} else {
@@ -84,11 +84,11 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			if (buffers == null) {
 				continue;
 			}
-			for (ByteBuffer b : buffers) {
+			for (final ByteBuffer b : buffers) {
 				if (b == null) {
 					continue;
 				}
-				int has = b.remaining();
+				final int has = b.remaining();
 				b.get(data, read, has);
 				read += has;
 				need -= has;
@@ -100,51 +100,52 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 	
 	@Override
-	public boolean onData(INonBlockingConnection nbc) {
+	public boolean onData(final INonBlockingConnection nbc) {
 		int read = 0;
 		try {
 
-			byte hi = readByte(nbc);
-			byte lo = readByte(nbc);
+			final byte hi = readByte(nbc);
+			final byte lo = readByte(nbc);
 			read += 2;
 			
-			int laenge = ((((int) hi) & 0xff) << 8) + (((int) lo)  & 0xff);
+			final int laenge = (((hi) & 0xff) << 8) + ((lo)  & 0xff);
 			//System.out.println("expecting new message: " + laenge );
-			byte[] data = new byte[laenge]; 
+			final byte[] data = new byte[laenge];
 			this.readFully(nbc, data);
 			this.receive(nbc, data);
 			Logger.i().indicateNetworkReceiveActivity();
-		} catch (ClosedChannelException e) {
+		} catch (final ClosedChannelException e) {
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 		// System.out.println("weird data");
 		return true;
 	}
 
-	private void receive(INonBlockingConnection nbc, byte[] data) {
-		//System.out.println(new String(data));
+	private void receive(final INonBlockingConnection nbc, final byte[] data) {
+		System.out.println(">> " + data.length);
 		//send(nbc, data)
-		Connection<?> c = abstractConnections.get(nbc.getId());
+		final Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
 	}
 	
 	@Override
-	public boolean onDisconnect(INonBlockingConnection nbc) throws IOException {
+	public boolean onDisconnect(final INonBlockingConnection nbc) throws IOException {
 //		synchronized (connections) {
-			String id = nbc.getId();
+			final String id = nbc.getId();
 			System.out.println("Closed Connection: " + id);
 			Logger.i().log(LogType.SERVER, "Closed Connection: " + id);
 			abstractConnections.remove(id);
+			actualConnections.remove(id);
 //		}
 		return true;
 	}
 
 	@Override
-	public boolean onConnect(INonBlockingConnection nbc) {
+	public boolean onConnect(final INonBlockingConnection nbc) {
 //		synchronized (connections) {
 			// try {
 			// nbc.write("Hello and welcome to the server!\n\0");
@@ -155,17 +156,19 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			// // TODO Auto-generated catch block
 			// e.printStackTrace();
 			// }
-			String id = nbc.getId();
+			final String id = nbc.getId();
 			System.out.println("New Connection: " + id);
 			Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
 			abstractConnections.put(id, new Connection<LengthEncodedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
+			actualConnections.put(id, nbc);
 //		}
 		return true;
 	}
 
-	public void send(String connectionId, byte[] bytes) {
-		INonBlockingConnection nbc = actualConnections.get(connectionId);
-		int length = bytes.length;
+	@Override
+	public void send(final String connectionId, @NotNull final byte[] bytes) {
+		final INonBlockingConnection nbc = actualConnections.get(connectionId);
+		final int length = bytes.length;
 		if (length < 1) {
 			return;
 		}
@@ -173,8 +176,8 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			throw new IllegalArgumentException("bla!");
 		}
 
-		byte high = (byte) (length >> 8);
-		byte low = (byte) (length & 0xFF);
+		final byte high = (byte) (length >> 8);
+		final byte low = (byte) (length & 0xFF);
 
 		try {
 			//NonBlockingConnection ncv;
@@ -185,10 +188,10 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			nbc.flush();
 			System.out.println(length + " + 2 bytes send");
 			// System.out.println(msg);
-		} catch (BufferOverflowException e) {
+		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -200,7 +203,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 		}
 	}*/
 
-	private String bytesToStr(byte[] b) {
+	private String bytesToStr(final byte[] b) {
 		String s = "";
 		for (int i = 0; i < b.length; i++) {
 			s += (int) b[i] + " ";
