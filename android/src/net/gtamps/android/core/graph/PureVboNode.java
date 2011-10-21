@@ -132,8 +132,7 @@ public class PureVboNode extends VboBaseNode {
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, vbo.normalBufferId);
 
 		// zeichne normals
-		// gl11.glNormalPointer(GL11.GL_FLOAT,0,0);
-		gl11.glNormalPointer(GL11.GL_FIXED, 0, 0);
+		gl11.glNormalPointer(GL11.GL_FLOAT,0,0);
 
 		// bind texture vbo id
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, getTextureBufferId());
