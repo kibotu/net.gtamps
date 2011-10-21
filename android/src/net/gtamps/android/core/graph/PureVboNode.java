@@ -95,10 +95,10 @@ public class PureVboNode extends VboBaseNode {
             }
         }
 
-        gl11.glEnable(GL11.GL_COLOR_MATERIAL);
+        gl11.glDisable(GL11.GL_COLOR_MATERIAL);
 
 		// set active texture
-		// gl.glActiveTexture(_currentTextureId);
+//		gl.glActiveTexture(_currentTextureId);
 		bindTexture(gl11);
 
 		// alpha blending
@@ -132,8 +132,7 @@ public class PureVboNode extends VboBaseNode {
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, vbo.normalBufferId);
 
 		// zeichne normals
-		// gl11.glNormalPointer(GL11.GL_FLOAT,0,0);
-		gl11.glNormalPointer(GL11.GL_FIXED, 0, 0);
+		gl11.glNormalPointer(GL11.GL_FLOAT,0,0);
 
 		// bind texture vbo id
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, getTextureBufferId());
@@ -143,6 +142,12 @@ public class PureVboNode extends VboBaseNode {
 
 		// indices
 		gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, vbo.indexBufferId);
+
+		// Binde Color Material Buffer
+		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, vbo.colorBufferId);
+
+		// Zeichne Color Material
+		gl11.glColorPointer(4, GL11.GL_FLOAT, 0, 0);
 
 		// Zeichne Triangles
 		gl11.glDrawElements(drawingStyle.ordinal(), vbo.indexBuffer.capacity(), GL11.GL_UNSIGNED_SHORT, 0);
@@ -161,13 +166,13 @@ public class PureVboNode extends VboBaseNode {
 		// disable blending
 		gl.glDisable(GL11.GL_BLEND);
 		gl.glDisable(GL11.GL_ALPHA_TEST);
-//		gl.glDisable(GL11.GL_COLOR_MATERIAL);
+		gl.glDisable(GL11.GL_COLOR_MATERIAL);
 
 		// Vertex Array-State deaktivieren
 		gl11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		gl11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 		gl11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-//		gl11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+		gl11.glDisableClientState(GL11.GL_COLOR_ARRAY);
 
 		// Puffer abw�hlen
 		gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);

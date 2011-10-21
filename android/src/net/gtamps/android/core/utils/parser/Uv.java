@@ -22,4 +22,12 @@ public class Uv {
 	public Uv clone() {
 		return new Uv(u, v);
 	}
+
+    @Override
+    public String toString() {
+        return "Uv{" +
+                "u=" + u +
+                ", v=" + v +
+                '}';
+    }
 }

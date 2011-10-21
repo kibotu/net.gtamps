@@ -2,13 +2,9 @@ package net.gtamps.android.core.renderer;
 
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.core.utils.parser.FaceManager;
-import net.gtamps.android.core.utils.parser.TextureManager;
-import net.gtamps.android.core.utils.parser.VertexManager;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;

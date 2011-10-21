@@ -47,13 +47,17 @@ public abstract class Propertay<T> extends GameObject implements Serializable {
 		return this.value.toString();
 	}
 	
-	public void set(T value) {
+	public boolean set(T value) {
 		if (value == null) {
 			throw new IllegalArgumentException("'value' must not be null");
+		}
+		if (this.value.equals(value)) {
+			return false;
 		}
 		this.value = value;
 		this.hasChanged = true;
 		this.parent.hasChanged = true;
+		return true;
 	}
 	
 	@Override

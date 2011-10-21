@@ -24,6 +24,14 @@ public class TextureLibrary {
      */
     private GL10 gl;
 
+    public HashMap<String, Integer> getTextureResourceIds() {
+        return textureResourceIds;
+    }
+
+    public HashMap<Integer, BufferedTexture> getTextureCoordinatesResourceIds() {
+        return textureCoordinatesResourceIds;
+    }
+
     /**
      * Holds loaded TextureIds. In order to keep track of loaded textures.
      */
@@ -58,7 +66,7 @@ public class TextureLibrary {
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap) {
-        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.RGB_565, false);
+        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.ARGB_8888, false);
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap, Bitmap.Config bitmapConfig, boolean flipped) {

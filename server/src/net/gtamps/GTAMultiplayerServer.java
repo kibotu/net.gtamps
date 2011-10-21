@@ -1,11 +1,13 @@
 package net.gtamps;
 
-import net.gtamps.server.ConnectionManager;
-import net.gtamps.server.ConnectionManagerII;
+import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.ObjectSerializer;
 import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
+import net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler;
+import net.gtamps.shared.communication.ISerializer;
 
 public class GTAMultiplayerServer {
 	
@@ -13,14 +15,18 @@ public class GTAMultiplayerServer {
     public static final String DEFAULT_PATH = "../assets/kompilat/";
     public static final String DEFAULT_MAP = "tinycity.xml";
 
+    public static final ISerializer SERIALIZER = new ObjectSerializer();
+    public static final ISocketHandler SOCK_HANDLER =
+    	new LengthEncodedTCPSocketHandler<ISerializer>(SERIALIZER);
+    
 	private static int uid = 0;
 	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		Logger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-		ConnectionManagerII cm = ServerChainFactory.createServerChainII();
+		ServerChainFactory.createServerChainII(SOCK_HANDLER);
 		ServerChainFactory.startHTTPServer(DEFAULT_PATH);
 //		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
 //		dbHandler.createPlayer("tom", "mysecretpassword");
@@ -28,7 +34,7 @@ public class GTAMultiplayerServer {
 //		dbHandler.deletePlayer("tom", "mysecretpassword");
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 		//new ServerGUI(cm);
-		new ServerGUI(cm);
+		new ServerGUI();
 	}
 	
 	/**

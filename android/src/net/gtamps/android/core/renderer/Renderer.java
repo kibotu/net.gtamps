@@ -76,7 +76,7 @@ public class Renderer implements GLSurfaceView.Renderer{
         }
         game.onDrawFrame();
 
-        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
         // Compute elapsed time
         final long finalDelta = SystemClock.elapsedRealtime() - startTime;
@@ -121,7 +121,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 		gl10.glEnable(GL10.GL_DEPTH_TEST);            // Enables Depth Testing
 		gl10.glClearDepthf(1.0f);                     // Depth Buffer Setup
 		gl10.glDepthFunc(GL10.GL_LEQUAL);
-//		gl10.glDepthRangef(0,1f);
+		gl10.glDepthRangef(0,1f);
 		gl10.glDepthMask(true);
 
         gl10.glShadeModel(GL10.GL_SMOOTH);             // Enable Smooth Shading

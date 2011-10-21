@@ -1,12 +1,13 @@
 package net.gtamps.android.core.graph;
 
 import net.gtamps.android.core.utils.Color4;
-import net.gtamps.shared.math.Vector3;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -14,8 +15,6 @@ import java.util.ArrayList;
  * Lightning source based on @see <a href="http://glprogramming.com/red/chapter05.html#name4">Creating Light Sources</a>
  */
 public class LightNode extends RenderableNode {
-
-    private static final String TAG = LightNode.class.getSimpleName();
 
     public enum Type {
         /**
@@ -120,11 +119,10 @@ public class LightNode extends RenderableNode {
             }
          }
         if (availableLightIndices.isEmpty()) {
-            Utils.log(TAG, "GL_LIGHT resources exceeded.");
+            Utils.log(this, "GL_LIGHT resources exceeded.");
         }
         lightId = availableLightIndices.get(0);
         availableLightIndices.remove(0);
-        Utils.log(TAG, "Light "+lightId+ " added.");
     }
 
     public void release() {
@@ -133,27 +131,32 @@ public class LightNode extends RenderableNode {
 
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+
+        GL11 gl11 = (GL11) gl;
+
         if (isVisible()) {
-            gl.glEnable(GL10.GL_LIGHTING);
-            gl.glEnable(GL10.GL_LIGHT0 + lightId);
-            gl.glEnable(GL10.GL_NORMALIZE);
-            gl.glEnable(GL10.GL_RESCALE_NORMAL);
+            gl11.glEnable(GL11.GL_LIGHTING);
+            gl11.glEnable(GL11.GL_LIGHT0 + lightId);
+            gl11.glEnable(GL11.GL_NORMALIZE);
+            gl11.glEnable(GL11.GL_RESCALE_NORMAL);
 
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_POSITION, positionAndTypeBuffer);
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_AMBIENT, ambient.getColorBuffer());
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_DIFFUSE, diffuse.getColorBuffer());
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_SPECULAR, specular.getColorBuffer());
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_EMISSION, emissive.getColorBuffer());
-            gl.glLightfv(GL10.GL_LIGHT0 + lightId, GL10.GL_SPOT_DIRECTION, direction);
-            gl.glLightf(GL10.GL_LIGHT0 + lightId, GL10.GL_SPOT_CUTOFF, spotCutoffAngle);
-            gl.glLightf(GL10.GL_LIGHT0 + lightId, GL10.GL_SPOT_EXPONENT, spotExponent);
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, ambient.getColorBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, diffuse.getColorBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, specular.getColorBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, emissive.getColorBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
 
-            gl.glLightf(GL10.GL_LIGHT0 + lightId, GL10.GL_CONSTANT_ATTENUATION, attenuation.x);
-            gl.glLightf(GL10.GL_LIGHT0 + lightId, GL10.GL_LINEAR_ATTENUATION, attenuation.y);
-            gl.glLightf(GL10.GL_LIGHT0 + lightId, GL10.GL_QUADRATIC_ATTENUATION, attenuation.z);
+//            Utils.log(this, ""+diffuse.getColorBuffer().get(0) + " "+diffuse.getColorBuffer().get(1)+ " "+diffuse.getColorBuffer().get(2) + " "+diffuse.getColorBuffer().get(3));
+
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_CONSTANT_ATTENUATION, attenuation.x);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_LINEAR_ATTENUATION, attenuation.y);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_QUADRATIC_ATTENUATION, attenuation.z);
             commitPositionAndTypeBuffer();
         } else {
-            gl.glDisable(GL10.GL_LIGHTING);
+            gl.glDisable(GL11.GL_LIGHTING);
         }
     }
 
@@ -228,5 +231,19 @@ public class LightNode extends RenderableNode {
     public void setType(Type type) {
         commitPositionAndTypeBuffer();
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Light_"+lightId+"[" +
+                "type=" + type +
+                ", ambient=" + ambient +
+                ", diffuse=" + diffuse +
+                ", specular=" + specular +
+                ", emissive=" + emissive +
+                ", spotCutoffAngle=" + spotCutoffAngle +
+                ", spotExponent=" + spotExponent +
+                ", attenuation=" + attenuation +
+                "] successfully added.";
     }
 }

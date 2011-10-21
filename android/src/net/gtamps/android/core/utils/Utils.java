@@ -31,6 +31,10 @@ public class Utils {
         if(Config.DEBUG_MODE) Log.i(tag, "\n" + message + "\n\n");
     }
 
+    public static void log(Object o, String message) {
+        log(o.getClass().getSimpleName(), message);
+    }
+
     public static void logAvailableMemory() {
         log(GTA.TAG, "Available Memory: " + Registry.getAvailableMemory() / 1048576 + " MB");
     }
@@ -97,5 +101,9 @@ public class Utils {
 
     public static void LOG(String tag, String s) {
         log(tag, "\n\n\n\n\n"+s+"\n\n\n\n\n");
+    }
+
+    public static void LOG(Object o, String s) {
+        log(o, "\n\n\n\n\n"+s+"\n\n\n\n\n");
     }
 }

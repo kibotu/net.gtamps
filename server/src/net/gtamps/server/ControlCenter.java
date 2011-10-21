@@ -7,32 +7,33 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.gtamps.game.GameThread;
+import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
-import net.gtamps.game.IGameThread;
-import net.gtamps.shared.communication.Command;
-import net.gtamps.shared.communication.ISendable;
 import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.Request;
-import net.gtamps.shared.communication.Response;
+import net.gtamps.shared.communication.Sendable;
+import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.communication.data.AuthentificationData;
+import net.gtamps.shared.communication.data.StringData;
 
-public class ControlCenter extends Thread {
+public class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 	
 	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
 	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Response> responsebox = new LinkedBlockingQueue<Response>();
+	public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
 	
-	private boolean run = true;
-	private Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
-	private Map<Integer, Session> sessionCache = new HashMap<Integer, Session>();
+	private final boolean run = true;
+	private final Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
+	
+	private IGame game; //tmp
 	
 	private ControlCenter() {
-		super("ControlCenter");
-		this.start();
+		createGame(null); // tmp
+		new Thread(this, "ControlCenter").start();
 	}
 	
+	@Override
 	public void run() {
 		while(run) {
 			processInbox();
@@ -41,45 +42,51 @@ public class ControlCenter extends Thread {
 		}
 	}
 	
-	public void receiveMessage(Message msg) {
+	/* (non-Javadoc)
+	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
+	 */
+	@Override
+	public void receiveMessage(final Connection<?> c, final Message msg) {
 		if (msg != null) {
 			inbox.add(msg);
 		}
 	}
 	
-	public void handleResponse(Response response) {
+	public void handleResponse(final Sendable response) {
 		if (response != null) {
 			responsebox.add(response);
 		}
 	}
 	
+	@Deprecated
+	public void restart() {
+		game.hardstop();
+		createGame(null);
+	}
+	
 	private void processInbox() {
-		List<Message> workingCopy = new LinkedList<Message>();
+		final List<Message> workingCopy = new LinkedList<Message>();
 		inbox.drainTo(workingCopy);
-		for (Message msg : workingCopy) {
-			Session session = SessionManager.instance.getSessionForMessage(msg);
-			for (ISendable i : msg.sendables) {
-				if (i instanceof Request) {
-					handleRequest(session, (Request) i);
-				} else if (i instanceof Command) {
-					handleCommand(session, (Command) i);
-				} else {
-					
-				}
+		for (final Message msg : workingCopy) {
+			final Session session = SessionManager.instance.getSessionForMessage(msg);
+			for (final Sendable i : msg.sendables) {
+					handleSendable(session, i);
 			}
 		}
 		workingCopy.clear();
 	}
 	
 	private void processResponsebox() {
-		List<Response> workingCopy = new LinkedList<Response>();
+		final List<Sendable> workingCopy = new LinkedList<Sendable>();
+		//responsebox.drainTo(workingCopy);
 		responsebox.drainTo(workingCopy);
-		for (Response response : workingCopy) {
-			Session s = sessionCache.get(response.requestId);
-			sessionCache.remove(response.requestId);
-			if (s != null) {
-				sendInMessage(s, response);
-			}
+		for (final Sendable response : workingCopy) {
+			sendInMessage(response);
+		}
+		workingCopy.clear();
+		game.drainResponseQueue(workingCopy);
+		for (final Sendable response : workingCopy) {
+				sendInMessage(response);
 		}
 	}
 	
@@ -87,70 +94,108 @@ public class ControlCenter extends Thread {
 		
 	}
 	
-	private void handleRequest(Session session, Request request) {
-		sessionCache.put(request.id, session);
+	private void handleSendable(final Session session, final Sendable request) {
 		switch (request.type) {
 			case SESSION:
+				handleSession(request);
+				break;
 			case REGISTER:
+				handleRegister(session, request);
+				break;
 			case LOGIN:
-				handleUnauthenticatedRequest(session, request);
+				handleLogin(session, request);
 				break;
 			case JOIN:
+			case LEAVE:
 				handleAuthenticatedRequest(session, request);
 				break;
-			case LEAVE:
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
+			case ACCELERATE:
+			case DECELERATE:
+			case HANDBRAKE:
+			case ENTEREXIT:
+			case LEFT:
+			case RIGHT:
+			case SHOOT:
 				handlePlayingRequest(session, request);
 				break;
 			default:
+				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
 				break;
 		}
 	}
 	
-	private void handleUnauthenticatedRequest(Session s, Request request) {
-		// TODO Auto-generated method stub
-		
+	private void handleSession(final Sendable s) {
+		final Sendable response = s.createResponse(SendableType.SESSION_OK);
+		response.data = new StringData(s.sessionId);
+		handleResponse(response);
 	}
-
-	private void handleAuthenticatedRequest(Session s, Request request) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void handlePlayingRequest(Session s, Request request) {
-		if (!s.isAuthenticated() || !s.isPlaying()) {
-			Response resp = new Response(Response.Status.NEED, request);
-			this.handleResponse(resp);
+	
+	private void handleRegister(final Session s, final Sendable request) {
+		final AuthentificationData adata = (AuthentificationData) request.data;
+		if (adata == null || adata.username == null || adata.username.length() == 0 ||
+				adata.password == null || adata.password.length() == 0) {
+			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
-		s.getGame().handleRequest(s, request);
+		handleResponse(request.createResponse(SendableType.REGISTER_OK));
 	}
 
 	
-	private void handleCommand(Session s, Command command) {
-		if (!s.isAuthenticated() || !s.isPlaying()) {
+	private void handleLogin(final Session s, final Sendable request) {
+		if (s.isAuthenticated()) {
+			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
 		}
-		s.getGame().handleCommand(s, command);
+		final AuthentificationData adata = (AuthentificationData) request.data;
+		if (adata == null || adata.username == null || adata.username.length() == 0 ||
+				adata.password == null || adata.password.length() == 0) {
+			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
+			return;
+		}
+		final User debugUser = new User(1, adata.username);
+		s.setUser(debugUser);
+		handleResponse(request.createResponse(SendableType.LOGIN_OK));
+	}
+
+	private void handleAuthenticatedRequest(final Session s, final Sendable request) {
+		if (!s.isAuthenticated()) {
+			handleResponse(request.createResponse(request.type.getNeedResponse()));
+			return;
+		}
+		game.handleSendable(s, request);
 	}
 	
-	private void sendInMessage(Session s, Response r) {
-		Message msg = new Message();
+
+	private void handlePlayingRequest(final Session s, final Sendable request) {
+		if (!s.isAuthenticated() || !s.isPlaying()) {
+			handleResponse(request.createResponse(request.type.getNeedResponse()));
+			return;
+		}
+		game.handleSendable(s, request);
+	}
+	
+	private void sendInMessage(final Sendable r) {
+		final Session s = SessionManager.instance.getSessionById(r.sessionId);
+		final Message msg = new Message();
 		msg.setSessionId(s.getId());
 		msg.addSendable(r);
 		s.getConnection().send(msg);
 	}
 	
-	private IGame createGame(String mapname) {
+	private IGame createGame(final String mapname) {
 //		IGame game = new GameThread();
 //		if (game != null) {
 //			this.gameThreads.put(game.getId(), game);
 //		}
 //		return game;
-		return null;
+		game = new Game();
+		return game;
 	}
+	
+
 	
 	
 }
