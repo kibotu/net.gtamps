@@ -85,7 +85,9 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		inbox.drainTo(workingCopy);
 		for (final Message msg : workingCopy) {
 			final Session session = SessionManager.instance.getSessionForMessage(msg);
+			final String sessid = session.getId();
 			for (final Sendable i : msg.sendables) {
+					i.sessionId = sessid;
 					handleSendable(session, i);
 			}
 		}
