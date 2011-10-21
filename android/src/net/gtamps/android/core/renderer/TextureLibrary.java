@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.opengl.GLUtils;
 import net.gtamps.android.Registry;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.utils.TextureCoordinateLoader;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -66,7 +66,7 @@ public class TextureLibrary {
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap) {
-        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.RGB_565, false);
+        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.ARGB_8888, false);
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap, Bitmap.Config bitmapConfig, boolean flipped) {
@@ -94,7 +94,7 @@ public class TextureLibrary {
         int id = alloc(bitmap,generateMipMap);
         textureResourceIds.put(""+textureResourceId,id);
 
-        Utils.log(TAG, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + textureResourceId + "|hasMipMap=" + generateMipMap + "] Bitmap successfully loaded.");
+        Logger.i(this, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + textureResourceId + "|hasMipMap=" + generateMipMap + "] Bitmap successfully loaded.");
 
         return id;
     }

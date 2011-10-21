@@ -2,6 +2,8 @@ package net.gtamps.shared.game;
 
 import java.io.Serializable;
 
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * A new, better implementation of the Property concept, the way Tom
@@ -12,27 +14,16 @@ import java.io.Serializable;
  * @author jan, tom, til
  *
  */
-public abstract class Propertay<T> extends GameObject implements Serializable {
+public class Propertay<T> extends GameObject implements Serializable {
 	
 	private transient final GameObject parent;
-	private T value = null;
+	private T value;
 
-	public Propertay(GameObject parent, String name, T value) {
+	public Propertay(@NotNull GameObject parent, @NotNull String name, @NotNull T value) {
 		super(name.toLowerCase());
-		if (parent == null) {
-			throw new IllegalArgumentException("'parent' must not be null");
-		}
 		this.parent = parent;
 		this.value = value;
-		if (this.value == null) {
-			this.hasChanged = false;
-		} else {
-			this.parent.hasChanged = true;
-		}
-	}
-	
-	public Propertay(GameObject parent, String name) {
-		this(parent, name, null);
+		this.parent.hasChanged = true;
 	}
 	
 	public GameObject getParent() {

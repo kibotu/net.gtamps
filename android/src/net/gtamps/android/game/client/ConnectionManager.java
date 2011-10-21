@@ -1,12 +1,11 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConnectionManager implements IMessageManager {
@@ -39,13 +38,15 @@ public class ConnectionManager implements IMessageManager {
     @Override
     public Message poll() {
         Message message = inbox.poll();
-        Utils.log(TAG, "outbox poll: " + message.toString());
+        currentSessionId = message.getSessionId();
+        Logger.i(this, "inbox poll: " + message.toString());
         return message;
     }
 
     @Override
     public boolean add(@NotNull Message message) {
-        Utils.log(TAG, "outbox add: " + message.toString());
+        message.setSessionId(currentSessionId);
+        Logger.i(this, "outbox add: " + message.toString());
         return outbox.add(message);
     }
 

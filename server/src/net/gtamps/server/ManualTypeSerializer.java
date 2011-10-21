@@ -18,7 +18,6 @@ import net.gtamps.shared.communication.data.ISendableData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.StringData;
 import net.gtamps.shared.communication.data.UpdateData;
-import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -126,15 +125,20 @@ public class ManualTypeSerializer implements ISerializer {
     }
     
     private void serializeProperty(final StringBuilder bld, final Propertay<?> p) {
-    	if (p instanceof IntProperty) {
-    		final IntProperty ip = (IntProperty)p;
-    		addToken(bld, PROPERTY);
-    		addToken(bld, INTEGER);
-    		addToken(bld, ip.getName());
-    		addToken(bld, Integer.toString(ip.value()));
-    	} else {
-    		// error
-    	}
+//    	if (p instanceof IntProperty) {
+//    		final IntProperty ip = (IntProperty)p;
+//    		addToken(bld, PROPERTY);
+//    		addToken(bld, INTEGER);
+//    		addToken(bld, ip.getName());
+//    		addToken(bld, Integer.toString(ip.value()));
+//    	} else {
+//    		// error
+//    	}
+    	final String typeName = p.value().getClass().getSimpleName();
+    	addToken(bld, PROPERTY);
+    	addToken(bld, typeName);
+    	addToken(bld, p.getName());
+    	addToken(bld, p.getAsString());
     }
     
     @Override

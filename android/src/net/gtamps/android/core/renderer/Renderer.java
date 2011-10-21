@@ -9,6 +9,7 @@ import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.graph.ProcessingState;
 import net.gtamps.android.game.Game;
 import net.gtamps.android.game.Scene;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -28,7 +29,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        Utils.log(TAG, "\n\n\n\n\nSurface created.\n\n\n\n\n");
+        Logger.I(this, "Surface created.");
         Registry.setTextureLibrary(new TextureLibrary(gl10));
 
         // get mobile capabilities
@@ -57,7 +58,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
-        Utils.log(TAG, "\n\n\n\n\nSurface changed.\n\n\n\n\n");
+        Logger.i(this, "Surface changed.");
         //Prevent A Divide By Zero By : Making Height Equal One
         height = height == 0 ? 1 : height;
         for(int i = 0; i < game.getScenes().size(); i++) {
@@ -90,7 +91,7 @@ public class Renderer implements GLSurfaceView.Renderer{
                 try {
                     Thread.sleep(Config.FPS - finalDelta);
                 } catch (final InterruptedException e) {
-                    Utils.log(TAG, e.getMessage());
+                    Logger.printException(this, e);
                 }
             }
         }
@@ -100,7 +101,7 @@ public class Renderer implements GLSurfaceView.Renderer{
             secondLength += finalDelta;
             currentFps++;
             if (secondLength > 1000) {
-                Utils.log(TAG, "FPS: " + currentFps);
+                Logger.i(this, "FPS: " + currentFps);
                 secondLength = 0;
                 currentFps = 0;
             }
@@ -121,7 +122,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 		gl10.glEnable(GL10.GL_DEPTH_TEST);            // Enables Depth Testing
 		gl10.glClearDepthf(1.0f);                     // Depth Buffer Setup
 		gl10.glDepthFunc(GL10.GL_LEQUAL);
-//		gl10.glDepthRangef(0,1f);
+		gl10.glDepthRangef(0,1f);
 		gl10.glDepthMask(true);
 
         gl10.glShadeModel(GL10.GL_SMOOTH);             // Enable Smooth Shading

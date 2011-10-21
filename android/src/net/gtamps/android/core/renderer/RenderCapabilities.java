@@ -1,7 +1,6 @@
 package net.gtamps.android.core.renderer;
 
-import net.gtamps.android.GTA;
-import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -12,8 +11,10 @@ import java.nio.IntBuffer;
  * hardware's concrete OpenGL capabilities that are relevant to
  * supported features.
  */
-public class RenderCapabilities
-{
+public class RenderCapabilities  {
+
+    private static final String TAG = RenderCapabilities.class.getSimpleName();
+
 	private static float _openGlVersion;
 	private static boolean _isGl10Only;
 	private static int _maxTextureUnits;
@@ -143,9 +144,9 @@ public class RenderCapabilities
 		$gl.glGetIntegerv(GL10.GL_MAX_LIGHTS, i);
 		_maxLights = i.get(0);
 
-		Utils.log(GTA.TAG, "RenderCapabilities - openGLVersion: " + _openGlVersion);
-		Utils.log(GTA.TAG, "RenderCapabilities - maxTextureUnits: " + _maxTextureUnits);
-		Utils.log(GTA.TAG, "RenderCapabilities - maxTextureSize: " + _maxTextureSize);
-		Utils.log(GTA.TAG, "RenderCapabilities - maxLights: " + _maxLights);
+		Logger.i(TAG, "RenderCapabilities - openGLVersion: " + _openGlVersion);
+		Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + _maxTextureUnits);
+		Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + _maxTextureSize);
+		Logger.i(TAG, "RenderCapabilities - maxLights: " + _maxLights);
 	}
 }

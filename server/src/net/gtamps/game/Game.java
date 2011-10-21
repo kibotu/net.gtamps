@@ -62,7 +62,8 @@ public class Game implements IGame, Runnable {
 	
 	public Game(String mapPathOrNameOrWhatever) {
 		id = ++Game.instanceCounter;
-		thread = new Thread(this);
+		final String name = "Game " + id;
+		thread = new Thread(this, name);
 		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
 			mapPathOrNameOrWhatever = GTAMultiplayerServer.DEFAULT_PATH+GTAMultiplayerServer.DEFAULT_MAP;
 		}
@@ -162,6 +163,7 @@ public class Game implements IGame, Runnable {
 			case LEFT:
 			case RIGHT:
 			case SHOOT:
+			case SUICIDE:
 				commandQueue.add(new MessagePair<Sendable>(r, s));
 				break;
 			case GETMAPDATA:
@@ -264,6 +266,8 @@ public class Game implements IGame, Runnable {
 		case HANDBRAKE:
 			type = EventType.ACTION_HANDBRAKE;
 			break;
+		case SUICIDE:
+			type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
 			world.eventManager.dispatchEvent(new GameEvent(type, player));

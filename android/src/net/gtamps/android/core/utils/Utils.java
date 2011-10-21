@@ -3,11 +3,10 @@ package net.gtamps.android.core.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
-import net.gtamps.shared.Config;
 import net.gtamps.android.GTA;
 import net.gtamps.android.Registry;
+import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -20,23 +19,8 @@ public class Utils {
 
     public static final float DEG = (float)(Math.PI / 180f);
 
-    public static void showMsg(String message) {
-        Toast t = Toast.makeText(Registry.getContext(), message, Toast.LENGTH_LONG);
-        t.setGravity(Gravity.CENTER|Gravity.CENTER, 0, 0);
-        t.show();
-    }
-
-    public static void log(String tag, @Nullable String message) {
-        if(message == null && !Config.DEBUG_MODE_SHOW_NULL_EXCEPTIONS) return;
-        if(Config.DEBUG_MODE) Log.i(tag, "\n" + message + "\n\n");
-    }
-
-    public static void log(Object o, String message) {
-        log(o.getClass().getSimpleName(), message);
-    }
-
     public static void logAvailableMemory() {
-        log(GTA.TAG, "Available Memory: " + Registry.getAvailableMemory() / 1048576 + " MB");
+        Logger.d(GTA.TAG, "Available Memory: " + Registry.getAvailableMemory() / 1048576 + " MB");
     }
 
     /**
@@ -97,13 +81,5 @@ public class Utils {
         high = (int) clamp(high, 0,255);
         low = (int) clamp(low, 0,255);
         return (high << 8) + low;
-    }
-
-    public static void LOG(String tag, String s) {
-        log(tag, "\n\n\n\n\n"+s+"\n\n\n\n\n");
-    }
-
-    public static void LOG(Object o, String s) {
-        log(o, "\n\n\n\n\n"+s+"\n\n\n\n\n");
     }
 }

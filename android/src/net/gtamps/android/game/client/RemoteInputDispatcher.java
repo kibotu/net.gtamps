@@ -2,6 +2,7 @@ package net.gtamps.android.game.client;
 
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.MessageFactory;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +37,7 @@ public class RemoteInputDispatcher implements Runnable {
 
     @Override
     public void run() {
-        Utils.log(TAG, "Starts socket-listening loop.");
+        Logger.i(this,"Starts socket-listening loop.");
         isRunning = true;
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
@@ -50,24 +51,24 @@ public class RemoteInputDispatcher implements Runnable {
                 try {
                     Thread.sleep(Config.SOCKET_INBOX_LATENCY);
                 } catch (InterruptedException e) {
-                     Utils.log(TAG, e.getMessage());
+                     Logger.e(this, e.getMessage());
                 }
 
                 // build message
                 length =  (inputStream.read() << 8) + inputStream.read();
                 if(length < 0) continue;
                 response = new byte[length];
-                Utils.LOG(TAG, "has received "+ length + " bytes");
+                Logger.e(this, "has received "+ length + " bytes");
                 inputStream.readFully(response);
                 Message message = ConnectionManager.deserialize(response);
                 if(message != null) inbox.add(message);
 
             } catch (IOException e) {
-                Utils.log(TAG, e.getMessage());
+                Logger.e(this, e.getMessage());
             } catch (NullPointerException e) {
-                Utils.log(TAG, e.getMessage());
+                Logger.e(this, e.getMessage());
             }
         }
-        Utils.log(TAG, "Stops socket-listening loop.");
+        Logger.i(this, "Stops socket-listening loop.");
     }
 }

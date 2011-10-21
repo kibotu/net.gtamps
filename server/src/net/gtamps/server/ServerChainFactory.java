@@ -2,13 +2,8 @@ package net.gtamps.server;
 
 import java.io.FileNotFoundException;
 
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
 import net.gtamps.server.http.SimpleHttpServer;
-import net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler;
-import net.gtamps.server.xsocket.XSocketHandler;
 import net.gtamps.server.xsocket.XSocketServer;
-import net.gtamps.shared.communication.ISerializer;
 
 public class ServerChainFactory {
 	
@@ -16,7 +11,7 @@ public class ServerChainFactory {
 	
 	public static ConnectionManager createServerChain() {
 		// hither:
-		ConnectionManager connectionManager = new ConnectionManager();
+		final ConnectionManager connectionManager = new ConnectionManager();
 //		Logger.i().log(LogType.SERVER, "Started ConnectionManager...");
 //		CommandHandler	commandHandler = new CommandHandler(connectionManager);
 //		Logger.i().log(LogType.SERVER, "Started CommandHandler...");
@@ -34,12 +29,12 @@ public class ServerChainFactory {
 		
 	}
 	
-	public static void startHTTPServer(String path){
+	public static void startHTTPServer(final String path){
 		if(httpServer == null){
 			try {
 				httpServer = new SimpleHttpServer(8080, path, false);
 				new Thread(httpServer).start();
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				System.out.println("Error starting HTTP Server:\n"+e);
 			}
 		}
@@ -50,8 +45,7 @@ public class ServerChainFactory {
 		}
 	}
 
-	public static void createServerChainII(ISocketHandler handler) {
-		ISerializer serializer = new ObjectSerializer();
+	public static void createServerChainII(final ISocketHandler handler) {
 		new Thread(new XSocketServer(handler)).start();
 	}
 

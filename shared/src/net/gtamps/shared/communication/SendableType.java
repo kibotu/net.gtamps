@@ -58,7 +58,8 @@ public enum SendableType {
     SHOOT,
     HANDBRAKE,
     LEFT,
-    RIGHT;
+    RIGHT,
+    SUICIDE;
     
     public SendableType getOKResponse() {
     	SendableType type = null;

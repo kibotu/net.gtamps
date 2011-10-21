@@ -6,16 +6,18 @@ import java.util.LinkedList;
 public class Logger {
 	
 	private static HashMap<LogType,LinkedList<String>> logmap;
+	private static HashMap<LogType, Boolean> updateFlags;
 	private static Logger guiLogger = null;
 	public static final String lock = "LOCK";
-	private static boolean wasUpdated = false;
 	private boolean activitySend = false;
 	private boolean activityReceive= false;
 	
 	
 	private Logger(){
 		logmap = new HashMap<LogType,LinkedList<String>>();
-		for(LogType t : LogType.values()){
+		updateFlags = new HashMap<LogType, Boolean>();
+		resetUpdateFlags();
+		for(final LogType t : LogType.values()){
 			logmap.put(t, new LinkedList<String>());
 		}
 	}
@@ -28,36 +30,49 @@ public class Logger {
 	public static Logger i(){
 		return getInstance();
 	}
-	public void log(LogType t,String s){
+	public void log(final LogType t,final String s){
 		synchronized (lock) {
-			wasUpdated = true;
+			updateFlags.put(t, true);
 			logmap.get(t).add(s);
 			
 		}
 	}
 	public void indicateNetworkSendActivity(){
-		this.activitySend = true;
+		activitySend = true;
 	}
 	public void indicateNetworkReceiveActivity(){
-		this.activityReceive = true;
+		activityReceive = true;
 	}
 	public boolean getNetworkSendActivity(){
-		boolean retact = this.activitySend;
-		this.activitySend = false;
+		final boolean retact = activitySend;
+		activitySend = false;
 		return retact;
 	}
 	public boolean getNetworkReceiveActivity(){
-		boolean retact = this.activityReceive;
-		this.activityReceive = false;
+		final boolean retact = activityReceive;
+		activityReceive = false;
 		return retact;
 	}
-	public static LinkedList<String> getLogs(LogType t){
+	public static LinkedList<String> getLogs(final LogType t){
 		synchronized (lock) {
-			wasUpdated = false;
-			return logmap.get(t);		
+			updateFlags.put(t, false);
+			return logmap.get(t);
 		}
 	}
 	public boolean wasUpdated() {
-		return wasUpdated;
+		for (final LogType t : LogType.values()) {
+			if (updateFlags.get(t) == true) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean wasUpdated(final LogType type) {
+		return updateFlags.get(type);
+	}
+	private void resetUpdateFlags() {
+		for (final LogType type : LogType.values()) {
+			updateFlags.put(type, false);
+		}
 	}
 }

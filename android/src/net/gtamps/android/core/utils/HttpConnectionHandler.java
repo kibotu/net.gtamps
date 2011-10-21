@@ -1,5 +1,7 @@
 package net.gtamps.android.core.utils;
 
+import net.gtamps.shared.Utils.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -8,8 +10,7 @@ import java.net.URLConnection;
 
 final public class HttpConnectionHandler {
 
-    private static final String TAG = HttpConnectionHandler.class
-            .getSimpleName();
+    private static final String TAG = HttpConnectionHandler.class.getSimpleName();
 
     public enum RequestMethod {
         GET, POST
@@ -47,11 +48,11 @@ final public class HttpConnectionHandler {
 
             response = httpConn.getResponseCode();
             if (response == HttpURLConnection.HTTP_OK) {
-                Utils.log(HttpConnectionHandler.TAG, "" + response);
+                Logger.i(TAG, "" + response);
                 in = httpConn.getInputStream();
             }
         } catch (final IOException e) {
-            Utils.log(HttpConnectionHandler.TAG, "IOException:" + e.getMessage());
+            Logger.i(TAG, "IOException:" + e.getMessage());
         }
         return in;
     }

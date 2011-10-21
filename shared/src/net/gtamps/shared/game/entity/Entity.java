@@ -42,10 +42,10 @@ public class Entity extends GameActor implements Serializable {
 	public Entity(String name){
 		super(name);
         type = getType(name);
-        x = new IntProperty(this, "posx");
-        y = new IntProperty(this, "posy");
-        rota = new IntProperty(this, "rota");
-        z = new IntProperty(this, "posz");
+        x = new Propertay<Integer>(this, "posx", 0);
+        y = new Propertay<Integer>(this, "posy", 0);
+        rota = new Propertay<Integer>(this, "rota", 0);
+        z = new Propertay<Integer>(this, "posz", 0);
         this.addProperty(x);
         this.addProperty(y);
         this.addProperty(z);

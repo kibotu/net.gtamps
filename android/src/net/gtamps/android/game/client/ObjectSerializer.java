@@ -9,9 +9,4 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 
 public class ObjectSerializer extends AObjectSerializer {
-
-    @Override
-    protected void log(String tag, String message) {
-        Utils.log(TAG,message);
-    }
 }
