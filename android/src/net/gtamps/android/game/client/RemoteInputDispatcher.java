@@ -1,10 +1,8 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

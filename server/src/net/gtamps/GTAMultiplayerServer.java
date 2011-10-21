@@ -2,13 +2,13 @@ package net.gtamps;
 
 import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.ObjectSerializer;
 import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
 import net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler;
 import net.gtamps.shared.communication.ISerializer;
+import net.gtamps.shared.communication.ObjectSerializer;
 
 public class GTAMultiplayerServer {
 	

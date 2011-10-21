@@ -1,32 +1,14 @@
 package net.gtamps.server.xsocket;
 
-//import net.gtamps.server.MessageHandler;
-//import net.gtamps.server.gui.LogType;
-//import net.gtamps.server.gui.Logger;
-//
-//import java.io.IOException;
-//import java.io.Reader;
-//import java.io.StringReader;
-//import java.io.UnsupportedEncodingException;
-//import java.nio.BufferOverflowException;
-//import java.nio.BufferUnderflowException;
-//import java.nio.channels.ClosedChannelException;
-//import java.util.concurrent.ConcurrentHashMap;
-//
-//import org.jdom.Document;
-//import org.jdom.Element;
-//import org.jdom.JDOMException;
-//import org.jdom.input.SAXBuilder;
-//import org.jdom.output.XMLOutputter;
-import java.io.IOException;
-import java.nio.BufferUnderflowException;
-import java.nio.channels.ClosedChannelException;
-
 import org.xsocket.MaxReadSizeExceededException;
 import org.xsocket.connection.IConnectHandler;
 import org.xsocket.connection.IDataHandler;
 import org.xsocket.connection.IDisconnectHandler;
 import org.xsocket.connection.INonBlockingConnection;
+
+import java.io.IOException;
+import java.nio.BufferUnderflowException;
+import java.nio.channels.ClosedChannelException;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify

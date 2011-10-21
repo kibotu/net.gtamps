@@ -21,6 +21,10 @@ public class TcpStream implements IStream {
      *   @see <a href="http://stackoverflow.com/questions/2560083/how-to-change-internal-buffer-size-of-datainputstream">BufferSize</a>
       */
     public TcpStream() {
+        initSocket();
+    }
+
+    public void initSocket() {
         socket = new Socket();
         try {
             socket.setSendBufferSize(Config.SOCKET_MAX_SEND_BUFFER_SIZE);
@@ -28,6 +32,7 @@ public class TcpStream implements IStream {
             socket.setKeepAlive(Config.SOCKET_KEEP_ALIVE_ENABLED);
             socket.setTcpNoDelay(Config.SOCKET_TCP_NO_DELAY);
             socket.setSoTimeout(Config.SOCKET_TIMEOUT);
+//            socket.setReuseAddress(true);
         } catch (SocketException e) {
             Logger.printException(this, e);
         }
@@ -35,6 +40,7 @@ public class TcpStream implements IStream {
 
     @Override
     public boolean connect(String host, int port) {
+        initSocket();
         if(socket.isConnected()) return false;
         try {
             socket.connect(new InetSocketAddress(host, port));
@@ -54,7 +60,7 @@ public class TcpStream implements IStream {
             output.close();
             socket.close();
         } catch (IOException e) {
-            Logger.printException(this,e);
+            Logger.printException(this, e);
         }
         return !socket.isConnected();
     }
@@ -66,7 +72,7 @@ public class TcpStream implements IStream {
             output.writeUTF(message);
             Logger.i(this, "has send string "+message.length());
         } catch (IOException e) {
-            Logger.printException(this,e);
+            Logger.printException(this, e);
             return false;
         }
         return true;
@@ -85,7 +91,7 @@ public class TcpStream implements IStream {
             output.write(temp);
             Logger.i(this,"has send bytes " +message.length);
         } catch (IOException e) {
-            Logger.printException(this,e);
+            Logger.printException(this, e);
             return false;
         }
         return true;
