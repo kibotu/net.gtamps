@@ -5,6 +5,7 @@ import net.gtamps.android.Registry;
 import net.gtamps.android.core.utils.Color4;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.objects.ParsedObject;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Vector3;
 
 import java.io.BufferedReader;
@@ -55,8 +56,8 @@ public class ObjParser extends AParser implements IParser {
 		co = new ParseObjectData(vertices, texCoords, normals);
 		parseObjects.add(co);
 
-        Utils.log(TAG, "Start parsing object " + resourceID);
-        Utils.log(TAG, "Start time " + startTime);
+        Logger.i(this, "Start parsing object " + resourceID);
+        Logger.i(this, "Start time " + startTime);
 
 		try {
 			while ((line = buffer.readLine()) != null) {
@@ -102,11 +103,11 @@ public class ObjParser extends AParser implements IParser {
 				} else if (type.equals(OBJECT)) {
 					String objName = parts.hasMoreTokens() ? parts.nextToken() : ""; 
 					if(firstObject) {
-						Utils.log(TAG, "Create object " + objName);
+						Logger.i(this, "Create object " + objName);
 						co.name = objName;
 						firstObject = false;
 					} else {
-						Utils.log(TAG, "Create object " + objName);
+						Logger.i(this, "Create object " + objName);
 						co = new ParseObjectData(vertices, texCoords, normals);
 						co.name = objName;
 						parseObjects.add(co);
@@ -114,15 +115,15 @@ public class ObjParser extends AParser implements IParser {
 				}
 			}
 		} catch (IOException e) {
-			Utils.log(TAG, "" + e.getMessage());
+			Logger.printException(this, e);
 		}
 
 		long endTime = Calendar.getInstance().getTimeInMillis();
-		Utils.log(TAG, "End time " + (endTime - startTime));
+		Logger.i(this, "End time " + (endTime - startTime));
 	}
 
 	public ParsedObject getParsedObject() {
-		Utils.log(TAG, "Start object creation");
+		Logger.i(this, "Start object creation");
 		ParsedObject obj = new ParsedObject(0, 0);
 		int numObjects = parseObjects.size();
 		Bitmap texture = null;
@@ -135,14 +136,14 @@ public class ObjParser extends AParser implements IParser {
 		
 		for (int i = 0; i < numObjects; i++) {
 			ParseObjectData o = parseObjects.get(i);
-			Utils.log(TAG, "Creating object " + o.name);
+			Logger.i(this, "Creating object " + o.name);
 			obj.children.add(o.getParsedObject(materialMap, textureAtlas));
 		}
 		
 		if(textureAtlas.hasBitmaps()) {
 			if(texture != null) texture.recycle();
 		}
-		Utils.log(this, "Object creation finished");
+		Logger.i(this, "Object creation finished");
 
 		cleanup();
 		

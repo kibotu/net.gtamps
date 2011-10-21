@@ -2,6 +2,7 @@ package net.gtamps.android.core.renderer;
 
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -93,7 +94,7 @@ public class Vbo {
         gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         isAllocated = true;
-        Utils.log(TAG, toString());
+        Logger.i(this,toString());
     }
 
     public boolean isAllocated() {

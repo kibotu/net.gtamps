@@ -1,9 +1,8 @@
 package net.gtamps.android.core.graph;
 
-import android.opengl.Matrix;
 import net.gtamps.android.core.utils.Frustum;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Matrix4;
 import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
@@ -110,7 +109,7 @@ public class CameraNode extends RenderableNode {
         viewportSize.set(width, height, 0);
         // TODO: FUCK YOU 4/3 Aspect!!!!! Wir haben doch 800/480 = ~16:10 (1.6666)
         frustum.setAspectRatio(width/height);
-        Utils.log(TAG, "[width:" + width + "|height:" + height + "|aspect:" + frustum.getAspectRatio() + "]");
+        Logger.i(this, "[width:" + width + "|height:" + height + "|aspect:" + frustum.getAspectRatio() + "]");
     }
 
     /**

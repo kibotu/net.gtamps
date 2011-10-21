@@ -3,6 +3,7 @@ package net.gtamps.android.core.utils;
 import android.content.Context;
 import net.gtamps.android.core.renderer.BufferedTexture;
 import net.gtamps.android.core.renderer.SpriteTetxure;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.state.State;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
@@ -60,8 +61,8 @@ public class TextureCoordinateLoader {
                 addTextureCoord(coordinates, x, y, w, h);
                 gltextures[i] = new SpriteTetxure(w, h, i * stride);
             } catch (DataConversionException e) {
-                Utils.log(TAG, "Texture Coordinate loading failed. Texture Coordinate Resource Id: " + textureCoordinatesResourceId);
-                Utils.log(TAG, e.getMessage());
+                Logger.i(TAG, "Texture Coordinate loading failed. Texture Coordinate Resource Id: " + textureCoordinatesResourceId);
+                Logger.i(TAG, e.getMessage());
             }
         }
 
@@ -71,7 +72,7 @@ public class TextureCoordinateLoader {
         // get animations
         HashMap<State.Type, Integer[]> animations = parseAnimation(doc.getRootElement().getChildren("animation"));
 
-        Utils.log(TAG, "[sprites:"+gltextures.length+"|animations:"+animations.size()+"|id:"+bufferId+"] Texture Coordinates successfully loaded.");
+        Logger.i(TAG, "[sprites:"+gltextures.length+"|animations:"+animations.size()+"|id:"+bufferId+"] Texture Coordinates successfully loaded.");
 
         // return new xml texture
         return new BufferedTexture(textureId, bufferId, gltextures, animations);
@@ -91,8 +92,8 @@ public class TextureCoordinateLoader {
             try {
                 animations.put(State.Type.valueOf(e.getAttributeValue("type").toUpperCase()), parseIndices(e.getAttributeValue("indices")));
             } catch (NumberFormatException ex) {
-                Utils.log(TAG, "Animation indices aren't correctly formated in xml file (indices must be integers)");
-                Utils.log(TAG, ex.getMessage());
+                Logger.i(TAG, "Animation indices aren't correctly formated in xml file (indices must be integers)");
+                Logger.i(TAG, ex.getMessage());
             }
         }
 
@@ -127,6 +128,7 @@ public class TextureCoordinateLoader {
 
         GL11 gl11 = (GL11) gl;
         if (gl11 == null) {
+            Logger.e(TAG, "No OpenGL 1.1 Support");
             throw new NullPointerException("No OpenGL 1.1 Support");
         }
 
