@@ -3,6 +3,7 @@ package net.gtamps.android.core.graph;
 import net.gtamps.android.core.utils.Color4;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
@@ -119,7 +120,7 @@ public class LightNode extends RenderableNode {
             }
          }
         if (availableLightIndices.isEmpty()) {
-            Utils.log(this, "GL_LIGHT resources exceeded.");
+            Logger.i(this, "GL_LIGHT resources exceeded.");
         }
         lightId = availableLightIndices.get(0);
         availableLightIndices.remove(0);

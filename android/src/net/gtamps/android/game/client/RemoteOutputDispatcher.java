@@ -1,10 +1,9 @@
 package net.gtamps.android.game.client;
 
 
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageFactory;
 
 import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -37,18 +36,18 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 
     @Override
     public void run() {
-        Utils.log(TAG, "Starts socket- writing loop.");
+        Logger.i(this, "Starts socket- writing loop.");
         isRunning = true;
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         while(isRunning) {
             try {
                 Thread.currentThread().sleep(Config.SOCKET_OUTBOX_LATENCY);
             } catch (InterruptedException e) {
-                 Utils.log(TAG, e.getMessage());
+                 Logger.i(this, e.getMessage());
             }
             if(outbox.isEmpty()) continue;
             tcpStream.send(ConnectionManager.serialize(outbox.poll()));
         }
-        Utils.log(TAG, "Stops socket-listening loop.");
+        Logger.i(this,"Stops socket-listening loop.");
     }
 }

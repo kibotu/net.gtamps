@@ -2,6 +2,7 @@ package net.gtamps.android.core.utils;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import net.gtamps.shared.Utils.Logger;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -32,11 +33,11 @@ final public class XmlLoader {
         try {
             document = XmlLoader.saxBuilder.build(new DataInputStream(new BufferedInputStream(context.getResources().openRawResource(resourceId))));
         } catch (final IOException e) {
-            Utils.log(XmlLoader.TAG, e.getMessage());
+            Logger.printException(TAG, e);
         } catch (final NotFoundException e) {
-            Utils.log(XmlLoader.TAG, e.getMessage());
+            Logger.printException(TAG, e);
         } catch (final JDOMException e) {
-            Utils.log(XmlLoader.TAG, e.getMessage());
+            Logger.printException(TAG, e);
         }
         return document;
     }
@@ -55,9 +56,9 @@ final public class XmlLoader {
         try {
             document = XmlLoader.saxBuilder.build(HttpConnectionHandler.openHttpConnection(url, method));
         } catch (final IOException e) {
-            Utils.log(XmlLoader.TAG, "IOException:" + e.getMessage());
+            Logger.printException(TAG, e);
         } catch (final JDOMException e) {
-            Utils.log(XmlLoader.TAG, "JDOMException: " + e.getMessage());
+            Logger.printException(TAG, e);
         }
         return document;
     }

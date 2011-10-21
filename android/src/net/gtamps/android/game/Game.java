@@ -3,7 +3,6 @@ package net.gtamps.android.game;
 import android.os.SystemClock;
 import net.gtamps.android.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.client.ConnectionManager;
 import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.entity.views.Hud;
@@ -59,7 +58,7 @@ public class Game implements IGame{
 
         // connect
         connection.connect();
-        Logger.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
         connection.start();
 
         connection.add(MessageFactory.createSessionRequest());
@@ -188,8 +187,8 @@ public class Game implements IGame{
     }
 
     private void handleMessage(Sendable sendable, Message message) {
-        Utils.log(TAG, "Handles message.");
-        Utils.log(TAG, ""+sendable);
+        Logger.i(this, "Handles message.");
+        Logger.i(this, ""+sendable);
 
         switch (sendable.type) {
             case GETUPDATE_OK:
@@ -201,7 +200,7 @@ public class Game implements IGame{
 
                 ArrayList<Entity> entities = updateData.entites;
                 for(int i = 0; i < entities.size(); i++) {
-                    Utils.log(TAG, "response size"+entities.size());
+                    Logger.d(this, "response size"+entities.size());
                     Entity serverEntity = entities.get(i);
 
                     // contains?
@@ -209,10 +208,10 @@ public class Game implements IGame{
                     if(entityView == null) {
                         entityView = new EntityView(serverEntity);
                         world.getScene().addChild(world.activeObject = entityView);
-                        Utils.log(TAG, "add new entity"+serverEntity.getUid());
+                        Logger.i(this,"add new entity"+serverEntity.getUid());
                     } else {
                         entityView.update(serverEntity);
-                        Utils.log(TAG, "update entity"+serverEntity.getUid());
+                        Logger.i(this,"update entity"+serverEntity.getUid());
                     }
                 }
 

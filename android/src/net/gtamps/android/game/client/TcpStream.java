@@ -1,13 +1,14 @@
 package net.gtamps.android.game.client;
 
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Observer;
 
 public class TcpStream implements IStream {
 
@@ -28,7 +29,7 @@ public class TcpStream implements IStream {
             socket.setTcpNoDelay(Config.SOCKET_TCP_NO_DELAY);
             socket.setSoTimeout(Config.SOCKET_TIMEOUT);
         } catch (SocketException e) {
-            Utils.log(TAG, e.getMessage());
+            Logger.printException(this, e);
         }
     }
 
@@ -40,7 +41,7 @@ public class TcpStream implements IStream {
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            Utils.log(TAG, e.getMessage());
+            Logger.printException(this,e);
         }
         return socket.isConnected();
     }
@@ -53,7 +54,7 @@ public class TcpStream implements IStream {
             output.close();
             socket.close();
         } catch (IOException e) {
-            Utils.log(TAG, e.getMessage());
+            Logger.printException(this,e);
         }
         return !socket.isConnected();
     }
@@ -63,9 +64,9 @@ public class TcpStream implements IStream {
         if(!socket.isConnected()) return false;
         try {
             output.writeUTF(message);
-            Utils.log(TAG, "has send string "+message.length());
+            Logger.i(this, "has send string "+message.length());
         } catch (IOException e) {
-            Utils.log(TAG, e.getMessage());
+            Logger.printException(this,e);
             return false;
         }
         return true;
@@ -82,9 +83,9 @@ public class TcpStream implements IStream {
         System.arraycopy(message,0, temp, 2, message.length);
         try {
             output.write(temp);
-            Utils.log(TAG, "has send bytes " +message.length);
+            Logger.i(this,"has send bytes " +message.length);
         } catch (IOException e) {
-            Utils.log(TAG, e.getMessage());
+            Logger.printException(this,e);
             return false;
         }
         return true;

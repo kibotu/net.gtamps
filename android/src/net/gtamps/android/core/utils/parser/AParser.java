@@ -1,5 +1,13 @@
 package net.gtamps.android.core.utils.parser;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import net.gtamps.android.Registry;
+import net.gtamps.android.core.utils.Color4;
+import net.gtamps.android.core.utils.Utils;
+import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.math.Vector3;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,14 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import net.gtamps.android.GTA;
-import net.gtamps.android.Registry;
-import net.gtamps.android.core.utils.Color4;
-import net.gtamps.shared.math.Vector3;
-import net.gtamps.android.core.utils.Utils;
 
 /**
  * Abstract parser class with basic parsing functionality.
@@ -176,10 +176,10 @@ public abstract class AParser implements IParser {
 			if(existingBA == null) {
 				int bmResourceID = Registry.getContext().getResources().getIdentifier(ba.resourceID, null, null);
 				if(bmResourceID == 0) {
-					Utils.log(GTA.TAG, "Texture not found: " + ba.resourceID);
+					Logger.i(this, "Texture not found: " + ba.resourceID);
 					return;
 				}
-				Utils.log(GTA.TAG, "Adding texture " + ba.resourceID);
+				Logger.i(this, "Adding texture " + ba.resourceID);
 				Bitmap b = Utils.makeBitmapFromResourceId(bmResourceID);
 				ba.useForAtlasDimensions = true;
 				ba.bitmap = b;
@@ -264,9 +264,9 @@ public abstract class AParser implements IParser {
 				fos.flush();
 				fos.close();
 			} catch (FileNotFoundException e) {
-				Utils.log(TAG, ""+e.getMessage());
+				Logger.e(this,""+e.getMessage());
 			} catch (IOException e) {
-				Utils.log(TAG, ""+e.getMessage());
+				Logger.e(this, ""+e.getMessage());
 			}
         }
 
