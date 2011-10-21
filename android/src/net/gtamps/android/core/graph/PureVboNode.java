@@ -85,6 +85,12 @@ public class PureVboNode extends VboBaseNode {
 		// OpenGL 1.1-Instanz beziehen
 		final GL11 gl11 = (GL11) gl;
 
+        if(doubleSidedEnabled) {
+	        gl.glEnable(GL10.GL_CULL_FACE);
+        } else {
+	        gl.glDisable(GL10.GL_CULL_FACE);
+        }
+
 		// enable texture
         if(texturesEnabled) {
             gl11.glEnable(GL10.GL_TEXTURE_2D);

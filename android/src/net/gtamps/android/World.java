@@ -70,8 +70,9 @@ public class World {
         sun.setAttenuation(0.5f,0,0);
 		scene.add(sun);
 
-//        addPlane();
-        addCity();
+        addPlane();
+//        addCity();
+//        addLevel();
     }
 
     private void addPlane() {
@@ -80,7 +81,7 @@ public class World {
         ParsedObject parsedObject = objParser.getParsedObject();
         parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
-        parsedObject.setScaling(15, 15, 1);
+        parsedObject.setScaling(40, 40, 1);
 //        parsedObject.setDrawingStyle(OpenGLUtils.DrawingStyle.GL_LINES);
         scene.addChild(parsedObject);
     }
@@ -92,7 +93,19 @@ public class World {
         parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.camaro, true));
         scene.addChild(activeObject = parsedObject);
-        parsedObject.getNode().setScaling(5,5,5);
+        parsedObject.getNode().setScaling(5, 5, 5);
+        parsedObject.enableDoubleSided(true);
+    }
+
+    private void addLevel() {
+        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/map1_obj", true);
+        objParser.parse();
+        ParsedObject parsedObject = objParser.getParsedObject();
+        parsedObject.updateVbo();
+        parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
+        parsedObject.setScaling(0.5f, 0.5f, 0.5f);
+        parsedObject.setPosition(0,0,-3f);
+        scene.addChild(parsedObject);
     }
 
     private void addCars() {
