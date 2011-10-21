@@ -56,10 +56,7 @@ public class ConnectionManager implements IMessageManager {
 
     public boolean connect(String host, int port) {
         if(isConnected()) return false;
-        stream.connect(host, port);
-        remoteInputDispatcher = new RemoteInputDispatcher(stream.getInputStream(), inbox);
-        remoteOutputDispatcher = new RemoteOutputDispatcher(stream, outbox);
-        return stream.isConnected();
+        return stream.connect(host, port);
     }
 
     public boolean disconnect() {
@@ -75,6 +72,8 @@ public class ConnectionManager implements IMessageManager {
 
     public void start() {
         if(!isConnected()) return;
+        remoteInputDispatcher = new RemoteInputDispatcher(stream.getInputStream(), inbox);
+        remoteOutputDispatcher = new RemoteOutputDispatcher(stream, outbox);
         remoteInputDispatcher.start();
         remoteOutputDispatcher.start();
     }

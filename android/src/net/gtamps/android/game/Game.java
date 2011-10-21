@@ -57,23 +57,23 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        connection.connect();
+        checkConnection();
+
         Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
         connection.start();
-
         connection.add(MessageFactory.createSessionRequest());
-
-        connection.add(MessageFactory.createRegisterRequest("username", "password"));
-        connection.add(MessageFactory.createLoginRequest("username", "password"));
-        connection.add(MessageFactory.createJoinRequest());
-//        connection.add(MessageFactory.createGetPlayerRequest());
     }
+
+    private int socketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
     @Override
     public void onDrawFrame() {
         if (!isRunning || isPaused) {
             return;
         }
+
+        // check connection
+        checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
@@ -92,7 +92,6 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-	        if(connection.isConnected()) connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
         }
 
         // on release
@@ -139,6 +138,21 @@ public class Game implements IGame{
         startTime = SystemClock.elapsedRealtime();
 
         // animate
+    }
+
+    private void checkConnection() {
+        if(!connection.isConnected()) {
+            while (!connection.connect()) {
+                if(socketTimeOut <= 0) stop();
+                try {
+                    Thread.sleep(Config.SOCKET_TIMEOUT);
+                    socketTimeOut -= Config.SOCKET_TIMEOUT;
+                } catch (InterruptedException e) {
+                }
+                Logger.e(this, "Server unavailable. Trying to reconnect");
+            }
+        }
+        socketTimeOut = Config.MAX_SOCKET_TIMEOUT;
     }
 
     private long impulse = 0;
@@ -200,7 +214,7 @@ public class Game implements IGame{
 
                 ArrayList<Entity> entities = updateData.entites;
                 for(int i = 0; i < entities.size(); i++) {
-                    Logger.d(this, "response size"+entities.size());
+                    Logger.d(this, "response size" + entities.size());
                     Entity serverEntity = entities.get(i);
 
                     // contains?
@@ -211,7 +225,7 @@ public class Game implements IGame{
                         Logger.i(this,"add new entity"+serverEntity.getUid());
                     } else {
                         entityView.update(serverEntity);
-                        Logger.i(this,"update entity"+serverEntity.getUid());
+                        Logger.i(this, "update entity" + serverEntity.getUid());
                     }
                 }
 
@@ -224,13 +238,19 @@ public class Game implements IGame{
             case GETPLAYER_BAD: break;
             case GETPLAYER_ERROR: break;
 
-            case SESSION_OK: ConnectionManager.currentSessionId = message.getSessionId(); break;
+            case SESSION_OK:
+                ConnectionManager.currentSessionId = message.getSessionId();
+                connection.add(MessageFactory.createRegisterRequest("username", "password"));
+                break;
             case SESSION_NEED: break;
             case SESSION_BAD: break;
             case SESSION_ERROR: break;
 
-            case JOIN_OK: break;
-            case JOIN_NEED: break;
+            case JOIN_OK:
+//                connection.add(MessageFactory.createGetPlayerRequest());
+                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
+                break;
+            case JOIN_NEED:
             case JOIN_BAD: break;
             case JOIN_ERROR: break;
 
@@ -244,12 +264,12 @@ public class Game implements IGame{
             case LEAVE_BAD: break;
             case LEAVE_ERROR: break;
 
-            case LOGIN_OK: break;
+            case LOGIN_OK: connection.add(MessageFactory.createJoinRequest()); break;
             case LOGIN_NEED: break;
             case LOGIN_BAD: break;
             case LOGIN_ERROR: break;
 
-            case REGISTER_OK: break;
+            case REGISTER_OK: connection.add(MessageFactory.createLoginRequest("username", "password")); break;
             case REGISTER_NEED: break;
             case REGISTER_BAD: break;
             case REGISTER_ERROR: break;
