@@ -42,19 +42,23 @@ public class TabbedPane extends JTabbedPane implements ChangeListener, ActionLis
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		//		updateActivePane();
+		updateActivePane();
 	}
 	
 	private void updateActivePane(){
 		//TODO performance issue?
-		for(final LogType lt : LogType.values()){
-			final TabbedPaneComponent tpc = panes.get(lt);
-			if(tpc!=null){
-				synchronized (Logger.lock) {
-					final LinkedList<String> copy = new LinkedList<String>(Logger.getLogs(tpc.getLogType()));
-					tpc.updateLog(copy);
+		if (Logger.getInstance().wasUpdated()) {
+			for(final LogType lt : LogType.values()){
+				if (Logger.getInstance().wasUpdated(lt)) {
+					final TabbedPaneComponent tpc = panes.get(lt);
+					if(tpc!=null){
+						synchronized (Logger.lock) {
+							final LinkedList<String> copy = new LinkedList<String>(Logger.getLogs(tpc.getLogType()));
+							tpc.updateLog(copy);
+						}
+						tpc.invalidate();
+					}
 				}
-				tpc.invalidate();
 			}
 		}
 	}
