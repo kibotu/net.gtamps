@@ -1,24 +1,22 @@
 package net.gtamps.android.game;
 
 import android.os.SystemClock;
-import net.gtamps.android.R;
 import net.gtamps.android.World;
-import net.gtamps.android.core.graph.*;
 import net.gtamps.android.core.input.InputEngine;
+import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.client.ConnectionManager;
 import net.gtamps.android.game.entity.views.EntityView;
-import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
-import net.gtamps.shared.communication.*;
+import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.communication.MessageFactory;
+import net.gtamps.shared.communication.Sendable;
+import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.FloatData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
-import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.core.utils.parser.IParser;
-import net.gtamps.android.core.utils.parser.Parser;
-import net.gtamps.android.game.objects.*;
 
 import java.util.ArrayList;
 
@@ -61,57 +59,15 @@ public class Game implements IGame{
 
         // connect
         connection.connect();
-        Utils.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
+        Logger.log(TAG, "\n\n\n\n\nConnecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed.") + "\n\n\n\n\n");
         connection.start();
-//
+
         connection.add(MessageFactory.createSessionRequest());
 
         connection.add(MessageFactory.createRegisterRequest("username", "password"));
         connection.add(MessageFactory.createLoginRequest("username", "password"));
         connection.add(MessageFactory.createJoinRequest());
-        connection.add(MessageFactory.createGetPlayerRequest());
-
-    }
-
-    @Deprecated
-    private void createParsedObject() {
-
-        Scene scene = new Scene();
-        scenes.add(scene);
-
-        CameraNode camera =  new CameraNode(0, 0,10, 0, 0, 0, 0, 1, 0);
-        scene.setActiveCamera(camera);
-        scene.getBackground().setAll(0x222222);
-
-        LightNode sun = new LightNode();
-        sun.setPosition(0,0,30);
-        sun.setDirection(0, 0, -1);
-        sun.ambient.setAll(64, 64, 64, 255);
-        sun.diffuse.setAll(128,128,128,255);
-        sun.specular.setAll(64,64,64,255);
-        scene.add(sun);
-
-        IParser objParser = Parser.createParser(Parser.Type.OBJ,"net.gtamps.android:raw/camaro_obj",true);
-        objParser.parse();
-        scene.addChild(objParser.getParsedObject());
-    }
-
-    @Deprecated
-    private void addSphere(Scene scene) {
-        Sphere sphere = new Sphere();
-        sphere.setScaling(3, 3, 3);
-        sphere.setPosition(0, 0, 0);
-        scene.add(sphere);
-    }
-
-    @Deprecated
-    private Cube addCube(Scene scene) {
-        Cube cube = new Cube();
-        cube.setScaling(10,10,10);
-        cube.setPosition(0,0,-10);
-        scene.add(cube);
-        cube.loadTexture(R.drawable.crate,true);
-        return cube;
+//        connection.add(MessageFactory.createGetPlayerRequest());
     }
 
     @Override

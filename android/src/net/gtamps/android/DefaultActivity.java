@@ -3,22 +3,26 @@ package net.gtamps.android;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import net.gtamps.android.core.utils.AndroidLogger;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 
 /**
  * @see <a href="http://developer.android.com/images/activity_lifecycle.png">Activity LifeCycle</a>
  */
 public abstract class DefaultActivity extends Activity {
 
-    public final String TAG = this.getClass().getSimpleName();
     protected GLSurfaceView view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.log(TAG, "\n\n\n\n\nApplication created.\n\n\n\n\n");
-    };
+
+        // enable log
+        Logger.setLogger(AndroidLogger.INSTANCE);
+        Logger.I(this, "Application created.");
+    }
 
     protected void onCreateSetContentView() {
         setContentView(view);
