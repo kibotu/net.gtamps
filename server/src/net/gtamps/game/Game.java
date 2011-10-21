@@ -162,6 +162,7 @@ public class Game implements IGame, Runnable {
 			case LEFT:
 			case RIGHT:
 			case SHOOT:
+			case SUICIDE:
 				commandQueue.add(new MessagePair<Sendable>(r, s));
 				break;
 			case GETMAPDATA:
@@ -264,6 +265,8 @@ public class Game implements IGame, Runnable {
 		case HANDBRAKE:
 			type = EventType.ACTION_HANDBRAKE;
 			break;
+		case SUICIDE:
+			type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
 			world.eventManager.dispatchEvent(new GameEvent(type, player));

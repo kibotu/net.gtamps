@@ -1,11 +1,14 @@
 package net.gtamps.shared.game.handler;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 
 import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handlers handle stuff for {@link Entity entities}, mainly events of a certain
@@ -18,7 +21,7 @@ import net.gtamps.shared.game.event.GameEvent;
 public abstract class Handler extends GameActor {
 	
 	public enum Type {
-		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING
+		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
 	}
 	
 	protected final Type type;
@@ -49,20 +52,23 @@ public abstract class Handler extends GameActor {
 	 * 
 	 * @throws RuntimeException	if anything goes wrong
 	 */
-	protected <T> Propertay<T> useParentProperty(String name, Class<? extends Propertay<T>> type) {
-		Propertay<?> p = parent.getProperty(name.toLowerCase());
+	protected <T> Propertay<T> useParentProperty(@NotNull String name, @NotNull T value) {
+		Propertay<T> p = parent.getProperty(name.toLowerCase());
 		if (p == null) {
 			try {
-				p = type.getConstructor(String.class).newInstance(name.toLowerCase());
+				Constructor<Propertay> c = Propertay.class.getConstructor(GameObject.class, String.class, Object.class); 
+				p = (Propertay<T>) c.newInstance(this.parent, name.toLowerCase(), value);
 			} catch (Exception e) {
 				// TODO catchall for a multitude of possible exceptions; ok like that?
+				e.printStackTrace();
 				throw new RuntimeException(e.getMessage(), e);
 			}
 			parent.addProperty(p);
-		} else if (!type.isInstance(p)) {
-			throw new IllegalArgumentException("Property type mismatch: parent entity already uses same property with different type");
+//		} else if (!type.isInstance(p)) {
+			//throw new IllegalArgumentException("Property type mismatch: parent entity already uses same property with different type");
 		}
-		return type.cast(p);
+//		return type.cast(p);
+		return p;
 	}
 	
 	

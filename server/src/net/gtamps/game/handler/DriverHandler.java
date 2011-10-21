@@ -1,11 +1,7 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.XmlElements;
-import net.gtamps.game.RevisionKeeper;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.player.PlayerManager;
-import net.gtamps.game.property.PositionProperty;
-import net.gtamps.game.property.Property;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
@@ -15,21 +11,19 @@ import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 
 import org.jbox2d.common.Vec2;
-import org.jdom.Attribute;
-import org.jdom.Element;
 
 /**
- * Enables an entity to be "entered" by another (player-controlled) entity, 
+ * Enables an entity to be "entered" by another (player-controlled) entity,
  * which is used by cars, hence the name: <tt>DriverHandler</tt>. Theoretically,
  * an entity with a handler like this need not necessarily be "drivable"
  * or in any other way controllable; it could be a restroom stall, for all
  * it matters.
  * <p>
- * Triggered by a call to its {@link #enter(Player)} function, 
- * this handler takes the entity currently controlled by the player, 
- * disables it and stores it in a safe place. Then, player control is 
- * transferred to the entity this handler belongs to. The whole process 
- * is reversed once an {@link EventType#ACTION_ENTEREXIT enter/exit command} 
+ * Triggered by a call to its {@link #enter(Player)} function,
+ * this handler takes the entity currently controlled by the player,
+ * disables it and stores it in a safe place. Then, player control is
+ * transferred to the entity this handler belongs to. The whole process
+ * is reversed once an {@link EventType#ACTION_ENTEREXIT enter/exit command}
  * is received. The formerly controlled entity is pulled out of storage, put
  * next to the active one, and re-attached to the player.
  * </p><p>
@@ -51,23 +45,23 @@ public class DriverHandler extends Handler {
 	private Player driver = null;
 	private Entity driversHumanBody = null;
 	private long lastActivationMillis = 0;
-	private EventType[] sendsUp = { EventType.PLAYER_ENTERSCAR,
+	private final EventType[] sendsUp = { EventType.PLAYER_ENTERSCAR,
 			EventType.PLAYER_EXITSCAR };
-	private EventType[] receivesDown = { EventType.ENTITY_DESTROYED,
+	private final EventType[] receivesDown = { EventType.ENTITY_DESTROYED,
 			EventType.ACTION_ENTEREXIT };
 
-	public DriverHandler(Entity parent) {
+	public DriverHandler(final Entity parent) {
 		super(Handler.Type.DRIVER, parent);
-		this.setSendsUp(sendsUp);
-		this.setReceivesDown(receivesDown);
-		this.connectUpwardsActor(parent);
+		setSendsUp(sendsUp);
+		setReceivesDown(receivesDown);
+		connectUpwardsActor(parent);
 	}
 
 	public boolean isAvailable() {
 		return driver == null || driver == PlayerManager.WORLD_PSEUDOPLAYER;
 	}
 
-	public void enter(Player player) {
+	public void enter(final Player player) {
 		if (!isAvailable()) {
 			return;
 		}
@@ -81,23 +75,23 @@ public class DriverHandler extends Handler {
 		driversHumanBody.disable();
 		
 		setDriver(player);
-		Logger.i().log(TAG, player + " enters car " + this.getParent());
+		Logger.i().log(TAG, player + " enters car " + getParent());
 	}
 
 	public void exit() {
 		if (!canActivate()) {
 			return;
 		}
-		Player exDriver = driver;
+		final Player exDriver = driver;
 		removeDriver();
 		if (driversHumanBody != null) {
-			int carRota = parent.rota.value();
-			float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
-			float carX = parent.x.value();
-			float carY = parent.y.value();
-			Vec2 carPos = new Vec2(carX, carY);
-			Vec2 exitLocalVec = new Vec2((float)Math.cos(carRotaRad)*exitOffset.x, (float) Math.sin(carRotaRad)*exitOffset.y);
-			Vec2 newPos = carPos.add(exitLocalVec);
+			final int carRota = parent.rota.value();
+			final float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
+			final float carX = parent.x.value();
+			final float carY = parent.y.value();
+			final Vec2 carPos = new Vec2(carX, carY);
+			final Vec2 exitLocalVec = new Vec2((float)Math.cos(carRotaRad)*exitOffset.x, (float) Math.sin(carRotaRad)*exitOffset.y);
+			final Vec2 newPos = carPos.add(exitLocalVec);
 			driversHumanBody.x.set((int) newPos.x);
 			driversHumanBody.y.set((int) newPos.y);
 			driversHumanBody.rota.set(carRota + exitRotation);
@@ -105,8 +99,8 @@ public class DriverHandler extends Handler {
 			exDriver.setEntity(driversHumanBody);
 		}
 		{ // LOGGING
-			String logMsg = String.format("%s exits car %s", exDriver, getParent());
-			String logMsg2 = String.format("is now %s", driversHumanBody);
+			final String logMsg = String.format("%s exits car %s", exDriver, getParent());
+			final String logMsg2 = String.format("is now %s", driversHumanBody);
 			Logger.i().log(TAG, logMsg);
 			Logger.i().log(TAG, logMsg2);
 		}
@@ -117,26 +111,26 @@ public class DriverHandler extends Handler {
 		exit();
 	}
 
-	public void setDriver(Player player) {
+	public void setDriver(final Player player) {
 		if (driver != null) {
 			removeDriver();
 		}
 		driver = player;
 		player.setEntity(getParent());
-		this.hasChanged = true;
-		this.getParent().setChanged();
+		hasChanged = true;
+		getParent().setChanged();
 	}
 
 	public void removeDriver() {
 		driver.removeEntity();
 		driver = null;
-		this.hasChanged = true;
-		this.getParent().setChanged();
+		hasChanged = true;
+		getParent().setChanged();
 	}
 
 	@Override
-	public void receiveEvent(GameEvent event) {
-		EventType type = event.getType();
+	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
 		switch (type) {
 		case ACTION_ENTEREXIT:
 			exit();
@@ -161,7 +155,7 @@ public class DriverHandler extends Handler {
 //	}
 	
 	private boolean canActivate() {
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 		if (now - lastActivationMillis > COOLDOWN_MILLIS) {
 			lastActivationMillis = now;
 			return true;

@@ -119,6 +119,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 			case LEFT:
 			case RIGHT:
 			case SHOOT:
+			case SUICIDE:
 				handlePlayingRequest(session, request);
 				break;
 			default:
