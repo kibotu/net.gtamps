@@ -66,7 +66,7 @@ public class TextureLibrary {
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap) {
-        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.RGB_565, false);
+        return loadTexture(textureResourceId, generateMipMap, Bitmap.Config.ARGB_8888, false);
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap, Bitmap.Config bitmapConfig, boolean flipped) {
