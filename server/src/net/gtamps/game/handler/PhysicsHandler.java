@@ -6,6 +6,7 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 
 import org.jbox2d.common.Vec2;
@@ -49,7 +50,9 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 		while (!actionQueue.isEmpty()) {
 			final EventType pa = actionQueue.poll().getType();
 
-			
+			if (pa == EventType.ACTION_SUICIDE) {
+				dispatchEvent(new CollisionEvent(parent, parent, 100f));
+			}
 			
 			if(physicalProperties.TYPE == PhysicalProperties.Type.CAR){
 				if (pa == EventType.ACTION_ACCELERATE) {

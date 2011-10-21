@@ -13,45 +13,45 @@ import javax.swing.event.ChangeListener;
 
 public class TabbedPane extends JTabbedPane implements ChangeListener, ActionListener{
 	public HashMap<LogType, TabbedPaneComponent> panes = new HashMap<LogType, TabbedPaneComponent>();
-	private Timer timer; 
+	private final Timer timer;
 	public TabbedPane(){
 		super();
-		this.addChangeListener(this);
-		for(LogType lmt : LogType.values()){
-			TabbedPaneComponent tpc = new TabbedPaneComponent(lmt);
+		addChangeListener(this);
+		for(final LogType lmt : LogType.values()){
+			final TabbedPaneComponent tpc = new TabbedPaneComponent(lmt);
 			panes.put(lmt, tpc);
 			//JScrollPane jsp = new JScrollPane();
 			//jsp.add(tpc);
 			//this.addTab(lmt.name(),jsp);
-			JScrollPane scrollPane = new JScrollPane(tpc);
+			final JScrollPane scrollPane = new JScrollPane(tpc);
 			scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			//scrollPane.add(tpc);
 			this.addTab(lmt.name(),scrollPane);
 		}
 		timer = new Timer(1000, this);
 		timer.setInitialDelay(3000);
-		timer.start(); 
+		timer.start();
 	}
 	
 	@Override
-	public void stateChanged(ChangeEvent e) {
+	public void stateChanged(final ChangeEvent e) {
 		if(Logger.i().wasUpdated()){
 			updateActivePane();
 		}
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		updateActivePane();	
+	public void actionPerformed(final ActionEvent e) {
+		//		updateActivePane();
 	}
 	
 	private void updateActivePane(){
 		//TODO performance issue?
-		for(LogType lt : LogType.values()){
-			TabbedPaneComponent tpc = this.panes.get(lt);
+		for(final LogType lt : LogType.values()){
+			final TabbedPaneComponent tpc = panes.get(lt);
 			if(tpc!=null){
 				synchronized (Logger.lock) {
-					LinkedList<String> copy = new LinkedList<String>(Logger.getLogs(tpc.getLogType()));
+					final LinkedList<String> copy = new LinkedList<String>(Logger.getLogs(tpc.getLogType()));
 					tpc.updateLog(copy);
 				}
 				tpc.invalidate();

@@ -13,7 +13,7 @@ public final class Connection<H extends ISocketHandler> {
 	private final ISerializer serializer;
 	private final String id;
 
-	public Connection(String id, H socketHandler, ISerializer serializer) {
+	public Connection(final String id, final H socketHandler, final ISerializer serializer) {
 		if (id == null) {
 			throw new IllegalArgumentException("'id' must not be null");
 		}
@@ -28,15 +28,16 @@ public final class Connection<H extends ISocketHandler> {
 		this.id = id;
 	}
 	
-	public void send(Message msg) {
-		socketHandler.send(id, serializer.serializeMessage(msg));
+	public void send(final Message msg) {
+		final byte[] bytes = serializer.serializeMessage(msg);
+		socketHandler.send(id, bytes);
 	}
 	
-	public void onData(byte[] bytes) {
+	public void onData(final byte[] bytes) {
 		if (bytes == null) {
 			throw new IllegalArgumentException("'bytes' must not be null");
 		}
-		Message m = serializer.deserializeMessage(bytes);
+		final Message m = serializer.deserializeMessage(bytes);
 		SessionManager.instance.receiveMessage(this, m);
 		ControlCenter.instance.receiveMessage(this, m);
 	}
@@ -50,7 +51,7 @@ public final class Connection<H extends ISocketHandler> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -60,7 +61,7 @@ public final class Connection<H extends ISocketHandler> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Connection<?> other = (Connection<?>) obj;
+		final Connection<?> other = (Connection<?>) obj;
 		if (this.socketHandler.getClass() != other.socketHandler.getClass()) {
 			return false;
 		}

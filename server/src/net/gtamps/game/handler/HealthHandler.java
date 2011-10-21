@@ -1,6 +1,8 @@
 package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.WorldConstants;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.BulletHitEvent;
@@ -10,6 +12,7 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
 public class HealthHandler extends Handler {
+	private static final LogType TAG = LogType.GAMEWORLD;
 
 	private final Propertay<Boolean> isAlive;
 	private final Propertay<Integer> health;
@@ -20,6 +23,9 @@ public class HealthHandler extends Handler {
 	
 	public HealthHandler(final Entity parent, final int maxHealth, final float resistance, final int threshold) {
 		super(Handler.Type.HEALTH, parent);
+		setSendsUp(new EventType[] {EventType.ENTITY_DAMAGE, EventType.ENTITY_DESTROYED});
+		setReceivesDown(new EventType[] {EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
+		connectUpwardsActor(parent);
 		this.maxHealth = maxHealth;
 		dmgThreshold = threshold;
 		dmgResistance = resistance;
@@ -63,6 +69,7 @@ public class HealthHandler extends Handler {
 		final int damage = (int) (force * (1-dmgResistance) - dmgThreshold);
 		if (damage > 0) {
 			setHealth(health.value() - damage);
+			Logger.getInstance().log(TAG, parent.getName() + " takes " + damage + " damage");
 		}
 	}
 	

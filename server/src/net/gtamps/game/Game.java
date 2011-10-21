@@ -62,7 +62,8 @@ public class Game implements IGame, Runnable {
 	
 	public Game(String mapPathOrNameOrWhatever) {
 		id = ++Game.instanceCounter;
-		thread = new Thread(this);
+		final String name = "Game " + id;
+		thread = new Thread(this, name);
 		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
 			mapPathOrNameOrWhatever = GTAMultiplayerServer.DEFAULT_PATH+GTAMultiplayerServer.DEFAULT_MAP;
 		}

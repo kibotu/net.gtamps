@@ -1,5 +1,6 @@
 package net.gtamps;
 
+import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.ObjectSerializer;
 import net.gtamps.server.ServerChainFactory;
@@ -38,6 +39,10 @@ public class GTAMultiplayerServer {
 //		dbHandler.authPlayer("tom", "mysecretpassword");
 		//new ServerGUI(cm);
 		new ServerGUI();
+		
+		//TODO tmp
+		final ControlCenter cc = ControlCenter.instance;
+		cc.toString();
 	}
 	
 	/**
