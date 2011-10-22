@@ -20,7 +20,7 @@ public class Entity extends GameActor implements Serializable {
         CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
     }
 
-	//public static final Player DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
+	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
 
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
