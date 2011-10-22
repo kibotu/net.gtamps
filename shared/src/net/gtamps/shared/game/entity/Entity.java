@@ -2,11 +2,7 @@ package net.gtamps.shared.game.entity;
 
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
-//import net.gtamps.game.player.PlayerManager;
-//import net.gtamps.game.property.ActivationProperty;
-//import net.gtamps.game.property.Property;
 import net.gtamps.shared.game.GameActor;
-import net.gtamps.shared.game.IntProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.event.GameEvent;
 
@@ -42,14 +38,10 @@ public class Entity extends GameActor implements Serializable {
 	public Entity(String name){
 		super(name);
         type = getType(name);
-        x = new Propertay<Integer>(this, "posx", 0);
-        y = new Propertay<Integer>(this, "posy", 0);
-        rota = new Propertay<Integer>(this, "rota", 0);
-        z = new Propertay<Integer>(this, "posz", 0);
-        this.addProperty(x);
-        this.addProperty(y);
-        this.addProperty(z);
-        this.addProperty(rota);
+        x = this.useProperty("posx", 0);
+        y = this.useProperty("posy", 0);
+        z = this.useProperty("posz", 0);
+        rota = this.useProperty("rota", 0);
 	}
 
     private Type getType(String name) {
@@ -65,27 +57,6 @@ public class Entity extends GameActor implements Serializable {
 		dispatchEvent(event);
 	}
 	
-//	void addProperty(Property value) {
-//		Property.Type key = value.getType();
-//		if (properties.containsKey(key)) {
-//			removeProperty(key);
-//		}
-//		properties.put(key, value);
-//		this.connectDownwardsActor(value);
-//	}
-//	
-//	void removeProperty(Property.Type key) {
-//		Property removed = properties.remove(key);
-//		if (removed != null) {
-//			this.disconnectDownwardsActor(removed);
-//		}
-//	}
-//	
-//	public Property getProperty(Property.Type atttype){
-//		return properties.get(atttype);
-//	}
-	
-
 	public void setOwner(Player p) {
 		if (p == null) {
 			throw new IllegalArgumentException("'p' must not be null");
