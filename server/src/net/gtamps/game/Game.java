@@ -73,6 +73,7 @@ public class Game implements IGame, Runnable {
 			start();
 		} else {
 			Logger.i().log(LogType.GAMEWORLD, "Game not loaded");
+			run = false;
 			playerStorage = null;
 			timeKeeper = null;
 		}

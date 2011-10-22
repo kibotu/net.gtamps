@@ -201,15 +201,15 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		final Message msg = new Message();
 		msg.setSessionId(s.getId());
 		msg.addSendable(r);
-		s.getConnection().send(msg);
+		final Connection<?> c = s.getConnection();
+		//debug
+		if (c == null) {
+			throw new NullPointerException("Session: " + s.toString());
+		}
+		c.send(msg);
 	}
 	
 	private IGame createGame(final String mapname) {
-//		IGame game = new GameThread();
-//		if (game != null) {
-//			this.gameThreads.put(game.getId(), game);
-//		}
-//		return game;
 		game = new Game();
 		return game;
 	}
