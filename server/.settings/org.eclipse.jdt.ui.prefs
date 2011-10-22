@@ -1,4 +1,4 @@
-#Wed Oct 19 22:51:30 CEST 2011
+#Sat Oct 22 16:49:39 CEST 2011
 cleanup_settings_version=2
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
@@ -42,7 +42,7 @@ sp_cleanup.remove_trailing_whitespaces_ignore_empty=true
 sp_cleanup.remove_unnecessary_casts=true
 sp_cleanup.remove_unnecessary_nls_tags=false
 sp_cleanup.remove_unused_imports=true
-sp_cleanup.remove_unused_local_variables=true
+sp_cleanup.remove_unused_local_variables=false
 sp_cleanup.remove_unused_private_fields=true
 sp_cleanup.remove_unused_private_members=false
 sp_cleanup.remove_unused_private_methods=true
