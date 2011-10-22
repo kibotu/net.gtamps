@@ -10,6 +10,7 @@ import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.ParsedObject;
+import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class World {
@@ -32,11 +33,19 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0xff222222);
 
-        scene.addChild(addCity());
+//        scene.addChild(addCity());
         scene.add(getSunLight());
         IObject3d camaro = addCamaro();
-        camaro.getNode().add(getSpotLight());
-        scene.addChild(camaro);
+        activeOjbect = new EntityView(new Entity("car_riviera"));
+        activeOjbect.getObject3d().getNode().setScaling(30,30,30);
+        activeOjbect.getObject3d().getNode().add(getSpotLight());
+//        activeOjbect.setObject3d(camaro);
+        scene.addChild(activeOjbect);
+//
+//        IObject3d spawnPoint = Object3dFactory.create(Entity.Type.SPAWNPOINT);
+//        spawnPoint.getNode().setPosition(activeOjbect.getNode().getPosition());
+//        spawnPoint.getNode().setPosition(3,0,0);
+//        scene.addChild(spawnPoint);
 
 //        addLevel();
     }

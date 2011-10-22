@@ -4,9 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import net.gtamps.android.core.renderer.Renderer;
 import net.gtamps.android.core.renderer.TextureLibrary;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
 public class Registry {
 
@@ -18,12 +16,13 @@ public class Registry {
     public static ActivityManager.MemoryInfo memoryInfo;
     private static Context context;
     private static TextureLibrary textureLibrary;
+    private static Renderer renderer;
 
      public static Context getContext() {
         return context;
     }
 
-    public static void setContext(Context context) {
+    public static void setContext(@NotNull Context context) {
         Registry.context = context;
 
         // get available memory
@@ -43,5 +42,13 @@ public class Registry {
     public static long getAvailableMemory() {
         activityManager.getMemoryInfo(memoryInfo);
         return memoryInfo.availMem;
+    }
+
+    public static void setRenderer(@NotNull Renderer renderer) {
+        Registry.renderer = renderer;
+    }
+
+    public static Renderer getRenderer() {
+        return renderer;
     }
 }

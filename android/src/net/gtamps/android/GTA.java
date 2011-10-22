@@ -19,6 +19,7 @@ public class GTA extends DefaultActivity {
         game = new Game();
         Registry.setContext(this);
         Renderer renderer = new Renderer(game);
+        Registry.setRenderer(renderer);
 
         view = new GLSurfaceView(this);
         glSurfaceViewConfig();

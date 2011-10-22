@@ -1,8 +1,8 @@
 package net.gtamps.shared.communication.data;
 
-import java.util.ArrayList;
-
 import net.gtamps.shared.game.GameObject;
+
+import java.util.ArrayList;
 
 public class UpdateData implements ISendableData {
 
