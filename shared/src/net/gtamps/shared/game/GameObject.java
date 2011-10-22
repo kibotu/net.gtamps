@@ -1,12 +1,16 @@
 package net.gtamps.shared.game;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import net.gtamps.shared.Utils.UIDGenerator;
+
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -16,7 +20,7 @@ import net.gtamps.shared.Utils.UIDGenerator;
  * <ul>
  * <li>unique identification,</li>
  * <li>version control,</li>
- * <li>to-XML serialization.</li>
+ * <li>generic, serializable properties.</li>
  * </ul>
  * 
  * @author til, tom, jan
@@ -28,14 +32,14 @@ public abstract class GameObject implements Serializable {
 	 */
 	private static final long serialVersionUID = 7826642603562424002L;
 	private static final long START_REVISION = 1;
-	private static final String DEFAULT_NAME = "";
+	private static final String DEFAULT_NAME = "GameObject";
 
 	protected final int uid;
 	protected String name;
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
-	private HashMap<String, Propertay<?>> properties = null;
+	private Map<String, Propertay<?>> properties = null;
 
 	/**
 	 * 
@@ -92,12 +96,15 @@ public abstract class GameObject implements Serializable {
 		return hasChanged;
 	}
 
+	/**
+	 * sets the {@link #hasChanged changed-flag} to <code>true</code>
+	 */
 	public void setChanged() {
 		this.hasChanged = true;
 	}
 
 	/**
-	 * If set to true this game object (entity) will not send any xml updates to
+	 * If set to true this game object (entity) will not send any updates to
 	 * the client.
 	 * 
 	 * @param silence
@@ -108,51 +115,54 @@ public abstract class GameObject implements Serializable {
 	}
 
 	/**
-	 * <code>true</code> if this gameObject is silent, which means that its
-	 * method will under all circumstances return
-	 * <code>null</code>.
+	 * <code>true</code> if this gameObject is silent, which means that it
+	 * should not be communicated to connected, potentially interested
+	 * parties.  
 	 * 
 	 * @return <code>true</code> if this gameObject is silent.
 	 */
 	public boolean isSilent() {
 		return this.silent;
 	}
-
-	public void addProperty(Propertay<?> p) {
-		if (p == null) {
-			throw new IllegalArgumentException("'p' must not be null");
-		}
-		if (this.properties == null) {
-			this.properties = new HashMap<String, Propertay<?>>();
-		}
-		if(this.properties.containsKey(p.name)) {
-			throw new IllegalArgumentException("Property exists already: " + p);
-		}
-		this.properties.put(p.name, p);
-	}
-
-	public void removeProperty(String name) {
-		Propertay<?> p = this.properties.remove(name);
-		if (p == null) {
-			p = this.properties.remove(name.toLowerCase());
-		}
-	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> Propertay<T> getProperty(String name) {
-		Propertay<T> p = (Propertay<T>) this.properties.get(name);
+	/**
+	 * Returns a {@link Propertay property} of this gameObject named 
+	 * <code>name</code>, and, if it didn't exist already, initialized 
+	 * to <code>value</code>.
+	 * 
+	 * @param <T>	the type of the property
+	 * @param name	the name of the property; not <code>null</code>
+	 * @param value	the property's initial value; not <code>null</code>
+	 * @return		a property of the specified type, linked to this gameObject
+	 * @throws NoSuchElementException	if a property with a different type
+	 * 									already exists under the same <code>name</code>,
+	 * 									or if the property couldn't be initialized for
+	 * 									any reason
+	 * @throws UnsupportedOperationException	if a gameObject type does not support the
+	 * 											use of properties
+	 */
+	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+		String properName = name.toLowerCase();
+		Propertay<T> p = this.getProperty(properName);
 		if (p == null) {
-			p = (Propertay<T>) this.properties.get(name.toLowerCase());
-		}
-		try {
-			@SuppressWarnings("unused")
-			T check = (T) p.value();
-		} catch (RuntimeException e) {
-			return null;
+			p = this.instantiateProperty(name, value);
+			if (p == null) {
+				throw new NoSuchElementException("cannot instantiate property");
+			}
+			this.addProperty(p);
+		} else if (!value.getClass().isAssignableFrom(p.value().getClass())) {
+			throw new NoSuchElementException("property already in use for different type: " + p.value().getClass().getSimpleName());
 		}
 		return p;
 	}
 	
+	/**
+	 * returns an iterator over all Properties currently in use for this
+	 * gameObject
+	 * 
+	 * @return	an iterator over all Properties currently in use for this
+	 * gameObject
+	 */
 	public Iterable<Propertay<?>> getAllProperties() {
 		if (this.properties == null) {
 			return new Iterable<Propertay<?>>() {
@@ -178,7 +188,7 @@ public abstract class GameObject implements Serializable {
 		}
 		return this.properties.values();
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("%s [%s.%s]", this.name, this.uid, this.revision);
@@ -210,5 +220,60 @@ public abstract class GameObject implements Serializable {
 		return true;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <T> Propertay<T> instantiateProperty(String name, T value) {
+		Constructor<Propertay> c;
+		Propertay<T> p = null;
+		try {
+			c = Propertay.class.getConstructor(GameObject.class, String.class, Object.class);
+			p = c.newInstance(this, name.toLowerCase(), value);
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
+	}
+	
+
+	private void addProperty(Propertay<?> p) {
+		if (p == null) {
+			throw new IllegalArgumentException("'p' must not be null");
+		}
+		if (this.properties == null) {
+			this.properties = new HashMap<String, Propertay<?>>();
+		}
+		if(this.properties.containsKey(p.name)) {
+			throw new IllegalArgumentException("Property exists already: " + p);
+		}
+		this.properties.put(p.name, p);
+	}
+
+	private void removeProperty(String name) {
+		this.properties.remove(name);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T> Propertay<T> getProperty(String name) {
+		if (this.properties == null) {
+			return null;
+		}
+		Propertay<?> p = this.properties.get(name);
+		return (Propertay<T>) p;
+	}
 
 }
