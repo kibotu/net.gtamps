@@ -2,7 +2,8 @@ package net.gtamps.shared.communication.data;
 
 public class AuthentificationData implements ISendableData {
 
-    public final String username;
+	private static final long serialVersionUID = -2582506868524601136L;
+	public final String username;
     public final String password;
 
     public AuthentificationData(String username, String password) {
