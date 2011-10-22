@@ -217,7 +217,7 @@ public class Game implements IGame{
                 ConnectionManager.currentRevId = updateData.revId;
 
                 // parse all transmitted entities
-                ArrayList<Entity> entities = updateData.entities;
+                ArrayList<Entity> entities = updateData.gameObjects;
                 for(int i = 0; i < entities.size(); i++) {
                     Logger.d(this, "response size" + entities.size());
                     Entity serverEntity = entities.get(i);

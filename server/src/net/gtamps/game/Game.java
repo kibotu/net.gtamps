@@ -19,7 +19,7 @@ import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.UpdateData;
-import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
@@ -307,9 +307,9 @@ public class Game implements IGame, Runnable {
 
 	private Sendable getUpdate(final Session session, final Sendable sendable) {
 		final long baseRevision = ((RevisionData) sendable.data).revisionId;
-		final ArrayList<Entity> entities = world.entityManager.getUpdate(baseRevision);
+		final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
 		final UpdateData update = new UpdateData(baseRevision, world.getRevision());
-		update.entities = entities;
+		update.gameObjects = entities;
 		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = update;
 		return updateResponse;
