@@ -120,7 +120,7 @@ public class ManualTypeSerializer implements ISerializer {
     }
     
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
-    	for (final Entity e : udata.entites) {
+    	for (final Entity e : udata.entities) {
     		addToken(bld, ENTITY);
     		addToken(bld, Integer.toString(e.getUid()));
     		addToken(bld, e.getName());
@@ -254,14 +254,14 @@ public class ManualTypeSerializer implements ISerializer {
 	
 	private ISendableData getUpdateData(final Scanner scanner) {
 		final long revId = scanner.nextLong();
-		final UpdateData data = new UpdateData(revId);
+		final UpdateData data = new UpdateData(0, revId);
 		Entity entity = getEntity(scanner);
 		final ArrayList<Entity> entities = new ArrayList<Entity>();
 		while (entity != null) {
 			entities.add(entity);
 			entity = getEntity(scanner);
 		}
-		data.entites = entities;
+		data.entities = entities;
 		return data;
 	}
 

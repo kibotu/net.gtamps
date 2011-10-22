@@ -6,19 +6,20 @@ import java.util.ArrayList;
 
 public class UpdateData implements ISendableData {
 
+	public transient long oldRevId;
     public long revId;
-    public ArrayList<Entity> entites;
+    public ArrayList<Entity> entities;
 
-    public UpdateData(long revId) {
-        this.revId = revId;
-        entites = null;
+    public UpdateData(long oldRevId, long newRevId) {
+        this.revId = newRevId;
+        entities = null;
     }
 
     @Override
     public String toString() {
         return "UpdateData{" +
                 "revId=" + revId +
-                ", entites=" + entites +
+                ", entites=" + entities +
                 '}';
     }
 }
