@@ -1,15 +1,13 @@
 package net.gtamps.shared.game.player;
 
-//import net.gtamps.XmlElements;
-//import net.gtamps.game.RevisionKeeper;
-//import net.gtamps.game.property.IncarnationProperty;
-//import net.gtamps.game.property.Property;
 import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 
 public class Player extends GameActor {
+	private static final long serialVersionUID = -8070689911091703487L;
 	
 	private transient Entity entity;
 	
@@ -63,15 +61,4 @@ public class Player extends GameActor {
 		dispatchEvent(event);
 	}
 	
-	
-	//TODO
-//	@Override
-//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-//		Element e = super.toXMLElement(baseRevision, keeper);
-//		Element f = (entity == null) ? null : entity.toXMLElement(baseRevision, keeper);
-//		if (e != null && f != null) {
-//			e.addContent(f);
-//		}
-//		return e;
-//	}
 }
