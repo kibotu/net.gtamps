@@ -1,5 +1,6 @@
 package net.gtamps.android.game;
 
+import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.shared.game.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

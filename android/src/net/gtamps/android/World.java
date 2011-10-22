@@ -4,6 +4,7 @@ import net.gtamps.android.core.graph.CameraNode;
 import net.gtamps.android.core.graph.LightNode;
 import net.gtamps.android.core.utils.parser.IParser;
 import net.gtamps.android.core.utils.parser.Parser;
+import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.objects.City;
@@ -16,8 +17,10 @@ public class World {
     private CameraNode camera;
     private Scene scene;
     private EntityView activeOjbect;
+    public final PlayerManager playerManager;
 
     public World() {
+        playerManager = new PlayerManager();
     }
 
     public void init() {
@@ -29,7 +32,12 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0xff222222);
 
-//        addCity();
+        scene.addChild(addCity());
+        scene.add(getSunLight());
+        IObject3d camaro = addCamaro();
+        camaro.getNode().add(getSpotLight());
+        scene.addChild(camaro);
+
 //        addLevel();
     }
 
