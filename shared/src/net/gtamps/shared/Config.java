@@ -32,7 +32,7 @@ final public class Config {
     private static final String TIL_IP_INI = "141.64.23.78";
     private static final String JAN_IP_HOME = "192.168.2.101";
 
-    public static final String SERVER_HOST_ADDRESS = JAN_IP_HOME;
+    public static final String SERVER_HOST_ADDRESS = TIL_IP_HOME;
     public static final int SERVER_PORT = 8095;
 
     public static final int SOCKET_MAX_SEND_BUFFER_SIZE = 0xFFFF;
