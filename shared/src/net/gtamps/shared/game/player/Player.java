@@ -11,7 +11,7 @@ import net.gtamps.shared.game.event.GameEvent;
 
 public class Player extends GameActor {
 	
-	private Entity entity;
+	private transient Entity entity;
 	
 	public Player (String name) {
 		this(name, null);

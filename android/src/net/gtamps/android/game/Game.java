@@ -33,11 +33,13 @@ public class Game implements IGame{
     private final Hud hud;
     private final World world;
     private final ConnectionManager connection;
+    private final PlayerManager playerManager;
 
     public Game() {
         isRunning = true;
         isPaused = false;
         inputEngine = InputEngine.getInstance();
+        playerManager = new PlayerManager();
         scenes = new ArrayList<Scene>();
         hud = new Hud();
         world = new World();
@@ -48,10 +50,6 @@ public class Game implements IGame{
 
         // create world
         scenes.add(world.getScene());
-
-//        IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
-//        world.getScene().addChild(object3d);
-//        object3d.getNode().setPosition(10, 10, 3);
 
         // hud
         scenes.add(hud.getScene());
@@ -221,7 +219,7 @@ public class Game implements IGame{
                     EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
                     if(entityView == null) {
                         entityView = new EntityView(serverEntity);
-                        world.getScene().addChild(world.activeObject = entityView);
+                        world.getScene().addChild(entityView);
                         Logger.i(this,"add new entity"+serverEntity.getUid());
                     } else {
                         entityView.update(serverEntity);
@@ -233,7 +231,11 @@ public class Game implements IGame{
             case GETUPDATE_BAD: break;
             case GETUPDATE_ERROR: break;
 
-            case GETPLAYER_OK: break;
+            case GETPLAYER_OK:
+                if(sendable.data == null) break;
+                if(!(sendable.data instanceof I)) break;
+                world.setActiveObject(entityView);
+                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId)); break;
             case GETPLAYER_NEED: break;
             case GETPLAYER_BAD: break;
             case GETPLAYER_ERROR: break;
@@ -246,11 +248,8 @@ public class Game implements IGame{
             case SESSION_BAD: break;
             case SESSION_ERROR: break;
 
-            case JOIN_OK:
-//                connection.add(MessageFactory.createGetPlayerRequest());
-                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
-                break;
-            case JOIN_NEED:
+            case JOIN_OK: connection.add(MessageFactory.createGetPlayerRequest()); break;
+            case JOIN_NEED: break;
             case JOIN_BAD: break;
             case JOIN_ERROR: break;
 
