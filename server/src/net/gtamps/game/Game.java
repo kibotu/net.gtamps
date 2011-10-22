@@ -19,7 +19,7 @@ import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.UpdateData;
-import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
@@ -56,32 +56,31 @@ public class Game implements IGame, Runnable {
 	private volatile boolean run;
 	private volatile boolean isActive;
 
-	private long lastTime = System.nanoTime();
-	
 	private final World world;
 	private final PlayerManagerFacade playerStorage;
+	private final TimeKeeper timeKeeper;
 	
-	public Game(String mapPathOrNameOrWhatever) {
+	public Game(final String mapPath) {
 		id = ++Game.instanceCounter;
 		final String name = "Game " + id;
 		thread = new Thread(this, name);
-		if (mapPathOrNameOrWhatever == null || mapPathOrNameOrWhatever.isEmpty()) {
-			mapPathOrNameOrWhatever = GTAMultiplayerServer.DEFAULT_PATH+GTAMultiplayerServer.DEFAULT_MAP;
-		}
-		world = WorldFactory.loadMap(mapPathOrNameOrWhatever);
+		world = WorldFactory.loadMap(mapPath);
 		if (world != null) {
 			Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + world.getName());
 			run = true;
 			playerStorage = new PlayerManagerFacade(world.playerManager);
+			timeKeeper = new TimeKeeper();
+			start();
 		} else {
 			Logger.i().log(LogType.GAMEWORLD, "Game not loaded");
+			run = false;
 			playerStorage = null;
+			timeKeeper = null;
 		}
-		start();
 	}
 	
 	public Game() {
-		this(null);
+		this(GTAMultiplayerServer.DEFAULT_PATH+GTAMultiplayerServer.DEFAULT_MAP);
 	}
 	
 	@Override
@@ -110,36 +109,42 @@ public class Game implements IGame, Runnable {
 		isActive = true;
 		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
 		while(run) {
-			final float timeElapsedInSeconds = (float) ((System.nanoTime()-lastTime)/1000000000.0);
-			long timeElapsedPhysicsCalculation = System.nanoTime();
-			lastTime = System.nanoTime();
-			world.physics.step(timeElapsedInSeconds, PHYSICS_ITERATIONS);
-			world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
-			timeElapsedPhysicsCalculation = (System.nanoTime()-lastTime)/1000000;
-
-			//for fps debugging
-//			lastUpdate += timeElapsedInSeceonds;
-//			updates++;
-//			if(lastUpdate>5f){
-//				Logger.i().log(LogType.PHYSICS, "Physics fps: "+((updates/lastUpdate)));
-//				lastUpdate = 0f;
-//				updates = 0;
-//			}
-			
-			processCommandQueue();
-			processRequestQueue();
-			
-			try {
-				if(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation>0){
-					Thread.sleep(THREAD_UPDATE_SLEEP_TIME-timeElapsedPhysicsCalculation);
-				}
-			} catch (final InterruptedException e) {
-				// reset interrupted status?
-				//Thread.currentThread().interrupt();
-			}
+			timeKeeper.startCycle();
+			doCycle();
+			timeKeeper.endCycle();
+			sleepIfCycleTimeRemaining();
 		}
 		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
 		isActive = false;
+	}
+	
+	private void doCycle() {
+		world.physics.step(timeKeeper.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
+		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
+
+		//for fps debugging
+//		lastUpdate += timeElapsedInSeceonds;
+//		updates++;
+//		if(lastUpdate>5f){
+//			Logger.i().log(LogType.PHYSICS, "Physics fps: "+((updates/lastUpdate)));
+//			lastUpdate = 0f;
+//			updates = 0;
+//		}
+		
+		processCommandQueue();
+		processRequestQueue();
+	}
+	
+	private void sleepIfCycleTimeRemaining() {
+		final long millisRemaining = THREAD_UPDATE_SLEEP_TIME-timeKeeper.getLastActiveDurationMillis();
+		try {
+			if(millisRemaining > 0){
+				Thread.sleep(millisRemaining);
+			}
+		} catch (final InterruptedException e) {
+			// reset interrupted status?
+			//Thread.currentThread().interrupt();
+		}
 	}
 
 
@@ -307,9 +312,9 @@ public class Game implements IGame, Runnable {
 
 	private Sendable getUpdate(final Session session, final Sendable sendable) {
 		final long baseRevision = ((RevisionData) sendable.data).revisionId;
-		final ArrayList<Entity> entities = world.entityManager.getUpdate(baseRevision);
-		final UpdateData update = new UpdateData(world.getRevision());
-		update.entites = entities;
+		final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
+		final UpdateData update = new UpdateData(baseRevision, world.getRevision());
+		update.gameObjects = entities;
 		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = update;
 		return updateResponse;

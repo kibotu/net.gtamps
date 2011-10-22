@@ -19,6 +19,7 @@ import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.StringData;
 import net.gtamps.shared.communication.data.UpdateData;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -120,12 +121,15 @@ public class ManualTypeSerializer implements ISerializer {
     }
     
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
-    	for (final Entity e : udata.entites) {
-    		addToken(bld, ENTITY);
-    		addToken(bld, Integer.toString(e.getUid()));
-    		addToken(bld, e.getName());
-    		for (final Propertay<?> p : e.getAllProperties()) {
-    			serializeProperty(bld, p);
+    	for (final GameObject e : udata.gameObjects) {
+    		//TODO other cases
+    		if (e instanceof Entity) {
+	    		addToken(bld, ENTITY);
+	    		addToken(bld, Integer.toString(e.getUid()));
+	    		addToken(bld, e.getName());
+	    		for (final Propertay<?> p : e.getAllProperties()) {
+	    			serializeProperty(bld, p);
+	    		}
     		}
     	}
     }
@@ -254,14 +258,15 @@ public class ManualTypeSerializer implements ISerializer {
 	
 	private ISendableData getUpdateData(final Scanner scanner) {
 		final long revId = scanner.nextLong();
-		final UpdateData data = new UpdateData(revId);
+		final UpdateData data = new UpdateData(0, revId);
 		Entity entity = getEntity(scanner);
-		final ArrayList<Entity> entities = new ArrayList<Entity>();
+		//TODO
+		final ArrayList<GameObject> entities = new ArrayList<GameObject>();
 		while (entity != null) {
 			entities.add(entity);
 			entity = getEntity(scanner);
 		}
-		data.entites = entities;
+		data.gameObjects = entities;
 		return data;
 	}
 
