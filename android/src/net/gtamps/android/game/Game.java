@@ -13,6 +13,7 @@ import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.FloatData;
+import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
@@ -200,28 +201,36 @@ public class Game implements IGame{
 
     private void handleMessage(Sendable sendable, Message message) {
         Logger.i(this, "Handles message.");
-        Logger.i(this, ""+sendable);
+        Logger.i(this, sendable);
 
         switch (sendable.type) {
             case GETUPDATE_OK:
 
+                // empty
                 if(sendable.data == null) break;
+
+                // not an update
                 if(!(sendable.data instanceof UpdateData)) break;
+
+                // update revision id
                 UpdateData updateData = ((UpdateData)sendable.data);
                 ConnectionManager.currentRevId = updateData.revId;
 
+                // parse all transmitted entities
                 ArrayList<Entity> entities = updateData.entites;
                 for(int i = 0; i < entities.size(); i++) {
                     Logger.d(this, "response size" + entities.size());
                     Entity serverEntity = entities.get(i);
 
-                    // contains?
+                    // new or update
                     EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
                     if(entityView == null) {
+                        // new entity
                         entityView = new EntityView(serverEntity);
                         world.getScene().addChild(entityView);
                         Logger.i(this,"add new entity"+serverEntity.getUid());
                     } else {
+                        // update
                         entityView.update(serverEntity);
                         Logger.i(this, "update entity" + serverEntity.getUid());
                     }
@@ -232,10 +241,17 @@ public class Game implements IGame{
             case GETUPDATE_ERROR: break;
 
             case GETPLAYER_OK:
+
+                // empty
                 if(sendable.data == null) break;
-                if(!(sendable.data instanceof I)) break;
-                world.setActiveObject(entityView);
+
+                // not player data
+                if(!(sendable.data instanceof PlayerData)) break;
+                playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+
+                // get update
                 connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId)); break;
+
             case GETPLAYER_NEED: break;
             case GETPLAYER_BAD: break;
             case GETPLAYER_ERROR: break;

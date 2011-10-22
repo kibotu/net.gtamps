@@ -35,21 +35,21 @@ final public class Logger {
     /**
      * DEBUG *
      */
-    public static void d(@NotNull String id, String message) {
+    public static void d(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.DEBUG) <= 0) {
-            logger.d(id,message);
+            logger.d(id,""+message);
         }
     }
 
-    public static void D(@NotNull String id, String message) {
+    public static void D(@NotNull String id, Object message) {
         d(id, LINE_BREAKS + message + LINE_BREAKS);
     }
 
-    public static void d(@NotNull Object id, String message) {
+    public static void d(@NotNull Object id, Object message) {
        d(id.getClass().getSimpleName(),message);
     }
 
-    public static void D(@NotNull Object id, String message) {
+    public static void D(@NotNull Object id, Object message) {
        d(id.getClass().getSimpleName(), LINE_BREAKS + message + LINE_BREAKS);
     }
 
@@ -57,21 +57,21 @@ final public class Logger {
      * VERBOSE *
      */
 
-    public static void v(@NotNull String id, String message) {
+    public static void v(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.VERBOSE) <= 0) {
-            logger.d(id,message);
+            logger.d(id,""+message);
         }
     }
 
-    public static void V(@NotNull String id, String message) {
+    public static void V(@NotNull String id, Object message) {
         v(id, LINE_BREAKS + message + LINE_BREAKS);
     }
 
-    public static void v(@NotNull Object id, String message) {
+    public static void v(@NotNull Object id, Object message) {
        v(id.getClass().getSimpleName(), message);
     }
 
-    public static void V(@NotNull Object id, String message) {
+    public static void V(@NotNull Object id, Object message) {
        v(id.getClass().getSimpleName(), LINE_BREAKS + message + LINE_BREAKS);
     }
 
@@ -79,17 +79,17 @@ final public class Logger {
      * INFO *
      */
 
-    public static void i(@NotNull String id, String message) {
+    public static void i(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.INFO) <= 0) {
-            logger.i(id,message);
+            logger.i(id,""+message);
         }
     }
 
-    public static void I(@NotNull String id, String message) {
+    public static void I(@NotNull String id, Object message) {
         i(id, LINE_BREAKS + message + LINE_BREAKS);
     }
 
-    public static void i(@NotNull Object id, String message) {
+    public static void i(@NotNull Object id, Object message) {
        i(id.getClass().getSimpleName(),message);
     }
 
@@ -101,21 +101,21 @@ final public class Logger {
      * WARN *
      */
 
-    public static void w(@NotNull String id, String message) {
+    public static void w(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.WARN) <= 0) {
-            logger.w(id, message);
+            logger.w(id, ""+message);
         }
     }
 
-    public static void W(@NotNull String id, String message) {
+    public static void W(@NotNull String id, Object message) {
         w(id, LINE_BREAKS + message + LINE_BREAKS);
     }
 
-    public static void w(@NotNull Object id, String message) {
+    public static void w(@NotNull Object id, Object message) {
        w(id.getClass().getSimpleName(),message);
     }
 
-    public static void W(@NotNull Object id, String message) {
+    public static void W(@NotNull Object id, Object message) {
        w(id.getClass().getSimpleName(), LINE_BREAKS + message + LINE_BREAKS);
     }
 
@@ -123,21 +123,21 @@ final public class Logger {
      * ERROR *
      */
 
-    public static void e(@NotNull String id, String message) {
+    public static void e(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.ERROR) <= 0) {
-            logger.e(id, message);
+            logger.e(id, ""+message);
         }
     }
 
-    public static void E(@NotNull String id, String message) {
+    public static void E(@NotNull String id, Object message) {
         e(id, LINE_BREAKS + message + LINE_BREAKS);
     }
 
-    public static void e(@NotNull Object id, String message) {
+    public static void e(@NotNull Object id, Object message) {
        e(id.getClass().getSimpleName(), message);
     }
 
-    public static void E(@NotNull Object id, String message) {
+    public static void E(@NotNull Object id, Object message) {
        e(id.getClass().getSimpleName(), LINE_BREAKS + message + LINE_BREAKS);
     }
 
