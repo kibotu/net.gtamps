@@ -13,6 +13,7 @@ import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.FloatData;
+import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.math.Vector3;
@@ -33,11 +34,13 @@ public class Game implements IGame{
     private final Hud hud;
     private final World world;
     private final ConnectionManager connection;
+    private final PlayerManager playerManager;
 
     public Game() {
         isRunning = true;
         isPaused = false;
         inputEngine = InputEngine.getInstance();
+        playerManager = new PlayerManager();
         scenes = new ArrayList<Scene>();
         hud = new Hud();
         world = new World();
@@ -48,10 +51,6 @@ public class Game implements IGame{
 
         // create world
         scenes.add(world.getScene());
-
-//        IObject3d object3d = Object3dFactory.create(Entity.Type.PLACEHOLDER);
-//        world.getScene().addChild(object3d);
-//        object3d.getNode().setPosition(10, 10, 3);
 
         // hud
         scenes.add(hud.getScene());
@@ -202,28 +201,36 @@ public class Game implements IGame{
 
     private void handleMessage(Sendable sendable, Message message) {
         Logger.i(this, "Handles message.");
-        Logger.i(this, ""+sendable);
+        Logger.i(this, sendable);
 
         switch (sendable.type) {
             case GETUPDATE_OK:
 
+                // empty
                 if(sendable.data == null) break;
+
+                // not an update
                 if(!(sendable.data instanceof UpdateData)) break;
+
+                // update revision id
                 UpdateData updateData = ((UpdateData)sendable.data);
                 ConnectionManager.currentRevId = updateData.revId;
 
+                // parse all transmitted entities
                 ArrayList<Entity> entities = updateData.entites;
                 for(int i = 0; i < entities.size(); i++) {
                     Logger.d(this, "response size" + entities.size());
                     Entity serverEntity = entities.get(i);
 
-                    // contains?
+                    // new or update
                     EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
                     if(entityView == null) {
+                        // new entity
                         entityView = new EntityView(serverEntity);
-                        world.getScene().addChild(world.activeObject = entityView);
+                        world.getScene().addChild(entityView);
                         Logger.i(this,"add new entity"+serverEntity.getUid());
                     } else {
+                        // update
                         entityView.update(serverEntity);
                         Logger.i(this, "update entity" + serverEntity.getUid());
                     }
@@ -233,7 +240,18 @@ public class Game implements IGame{
             case GETUPDATE_BAD: break;
             case GETUPDATE_ERROR: break;
 
-            case GETPLAYER_OK: break;
+            case GETPLAYER_OK:
+
+                // empty
+                if(sendable.data == null) break;
+
+                // not player data
+                if(!(sendable.data instanceof PlayerData)) break;
+                playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+
+                // get update
+                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId)); break;
+
             case GETPLAYER_NEED: break;
             case GETPLAYER_BAD: break;
             case GETPLAYER_ERROR: break;
@@ -246,11 +264,8 @@ public class Game implements IGame{
             case SESSION_BAD: break;
             case SESSION_ERROR: break;
 
-            case JOIN_OK:
-//                connection.add(MessageFactory.createGetPlayerRequest());
-                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
-                break;
-            case JOIN_NEED:
+            case JOIN_OK: connection.add(MessageFactory.createGetPlayerRequest()); break;
+            case JOIN_NEED: break;
             case JOIN_BAD: break;
             case JOIN_ERROR: break;
 

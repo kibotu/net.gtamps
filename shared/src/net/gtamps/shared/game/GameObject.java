@@ -1,5 +1,8 @@
 package net.gtamps.shared.game;
 
+import net.gtamps.shared.Utils.UIDGenerator;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,10 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import net.gtamps.shared.Utils.UIDGenerator;
-
-import org.jetbrains.annotations.NotNull;
 
 
 /**
