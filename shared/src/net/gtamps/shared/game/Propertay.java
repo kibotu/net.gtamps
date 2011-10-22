@@ -1,21 +1,26 @@
 package net.gtamps.shared.game;
 
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 import org.jetbrains.annotations.NotNull;
 
 
 /**
- * A new, better implementation of the Property concept, the way Tom
- * imagined it in the first place. :)
- * 
- * A property has a name and holds a single value.
+ * A generic, serializable  property of a game object, which has a name and 
+ * holds a single value.
  *
  * @author jan, tom, til
+ * 
+ * @param <T>	it is highly recommended that this type properly 
+ * 				implement {@link Object#toString() toString()}, 
+ * 				{@link Object#hashCode() hashCode()} and {@link Object#equals() equals()}
  *
  */
 public class Propertay<T> extends GameObject implements Serializable {
 	
+	private static final long serialVersionUID = 6612996255584968605L;
+
 	private transient final GameObject parent;
 	private T value;
 
@@ -52,8 +57,13 @@ public class Propertay<T> extends GameObject implements Serializable {
 	}
 	
 	@Override
+	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+		throw new UnsupportedOperationException("this type of gameObject does not support properties");
+	}
+	
+	@Override
 	public String toString() {
-		String s = String.format("%s: %s", this.name, this.value);
+		String s = String.format("%s: %s", this.name, this.value.toString());
 		return s;
 	}
 	

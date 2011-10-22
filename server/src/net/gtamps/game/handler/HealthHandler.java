@@ -29,9 +29,9 @@ public class HealthHandler extends Handler {
 		this.maxHealth = maxHealth;
 		dmgThreshold = threshold;
 		dmgResistance = resistance;
-		isAlive = super.useParentProperty("isAlive", maxHealth > 0 ? true : false);
-		health = super.useParentProperty("health", maxHealth);
-		healthRatio = super.useParentProperty("healthRatio", 1f);
+		isAlive = parent.useProperty("isAlive", maxHealth > 0 ? true : false);
+		health = parent.useProperty("health", maxHealth);
+		healthRatio = parent.useProperty("healthRatio", 1f);
 		setHealth(maxHealth);
 	}
 	
