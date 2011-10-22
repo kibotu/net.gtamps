@@ -56,7 +56,7 @@ public class EntityFactory {
 //		entity.addProperty(new IncarnationProperty(entity));
 //		entity.addProperty(new ActivationProperty(entity));
 		final PhysicsHandler physicsHandler = new PhysicsHandler(entity, humanBody, PhysicalProperties.Human);
-		final Handler healthHandler = new HealthHandler(entity, 100, 0f, 0);
+		final Handler healthHandler = new HealthHandler(entity, 100, 1f, 0);
 		entity.setHandler(physicsHandler);
 		entity.setHandler(healthHandler);
 		//entity.setHandler(new SensorDoorHandler(entity));

@@ -19,16 +19,26 @@ public class HealthHandler extends Handler {
 	private final Propertay<Float> healthRatio;
 	private final int maxHealth;
 	private final int dmgThreshold;
-	private final float dmgResistance;
+	private final float dmgMultiplier;
 	
-	public HealthHandler(final Entity parent, final int maxHealth, final float resistance, final int threshold) {
+	public HealthHandler(final Entity parent, final int maxHealth) {
+		this(parent, maxHealth, 1.0f, 0);
+	}
+	
+	public HealthHandler(final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
 		super(Handler.Type.HEALTH, parent);
 		setSendsUp(new EventType[] {EventType.ENTITY_DAMAGE, EventType.ENTITY_DESTROYED});
 		setReceivesDown(new EventType[] {EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
 		connectUpwardsActor(parent);
+		if (maxHealth < 0) {
+			throw new IllegalArgumentException("'maxHealth' must be >= 0");
+		}
+		if (dmgMultiplier < 0f) {
+			throw new IllegalArgumentException("'dmgMultiplier' must be > 0");
+		}
 		this.maxHealth = maxHealth;
 		dmgThreshold = threshold;
-		dmgResistance = resistance;
+		this.dmgMultiplier = dmgMultiplier;
 		isAlive = parent.useProperty("isAlive", maxHealth > 0 ? true : false);
 		health = parent.useProperty("health", maxHealth);
 		healthRatio = parent.useProperty("healthRatio", 1f);
@@ -66,7 +76,7 @@ public class HealthHandler extends Handler {
 	}
 
 	private void takeDamage(final float force) {
-		final int damage = (int) (force * (1-dmgResistance) - dmgThreshold);
+		final int damage = (int) (force * dmgMultiplier - dmgThreshold);
 		if (damage > 0) {
 			setHealth(health.value() - damage);
 			Logger.getInstance().log(TAG, parent.getName() + " takes " + damage + " damage");
@@ -79,7 +89,7 @@ public class HealthHandler extends Handler {
 		}
 		health.set(value);
 		isAlive.set(value > 0);
-		healthRatio.set((float)value / maxHealth);
+		healthRatio.set(maxHealth == 0 ? 0 : (float)value / maxHealth);
 		if(value == 0) {
 			die();
 		}
