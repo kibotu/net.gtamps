@@ -42,7 +42,7 @@ final public class Logger {
     }
 
     public static void D(@NotNull String id, Object message) {
-        d(id, LINE_BREAKS + message + LINE_BREAKS);
+        d(id, LINE_BREAKS + ""+ message + LINE_BREAKS);
     }
 
     public static void d(@NotNull Object id, Object message) {
@@ -50,7 +50,7 @@ final public class Logger {
     }
 
     public static void D(@NotNull Object id, Object message) {
-       d(id.getClass().getSimpleName(), LINE_BREAKS + message + LINE_BREAKS);
+       d(id.getClass().getSimpleName(), LINE_BREAKS + ""+ message + LINE_BREAKS);
     }
 
     /**
@@ -64,7 +64,7 @@ final public class Logger {
     }
 
     public static void V(@NotNull String id, Object message) {
-        v(id, LINE_BREAKS + message + LINE_BREAKS);
+        v(id, LINE_BREAKS + ""+ message + LINE_BREAKS);
     }
 
     public static void v(@NotNull Object id, Object message) {
@@ -86,7 +86,7 @@ final public class Logger {
     }
 
     public static void I(@NotNull String id, Object message) {
-        i(id, LINE_BREAKS + message + LINE_BREAKS);
+        i(id, LINE_BREAKS + "" + message + LINE_BREAKS);
     }
 
     public static void i(@NotNull Object id, Object message) {
@@ -108,7 +108,7 @@ final public class Logger {
     }
 
     public static void W(@NotNull String id, Object message) {
-        w(id, LINE_BREAKS + message + LINE_BREAKS);
+        w(id, LINE_BREAKS + ""+ message + LINE_BREAKS);
     }
 
     public static void w(@NotNull Object id, Object message) {
@@ -130,7 +130,7 @@ final public class Logger {
     }
 
     public static void E(@NotNull String id, Object message) {
-        e(id, LINE_BREAKS + message + LINE_BREAKS);
+        e(id, LINE_BREAKS + "" + message + LINE_BREAKS);
     }
 
     public static void e(@NotNull Object id, Object message) {

@@ -1,7 +1,6 @@
 package net.gtamps.shared.game.player;
 
 import net.gtamps.shared.game.GameActor;
-import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -10,7 +9,7 @@ public class Player extends GameActor {
 	private static final long serialVersionUID = -8070689911091703487L;
 	
 	private transient Entity entity;
-	
+
 	public Player (String name) {
 		this(name, null);
 	}

@@ -1,19 +1,14 @@
 package net.gtamps.android.game.entity.views;
 
-import net.gtamps.android.World;
 import net.gtamps.android.core.graph.SceneNode;
-import net.gtamps.android.core.utils.Utils;
-import net.gtamps.android.game.Game;
-import net.gtamps.shared.Config;
-import net.gtamps.shared.IDirty;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.Object3dFactory;
+import net.gtamps.shared.Config;
+import net.gtamps.shared.IDirty;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityView implements IObject3d, IDirty {
-
-    private static final String TAG = EntityView.class.getSimpleName();
 
     /**
      * Current Entity for visual display.
@@ -48,13 +43,8 @@ public class EntityView implements IObject3d, IDirty {
         onDirty();
     }
 
-    public void setAsActiveObject() {
-        World.activeObject = this;
-    }
-
     @Override
     public void onDirty() {
-
 
         // position
         object3d.getNode().setPosition(entity.x.value()* Config.PIXEL_TO_NATIVE,entity.y.value()* Config.PIXEL_TO_NATIVE,entity.z.value()* Config.PIXEL_TO_NATIVE);
