@@ -29,6 +29,18 @@ public class Scene extends SceneGraph {
         remove(object3D.getNode());
     }
 
+    public int getObjects3dCount() {
+        return object3ds.size();
+    }
+
+    public EntityView getEntityView(int index) {
+        IObject3d iObject3d = object3ds.get(index);
+            if(iObject3d instanceof EntityView) {
+                return (EntityView) iObject3d;
+            }
+        return null;
+    }
+
     public EntityView getObject3DById(int entityUid) {
         for(int i = 0; i < object3ds.size(); i++) {
             IObject3d iObject3d = object3ds.get(i);

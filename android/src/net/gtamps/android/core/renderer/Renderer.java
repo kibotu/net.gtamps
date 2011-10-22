@@ -2,29 +2,35 @@ package net.gtamps.android.core.renderer;
 
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import net.gtamps.shared.Config;
 import net.gtamps.android.Registry;
 import net.gtamps.android.core.graph.LightNode;
-import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.core.graph.ProcessingState;
+import net.gtamps.android.core.graph.SceneNode;
+import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
 import net.gtamps.android.game.Scene;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Renderer implements GLSurfaceView.Renderer{
 
     private static final String TAG = Renderer.class.getSimpleName();
     private Game game;
+    private ProcessingState glState;
 
     private ArrayList<Scene> scenes;
+    private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
     public Renderer(Game game) {
         this.game = game;
+        runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
 
     @Override
@@ -111,9 +117,21 @@ public class Renderer implements GLSurfaceView.Renderer{
         for(int i = 0; i < game.getScenes().size(); i++) {
             game.getScenes().get(i).render(gl10);
         }
+
+        // setup
+        for(int i = 0; i < runtimeSetupQueue.size(); i++) {
+            glState.setGl(gl10);
+            runtimeSetupQueue.poll().setup(glState);
+        }
+    }
+
+    public void addToSetupQueue(@NotNull SceneNode node) {
+        runtimeSetupQueue.add(node);
     }
 
     private void reset(GL10 gl10) {
+
+        glState = new ProcessingState();
 
 		// Do OpenGL settings which we are using as defaults, or which we will not be changing on-draw
 

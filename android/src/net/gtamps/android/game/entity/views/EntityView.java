@@ -70,4 +70,12 @@ public class EntityView implements IObject3d, IDirty {
     public void clearDirtyFlag() {
         isDirty = false;
     }
+
+    public IObject3d getObject3d() {
+        return object3d;
+    }
+
+    public void setObject3d(IObject3d object3d) {
+        this.object3d = object3d;
+    }
 }

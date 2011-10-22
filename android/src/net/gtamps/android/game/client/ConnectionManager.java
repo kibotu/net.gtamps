@@ -20,6 +20,7 @@ public class ConnectionManager implements IMessageManager {
     private RemoteOutputDispatcher remoteOutputDispatcher;
     public static volatile String currentSessionId;
     public static volatile long currentRevId;
+    private int currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
     private static ISerializer serializer = new ObjectSerializer();
 
@@ -92,5 +93,20 @@ public class ConnectionManager implements IMessageManager {
 
     public static Message deserialize(@NotNull byte[] message) {
         return serializer.deserializeMessage(message);
+    }
+
+    public void checkConnection() {
+        if(!isConnected()) {
+            while (!connect()) {
+                if(currentSocketTimeOut <= 0) System.exit(0);
+                try {
+                    Thread.sleep(Config.SOCKET_TIMEOUT);
+                    currentSocketTimeOut -= Config.SOCKET_TIMEOUT;
+                } catch (InterruptedException e) {
+                }
+                Logger.E(this, "Server unavailable. Trying to reconnect");
+            }
+        }
+        currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
     }
 }
