@@ -16,13 +16,12 @@ import net.gtamps.shared.communication.data.FloatData;
 import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.math.Vector3;
 
 import java.util.ArrayList;
 
 public class Game implements IGame{
-
-    private static final String TAG = Game.class.getSimpleName();
 
     private boolean isRunning;
     private boolean isPaused;
@@ -34,13 +33,11 @@ public class Game implements IGame{
     private final Hud hud;
     private final World world;
     private final ConnectionManager connection;
-    private final PlayerManager playerManager;
 
     public Game() {
         isRunning = true;
         isPaused = false;
         inputEngine = InputEngine.getInstance();
-        playerManager = new PlayerManager();
         scenes = new ArrayList<Scene>();
         hud = new Hud();
         world = new World();
@@ -216,10 +213,20 @@ public class Game implements IGame{
                 UpdateData updateData = ((UpdateData)sendable.data);
                 ConnectionManager.currentRevId = updateData.revId;
 
+                // event
+                if(updateData.entites instanceof GameEvent) {
+
+                }
+
+                // entities
+                if(updateData.entites instanceof Entity) {
+
+                }
+
                 // parse all transmitted entities
-                ArrayList<Entity> entities = updateData.gameObjects;
+                ArrayList<Entity> entities = updateData.entites;
+                Logger.d(this, "response size " + entities.size());
                 for(int i = 0; i < entities.size(); i++) {
-                    Logger.d(this, "response size" + entities.size());
                     Entity serverEntity = entities.get(i);
 
                     // new or update
@@ -228,7 +235,7 @@ public class Game implements IGame{
                         // new entity
                         entityView = new EntityView(serverEntity);
                         world.getScene().addChild(entityView);
-                        Logger.i(this,"add new entity"+serverEntity.getUid());
+                        Logger.i(this,"add new entity "+serverEntity.getUid());
                     } else {
                         // update
                         entityView.update(serverEntity);
@@ -247,10 +254,11 @@ public class Game implements IGame{
 
                 // not player data
                 if(!(sendable.data instanceof PlayerData)) break;
-                playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+                world.playerManager.setActivePlayer(((PlayerData) sendable.data).player);
 
                 // get update
-                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId)); break;
+                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
+                break;
 
             case GETPLAYER_NEED: break;
             case GETPLAYER_BAD: break;

@@ -2,12 +2,9 @@ package net.gtamps.android.core.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import net.gtamps.android.GTA;
 import net.gtamps.android.Registry;
-import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
