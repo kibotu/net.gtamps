@@ -16,6 +16,7 @@ import net.gtamps.shared.communication.data.FloatData;
 import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.math.Vector3;
 
 import java.util.ArrayList;
@@ -211,6 +212,16 @@ public class Game implements IGame{
                 // update revision id
                 UpdateData updateData = ((UpdateData)sendable.data);
                 ConnectionManager.currentRevId = updateData.revId;
+
+                // event
+                if(updateData.entites instanceof GameEvent) {
+
+                }
+
+                // entities
+                if(updateData.entites instanceof Entity) {
+
+                }
 
                 // parse all transmitted entities
                 ArrayList<Entity> entities = updateData.entites;
