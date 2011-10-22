@@ -16,6 +16,7 @@ import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.Sendable;
 import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.entity.Entity;
@@ -215,7 +216,7 @@ public class Game implements IGame, Runnable {
 //					response = getMapData(session, request);
 					break;
 				case GETPLAYER:
-//					response = getPlayer(session, request);
+					response = getPlayer(session, request);
 					break;
 				case GETUPDATE:
 					response = getUpdate(session, request);
@@ -291,6 +292,18 @@ public class Game implements IGame, Runnable {
 		session.setGame(null);
 		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
+
+	private Sendable getPlayer(final Session session, final Sendable request) {
+		assert request.type.equals(SendableType.GETPLAYER);
+		final Player player = playerStorage.getPlayerForUser(session.getUser());
+		if (player == null) {
+			return request.createResponse(SendableType.GETPLAYER_NEED);
+		}
+		final Sendable response = request.createResponse(SendableType.GETPLAYER_OK);
+		response.data = new PlayerData(player);
+		return response;
+	}
+
 
 	private Sendable getUpdate(final Session session, final Sendable sendable) {
 		final long baseRevision = ((RevisionData) sendable.data).revisionId;

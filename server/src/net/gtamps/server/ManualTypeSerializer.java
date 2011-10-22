@@ -15,6 +15,7 @@ import net.gtamps.shared.communication.SendableDeserializationException;
 import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.AuthentificationData;
 import net.gtamps.shared.communication.data.ISendableData;
+import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.StringData;
 import net.gtamps.shared.communication.data.UpdateData;
@@ -87,6 +88,11 @@ public class ManualTypeSerializer implements ISerializer {
 	    		final UpdateData udata = (UpdateData) s.data;
 	    		addToken(bld, Long.toString(udata.revId));
 	    		serializeUpdateData(bld, udata);
+	    		break;
+	    		
+	    	case GETPLAYER_OK:
+	    		final PlayerData pdata = (PlayerData) s.data;
+	    		addToken(bld, pdata.toString());
 	    		break;
 	    		
     		case LOGIN:
