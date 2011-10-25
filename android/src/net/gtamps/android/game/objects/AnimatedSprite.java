@@ -2,18 +2,18 @@ package net.gtamps.android.game.objects;
 
 import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.core.renderer.graph.primitives.Sprite_;
+import net.gtamps.android.core.renderer.graph.primitives.Sprite;
 import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
-public class Sprite extends Sprite_ implements IObject3d {
+public class AnimatedSprite extends Sprite implements IObject3d {
 
     private BufferedTexture bufferedTexture;
     private float lastProgress;
 
-    public Sprite() {
+    public AnimatedSprite() {
         bufferedTexture = null;
         lastProgress = 0;
     }
@@ -29,8 +29,8 @@ public class Sprite extends Sprite_ implements IObject3d {
         setTextureBufferId(bufferedTexture.floatBufferId);
         SpriteTetxure spriteTetxure = bufferedTexture.getAnimation(State.Type.IDLE)[0];
         setTextureBufferOffsetId(spriteTetxure.offsetId);
-        setDimension(spriteTetxure.width,spriteTetxure.height);
-        setScaling(1,1,0);
+        dimension.set(spriteTetxure.width,spriteTetxure.height,0);
+        scaling.set(1,1,0);
     }
 
     public void animate(float percentage, @NotNull State.Type state) {
@@ -46,7 +46,7 @@ public class Sprite extends Sprite_ implements IObject3d {
         final int index = (int) (animation.length / 100f * percentage);
 
         setTextureBufferOffsetId(animation[index].offsetId);
-        setDimension(animation[index].width, animation[index].height);
+        dimension.set(animation[index].width, animation[index].height,0);
     }
 
     public void loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {

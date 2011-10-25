@@ -77,6 +77,28 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     private Texture texture;
 
     /**
+     * Defines if mip maps are available.
+     */
+    private boolean hasMipMap = false;
+
+    // TODO clean this up
+    protected int textureId = 0;
+    protected int textureBufferId = 0;
+    protected int textureBufferOffsetId = 0;
+
+    public void setTextureId(int textureId) {
+        this.textureId = textureId;
+    }
+
+    public void setTextureBufferId(int textureBufferId) {
+        this.textureBufferId = textureBufferId;
+    }
+
+    public void setTextureBufferOffsetId(int textureBufferOffsetId) {
+        this.textureBufferOffsetId = textureBufferOffsetId;
+    }
+
+    /**
      * Defines the point size, if drawn as GL_POINTS.
      */
 	private float pointSize = 3f;
@@ -95,11 +117,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      * Defines if lines are to be drawn smooth.
      */
 	private boolean lineSmoothing = true;
-
-    /**
-     * Defines if mip maps are available.
-     */
-    private boolean hasMipMap = false;
 
     public RenderableNode(@Nullable Mesh mesh) {
         this.mesh = mesh;

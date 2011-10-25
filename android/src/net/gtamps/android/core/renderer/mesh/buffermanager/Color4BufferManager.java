@@ -56,28 +56,28 @@ public class Color4BufferManager {
 		return new Color4( buffer.get(), buffer.get(), buffer.get(), buffer.get() );
 	}
 
-	public short getPropertyR(int index) {
+	public float getPropertyR(int index) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT);
-		return (short)buffer.get();
+		return buffer.get();
 	}
-	public short getPropertyG(int index) {
+	public float getPropertyG(int index) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 1);
-		return (short)buffer.get();
+		return buffer.get();
 	}
 	public float getPropertyB(int index) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 2);
-		return (short)buffer.get();
+		return buffer.get();
 	}
 	public float getPropertyA(int index) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 3);
-		return (short)buffer.get();
+		return buffer.get();
 	}
 	
 	public void add(Color4 c) {
         add(c.r,c.g,c.b,c.a);
 	}
 	
-	public void add(short r, short g, short b, short a) {
+	public void add(float r, float g, float b, float a) {
 		set(numElements, r, g, b, a);
 		numElements++;
 	}
@@ -86,29 +86,29 @@ public class Color4BufferManager {
         set(index,color4.r,color4.g,color4.b,color4.a);
 	}
 
-	public void set(int index, short r, short g, short b, short a)	{
+	public void set(int index, float r, float g, float b, float a)	{
 		buffer.position(index * PROPERTIES_PER_ELEMENT);
-		buffer.put((byte)r);
-		buffer.put((byte)g);
-		buffer.put((byte)b);
-		buffer.put((byte)a);
+		buffer.put(r);
+		buffer.put(g);
+		buffer.put(b);
+		buffer.put(a);
 	}
 	
-	public void setPropertyR(int index, short r) {
+	public void setPropertyR(int index, float r) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT);
-		buffer.put((byte)r);
+		buffer.put(r);
 	}
-	public void setPropertyG(int index, short g) {
+	public void setPropertyG(int index, float g) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 1);
-		buffer.put((byte)g);
+		buffer.put(g);
 	}
-	public void setPropertyB(int index, short b) {
+	public void setPropertyB(int index, float b) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 2);
 		buffer.put((byte)b);
 	}
-	public void setPropertyA(int index, short a) {
+	public void setPropertyA(int index, float a) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT + 3);
-		buffer.put((byte)a);
+		buffer.put(a);
 	}
 	
 	public FloatBuffer getBuffer() 	{

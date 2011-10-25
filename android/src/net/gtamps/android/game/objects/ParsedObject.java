@@ -1,15 +1,18 @@
 package net.gtamps.android.game.objects;
 
-import net.gtamps.android.core.renderer.graph.PureVboNode;
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.renderer.mesh.buffermanager.FaceManager;
 import net.gtamps.android.core.renderer.mesh.buffermanager.Vbo;
 import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
+import org.jetbrains.annotations.NotNull;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 
-public class ParsedObject extends PureVboNode implements IObject3d {
+public class ParsedObject extends RenderableNode implements IObject3d {
 
     public String name;
 
@@ -34,5 +37,26 @@ public class ParsedObject extends PureVboNode implements IObject3d {
     @Override
     public SceneNode getNode() {
         return this;
+    }
+
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    public void onDirty() {
+    }
+
+    @Override
+    protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void cleanupInternal(@NotNull ProcessingState state) {
+    }
+
+    @Override
+    protected void setupInternal(@NotNull ProcessingState state) {
+
     }
 }
