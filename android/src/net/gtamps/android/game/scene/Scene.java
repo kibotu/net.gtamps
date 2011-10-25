@@ -1,7 +1,7 @@
-package net.gtamps.android.game;
+package net.gtamps.android.game.scene;
 
 import net.gtamps.android.core.renderer.graph.SceneGraph;
-import net.gtamps.android.game.entity.views.EntityView;
+import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.objects.IObject3d;
 
 import java.util.ArrayList;

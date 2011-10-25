@@ -1,4 +1,4 @@
-package net.gtamps.android.game.entity.views;
+package net.gtamps.android.game.objects;
 
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.game.objects.IObject3d;

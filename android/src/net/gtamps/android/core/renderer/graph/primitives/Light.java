@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
-import net.gtamps.android.core.math.Color4;
+import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.utils.OpenGLUtils;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Lightning source based on @see <a href="http://glprogramming.com/red/chapter05.html#name4">Creating Light Sources</a>
  */
-public class LightNode extends RenderableNode {
+public class Light extends RenderableNode {
 
     public enum Type {
         /**
@@ -101,7 +101,7 @@ public class LightNode extends RenderableNode {
      */
     private int lightId;
 
-    public LightNode() {
+    public Light() {
          type = Type.DIRECTIONAL;
          ambient = new Color4(128,128,128, 255);
 		 diffuse = new Color4(255,255,255, 255);

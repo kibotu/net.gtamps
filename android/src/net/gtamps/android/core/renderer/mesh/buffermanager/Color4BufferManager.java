@@ -1,30 +1,32 @@
 package net.gtamps.android.core.renderer.mesh.buffermanager;
 
-import net.gtamps.android.core.math.Color4;
+import net.gtamps.shared.math.Color4;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-
 public class Color4BufferManager {
 
 	public static final int PROPERTIES_PER_ELEMENT = 4;
-	public static final int BYTES_PER_PROPERTY = 1;
+	public static final int BYTES_PER_PROPERTY = 4;
 
-	private ByteBuffer buffer;
+	private FloatBuffer buffer;
 	private int numElements;
 	
-	public Color4BufferManager(ByteBuffer buffer, int size) {
-		this.buffer = ByteBuffer.allocate(buffer.limit() * BYTES_PER_PROPERTY);
+	public Color4BufferManager(FloatBuffer buffer, int size) {
+		ByteBuffer bb = ByteBuffer.allocateDirect(buffer.limit() * BYTES_PER_PROPERTY);
+		bb.order(ByteOrder.nativeOrder());
+		this.buffer = bb.asFloatBuffer();
 		this.buffer.put(buffer);
 		numElements = size;
 	}
 
 	public Color4BufferManager(int maxElements) {
 		int numBytes = maxElements * PROPERTIES_PER_ELEMENT * BYTES_PER_PROPERTY;
-		buffer = ByteBuffer.allocateDirect(numBytes);
-		buffer.order(ByteOrder.nativeOrder());
+		ByteBuffer bb = ByteBuffer.allocateDirect(numBytes);
+		bb.order(ByteOrder.nativeOrder());
+		buffer  = bb.asFloatBuffer();
 	}
 	
 	/**
@@ -52,14 +54,6 @@ public class Color4BufferManager {
 	public Color4 getAsColor4(int index) {
 		buffer.position(index * PROPERTIES_PER_ELEMENT);
 		return new Color4( buffer.get(), buffer.get(), buffer.get(), buffer.get() );
-	}
-	
-	public void putInColor4(int index, Color4 color4) {
-		buffer.position(index * PROPERTIES_PER_ELEMENT);
-		color4.r = (short)buffer.get();
-		color4.g = (short)buffer.get();
-		color4.b = (short)buffer.get();
-		color4.a = (short)buffer.get();
 	}
 
 	public short getPropertyR(int index) {
@@ -117,14 +111,10 @@ public class Color4BufferManager {
 		buffer.put((byte)a);
 	}
 	
-	public ByteBuffer getByteBuffer() 	{
+	public FloatBuffer getBuffer() 	{
 		return buffer;
 	}
 
-    public FloatBuffer getFloatBuffer() 	{
-		return buffer.asFloatBuffer();
-	}
-	
 	public Color4BufferManager clone()	{
 		buffer.position(0);
 		return new Color4BufferManager(buffer, numElements);

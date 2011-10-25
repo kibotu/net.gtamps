@@ -1,13 +1,13 @@
-package net.gtamps.android;
+package net.gtamps.android.game.scene;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.Registry;
-import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
-import net.gtamps.android.core.renderer.graph.primitives.LightNode;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.primitives.Light;
 import net.gtamps.android.core.renderer.mesh.parser.IParser;
 import net.gtamps.android.core.renderer.mesh.parser.Parser;
 import net.gtamps.android.game.PlayerManager;
-import net.gtamps.android.game.Scene;
-import net.gtamps.android.game.entity.views.EntityView;
+import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.objects.City;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.ParsedObject;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class World {
 
-    private CameraNode camera;
+    private Camera camera;
     private Scene scene;
     private EntityView activeOjbect;
     public final PlayerManager playerManager;
@@ -30,7 +30,7 @@ public class World {
          // world
         scene = new Scene();
 
-        camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 0, 1);
+        camera =  new Camera(0, 0,40, 0, 0, 0, 0, 0, 1);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(0xff222222);
 
@@ -51,15 +51,15 @@ public class World {
 //        addLevel();
     }
 
-    public static LightNode getSpotLight() {
-        LightNode spot = new LightNode();
+    public static Light getSpotLight() {
+        Light spot = new Light();
 		spot.setPosition(0, 2, 3);
         spot.setDirection(0,0,-1);
 		spot.diffuse.setAll(255,255,255, 255);
 		spot.ambient.setAll(0, 0, 0, 0);
 		spot.specular.setAll(255, 255, 255, 255);
 		spot.emissive.setAll(0, 0, 0, 0);
-        spot.setType(LightNode.Type.POSITIONAL);
+        spot.setType(Light.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
         spot.setSpotExponent(4);
         spot.setAttenuation(0.6f, 0, 0);
@@ -67,15 +67,15 @@ public class World {
         return spot;
     }
 
-    public static LightNode getSunLight() {
-        LightNode sun = new LightNode();
+    public static Light getSunLight() {
+        Light sun = new Light();
 		sun.setPosition(0, 0, 20);
         sun.setDirection(0,0,-1);
 		sun.diffuse.setAll(128, 128, 128, 255);
 		sun.ambient.setAll(0, 0, 0, 0);
 		sun.specular.setAll(128, 128, 128, 255);
 		sun.emissive.setAll(0, 0, 0, 0);
-        sun.setType(LightNode.Type.POSITIONAL);
+        sun.setType(Light.Type.POSITIONAL);
         sun.setSpotCutoffAngle(60);
         sun.setSpotExponent(4);
         sun.setAttenuation(0.5f,0,0);

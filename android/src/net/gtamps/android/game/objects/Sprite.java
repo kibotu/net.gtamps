@@ -2,13 +2,13 @@ package net.gtamps.android.game.objects;
 
 import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.core.renderer.graph.primitives.SpriteNode;
+import net.gtamps.android.core.renderer.graph.primitives.Sprite_;
 import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
-public class Sprite extends SpriteNode implements IObject3d {
+public class Sprite extends Sprite_ implements IObject3d {
 
     private BufferedTexture bufferedTexture;
     private float lastProgress;

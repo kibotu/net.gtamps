@@ -10,7 +10,7 @@ import javax.microedition.khronos.opengles.GL11;
 /**
  * Szenenknoten, der eine Kugel repräsentiert
  */
-public class SphereNode extends RenderableNode {
+public class Sphere extends RenderableNode {
 
 	/**
 	 * Der Radius der Kugel
@@ -51,7 +51,7 @@ public class SphereNode extends RenderableNode {
 	 * @param slices Die Anzahl der Slices (TODO: klären)
 	 * @param stacks Die Anzahl der Stacks (TODO: klären)
 	 */
-	public SphereNode(float radius, int slices, int stacks) {
+	public Sphere(float radius, int slices, int stacks) {
 		assert radius > 0;
 		assert slices >= 1;
 		assert stacks >= 1;
