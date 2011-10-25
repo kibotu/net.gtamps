@@ -1,6 +1,6 @@
 package net.gtamps.android.game.entity.views;
 
-import net.gtamps.android.core.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.game.objects.IObject3d;
 import net.gtamps.android.game.objects.Object3dFactory;
 import net.gtamps.shared.Config;

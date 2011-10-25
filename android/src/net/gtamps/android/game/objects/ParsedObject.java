@@ -1,11 +1,11 @@
 package net.gtamps.android.game.objects;
 
-import net.gtamps.android.core.graph.PureVboNode;
-import net.gtamps.android.core.graph.SceneNode;
-import net.gtamps.android.core.renderer.Vbo;
-import net.gtamps.android.core.utils.parser.FaceManager;
-import net.gtamps.android.core.utils.parser.TextureManager;
-import net.gtamps.android.core.utils.parser.VertexManager;
+import net.gtamps.android.core.renderer.graph.PureVboNode;
+import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.mesh.buffermanager.FaceManager;
+import net.gtamps.android.core.renderer.mesh.buffermanager.Vbo;
+import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
 
 import java.util.ArrayList;
 
@@ -13,14 +13,14 @@ public class ParsedObject extends PureVboNode implements IObject3d {
 
     public String name;
 
-    public VertexManager vertices;
+    public Mesh vertices;
 	public TextureManager textures;
 	public FaceManager faces;
 
     public ArrayList<ParsedObject> children;
 
     public ParsedObject(int maxVertices, int maxFaces) {
-        vertices = new VertexManager(maxVertices, true,true,true);
+        vertices = new Mesh(maxVertices, true,true,true);
 		faces = new FaceManager(maxFaces);
 		textures = new TextureManager();
         children = new ArrayList<ParsedObject>();

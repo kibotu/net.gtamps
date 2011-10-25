@@ -1,8 +1,8 @@
 package net.gtamps.android.core.utils;
 
 import android.content.Context;
-import net.gtamps.android.core.renderer.BufferedTexture;
-import net.gtamps.android.core.renderer.SpriteTetxure;
+import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
+import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.state.State;
 import org.jdom.DataConversionException;

@@ -1,7 +1,7 @@
 package net.gtamps.android.game.entity.views;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.graph.CameraNode;
+import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.objects.Sprite;

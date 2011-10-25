@@ -1,11 +1,10 @@
 package net.gtamps.android.game.objects;
 
-import net.gtamps.android.Registry;
-import net.gtamps.android.core.graph.SceneNode;
-import net.gtamps.android.core.graph.SpriteNode;
-import net.gtamps.android.core.renderer.BufferedTexture;
-import net.gtamps.android.core.renderer.SpriteTetxure;
-import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.android.core.Registry;
+import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.primitives.SpriteNode;
+import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
+import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +38,7 @@ public class Sprite extends SpriteNode implements IObject3d {
         if (lastProgress == percentage) {
             return;
         }
-        final SpriteTetxure [] animation = bufferedTexture.getAnimation(state);
+        final SpriteTetxure[] animation = bufferedTexture.getAnimation(state);
 
         lastProgress = percentage;
         percentage *= 100;

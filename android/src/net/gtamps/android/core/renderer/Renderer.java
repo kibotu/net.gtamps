@@ -2,10 +2,11 @@ package net.gtamps.android.core.renderer;
 
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import net.gtamps.android.Registry;
-import net.gtamps.android.core.graph.LightNode;
-import net.gtamps.android.core.graph.ProcessingState;
-import net.gtamps.android.core.graph.SceneNode;
+import net.gtamps.android.core.Registry;
+import net.gtamps.android.core.renderer.graph.primitives.LightNode;
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
 import net.gtamps.android.game.Scene;

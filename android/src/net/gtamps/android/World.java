@@ -1,9 +1,10 @@
 package net.gtamps.android;
 
-import net.gtamps.android.core.graph.CameraNode;
-import net.gtamps.android.core.graph.LightNode;
-import net.gtamps.android.core.utils.parser.IParser;
-import net.gtamps.android.core.utils.parser.Parser;
+import net.gtamps.android.core.Registry;
+import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
+import net.gtamps.android.core.renderer.graph.primitives.LightNode;
+import net.gtamps.android.core.renderer.mesh.parser.IParser;
+import net.gtamps.android.core.renderer.mesh.parser.Parser;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.Scene;
 import net.gtamps.android.game.entity.views.EntityView;

@@ -1,7 +1,7 @@
 package net.gtamps.android.core.utils;
 
 import android.content.Context;
-import net.gtamps.android.core.renderer.Vbo;
+import net.gtamps.android.core.renderer.mesh.buffermanager.Vbo;
 import org.jdom.Document;
 import org.jdom.Element;
 

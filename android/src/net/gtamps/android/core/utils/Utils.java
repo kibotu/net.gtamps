@@ -3,7 +3,7 @@ package net.gtamps.android.core.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import net.gtamps.android.GTA;
-import net.gtamps.android.Registry;
+import net.gtamps.android.core.Registry;
 import net.gtamps.shared.Utils.Logger;
 
 import java.io.IOException;
