@@ -250,6 +250,26 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glDisable(GL10.GL_TEXTURE_2D);
         }
 
+
+        if(drawingStyle.equals(DrawingStyle.GL_POINTS)) {
+			if (pointSmoothing) {
+                glEnable(GL_POINT_SMOOTH);
+            }
+			else {
+				glDisable(GL_POINT_SMOOTH);
+            }
+			glPointSize(pointSize);
+		}
+		
+				if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
+			if(lineSmoothing) {
+				glEnable(GL_LINE_SMOOTH);
+			}	else {
+				glDisable(GL_LINE_SMOOTH);
+			}
+			glLineWidth(lineWidth);
+		}
+		
         // bind vertices
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
