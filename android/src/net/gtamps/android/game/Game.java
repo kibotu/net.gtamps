@@ -1,10 +1,10 @@
 package net.gtamps.android.game;
 
 import android.os.SystemClock;
-import net.gtamps.android.Registry;
+import net.gtamps.android.core.Registry;
 import net.gtamps.android.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.game.client.ConnectionManager;
+import net.gtamps.android.core.client.ConnectionManager;
 import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.entity.views.Hud;
 import net.gtamps.shared.Config;
@@ -56,11 +56,11 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        connection.checkConnection();
+//        connection.checkConnection();
 
-        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-        connection.start();
-        connection.add(MessageFactory.createSessionRequest());
+//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        connection.start();
+//        connection.add(MessageFactory.createSessionRequest());
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Game implements IGame{
         }
 
         // check connection
-        connection.checkConnection();
+//        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {

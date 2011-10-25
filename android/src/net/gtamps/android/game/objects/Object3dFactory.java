@@ -1,7 +1,6 @@
 package net.gtamps.android.game.objects;
 
-import net.gtamps.android.core.graph.PureVboNode;
-import net.gtamps.android.core.utils.Utils;
+import net.gtamps.android.core.renderer.graph.PureVboNode;
 import net.gtamps.android.game.Game;
 import net.gtamps.shared.game.entity.Entity;
 

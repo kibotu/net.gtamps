@@ -3,7 +3,7 @@ package net.gtamps.android.core.utils;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
-import net.gtamps.android.Registry;
+import net.gtamps.android.core.Registry;
 import net.gtamps.shared.Utils.ILogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
