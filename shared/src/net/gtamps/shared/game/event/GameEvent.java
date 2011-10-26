@@ -1,6 +1,11 @@
 package net.gtamps.shared.game.event;
 
+import java.util.NoSuchElementException;
+
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.Propertay;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -40,8 +45,6 @@ public class GameEvent extends GameObject {
 	protected final EventType type;
 	protected final GameObject source;
 	protected final GameObject target;
-//	protected final int sourceUid;
-//	protected final int targetUid;
 	protected final String value;
 	
 	/**
@@ -67,8 +70,6 @@ public class GameEvent extends GameObject {
 		this.source = source;
 		this.target = target;
 		this.value = value;
-//		count += 1;
-//		Logger.i().log(TAG, count+"");
 	}
 	
 	public GameEvent(EventType type, GameObject source, GameObject target) {
@@ -116,6 +117,17 @@ public class GameEvent extends GameObject {
 
 	public boolean isEnd() {
 		return this.value.equals(END_VALUE);
+	}
+	
+	@Override
+	public boolean hasChanged() {
+		return false;
+	}
+	
+	@Override
+	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+		throw new UnsupportedOperationException("operation not supported by " + this.getClass().getSimpleName());
+		
 	}
 
 }

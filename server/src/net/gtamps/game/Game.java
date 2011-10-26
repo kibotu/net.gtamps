@@ -58,7 +58,7 @@ public class Game implements IGame, Runnable {
 
 	private final World world;
 	private final PlayerManagerFacade playerStorage;
-	private final TimeKeeper timeKeeper;
+	private final TimeKeeper gameTime;
 	
 	public Game(final String mapPath) {
 		id = ++Game.instanceCounter;
@@ -69,13 +69,13 @@ public class Game implements IGame, Runnable {
 			Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + world.getName());
 			run = true;
 			playerStorage = new PlayerManagerFacade(world.playerManager);
-			timeKeeper = new TimeKeeper();
+			gameTime = new TimeKeeper();
 			start();
 		} else {
 			Logger.i().log(LogType.GAMEWORLD, "Game not loaded");
 			run = false;
 			playerStorage = null;
-			timeKeeper = null;
+			gameTime = null;
 		}
 	}
 	
@@ -109,9 +109,9 @@ public class Game implements IGame, Runnable {
 		isActive = true;
 		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
 		while(run) {
-			timeKeeper.startCycle();
+			gameTime.startCycle();
 			doCycle();
-			timeKeeper.endCycle();
+			gameTime.endCycle();
 			sleepIfCycleTimeRemaining();
 		}
 		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
@@ -119,7 +119,8 @@ public class Game implements IGame, Runnable {
 	}
 	
 	private void doCycle() {
-		world.physics.step(timeKeeper.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
+		world.updateRevision(gameTime.getTotalDurationMillis());
+		world.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
 		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
 
 		//for fps debugging
@@ -136,7 +137,7 @@ public class Game implements IGame, Runnable {
 	}
 	
 	private void sleepIfCycleTimeRemaining() {
-		final long millisRemaining = THREAD_UPDATE_SLEEP_TIME-timeKeeper.getLastActiveDurationMillis();
+		final long millisRemaining = THREAD_UPDATE_SLEEP_TIME - gameTime.getLastActiveDurationMillis();
 		try {
 			if(millisRemaining > 0){
 				Thread.sleep(millisRemaining);

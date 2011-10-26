@@ -38,7 +38,7 @@ public final class Connection<H extends ISocketHandler> {
 			throw new IllegalArgumentException("'bytes' must not be null");
 		}
 		final Message m = serializer.deserializeMessage(bytes);
-		SessionManager.instance.receiveMessage(this, m);
+		//SessionManager.instance.receiveMessage(this, m);
 		ControlCenter.instance.receiveMessage(this, m);
 	}
 

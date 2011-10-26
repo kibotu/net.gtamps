@@ -64,6 +64,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	public void receiveMessage(final Connection<?> c, final Message msg) {
 		if (msg != null) {
 			Logger.getInstance().log(TAG, msg.toString());
+			SessionManager.instance.receiveMessage(c, msg);
 			inbox.add(msg);
 		}
 	}

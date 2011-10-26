@@ -1,12 +1,16 @@
 package net.gtamps.server;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import net.gtamps.game.IGame;
+
+import org.jetbrains.annotations.NotNull;
 
 public class Session {
 	
-	
+	@NotNull
 	private final String id;
-	private volatile Connection<?> connection;
+	private final AtomicReference<Connection<?>> connection;
 	private volatile IGame game = null;
 	private volatile User user = null;
 	
@@ -15,7 +19,7 @@ public class Session {
 	/**
 	 * @param id	not null; not the empty string
 	 */
-	Session(String id) {
+	Session(final String id) {
 		if (id == null) {
 			throw new IllegalArgumentException("'id' must not be null");
 		}
@@ -24,38 +28,39 @@ public class Session {
 		}
 		this.id = id;
 		assert id != null;
+		connection = new AtomicReference<Connection<?>>();
 	}
 
 	public String getId() {
-		return this.id;
+		return id;
 	}
 	
 	public boolean isAuthenticated() {
-		return this.user != null;
+		return user != null;
 	}
 	
 	public boolean isPlaying() {
-		return this.game != null;
+		return game != null;
 	}
 	
 	public Connection<?> getConnection() {
-		return this.connection;
+		return connection.get();
 	}
 	
 	
 	public IGame getGame() {
-		return this.game;
+		return game;
 	}
 	
-	public void setGame(IGame game) {
+	public void setGame(final IGame game) {
 		this.game = game;
 	}
 	
 	public User getUser() {
-		return this.user;
+		return user;
 	}
 	
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 	
@@ -69,7 +74,7 @@ public class Session {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -79,7 +84,7 @@ public class Session {
 		if (!(obj instanceof Session)) {
 			return false;
 		}
-		Session other = (Session) obj;
+		final Session other = (Session) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -95,11 +100,11 @@ public class Session {
 		return "Session [id=" + id + ", game=" + game + ", user=" + user + "]";
 	}
 
-	void setConnection(Connection<?> connection) {
+	void setConnection(final Connection<?> connection) {
 		if (connection == null) {
 			throw new IllegalArgumentException("'connection' must not be null");
 		}
-		this.connection = connection;
+		this.connection.set(connection);
 	}
 	
 
