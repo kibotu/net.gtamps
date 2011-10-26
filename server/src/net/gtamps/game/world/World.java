@@ -1,12 +1,6 @@
 package net.gtamps.game.world;
 
-import net.gtamps.XmlElements;
-import net.gtamps.game.RevisionKeeper;
-
 import java.util.LinkedList;
-
-import org.jdom.Attribute;
-import org.jdom.Element;
 
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
@@ -34,15 +28,15 @@ public class World extends GameActor {
 	public final PlayerManager playerManager;
 	public final EntityManager entityManager;
 
-	public World(String name, int width, int height, Box2DEngine physics) {
+	public World(final String name, final int width, final int height, final Box2DEngine physics) {
 		super(name);
 		Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: "+width+"x"+height);
 		this.physics = physics;
 		this.width = width;
 		this.height = height;
-		this.eventManager = new EventManager();
-		this.entityManager = new EntityManager(this);
-		this.playerManager = new PlayerManager(this, entityManager);
+		eventManager = new EventManager(this);
+		entityManager = new EntityManager(this);
+		playerManager = new PlayerManager(this, entityManager);
 
 		eventManager.addEventListener(EventType.ACTION_EVENT, playerManager);
 		eventManager.addEventListener(EventType.SESSION_EVENT, entityManager);
@@ -61,7 +55,7 @@ public class World extends GameActor {
 	}
 	
 	public Box2DEngine getPhysics() {
-		return this.physics;
+		return physics;
 	}
 
 	//TODO
@@ -73,7 +67,7 @@ public class World extends GameActor {
 //		return e;
 //	}
 	
-	public void addSpawnPoint(Entity sp) {
+	public void addSpawnPoint(final Entity sp) {
 		if (sp == null) {
 			throw new IllegalArgumentException("'sp' must not be null");
 		}

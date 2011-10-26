@@ -55,6 +55,13 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// TODO: better solution
+			try {
+				Thread.currentThread().sleep(20);
+			} catch (final InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return b;
 

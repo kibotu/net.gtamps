@@ -22,7 +22,7 @@ public class GTAMultiplayerServer {
     
 //    public static final ISerializer SERIALIZER = new ManualTypeSerializer();
 //    public static final ISocketHandler SOCK_HANDLER = new LineBasedTCPSocketHandler<ISerializer>(SERIALIZER);
-    
+
     private static int uid = 0;
 	
 	/**
