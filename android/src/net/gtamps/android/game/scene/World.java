@@ -1,22 +1,23 @@
-package net.gtamps.android;
+package net.gtamps.android.game.scene;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.Registry;
-import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
-import net.gtamps.android.core.renderer.graph.primitives.LightNode;
+import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.primitives.Light;
 import net.gtamps.android.core.renderer.mesh.parser.IParser;
 import net.gtamps.android.core.renderer.mesh.parser.Parser;
 import net.gtamps.android.game.PlayerManager;
-import net.gtamps.android.game.Scene;
-import net.gtamps.android.game.entity.views.EntityView;
 import net.gtamps.android.game.objects.City;
-import net.gtamps.android.game.objects.IObject3d;
+import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.objects.ParsedObject;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
 public class World {
 
-    private CameraNode camera;
+    private Camera camera;
     private Scene scene;
     private EntityView activeOjbect;
     public final PlayerManager playerManager;
@@ -30,36 +31,33 @@ public class World {
          // world
         scene = new Scene();
 
-        camera =  new CameraNode(0, 0,40, 0, 0, 0, 0, 0, 1);
+        camera =  new Camera(0, 0,40, 0, 0, 0, 0, 0, 1);
         scene.setActiveCamera(camera);
-        scene.getBackground().setAll(0xff222222);
+        scene.getBackground().setAll(Color4.DARK_GRAY);
+
+        activeOjbect = new EntityView(new Entity("cube"));
+        scene.addChild(activeOjbect.getObject3d());
 
 //        scene.addChild(addCity());
-        scene.add(getSunLight());
-        IObject3d camaro = addCamaro();
-        activeOjbect = new EntityView(new Entity("car_riviera"));
-        activeOjbect.getObject3d().getNode().setScaling(30,30,30);
-        activeOjbect.getObject3d().getNode().add(getSpotLight());
-//        activeOjbect.setObject3d(camaro);
-        scene.addChild(activeOjbect);
-//
-//        IObject3d spawnPoint = Object3dFactory.create(Entity.Type.SPAWNPOINT);
-//        spawnPoint.getNode().setPosition(activeOjbect.getNode().getPosition());
-//        spawnPoint.getNode().setPosition(3,0,0);
-//        scene.addChild(spawnPoint);
+//        scene.addNode(getSunLight());
+//        Object3d camaro = addCamaro();
+//        activeOjbect = new EntityView(new Entity("car_riviera"));
+//        activeOjbect.getObject3d().setScaling(30,30,30);
+//        activeOjbect.getObject3d().add(getSpotLight());
+//        scene.addChild(activeOjbect.getObject3d());
 
 //        addLevel();
     }
 
-    public static LightNode getSpotLight() {
-        LightNode spot = new LightNode();
+    public static Light getSpotLight() {
+        Light spot = new Light();
 		spot.setPosition(0, 2, 3);
         spot.setDirection(0,0,-1);
 		spot.diffuse.setAll(255,255,255, 255);
 		spot.ambient.setAll(0, 0, 0, 0);
 		spot.specular.setAll(255, 255, 255, 255);
 		spot.emissive.setAll(0, 0, 0, 0);
-        spot.setType(LightNode.Type.POSITIONAL);
+        spot.setType(Light.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
         spot.setSpotExponent(4);
         spot.setAttenuation(0.6f, 0, 0);
@@ -67,22 +65,22 @@ public class World {
         return spot;
     }
 
-    public static LightNode getSunLight() {
-        LightNode sun = new LightNode();
+    public static Light getSunLight() {
+        Light sun = new Light();
 		sun.setPosition(0, 0, 20);
         sun.setDirection(0,0,-1);
 		sun.diffuse.setAll(128, 128, 128, 255);
 		sun.ambient.setAll(0, 0, 0, 0);
 		sun.specular.setAll(128, 128, 128, 255);
 		sun.emissive.setAll(0, 0, 0, 0);
-        sun.setType(LightNode.Type.POSITIONAL);
+        sun.setType(Light.Type.POSITIONAL);
         sun.setSpotCutoffAngle(60);
         sun.setSpotExponent(4);
         sun.setAttenuation(0.5f,0,0);
         return sun;
     }
 
-    public static IObject3d addPlane() {
+    public static RenderableNode addPlane() {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/grid_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
@@ -93,18 +91,18 @@ public class World {
         return parsedObject;
     }
 
-    public static IObject3d addCamaro() {
+    public static RenderableNode addCamaro() {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
         parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.camaro, true));
-        parsedObject.getNode().setScaling(5, 5, 5);
+        parsedObject.setScaling(5, 5, 5);
         parsedObject.enableDoubleSided(true);
         return parsedObject;
     }
 
-    public static IObject3d addLevel() {
+    public static RenderableNode addLevel() {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/map1_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
@@ -127,7 +125,7 @@ public class World {
 //        scene.addChild(riviera);
 //    }
 
-    public static IObject3d addCity() {
+    public static RenderableNode addCity() {
         City city = new City();
         city.setRotation(90, 0, 0);
         city.setScaling(35, 35, 35);

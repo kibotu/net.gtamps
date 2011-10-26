@@ -14,9 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Kameraknoten
  */
-public class CameraNode extends RenderableNode {
-
-    public static final String TAG = CameraNode.class.getSimpleName();
+public class Camera extends RenderableNode {
 
 	/**
 	 * Der Sichtkegel
@@ -49,9 +47,9 @@ public class CameraNode extends RenderableNode {
 
     /**
 	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
-     * @see #CameraNode
+     * @see #Camera
 	 */
-	public CameraNode() {}
+	public Camera() {}
 
     /**
      * Minimaler (kleinstes) und Maximaler (größtes) Bildwinkel (Fov) der OpenGL Kamera
@@ -64,7 +62,7 @@ public class CameraNode extends RenderableNode {
 	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
 	 * @param frustum Der Sichtkegel
 	 */
-	public CameraNode(@NotNull Frustum frustum) {
+	public Camera(@NotNull Frustum frustum) {
 		this.frustum = frustum;
 	}
 
@@ -75,7 +73,7 @@ public class CameraNode extends RenderableNode {
 	 * @param lookAt Der Punkt, auf den die Kamera blickt
 	 * @param up Der Hoch-Vektor der Kamera
 	 */
-	public CameraNode(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
+	public Camera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
 		define(position, lookAt, up);
 	}
 
@@ -93,7 +91,7 @@ public class CameraNode extends RenderableNode {
 	 * @param upZ Z-Komponente des Hochvektors
      * @see <a href="http://assets.stupeflix.com/code/images/cartesian.png">coordinate system</a>
 	 */
-	public CameraNode(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
+	public Camera(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
 		define( positionX, positionY, positionZ,
 				eyeX, eyeY, eyeZ,
 				upX, upY, upZ);
@@ -264,14 +262,12 @@ public class CameraNode extends RenderableNode {
 	}
 
     /**
-     * Spezifische Implementierung des Verarbeitungsvorganges
-     * @param state Die State-Referenz
-     */
-    @Override
-    protected void processInternal(@NotNull ProcessingState state) {
-        GL10 gl = state.getGl();
-        assert gl != null;
-
+	 * Spezifische Implementierung des Rendervorganges
+	 *
+	 * @param gl Die OpenGL-Referenz
+	 */
+	@Override
+	protected void renderInternal(@NotNull GL10 gl) {
         gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) viewportSize.x, (int) viewportSize.y);
         frustum.apply(gl);
 
@@ -280,16 +276,6 @@ public class CameraNode extends RenderableNode {
         } else {
             gl.glDisable(GL10.GL_DEPTH_TEST);
         }
-    }
-
-
-    /**
-	 * Spezifische Implementierung des Rendervorganges
-	 *
-	 * @param gl Die OpenGL-Referenz
-	 */
-	@Override
-	protected void renderInternal(@NotNull GL10 gl) {
 	}
 
 	/**
@@ -324,7 +310,7 @@ public class CameraNode extends RenderableNode {
     /**
      * Liefert den Sichtpunkt der Kamera absolut, ohne die Position zu verändern
      *
-     * @see CameraNode#setTarget(net.gtamps.shared.math.Vector3)
+     * @see Camera#setTarget(net.gtamps.shared.math.Vector3)
      */
     @NotNull
     public Vector3 getTarget() {
@@ -417,7 +403,7 @@ public class CameraNode extends RenderableNode {
      * Setzt den horizontalen Blickwinkel, ohne den Zoom zurückzusetzen
      *
      * @param fovAngleRadians Der Blickwinkel in Radians
-     * @see CameraNode#setFieldOfViewHorizontal(float, boolean)
+     * @see Camera#setFieldOfViewHorizontal(float, boolean)
      */
     public void setFieldOfViewHorizontal(float fovAngleRadians) {
         frustum.setHorizontalFieldOfView(fovAngleRadians, false);
@@ -437,7 +423,7 @@ public class CameraNode extends RenderableNode {
 
     @Override
     protected void afterProcess(@NotNull ProcessingState state) {
-
+        // do nothing
     }
 
     /**
@@ -446,5 +432,10 @@ public class CameraNode extends RenderableNode {
      */
     public void enableDepthTest(boolean isEnabled) {
         hasDepthTest = isEnabled;
+    }
+
+    @Override
+    public void onDirty() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

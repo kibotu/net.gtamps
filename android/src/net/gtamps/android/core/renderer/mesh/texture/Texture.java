@@ -38,4 +38,8 @@ public class Texture {
 		textureEnvs = new ArrayList<TextureEnvironment>();
 		textureEnvs.add( new TextureEnvironment());
 	}
+
+    public int getTextureId() {
+        return Integer.parseInt(textureId);
+    }
 }

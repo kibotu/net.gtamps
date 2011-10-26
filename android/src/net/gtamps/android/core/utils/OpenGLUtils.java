@@ -1,6 +1,5 @@
 package net.gtamps.android.core.utils;
 
-import javax.microedition.khronos.opengles.GL10;
 import java.nio.*;
 import java.util.List;
 
@@ -11,32 +10,6 @@ final public class OpenGLUtils {
 
     // static
     private OpenGLUtils() {
-    }
-
-    /**
-     * Defines possible drawing styles for vertices.
-     */
-    public enum DrawingStyle {
-        GL_POINTS,GL_LINES ,GL_LINE_LOOP, GL_LINE_STRIP,GL_TRIANGLES,GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN;
-    }
-
-    /**
-     * Define possible Shader.
-     */
-    public enum ShadeStyle {
-
-    	SMOOTH (GL10.GL_SMOOTH),
-	    FLAT (GL10.GL_FLAT);
-
-        private final int value;
-
-        private ShadeStyle(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 
     /**

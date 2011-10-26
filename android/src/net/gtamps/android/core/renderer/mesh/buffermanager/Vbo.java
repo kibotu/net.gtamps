@@ -11,8 +11,6 @@ import java.nio.ShortBuffer;
 
 public class Vbo {
 
-    private static final String TAG = Vbo.class.getSimpleName();
-
     public int vertexBufferId;
     public int indexBufferId;
     public int normalBufferId;
@@ -44,7 +42,7 @@ public class Vbo {
         if(textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
     }
 
-    public void alloc(GL10 gl) {
+    public void allocBuffers(GL10 gl) {
 
         if(isAllocated) {
             return;

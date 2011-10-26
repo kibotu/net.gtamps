@@ -1,7 +1,7 @@
 package net.gtamps.android.core.renderer.mesh;
 
 
-import net.gtamps.android.core.math.Color4;
+import net.gtamps.shared.math.Color4;
 import net.gtamps.shared.math.Vector3;
 
 /**

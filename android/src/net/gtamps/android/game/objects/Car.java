@@ -1,12 +1,33 @@
 package net.gtamps.android.game.objects;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.Registry;
-import net.gtamps.android.core.renderer.graph.PureVboNode;
-import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.core.utils.VboLoader;
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.RenderableNode;
+import org.jetbrains.annotations.NotNull;
 
-public class Car extends PureVboNode implements IObject3d {
+import javax.microedition.khronos.opengles.GL10;
+
+public class Car extends RenderableNode {
+
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    public void onDirty() {
+    }
+
+    @Override
+    protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void cleanupInternal(@NotNull ProcessingState state) {
+    }
+
+    @Override
+    protected void setupInternal(@NotNull ProcessingState state) {
+    }
 
     public enum Type {
         CAMARO(R.raw.camaro2, R.drawable.camaro),
@@ -25,13 +46,9 @@ public class Car extends PureVboNode implements IObject3d {
     }
 
     public Car(int vboResourceId, int textureResourceId, boolean generateMipMap) {
-        setVbo(VboLoader.loadVbo(Registry.getContext(), vboResourceId));
-        setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId,generateMipMap));
-        hasMipMap = generateMipMap;
-    }
-
-    @Override
-    public SceneNode getNode() {
-        return this;
+//        mesh = new Mesh();
+//        setVbo(VboLoader.loadVbo(Registry.getContext(), vboResourceId));
+//        setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId,generateMipMap));
+//        hasMipMap = generateMipMap;
     }
 }

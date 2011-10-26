@@ -20,27 +20,21 @@ import java.util.List;
 public abstract class SceneNode extends ObjectWithOrientation implements IProcessable, IUpdatableLogic, ICleanable {
 
 	/**
-	 * Benutzerdefiniertes Objekt
-	 */
-	@Nullable
-	private Object _userObject = null;
-
-	/**
 	 * Die kombinierte Transformationsmatrix aller Elternelemente 
 	 */
-	private Matrix4 _combinedTransformation = Matrix4.UNIT;
+	private Matrix4 combinedTransformation = Matrix4.UNIT;
 	
 	/**
 	 * Gibt an, ob die kombinierte Transformationsmatrix neu berechnet werden muss
 	 */
-	private boolean _combinedTransformationDirty = true;
+	private boolean combinedTransformationDirty = true;
 	
 	/**
 	 * Ermittelt, ob die kombinierte Transformationsmatrix neu gesetzt werden muss
 	 * @return <code>true</code>, wenn die kombinierte Matrix als dirty markiert ist
 	 */
 	protected final boolean isCombinedTransformationDirty() {
-		return _combinedTransformationDirty;
+		return combinedTransformationDirty;
 	}
 	
 	/**
@@ -49,32 +43,32 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 */
 	@NotNull
 	public final Matrix4 getCombinedTransformation() {
-		return _combinedTransformation;
+		return combinedTransformation;
 	}
 	
 	/**
 	 * Aktualisiert die kombinierte Transformationsmatrix
 	 */
 	protected final void updateCombinedTransformation() {
-		_combinedTransformation = getOrientationMatrix();
+		combinedTransformation = getOrientationMatrix();
 
 		// Elternknoten existiert, also "obere" Orientierung mit dieser verheiraten
-		if (_parentNode != null) {
-			_combinedTransformation = _parentNode.getCombinedTransformation().mul(_combinedTransformation);
+		if (parentNode != null) {
+			combinedTransformation = parentNode.getCombinedTransformation().mul(combinedTransformation);
 		}
 	}
 
 	/**
 	 * Der Elternknoten
 	 */
-	private SceneNode _parentNode;
+	private SceneNode parentNode;
 	
 	/**
 	 * Setzt den Elternknoten
 	 * @param parent Der Elternknoten
 	 */
 	public final void setParent(@Nullable SceneNode parent) {
-		_parentNode = parent;
+		parentNode = parent;
 	}
 	
 	/**
@@ -83,16 +77,16 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 */
 	@Nullable
 	public final SceneNode getParent() {
-		return _parentNode;
+		return parentNode;
 	}
 	
 	/**
 	 * Hängt den Knoten aus dem Graphen aus
 	 */
 	public final void detachFromGraph() {
-		if (_parentNode == null) return;
-		_parentNode.remove(this);
-		_parentNode = null;
+		if (parentNode == null) return;
+		parentNode.remove(this);
+		parentNode = null;
 	}
 	
 	/**
@@ -100,21 +94,21 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @return true, wenn ein Elternknoten vorhanden ist
 	 */
 	public final boolean hasParentNode() {
-		return _parentNode != null;
+		return parentNode != null;
 	}
 	
 	/**
 	 * Liste der Kindknoten
 	 */
-	private List<SceneNode> _childNodes;
+	private List<SceneNode> childNodes;
 	
 	/**
 	 * Fügt der Hierarchie ein Kind hinzu
 	 * @param child Der hinzuzufügende Kindknoten
 	 */
 	public final void add(@NotNull SceneNode child) {
-		if (_childNodes == null) _childNodes = new ArrayList<SceneNode>();
-		_childNodes.add(child);
+		if (childNodes == null) childNodes = new ArrayList<SceneNode>();
+		childNodes.add(child);
         if(child.hasParentNode()) child.getParent().remove(this);
         child.setParent(this);
 	}
@@ -125,8 +119,8 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @return Gibt an, ob das Kind entfernt wurde
 	 */
 	public final boolean remove(@NotNull SceneNode child) {
-		if (_childNodes == null) return false;
-		if (_childNodes.remove(child))
+		if (childNodes == null) return false;
+		if (childNodes.remove(child))
 		{
 			if (child.getParent() == this) child.setParent(null);
 			return true;
@@ -141,8 +135,8 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 */
 	@Nullable
 	public final SceneNode get(int childIndex) {
-		if (_childNodes == null || childIndex < 0 || childIndex >= _childNodes.size()) return null;
-		return _childNodes.get(childIndex);
+		if (childNodes == null || childIndex < 0 || childIndex >= childNodes.size()) return null;
+		return childNodes.get(childIndex);
 	}
 
 	/**
@@ -151,13 +145,13 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @return Anzahl der direkten Kindknoten
 	 */
 	public int getChildCount() {
-		return _childNodes.size();
+		return childNodes.size();
 	}
 
 	/**
 	 * Gibt an, ob der Knoten sichtbar ist
 	 */
-	private boolean _isVisible = true;
+	private boolean isVisible = true;
 	
 	/**
 	 * Setzt die Sichtbarkeit des Knotens.
@@ -165,7 +159,7 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param visible Gibt an, ob der Knoten sichtbar sein darf
 	 */
 	public final void setVisible(boolean visible) {
-		_isVisible = visible;
+		isVisible = visible;
 	}
 	
 	/**
@@ -173,7 +167,7 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @return <code>true</code>, wenn der Knoten sichtbar ist
 	 */
 	public final boolean isVisible() {
-		return _isVisible;
+		return isVisible;
 	}
 	
 	/**
@@ -216,17 +210,17 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		// Orientierung neu berechnen
 		if(updateOrientation()) {
 			// Orientierungsmatrix hat sich ge�ndert, combined transformation als dirty markieren
-			_combinedTransformationDirty = true;
+			combinedTransformationDirty = true;
 		}
 		
 		// überprüfen, ob die combined transformation von parent dirty ist
-		if (_parentNode != null) {
-			if(updateParents) _parentNode.update(deltat, true, positionOnly);
-			_combinedTransformationDirty |= _parentNode.isCombinedTransformationDirty();
+		if (parentNode != null) {
+			if(updateParents) parentNode.update(deltat, true, positionOnly);
+			combinedTransformationDirty |= parentNode.isCombinedTransformationDirty();
 		}
 		
 		// Wenn combined transformation als dirty markiert, neu berechnen
-		if (_combinedTransformationDirty) {
+		if (combinedTransformationDirty) {
 			updateCombinedTransformation();
 		}
 		
@@ -234,15 +228,15 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		if (!positionOnly) updateInternal(deltat);
 		
 		// Alle Kindknoten rekursiv updaten
-		if (_childNodes != null) {
-			int count = _childNodes.size();
+		if (childNodes != null) {
+			int count = childNodes.size();
 			for (int i=0; i<count; ++i) {
-				_childNodes.get(i).update(deltat, false, positionOnly);
+				childNodes.get(i).update(deltat, false, positionOnly);
 			}
 		}
 		
 		// Combined transformation als sauber markieren
-		_combinedTransformationDirty = false;
+		combinedTransformationDirty = false;
 	}
 	
 	/**
@@ -256,16 +250,16 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	public final void process(@NotNull ProcessingState state) {
-		if (!_isVisible) return;
+		if (!isVisible) return;
 		
 		// Internen Verarbeitungsvorgang aufrufen
 		processInternal(state);
 		
 		// Alle Kindknoten rekursiv verarbeiten
-		if (_childNodes != null) {
-			int count = _childNodes.size();
+		if (childNodes != null) {
+			int count = childNodes.size();
 			for (int i=0; i<count; ++i) {
-				_childNodes.get(i).process(state);
+				childNodes.get(i).process(state);
 			}
 		}
 
@@ -293,10 +287,10 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		cleanupInternal(state);
 
 		// Alle Kindknoten rekursiv verarbeiten
-		if (_childNodes != null) {
-			int count = _childNodes.size();
+		if (childNodes != null) {
+			int count = childNodes.size();
 			for (int i = 0; i < count; ++i) {
-				_childNodes.get(i).cleanup(state);
+				childNodes.get(i).cleanup(state);
 			}
 		}
 	}
@@ -318,10 +312,10 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		setupInternal(state);
 
 		// Alle Kindknoten rekursiv verarbeiten
-		if (_childNodes != null) {
-			int count = _childNodes.size();
+		if (childNodes != null) {
+			int count = childNodes.size();
 			for (int i = 0; i < count; ++i) {
-				_childNodes.get(i).setup(state);
+				childNodes.get(i).setup(state);
 			}
 		}
 	}
@@ -332,21 +326,4 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	protected abstract void setupInternal(@NotNull ProcessingState state);
-
-	/**
-	 * Liefert das benutzerdefinierte Objekt
-	 * @return User state
-	 */
-	@Nullable
-	public final Object getUserObject() {
-		return _userObject;
-	}
-
-	/**
-	 * Setzt das benutzerdefinierte Objekt
-	 * @param userState Das Objekt
-	 */
-	public final void setUserObject(@Nullable Object userState) {
-		_userObject = userState;
-	}
 }

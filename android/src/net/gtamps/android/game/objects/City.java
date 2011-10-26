@@ -1,25 +1,41 @@
 package net.gtamps.android.game.objects;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.Registry;
-import net.gtamps.android.core.renderer.graph.PureVboNode;
-import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.core.utils.VboLoader;
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.RenderableNode;
+import org.jetbrains.annotations.NotNull;
 
-public class City extends PureVboNode implements IObject3d{
+import javax.microedition.khronos.opengles.GL10;
+
+public class City extends RenderableNode {
 
     public City() {
         this(R.raw.city, R.drawable.placeholder, false);
     }
 
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
     public City(int vboResourceId, int textureResourceId, boolean generateMipMap) {
-        setVbo(VboLoader.loadVbo(Registry.getContext(), vboResourceId));
-//        setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId,generateMipMap));
-        hasMipMap = generateMipMap;
+//        setVbo(VboLoader.loadVbo(Registry.getContext(), vboResourceId));
+////        setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId,generateMipMap));
+//        hasMipMap = generateMipMap;
     }
 
     @Override
-    public SceneNode getNode() {
-        return this;
+    public void onDirty() {
+    }
+
+    @Override
+    protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void cleanupInternal(@NotNull ProcessingState state) {
+    }
+
+    @Override
+    protected void setupInternal(@NotNull ProcessingState state) {
     }
 }

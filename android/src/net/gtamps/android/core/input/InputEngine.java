@@ -3,7 +3,7 @@ package net.gtamps.android.core.input;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ final public class InputEngine implements OnTouchListener {
 	 * Der Kameraknoten
 	 */
 	@NotNull
-	private static CameraNode _camera;
+	private static Camera _camera;
 
 
     private final int CLICKGENAUIGKEIT = 1;  //Pixel der Clickgenauigkeit und gleichzeitig Distanz,
@@ -299,7 +299,7 @@ final public class InputEngine implements OnTouchListener {
        return Vector3.createNew(relativZuMitteX, relativZuMitteY, 0);
    }
 
-    public void setCamera(@NotNull CameraNode camera) {
+    public void setCamera(@NotNull Camera camera) {
         InputEngine._camera = camera;
     }
 
