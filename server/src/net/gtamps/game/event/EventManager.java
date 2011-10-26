@@ -1,10 +1,8 @@
 package net.gtamps.game.event;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.gtamps.game.world.World;
 import net.gtamps.shared.game.GameActor;
@@ -16,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class EventManager extends GameActor {
 	
-	public static final long EVENT_TIMEOUT_MILLIS = 3000;
+	public static final long EVENT_TIMEOUT_MILLIS = 30000000;
 	
 	@NotNull
 	private final World world;
-	private final Set<GameEvent> archive = Collections.synchronizedSet(new HashSet<GameEvent>());
+	private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
 	
 	public EventManager(final World world) {
 		super("EventManager");
@@ -43,10 +41,10 @@ public class EventManager extends GameActor {
 		}
 	}
 	
-	public List<GameObject> update(final long baseRevision) {
+	public ArrayList<GameObject> getUpdate(final long baseRevision) {
 		final ArrayList<GameObject> updates = new ArrayList<GameObject>(archive.size());
 		final long currentRevision = world.getRevision();
-		for (final GameEvent e : archive) {
+		for (final GameEvent e : archive.keySet()) {
 			final long eventRevision = e.getRevision();
 			if (eventRevision + EVENT_TIMEOUT_MILLIS < currentRevision) {
 				archive.remove(e);
@@ -60,7 +58,8 @@ public class EventManager extends GameActor {
 	}
 
 	private void add(final GameEvent event) {
-		archive.add(event);
+		event.updateRevision(world.getRevision());
+		archive.put(event, event);
 		super.setChanged();
 	}
 

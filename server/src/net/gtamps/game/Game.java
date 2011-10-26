@@ -314,6 +314,7 @@ public class Game implements IGame, Runnable {
 	private Sendable getUpdate(final Session session, final Sendable sendable) {
 		final long baseRevision = ((RevisionData) sendable.data).revisionId;
 		final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
+		final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);
 		final UpdateData update = new UpdateData(baseRevision, world.getRevision());
 		update.gameObjects = entities;
 		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);

@@ -12,6 +12,8 @@ public final class Connection<H extends ISocketHandler> {
 	private final H socketHandler;
 	private final ISerializer serializer;
 	private final String id;
+//	private final String host;
+//	private final int port;
 
 	public Connection(final String id, final H socketHandler, final ISerializer serializer) {
 		if (id == null) {
