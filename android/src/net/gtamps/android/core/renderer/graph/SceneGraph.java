@@ -1,7 +1,7 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.shared.math.Color4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,11 +76,10 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 */
 	@Override
 	public void process(@NotNull ProcessingState state) {
-        Camera camera = getActiveCamera();
-        if (camera != null) {
-            camera.setVisible(true);
-            camera.process(state);
-            camera.setVisible(false);
+        if (activeCamera != null) {
+            activeCamera.setVisible(true);
+            activeCamera.process(state);
+            activeCamera.setVisible(false);
         }
 		rootNode.process(state);
 	}
@@ -106,8 +105,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * @param deltat Zeitdifferenz zum vorherigen Frame
 	 */
 	private void updateActiveCamera(float deltat) {
-		Camera camera = getActiveCamera();
-		if (camera != null) camera.update(deltat);
+		if (activeCamera != null) activeCamera.update(deltat);
 	}
 
 	/**

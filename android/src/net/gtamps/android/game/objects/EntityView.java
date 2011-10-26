@@ -1,7 +1,6 @@
 package net.gtamps.android.game.objects;
 
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.IDirty;
 import net.gtamps.shared.game.entity.Entity;
@@ -29,10 +28,6 @@ public class EntityView implements IDirty {
         object3d = Object3dFactory.create(entity.type);
         isDirty = true;
         onDirty();
-    }
-
-    public SceneNode getNode() {
-        return object3d;
     }
 
     public void update(Entity serverEntity) {

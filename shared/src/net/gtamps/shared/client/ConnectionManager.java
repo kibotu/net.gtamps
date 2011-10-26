@@ -11,8 +11,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConnectionManager implements IMessageManager {
 
-    private static final String TAG = ConnectionManager.class.getSimpleName();
-
     private final ConcurrentLinkedQueue<Message> inbox;
     private final ConcurrentLinkedQueue<Message> outbox;
     private IStream stream;

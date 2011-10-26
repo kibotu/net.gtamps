@@ -39,19 +39,19 @@ public class Sprite extends RenderableNode {
         mesh.faces.add(0, 1, 2);
         mesh.faces.add(2, 3, 0);
 
-        enableColorMaterialEnabled(true);
-        enableVertexColors(true);
-        enableNormals(true);
-        enableTextures(true);
-//        enableDoubleSided(false);
-//        enableLighting(false);
+        enableColorMaterialEnabled(false);
+        enableVertexColors(false);
+        enableNormals(false);
+        enableTextures(false);
+        enableDoubleSided(false);
+        enableLighting(false);
         enableAlpha(true);
 //        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
 //        setPointSize(3);
 //        setPointSmoothing(true);
 //        setLineWidth(1);
 //        setLineSmoothing(true);
-//        enableMipMap(false);
+        enableMipMap(false);
     }
 
     @Override
