@@ -19,6 +19,7 @@ import java.util.ArrayList;
  */
 public class Light extends RenderableNode {
 
+
     public enum Type {
         /**
          * directional light (x,y,z is the light direction) like the sun
@@ -144,10 +145,10 @@ public class Light extends RenderableNode {
             gl11.glEnable(GL11.GL_RESCALE_NORMAL);
 
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, ambient.getColorBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, diffuse.getColorBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, specular.getColorBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, emissive.getColorBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, material.getAmbient().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, material.getDiffuse().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getSpecular().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, material.getEmissive().asBuffer());
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
@@ -248,5 +249,14 @@ public class Light extends RenderableNode {
                 ", spotExponent=" + spotExponent +
                 ", attenuation=" + attenuation +
                 "] successfully added.";
+    }
+
+    @Override
+    public void onDirty() {
+    }
+
+    @Override
+    public void afterProcess(ProcessingState state) {
+        // do nothing
     }
 }

@@ -64,7 +64,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 		state.setGl(gl);
 		process(state);
         if(isDirty) {
-            state.getGl().glClearColor(background.getRedNormalized(),background.getGreenNormalized(),background.getBlueNormalized(),background.getAlphaNormalized());
+            state.getGl().glClearColor(background.r,background.g,background.b,background.a);
             isDirty = false;
         }
 	}

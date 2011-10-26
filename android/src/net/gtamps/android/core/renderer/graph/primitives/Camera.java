@@ -262,14 +262,12 @@ public class Camera extends RenderableNode {
 	}
 
     /**
-     * Spezifische Implementierung des Verarbeitungsvorganges
-     * @param state Die State-Referenz
-     */
-    @Override
-    protected void processInternal(@NotNull ProcessingState state) {
-        GL10 gl = state.getGl();
-        assert gl != null;
-
+	 * Spezifische Implementierung des Rendervorganges
+	 *
+	 * @param gl Die OpenGL-Referenz
+	 */
+	@Override
+	protected void renderInternal(@NotNull GL10 gl) {
         gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) viewportSize.x, (int) viewportSize.y);
         frustum.apply(gl);
 
@@ -278,15 +276,6 @@ public class Camera extends RenderableNode {
         } else {
             gl.glDisable(GL10.GL_DEPTH_TEST);
         }
-    }
-
-    /**
-	 * Spezifische Implementierung des Rendervorganges
-	 *
-	 * @param gl Die OpenGL-Referenz
-	 */
-	@Override
-	protected void renderInternal(@NotNull GL10 gl) {
 	}
 
 	/**
@@ -434,7 +423,7 @@ public class Camera extends RenderableNode {
 
     @Override
     protected void afterProcess(@NotNull ProcessingState state) {
-
+        // do nothing
     }
 
     /**

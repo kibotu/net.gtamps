@@ -45,6 +45,10 @@ public class Mesh {
         vertices.addVertex(Vector3.createNew(vx, vy, vz), Vector3.createNew(nx, ny, nz), new Color4(cr, cg, cb, ca), new Uv(u, v));
     }
 
+    public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv) {
+        vertices.addVertex(point, normal,color,uv);
+    }
+
     public void setup(GL10 gl) {
         vbo = new Vbo(vertices.getVertices().getBuffer(),faces.getBuffer(),vertices.getNormals().getBuffer(),vertices.getColors().getBuffer(),vertices.getUvs().getFloatBuffer());
         vbo.allocBuffers(gl);

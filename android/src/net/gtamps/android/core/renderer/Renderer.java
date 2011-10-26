@@ -53,7 +53,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 	    ProcessingState state = new ProcessingState();
 	    state.setGl(gl10);
         for(int i = 0; i < game.getScenes().size(); i++) {
-            game.getScenes().get(i).setup(state);
+            game.getScenes().get(i).getSceneGraph().setup(state);
         }
         // last best gc call
         final Runtime r = Runtime.getRuntime();
@@ -116,7 +116,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 
         // draw
         for(int i = 0; i < game.getScenes().size(); i++) {
-            game.getScenes().get(i).render(gl10);
+            game.getScenes().get(i).getSceneGraph().render(gl10);
         }
 
         // setup

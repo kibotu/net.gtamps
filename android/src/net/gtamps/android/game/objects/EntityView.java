@@ -1,14 +1,13 @@
 package net.gtamps.android.game.objects;
 
+import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.game.objects.IObject3d;
-import net.gtamps.android.game.objects.Object3dFactory;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.IDirty;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityView implements IObject3d, IDirty {
+public class EntityView implements IDirty {
 
     /**
      * Current Entity for visual display.
@@ -16,9 +15,9 @@ public class EntityView implements IObject3d, IDirty {
     @NotNull
     public Entity entity;
 
-    private IObject3d object3d;
+    private RenderableNode object3d;
 
-    private boolean isDirty;
+    private boolean isDirty = true;
 
     /**
      * Constructs the view.
@@ -32,9 +31,8 @@ public class EntityView implements IObject3d, IDirty {
         onDirty();
     }
 
-    @Override
     public SceneNode getNode() {
-        return object3d.getNode();
+        return object3d;
     }
 
     public void update(Entity serverEntity) {
@@ -47,11 +45,11 @@ public class EntityView implements IObject3d, IDirty {
     public void onDirty() {
 
         // position
-        object3d.getNode().setPosition(entity.x.value()* Config.PIXEL_TO_NATIVE,entity.y.value()* Config.PIXEL_TO_NATIVE,entity.z.value()* Config.PIXEL_TO_NATIVE);
+        object3d.setPosition(entity.x.value() * Config.PIXEL_TO_NATIVE, entity.y.value() * Config.PIXEL_TO_NATIVE, entity.z.value() * Config.PIXEL_TO_NATIVE);
         // scaling
-        object3d.getNode().setScaling(1,1,1);
+        object3d.setScaling(1, 1, 1);
 //        rotation
-        object3d.getNode().setRotation(0,0,entity.rota.value());
+        object3d.setRotation(0, 0, entity.rota.value());
 
         clearDirtyFlag();
     }
@@ -71,11 +69,11 @@ public class EntityView implements IObject3d, IDirty {
         isDirty = false;
     }
 
-    public IObject3d getObject3d() {
+    public RenderableNode getObject3d() {
         return object3d;
     }
 
-    public void setObject3d(IObject3d object3d) {
+    public void setObject3d(RenderableNode object3d) {
         this.object3d = object3d;
     }
 }

@@ -67,6 +67,24 @@ public class Color4 implements Comparable<Color4> {
         this((argb32 >> 16) & 0x000000FF, (argb32 >> 8) & 0x000000FF, (argb32) & 0x000000FF, (argb32 >> 24) & 0x000000FF);
     }
 
+    public void setAll(int argb32) {
+        r = 2.55f * ((argb32 >> 16) & 0x000000FF);
+        g = 2.55f * ((argb32 >> 8) & 0x000000FF);
+        b = 2.55f * (argb32 & 0x000000FF);
+        a = 2.55f * ((argb32 >> 24) & 0x000000FF);
+    }
+
+    public void setAll(float r, float g, float b, float a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
+    public void setAll(Color4 color) {
+        setAll(color.r,color.g,color.b,color.a);
+    }
+
     /**
      * Construct a new color vector and initialize the components.
      *

@@ -4,6 +4,7 @@ import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.renderer.mesh.texture.Texture;
 import net.gtamps.shared.IDirty;
+import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -156,7 +157,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     }
 
     @Override
-    final protected void afterProcess(@NotNull ProcessingState state) {
+    protected void afterProcess(@NotNull ProcessingState state) {
        state.getGl().glPopMatrix();
     }
 
@@ -164,7 +165,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      * Default rendering process.
      */
     final protected void render(GL11 gl) {
-        if(isDirty()) {
+        if(mesh == null) return;
+        if(isDirty) {
             onDirty(gl);
         }
 
@@ -251,23 +253,25 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
 
+        // drawing point setings
         if(drawingStyle.equals(DrawingStyle.GL_POINTS)) {
 			if (pointSmoothing) {
-                glEnable(GL_POINT_SMOOTH);
+                gl.glEnable(GL10.GL_POINT_SMOOTH);
             }
 			else {
-				glDisable(GL_POINT_SMOOTH);
+				gl.glDisable(GL10.GL_POINT_SMOOTH);
             }
-			glPointSize(pointSize);
+			gl.glPointSize(pointSize);
 		}
-		
-				if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
+
+        // drawing line settings
+        if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
 			if(lineSmoothing) {
-				glEnable(GL_LINE_SMOOTH);
+				gl.glEnable(GL10.GL_LINE_SMOOTH);
 			}	else {
-				glDisable(GL_LINE_SMOOTH);
+				gl.glDisable(GL10.GL_LINE_SMOOTH);
 			}
-			glLineWidth(lineWidth);
+			gl.glLineWidth(lineWidth);
 		}
 		
         // bind vertices
@@ -275,7 +279,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 
-        // draw elements by index buffer
+        // actually draw the mesh by index buffer
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
 		gl.glDrawElements(drawingStyle.ordinal(), mesh.getVbo().indexBuffer.capacity(), GL11.GL_UNSIGNED_SHORT, 0);
 

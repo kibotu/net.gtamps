@@ -32,10 +32,10 @@ public class Cube extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if(mesh == null)  return;
+        if(mesh != null)  return;
 
         // new mesh
-        this.mesh = new Mesh(4,2);
+        this.mesh = new Mesh(24,12);
 
         final float c = 1f;
         Color4 emissive = material.getEmissive();
@@ -81,7 +81,7 @@ public class Cube extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(true);
+        enableTextures(false);
 //        enableDoubleSided(false);
 //        enableLighting(false);
         enableAlpha(true);

@@ -227,10 +227,10 @@ public class Game implements IGame{
                         if(entityView == null) {
                             // new entity
                             entityView = new EntityView(serverEntity);
-                            world.getScene().addChild(entityView);
+                            world.getScene().addChild(entityView.getObject3d()); // TODO might be incorrect
 
                             // add to setup
-                            Registry.getRenderer().addToSetupQueue(entityView.getObject3d().getNode());
+                            Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
 
                             Logger.i(this,"Add new entity "+serverEntity.getUid());
                         } else {

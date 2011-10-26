@@ -1,9 +1,10 @@
 package net.gtamps.android.game.scene;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.game.objects.Sprite;
+import net.gtamps.android.core.renderer.graph.primitives.AnimatedSprite;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.primitives.Sprite;
 import net.gtamps.shared.state.State;
 
 public class Hud {
@@ -11,8 +12,8 @@ public class Hud {
     private Camera camera;
     private Scene scene;
 
-    private Sprite ring;
-    private Sprite cursor;
+    private AnimatedSprite ring;
+    private AnimatedSprite cursor;
 
     public Hud() {
     }
@@ -25,12 +26,12 @@ public class Hud {
             scene.setActiveCamera(camera);
             camera.enableDepthTest(false);
 
-            ring = new Sprite();
+            ring = new AnimatedSprite();
             ring.setVisible(false);
-            scene.add(ring);
-            cursor = new Sprite();
+            scene.addNode(ring);
+            cursor = new AnimatedSprite();
             cursor.setVisible(false);
-            scene.add(cursor);
+            scene.addNode(cursor);
 
             ring.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);
             cursor.loadBufferedTexture(R.drawable.hud,R.raw.hud,true);

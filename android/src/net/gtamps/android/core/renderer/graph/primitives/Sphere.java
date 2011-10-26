@@ -10,6 +10,7 @@ import javax.microedition.khronos.opengles.GL11;
 /**
  * Szenenknoten, der eine Kugel repräsentiert
  */
+@Deprecated
 public class Sphere extends RenderableNode {
 
 	/**
@@ -160,4 +161,9 @@ public class Sphere extends RenderableNode {
 	public final void setTextureBufferOffsetId(final int textureBufferOffsetId) {
 		this.textureBufferOffsetId = textureBufferOffsetId;
 	}
+
+    @Override
+    public void onDirty() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
