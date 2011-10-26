@@ -97,6 +97,7 @@ public class HealthHandler extends Handler {
 	
 	private void die() {
 		final GameEvent death = new GameEvent(EventType.ENTITY_DESTROYED, parent);
+		System.out.println("death! destruction! calamity!");
 		dispatchEvent(death);
 	}
 	

@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Session {
 	
+	// TODO make immutable
+	
 	@NotNull
 	private final String id;
 	private final AtomicReference<Connection<?>> connection;

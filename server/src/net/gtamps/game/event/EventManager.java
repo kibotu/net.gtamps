@@ -36,9 +36,7 @@ public class EventManager extends GameActor {
 
 	@Override
 	public void receiveEvent(final GameEvent event) {
-		synchronized (archive) {
 			add(event);
-		}
 	}
 	
 	public ArrayList<GameObject> getUpdate(final long baseRevision) {
