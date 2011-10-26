@@ -1,5 +1,6 @@
 package net.gtamps.android.game.scene;
 
+import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.SceneGraph;
 import net.gtamps.android.core.renderer.graph.SceneNode;
@@ -27,6 +28,9 @@ public class Scene {
     public void addChild(RenderableNode object3D) {
         object3ds.add(object3D);
         sceneGraph.add(object3D);
+
+        // dirty hack to setup up during runtime; i'm grateful for suggestions though
+        Registry.getRenderer().addToSetupQueue(object3D);
     }
 
     public void removeChild(RenderableNode object3D) {
