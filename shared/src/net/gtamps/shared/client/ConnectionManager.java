@@ -51,7 +51,7 @@ public class ConnectionManager implements IMessageManager {
     }
 
     public boolean connect() {
-        return connect(Config.SERVER_HOST_ADDRESS, Config.SERVER_PORT);
+        return connect(Config.SERVER_DEFAULT_HOST_ADDRESS, Config.SERVER_PORT);
     }
 
     public boolean connect(String host, int port) {
