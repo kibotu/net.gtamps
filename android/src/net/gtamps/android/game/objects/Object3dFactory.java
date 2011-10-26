@@ -2,6 +2,7 @@ package net.gtamps.android.game.objects;
 
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.primitives.Cube;
+import net.gtamps.android.core.renderer.graph.primitives.Sphere;
 import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
@@ -26,6 +27,8 @@ final public class Object3dFactory {
             case BULLET: object3d = createBullet(); break;
             case SPAWNPOINT: object3d = createSpawnPoint(); break;
             case WAYPOINT: object3d = createWayPoint(); break;
+            case CUBE: object3d = createCube(); break;
+            case SPHERE: object3d = createSphere(); break;
             case PLACEHOLDER: object3d = createCube(); break;
             default: object3d = createCube(); break;
         }
@@ -50,6 +53,10 @@ final public class Object3dFactory {
 
     private static RenderableNode createCube() {
         return new Cube();
+    }
+
+    private static RenderableNode createSphere() {
+        return new Sphere(1,20,10);
     }
 
     @Deprecated

@@ -30,14 +30,7 @@ public class Camera extends RenderableNode {
     @NotNull
     private Vector3 viewportCoords = Vector3.createNew(0, 0, 0);
 
-    /**
-     * Minimaler (kleinstes) und Maximaler (größtes) Bildwinkel (Fov) der OpenGL Kamera
-     */
-    private float minFovy = Config.MIN_ZOOM;
-    private float maxFovy = Config.MAX_ZOOM;
-
     private boolean hasDepthTest = true;
-
 
 	/**
 	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
@@ -320,7 +313,7 @@ public class Camera extends RenderableNode {
      */
     public void setZoomFactor(float factor) {
         assert factor > 0;
-        if (frustum.getHorizontalFieldOfView()/factor >= minFovy && frustum.getHorizontalFieldOfView()/factor <= maxFovy){
+        if (frustum.getHorizontalFieldOfView()/factor >= Config.MIN_ZOOM && frustum.getHorizontalFieldOfView()/factor <= Config.MAX_ZOOM){
             frustum.setHorizontalFieldOfView(frustum.getHorizontalFieldOfView(), factor);
         }
     }
