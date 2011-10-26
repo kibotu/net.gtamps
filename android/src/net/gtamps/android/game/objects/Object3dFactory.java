@@ -1,22 +1,20 @@
 package net.gtamps.android.game.objects;
 
-import net.gtamps.android.core.renderer.graph.PureVboNode;
-import net.gtamps.android.game.Game;
+import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.graph.primitives.Cube;
 import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
 
-    private static final String TAG = Game.class.getSimpleName();
-
     private Object3dFactory() {
     }
 
-    public static IObject3d create(String name) {
+    public static RenderableNode create(String name) {
         return create(Entity.Type.valueOf(name.toUpperCase()));
     }
 
-    public static IObject3d create(Entity.Type type){
-        IObject3d object3d = null;
+    public static RenderableNode create(Entity.Type type){
+        RenderableNode object3d = null;
         switch (type) {
             case CAR_CAMARO: object3d = createCarCamaro(); break;
             case CAR_RIVIERA: object3d = createCarRiveria(); break;
@@ -32,48 +30,48 @@ final public class Object3dFactory {
         return object3d;
     }
 
-    private static IObject3d createCarChevroletCorvette() {
-        IObject3d car = new Car(Car.Type.CHEVROLET_CORVETTE);
-        ((PureVboNode)car.getNode()).enableTextures(false);
-        return car;
+    private static RenderableNode createCarChevroletCorvette() {
+//        Object3d car = new Car(Car.Type.CHEVROLET_CORVETTE);
+//        ((PureVboNode)car.getNode()).enableTextures(false);
+        return null;
     }
 
-    private static IObject3d createCarRiveria() {
-        IObject3d object3d = new Car(Car.Type.RIVIERA);
-        object3d.getNode().setScaling(5,5,5);
-        return object3d;
+    private static RenderableNode createCarRiveria() {
+//        Object3d object3d = new Car(Car.Type.RIVIERA);
+//        object3d.getNode().setScaling(5,5,5);
+        return null;
     }
 
-    private static IObject3d createCarCamaro() {
+    private static RenderableNode createCarCamaro() {
         return new Car(Car.Type.CAMARO);
     }
 
-    private static IObject3d createCube() {
+    private static RenderableNode createCube() {
         return new Cube();
     }
 
     @Deprecated
-    public static IObject3d createParsedObject(String resource, String textureResource) {
+    public static RenderableNode createParsedObject(String resource, String textureResource) {
         return new ParsedObject(0,0);
     }
 
-    private static IObject3d createWayPoint() {
+    private static RenderableNode createWayPoint() {
         return createCube();
     }
 
-    private static IObject3d createBullet() {
+    private static RenderableNode createBullet() {
         return createCube();
     }
 
-    private static IObject3d createSpawnPoint() {
+    private static RenderableNode createSpawnPoint() {
         return createCube();
     }
 
-    private static IObject3d createHouse() {
+    private static RenderableNode createHouse() {
         return createCube();
     }
 
-    private static IObject3d createHuman() {
+    private static RenderableNode createHuman() {
         return createCarRiveria();
     }
 }

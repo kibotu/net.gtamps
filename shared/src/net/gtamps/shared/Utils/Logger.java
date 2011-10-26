@@ -4,12 +4,12 @@ import net.gtamps.shared.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 final public class Logger {
 
     @NotNull
-    public static final ConcurrentHashMap<String,Boolean> blacklist = new ConcurrentHashMap<String, Boolean>();
+    public static final ConcurrentLinkedQueue<String> blacklist = new ConcurrentLinkedQueue<String>();
 
     @Nullable
     private static volatile ILogger logger;
@@ -19,7 +19,7 @@ final public class Logger {
     private static final String LINE_BREAKS = "\n\n\n\n\n";
 
     public enum Level {
-        DEBUG, VERBOSE, INFO, WARN, ERROR
+        DEBUG, VERBOSE, INFO, WARN, ERROR, NO_LOGGING
     }
 
     /**
@@ -28,8 +28,8 @@ final public class Logger {
     private Logger() {
     }
 
-    public static void toast(String message) {
-        if(logger != null && message != null) logger.toast(""+message);
+    public static void toast(@NotNull Object id, String message) {
+        if(logger != null && message != null) logger.toast(id instanceof String ? id.toString() : id.getClass().getSimpleName(), message);
     }
 
     /**
@@ -59,7 +59,7 @@ final public class Logger {
 
     public static void v(@NotNull String id, Object message) {
         if(message != null && allowLogging(id) && Config.LOG_LEVEL.compareTo(Level.VERBOSE) <= 0) {
-            logger.d(id,""+message);
+            logger.v(id, "" + message);
         }
     }
 

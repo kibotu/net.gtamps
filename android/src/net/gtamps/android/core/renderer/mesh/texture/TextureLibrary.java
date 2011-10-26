@@ -17,8 +17,6 @@ import java.util.HashMap;
  */
 public class TextureLibrary {
 
-    private static final String TAG = TextureLibrary.class.getSimpleName();
-
     /**
      * OpenGL pointer is needed in order to load a texture with proper filters and to load it correctly scaled.
      */

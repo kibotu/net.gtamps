@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+@Deprecated
 public class GLUT {
 
 private static final String TAG = GLUT.class.getSimpleName();

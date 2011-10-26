@@ -1,7 +1,7 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.android.core.math.Color4;
-import net.gtamps.android.core.renderer.graph.primitives.CameraNode;
+import net.gtamps.shared.math.Color4;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * Die aktive Kamera
 	 */
 	@Nullable
-	private CameraNode activeCamera;
+	private Camera activeCamera;
 
     /**
      * Defines the background color of the scene.
@@ -36,7 +36,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * @return
 	 */
 	@Nullable
-	public final CameraNode getActiveCamera() {
+	public final Camera getActiveCamera() {
 		return activeCamera;
 	}
 
@@ -44,7 +44,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * Setzt die aktive Kamera
 	 * @param camera Die Kamera
 	 */
-	public final void setActiveCamera(@Nullable CameraNode camera) {
+	public final void setActiveCamera(@Nullable Camera camera) {
 		activeCamera = camera;
 	}
 
@@ -64,7 +64,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 		state.setGl(gl);
 		process(state);
         if(isDirty) {
-            state.getGl().glClearColor(background.getRedNormalized(),background.getGreenNormalized(),background.getBlueNormalized(),background.getAlphaNormalized());
+            state.getGl().glClearColor(background.r,background.g,background.b,background.a);
             isDirty = false;
         }
 	}
@@ -76,7 +76,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 */
 	@Override
 	public void process(@NotNull ProcessingState state) {
-        CameraNode camera = getActiveCamera();
+        Camera camera = getActiveCamera();
         if (camera != null) {
             camera.setVisible(true);
             camera.process(state);
@@ -106,7 +106,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * @param deltat Zeitdifferenz zum vorherigen Frame
 	 */
 	private void updateActiveCamera(float deltat) {
-		CameraNode camera = getActiveCamera();
+		Camera camera = getActiveCamera();
 		if (camera != null) camera.update(deltat);
 	}
 
