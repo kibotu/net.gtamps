@@ -1,0 +1,74 @@
+State		Requests	Response	New State	Comment
+===============================================================================
+*		*		MESSAGE_BAD	(same)		error parsing
+								message
+
+*		*		SENDABLE_BAD	(same)		error parsing
+								sendable
+
+*		*		*.ERROR		(same)		server error
+
+*		SESSION		.OK $SessionData	(same)	
+
+*		*		QUIT.OK		DISCONNECTED	same for hard
+								disconnect 
+								(w/o response)
+								
+				QUIT.NEED	DISCONNECTED	timeout				
+
+				QUIT.BAD	DISCONNECTED	kicked/banned 
+								from server
+								
+				QUIT.ERROR	DISCONNECTED	by server error
+-------------------------------------------------------------------------------
+
+CONNECTED	LOGIN $authData	.OK		AUTHENTICATED
+		REGISTER $authD
+				.NEED		CONNECTED	wrong user/pass
+
+				.BAD		CONNECTED	provide user/
+								passwd
+-------------------------------------------------------------------------------
+				
+AUTHENTICATED	JOIN $joinData	.OK		PLAYING
+
+				.NEED		CONNECTED	not authent.
+
+				.BAD		AUTHENTICATED	bad gameId,
+								game full,
+								banned from game
+-------------------------------------------------------------------------------
+
+PLAYING		LEAVE		.OK		AUTHENTICATED	game keeps 
+								player in 
+								inactivate state
+
+		*		LEAVE.BAD	AUTHENTICATED	kicked from game
+
+		SPAWN		.OK		PLAYING
+
+				.NEED		AUTHENTICATED	not playing
+
+		GETPLAYER	.OK $playerData	PLAYING
+
+				.NEED		AUTHENTICATED	not playing
+
+		GETUPDATE $rev	.OK $updateData	PLAYING
+
+				.NEED		AUTHENTICATED	not playing
+-------------------------------------------------------------------------------
+
+DISCONNECTED	<reconnect>	will require sessionId and auth credentials
+				of old session
+
+-------------------------------------------------------------------------------
+
+[NOTES]
+
+- every request can expect a response, identifiable by same id as request;
+  response can be same general type (e.g. JOIN -> JOIN OK), but also different 
+  type (e.g. GETUPDATE -> LEAVE BAD; = kicked from game)
+  
+- commands, which are also sendables, will never get a response; they are 
+  swallowed by the server with or without generating an effect; requests and 
+  responses are game meta-data; commands are in-game actions
