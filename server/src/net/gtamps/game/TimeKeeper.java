@@ -14,7 +14,7 @@ public class TimeKeeper {
 	private boolean active;
 	
 	public TimeKeeper() {
-		this(System.nanoTime());
+		this(System.nanoTime()/1000000);
 	}
 	
 	private TimeKeeper(final long startTime) {
@@ -31,7 +31,7 @@ public class TimeKeeper {
 	public void startCycle() {
 		currentCycleTime = System.nanoTime() / 1000000;
 		lastTotalCycleDuration = currentCycleTime - lastStartCycle;
-		lastSleepDuration = lastStartCycle - lastEndCycle;
+		lastSleepDuration = currentCycleTime - lastEndCycle;
 		lastStartCycle = currentCycleTime;
 		active = true;
 	}
@@ -50,7 +50,7 @@ public class TimeKeeper {
 		return currentCycleTime;
 	}
 	
-	public long getGameDurationMillis() {
+	public long getTotalDurationMillis() {
 		return (currentCycleTime - startTime);
 	}
 	

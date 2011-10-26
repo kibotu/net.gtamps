@@ -9,7 +9,7 @@ import net.gtamps.shared.communication.Message;
 public final class SessionManager implements IMessageHandler {
 	
 	public static final SessionManager instance = new SessionManager();
-	public static final Pattern ID_PATTERN = Pattern.compile("[0-9A-Fa-f]{16}");
+	private static final Pattern ID_PATTERN = Pattern.compile("[0-9A-Fa-f]{16}");
 	
 	private final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<String, Session>();
 	
