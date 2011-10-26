@@ -2,6 +2,8 @@ package net.gtamps.android;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import net.gtamps.android.core.DefaultActivity;
+import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.renderer.Renderer;
 import net.gtamps.android.game.Game;
@@ -19,6 +21,7 @@ public class GTA extends DefaultActivity {
         game = new Game();
         Registry.setContext(this);
         Renderer renderer = new Renderer(game);
+        Registry.setRenderer(renderer);
 
         view = new GLSurfaceView(this);
         glSurfaceViewConfig();

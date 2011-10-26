@@ -1,11 +1,13 @@
 package net.gtamps.android.game;
 
 import android.os.SystemClock;
-import net.gtamps.android.World;
+import net.gtamps.android.core.Registry;
+import net.gtamps.android.game.objects.EntityView;
+import net.gtamps.android.game.scene.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.game.client.ConnectionManager;
-import net.gtamps.android.game.entity.views.EntityView;
-import net.gtamps.android.game.entity.views.Hud;
+import net.gtamps.android.core.client.ConnectionManager;
+import net.gtamps.android.game.scene.Hud;
+import net.gtamps.android.game.scene.Scene;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.communication.Message;
@@ -15,8 +17,10 @@ import net.gtamps.shared.communication.SendableType;
 import net.gtamps.shared.communication.data.FloatData;
 import net.gtamps.shared.communication.data.PlayerData;
 import net.gtamps.shared.communication.data.UpdateData;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.math.Vector3;
 
 import java.util.ArrayList;
@@ -53,14 +57,12 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        checkConnection();
+//        connection.checkConnection();
 
-        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-        connection.start();
-        connection.add(MessageFactory.createSessionRequest());
+//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        connection.start();
+//        connection.add(MessageFactory.createSessionRequest());
     }
-
-    private int socketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
     @Override
     public void onDrawFrame() {
@@ -69,7 +71,7 @@ public class Game implements IGame{
         }
 
         // check connection
-        checkConnection();
+//        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
@@ -88,6 +90,8 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
+            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
+            if(view != null) world.setActiveObject(view);
         }
 
         // on release
@@ -97,6 +101,7 @@ public class Game implements IGame{
             hud.getCursor().setPosition(inputEngine.getPointerPosition());
         }
 
+        Vector3 temp3 = Vector3.createNew();
         if(isDragging) {
 //            Utils.log(TAG, "is dragging");
             Vector3 viewportSize = scenes.get(1).getActiveCamera().getViewportSize();
@@ -116,16 +121,15 @@ public class Game implements IGame{
             temp2.mulInPlace(40);
 
             Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
-            Vector3 temp3 = Vector3.createNew(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
-
-            scenes.get(0).getActiveCamera().setPosition(temp3);
-            scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
+            temp3.set(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
 
             // send driving impulses
             fireImpulse(angle, temp);
 
 //            temp.recycle();
+            scenes.get(0).getActiveCamera().setPosition(temp3);
         }
+        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
 
         // Compute elapsed time
         finalDelta = SystemClock.elapsedRealtime() - startTime;
@@ -134,21 +138,6 @@ public class Game implements IGame{
         startTime = SystemClock.elapsedRealtime();
 
         // animate
-    }
-
-    private void checkConnection() {
-        if(!connection.isConnected()) {
-            while (!connection.connect()) {
-                if(socketTimeOut <= 0) stop();
-                try {
-                    Thread.sleep(Config.SOCKET_TIMEOUT);
-                    socketTimeOut -= Config.SOCKET_TIMEOUT;
-                } catch (InterruptedException e) {
-                }
-                Logger.e(this, "Server unavailable. Trying to reconnect");
-            }
-        }
-        socketTimeOut = Config.MAX_SOCKET_TIMEOUT;
     }
 
     private long impulse = 0;
@@ -213,35 +202,47 @@ public class Game implements IGame{
                 UpdateData updateData = ((UpdateData)sendable.data);
                 ConnectionManager.currentRevId = updateData.revId;
 
-                // event
-                if(updateData.entites instanceof GameEvent) {
-
-                }
-
-                // entities
-                if(updateData.entites instanceof Entity) {
-
-                }
-
                 // parse all transmitted entities
-                ArrayList<Entity> entities = updateData.entites;
-                Logger.d(this, "response size " + entities.size());
-                for(int i = 0; i < entities.size(); i++) {
-                    Entity serverEntity = entities.get(i);
+                ArrayList<GameObject> gameObjects = updateData.gameObjects;
+                Logger.d(this, "GameObject amount: " + gameObjects.size());
+                int keepTrackOfOrder = 0;
+                for(int i = 0; i < gameObjects.size(); i++) {
 
-                    // new or update
-                    EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
-                    if(entityView == null) {
-                        // new entity
-                        entityView = new EntityView(serverEntity);
-                        world.getScene().addChild(entityView);
-                        Logger.i(this,"add new entity "+serverEntity.getUid());
+                    GameObject go = gameObjects.get(i);
+
+                    if(go instanceof GameEvent) {
+
+                        handleEvent((GameEvent) go);
+                        keepTrackOfOrder = 2;
+
+                    } else if(go instanceof Entity) {
+                        if(keepTrackOfOrder == 2) Logger.E(this, "Server entity after game event. GameEvent fired on empty entities.");
+                        keepTrackOfOrder = 1;
+
+                        // entity
+                        Entity serverEntity = (Entity) go;
+
+                        // new or update
+                        EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
+                        if(entityView == null) {
+                            // new entity
+                            entityView = new EntityView(serverEntity);
+                            world.getScene().addChild(entityView.getObject3d()); // TODO might be incorrect
+
+                            // add to setup
+                            Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
+
+                            Logger.i(this,"Add new entity "+serverEntity.getUid());
+                        } else {
+                            // update
+                            entityView.update(serverEntity);
+                            Logger.i(this, "Update existing entity " + serverEntity.getUid());
+                        }
                     } else {
-                        // update
-                        entityView.update(serverEntity);
-                        Logger.i(this, "update entity" + serverEntity.getUid());
+                        Logger.d(this, "NOT HANDLED UPDATE -> " + go);
                     }
                 }
+                break;
 
             case GETUPDATE_NEED: break;
             case GETUPDATE_BAD: break;
@@ -255,6 +256,8 @@ public class Game implements IGame{
                 // not player data
                 if(!(sendable.data instanceof PlayerData)) break;
                 world.playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+
+                Logger.D(this, "GETPLAYER_OK "+ world.playerManager.getActivePlayer());
 
                 // get update
                 connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
@@ -297,6 +300,73 @@ public class Game implements IGame{
             case REGISTER_BAD: break;
             case REGISTER_ERROR: break;
             default: break;
+        }
+    }
+
+    private void handleEvent(GameEvent event) {
+        Logger.i(this, "Handle event " + event);
+
+        switch (event.getType()) {
+            case ACTION_ACCELERATE: break;
+            case ACTION_DECELERATE: break;
+            case ACTION_ENTEREXIT: break;
+            case ACTION_EVENT: break;
+            case ACTION_HANDBRAKE: break;
+            case ACTION_NOISE: break;
+            case ACTION_SHOOT: break;
+            case ACTION_SUICIDE: break;
+            case ACTION_SWITCH_GUN_NEXT: break;
+            case ACTION_SWITCH_GUN_PREV: break;
+            case ACTION_TURNLEFT: break;
+
+            case ENTITY_ACTIVATE: break;
+            case ENTITY_BULLET_HIT: break;
+            case ENTITY_COLLIDE: break;
+            case ENTITY_CREATE: break;
+            case ENTITY_DAMAGE: break;
+            case ENTITY_DEACTIVATE: break;
+            case ENTITY_DESTROYED: break;
+            case ENTITY_EVENT: break;
+            case ENTITY_REMOVE: break;
+            case ENTITY_SENSE: break;
+            case ENTITY_SENSE_DOOR: break;
+            case ENTITY_SENSE_EXPLOSION: break;
+            case ENTITY_UPDATE: break;
+
+            case PLAYER_ENTERSCAR: break;
+            case PLAYER_JOINS: break;
+            case PLAYER_KILLED: break;
+            case PLAYER_LOGIN: break;
+            case PLAYER_LEAVES: break;
+            case PLAYER_NEWENTITY:
+
+                // source no player
+                if(!(event.getSource() instanceof Player)) break;
+
+                // player not active player
+                Player player = (Player) event.getSource();
+                if(!world.playerManager.getActivePlayer().equals(player)) break;
+
+                // target no entity
+                if(!(event.getTarget() instanceof Entity)) break;
+                Entity serverEntity = (Entity) event.getTarget();
+
+                // new active object
+                EntityView entityView = world.getScene().getObject3DById(serverEntity.getUid());
+                world.setActiveObject(entityView);
+
+                Logger.i(this,"PLAYER_NEWENTITY "+entityView.entity.getUid());
+
+                break;
+
+            case PLAYER_POWERUP: break;
+            case PLAYER_SCORES: break;
+            case PLAYER_SPAWNS: break;
+            case PLAYER_WINS: break;
+
+            case SESSION_ENDS: break;
+            case SESSION_STARTS: break;
+            case SESSION_UPDATE: break;
         }
     }
 

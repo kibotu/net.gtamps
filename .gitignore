@@ -17,6 +17,6 @@ dynamic.xml
 proguard.cfg
 default.properties
 *.class
-workspace.xml
 .metadata
 *.dex
+/cloc-1.55.exe
