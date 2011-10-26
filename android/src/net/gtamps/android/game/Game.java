@@ -5,7 +5,7 @@ import net.gtamps.android.core.Registry;
 import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.scene.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.client.ConnectionManager;
+import net.gtamps.shared.client.ConnectionManager;
 import net.gtamps.android.game.scene.Hud;
 import net.gtamps.android.game.scene.Scene;
 import net.gtamps.shared.Config;
