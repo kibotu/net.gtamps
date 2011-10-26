@@ -37,10 +37,6 @@ public class World {
         scene.getBackground().setAll(Color4.DARK_GRAY);
 
         activeOjbect = new EntityView(new Entity("sphere"));
-
-        // setup
-//        Registry.getRenderer().addToSetupQueue(activeOjbect.getObject3d());
-
         scene.addChild(activeOjbect.getObject3d());
         scene.addChild(new Cube());
 

@@ -1,6 +1,5 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
-import net.gtamps.android.core.renderer.graph.DrawingStyle;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
@@ -85,7 +84,7 @@ public class Cube extends RenderableNode {
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);
-        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
+//        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
 //        setPointSize(3);
 //        setPointSmoothing(true);
 //        setLineWidth(1);

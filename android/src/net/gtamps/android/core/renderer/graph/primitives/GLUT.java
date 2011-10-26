@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+/** please don't use **/
 @Deprecated
 public class GLUT {
 
