@@ -1,73 +1,63 @@
 package net.gtamps.game.event;
 
-import net.gtamps.XmlElements;
-import net.gtamps.game.RevisionKeeper;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import net.gtamps.game.world.World;
 import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
 
 public class EventManager extends GameActor {
 	
-	private final Set<GameEvent> archive = Collections.synchronizedSet(new HashSet<GameEvent>());
+	public static final long EVENT_TIMEOUT_MILLIS = 30000000;
 	
-	public EventManager() {
+	@NotNull
+	private final World world;
+	private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
+	
+	public EventManager(final World world) {
 		super("EventManager");
 		
+		this.world = world;
+		
 		// all received events will be communicated via getUpdate()
-		this.addEventListener(EventType.GAME_EVENT, this);
-		this.removeEventListener(EventType.SESSION_UPDATE, this);
-		this.removeEventListener(EventType.ACTION_ACCELERATE, this);
-		this.removeEventListener(EventType.ACTION_DECELERATE, this);
-		this.removeEventListener(EventType.ACTION_TURNLEFT, this);
-		this.removeEventListener(EventType.ACTION_TURNRIGHT, this);
+		addEventListener(EventType.GAME_EVENT, this);
+		removeEventListener(EventType.SESSION_UPDATE, this);
+		removeEventListener(EventType.ACTION_ACCELERATE, this);
+		removeEventListener(EventType.ACTION_DECELERATE, this);
+		removeEventListener(EventType.ACTION_TURNLEFT, this);
+		removeEventListener(EventType.ACTION_TURNRIGHT, this);
 	}
 
 	@Override
-	public void receiveEvent(GameEvent event) {
-		synchronized (archive) {
-			this.add(event);
-		}
+	public void receiveEvent(final GameEvent event) {
+			add(event);
 	}
 	
-//	@Override
-//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-//		Element e = super.toXMLElement(baseRevision, keeper);
-//		if (e != null) {
-//			e.addContent(this.getUpdate(baseRevision, keeper));
-//		}
-//		return e;
-//	}
-
-	//TODO
-	public List<Element> getUpdate(long baseRevision, RevisionKeeper keeper) {
-		List<Element> update = new LinkedList<Element>();
-//		List<GameEvent> toBeRemoved = new LinkedList<GameEvent>();
-//		synchronized (archive) {
-//			for (GameEvent event: archive) {
-//				if (keeper != null && keeper.getCurrentRevision() - event.getRevision() > eventTimeout) {
-//					toBeRemoved.add(event);
-//					continue;
-//				}
-//				Element xml = event.toXMLElement(baseRevision, keeper);
-//				if (xml != null) {
-//					update.add(xml);
-//				}
-//			}
-//			archive.removeAll(toBeRemoved);
-//		}
-		return update;
+	public ArrayList<GameObject> getUpdate(final long baseRevision) {
+		final ArrayList<GameObject> updates = new ArrayList<GameObject>(archive.size());
+		final long currentRevision = world.getRevision();
+		for (final GameEvent e : archive.keySet()) {
+			final long eventRevision = e.getRevision();
+			if (eventRevision + EVENT_TIMEOUT_MILLIS < currentRevision) {
+				archive.remove(e);
+				continue;
+			}
+			if (eventRevision > baseRevision || e.hasChanged()) {
+				updates.add(e);
+			}
+		}
+		return updates;
 	}
 
-	private void add(GameEvent event) {
-		archive.add(event);
+	private void add(final GameEvent event) {
+		event.updateRevision(world.getRevision());
+		archive.put(event, event);
 		super.setChanged();
 	}
 
