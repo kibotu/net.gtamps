@@ -22,6 +22,7 @@ import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.GameEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +57,10 @@ public class ManualTypeSerializer implements ISerializer {
 	public static String MESSAGE = "M";
 	public static String SENDABLE = "SEND";
 	public static String ENTITY = "ENTITY";
+	public static String EVENT = "EVENT";
+	public static String EVENT_SOURCE = "SRC";
+	public static String EVENT_TARGET = "TGT";
+	public static String EVENT_VALUE = "VAL";
 	public static String PROPERTY = "PROP";
 	public static String INTEGER = "INT";
 
@@ -130,6 +135,17 @@ public class ManualTypeSerializer implements ISerializer {
 	    		for (final Propertay<?> p : e.getAllProperties()) {
 	    			serializeProperty(bld, p);
 	    		}
+    		}
+    		if (e instanceof GameEvent) {
+    			final GameEvent event = (GameEvent) e;
+    			addToken(bld, EVENT);
+    			addToken(bld, event.getType().name());
+    			addToken(bld, Integer.toString(e.getUid()));
+    			addToken(bld, EVENT_SOURCE);
+    			addToken(bld, Integer.toString(event.getSourceUid()));
+    			addToken(bld, EVENT_TARGET);
+    			addToken(bld, Integer.toString(event.getTargetUid()));
+    			//TODO
     		}
     	}
     }
