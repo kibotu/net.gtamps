@@ -6,6 +6,8 @@ import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
 
+    public final static String TAG = Object3dFactory.class.getSimpleName();
+
     private Object3dFactory() {
     }
 
@@ -25,7 +27,7 @@ final public class Object3dFactory {
             case SPAWNPOINT: object3d = createSpawnPoint(); break;
             case WAYPOINT: object3d = createWayPoint(); break;
             case PLACEHOLDER: object3d = createCube(); break;
-            default: object3d = new Cube(); break;
+            default: object3d = createCube(); break;
         }
         return object3d;
     }

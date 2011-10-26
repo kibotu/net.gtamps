@@ -90,8 +90,8 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
-            if(view != null) world.setActiveObject(view);
+//            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
+//            if(view != null) world.setActiveObject(view);
         }
 
         // on release
@@ -108,11 +108,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().move(temp);
+            world.getActiveObject().getObject3d().getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveObject().getNode().setRotation(0, 0, angle);
+            world.getActiveObject().getObject3d().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);

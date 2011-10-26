@@ -58,16 +58,12 @@ public class Scene {
         return null;
     }
 
-    public void setActiveCamera(Camera camera) {
+    public void setActiveCamera(@NotNull Camera camera) {
         sceneGraph.setActiveCamera(camera);
     }
 
     public Camera getActiveCamera() {
         return sceneGraph.getActiveCamera();
-    }
-
-    public void addNode(@NotNull SceneNode node) {
-        sceneGraph.add(node);
     }
 
     public void removeNode(@NotNull SceneNode node) {

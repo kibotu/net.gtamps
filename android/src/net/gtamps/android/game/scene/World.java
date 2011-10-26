@@ -4,6 +4,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.primitives.Cube;
 import net.gtamps.android.core.renderer.graph.primitives.Light;
 import net.gtamps.android.core.renderer.mesh.parser.IParser;
 import net.gtamps.android.core.renderer.mesh.parser.Parser;
@@ -31,16 +32,17 @@ public class World {
          // world
         scene = new Scene();
 
-        camera =  new Camera(0, 0,5, 0, 0, 0, 0, 0, 1);
+        camera =  new Camera(0, 0,40, 0, 0, 0, 0, 0, 1);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(Color4.DARK_GRAY);
 
         activeOjbect = new EntityView(new Entity("cube"));
 
         // setup
-        Registry.getRenderer().addToSetupQueue(activeOjbect.getObject3d());
+//        Registry.getRenderer().addToSetupQueue(activeOjbect.getObject3d());
 
         scene.addChild(activeOjbect.getObject3d());
+        scene.addChild(new Cube());
 
 //        scene.addChild(addCity());
 //        scene.addNode(getSunLight());
