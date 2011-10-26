@@ -4,6 +4,7 @@ import net.gtamps.shared.Utils.cache.ObjectCache;
 import net.gtamps.shared.Utils.cache.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Vector;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Vector;
  *     {@link #recycle(Vector3)} zurückgegeben werden.
  * </p>
  */
-public final class Vector3 {
+public final class Vector3 implements Serializable{
 
     public static final float DEG = (float)(Math.PI / 180f);
 

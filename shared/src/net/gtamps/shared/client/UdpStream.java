@@ -1,4 +1,4 @@
-package net.gtamps.android.core.client;
+package net.gtamps.shared.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

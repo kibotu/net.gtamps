@@ -1,4 +1,4 @@
-package net.gtamps.android.core.client;
+package net.gtamps.shared.client;
 
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;

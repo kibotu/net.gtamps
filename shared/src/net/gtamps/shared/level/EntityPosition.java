@@ -1,11 +1,16 @@
 package net.gtamps.shared.level;
 
+import java.io.Serializable;
+
+import net.gtamps.shared.game.entity.Entity.Type;
 import net.gtamps.shared.math.Vector3;
 
-public class EntityPosition{
-	enum Type{
-		SPAWNPOINT, REDLIGHT_0, REDLIGHT_1, SPORTSCAR, TAXI
-	}
+public class EntityPosition implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -893131986434637247L;
 	Vector3 position;
 	Type type;
 	float rotation;
@@ -14,5 +19,11 @@ public class EntityPosition{
 		this.position = Vector3.createNew(x,y,z);
 		this.rotation = rotation;
 		this.type = type;
+	}
+	public Vector3 getPosition() {
+		return position;
+	}
+	public Type getType() {
+		return type;
 	}
 }

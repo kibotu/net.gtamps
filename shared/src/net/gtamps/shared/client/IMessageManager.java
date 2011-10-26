@@ -1,4 +1,4 @@
-package net.gtamps.android.core.client;
+package net.gtamps.shared.client;
 
 import net.gtamps.shared.communication.Message;
 import org.jetbrains.annotations.NotNull;
