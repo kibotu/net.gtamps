@@ -59,7 +59,7 @@ public class Game implements IGame{
         // connect
 //        connection.checkConnection();
 
-//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
 //        connection.start();
 //        connection.add(MessageFactory.createSessionRequest());
     }
