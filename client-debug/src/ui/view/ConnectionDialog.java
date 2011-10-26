@@ -16,6 +16,8 @@ import client.DebugClient;
 import ui.controller.Controller;
 
 public class ConnectionDialog extends JDialog implements ActionListener {
+	private static final long serialVersionUID = 4339183368391989900L;
+	
 	JTextField host;
 	JTextField port;
 	DebugClient dc;
