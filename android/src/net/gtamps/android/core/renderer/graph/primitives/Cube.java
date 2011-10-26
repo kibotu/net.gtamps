@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer.graph.primitives;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,6 +92,7 @@ public class Cube extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
+        Logger.i(this, "Setting up.");
     }
 
     @Override

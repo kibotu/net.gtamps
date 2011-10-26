@@ -31,11 +31,15 @@ public class World {
          // world
         scene = new Scene();
 
-        camera =  new Camera(0, 0,40, 0, 0, 0, 0, 0, 1);
+        camera =  new Camera(0, 0,5, 0, 0, 0, 0, 0, 1);
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(Color4.DARK_GRAY);
 
         activeOjbect = new EntityView(new Entity("cube"));
+
+        // setup
+        Registry.getRenderer().addToSetupQueue(activeOjbect.getObject3d());
+
         scene.addChild(activeOjbect.getObject3d());
 
 //        scene.addChild(addCity());

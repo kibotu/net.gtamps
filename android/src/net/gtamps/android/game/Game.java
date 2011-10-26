@@ -2,14 +2,14 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.Registry;
-import net.gtamps.android.game.objects.EntityView;
-import net.gtamps.android.game.scene.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.client.ConnectionManager;
+import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.scene.Hud;
 import net.gtamps.android.game.scene.Scene;
+import net.gtamps.android.game.scene.World;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.client.ConnectionManager;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.shared.communication.Sendable;
@@ -121,7 +121,7 @@ public class Game implements IGame{
             temp2.mulInPlace(40);
 
             Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
-            temp3.set(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
+            temp3.set(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getObject3d().getPosition());
 
             // send driving impulses
             fireImpulse(angle, temp);
@@ -129,7 +129,7 @@ public class Game implements IGame{
 //            temp.recycle();
             scenes.get(0).getActiveCamera().setPosition(temp3);
         }
-        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
+        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getObject3d().getPosition());
 
         // Compute elapsed time
         finalDelta = SystemClock.elapsedRealtime() - startTime;

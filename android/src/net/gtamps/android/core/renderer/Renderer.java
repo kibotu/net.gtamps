@@ -122,6 +122,7 @@ public class Renderer implements GLSurfaceView.Renderer{
         // setup
         for(int i = 0; i < runtimeSetupQueue.size(); i++) {
             glState.setGl(gl10);
+            Logger.v(this, "Setting up node.");
             runtimeSetupQueue.poll().setup(glState);
         }
     }

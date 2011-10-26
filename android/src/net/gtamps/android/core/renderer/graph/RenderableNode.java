@@ -305,6 +305,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     final public void onDirty(GL10 gl) {
         if(mesh == null) return;
         mesh.setup(gl);
+        Logger.I(this, "On Dirty.");
         clearDirtyFlag();
     }
 
