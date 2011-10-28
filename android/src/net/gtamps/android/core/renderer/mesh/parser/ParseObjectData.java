@@ -100,7 +100,7 @@ public class ParseObjectData {
 		}
 
 		if (hasBitmaps) {
-			obj.getTextureManager().addById(textureAtlas.getId());
+			obj.getMesh().textures.addById(textureAtlas.getId());
 		}
 
 		cleanup();
