@@ -37,7 +37,7 @@ public class World {
         scene.setBackground(Color4.DARK_GRAY);
 
         activeOjbect = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
-        activeOjbect.getObject3d().add(getSpotLight());
+        activeOjbect.getObject3d().get(0).add(getSpotLight());
         scene.addChild(activeOjbect.getObject3d());
         scene.addChild(new Cube());
         RenderableNode camaro = Object3dFactory.create(Entity.Type.CAR_CAMARO);
@@ -92,7 +92,7 @@ public class World {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(false);
-        parsedChild.enableLighting(false);
+        parsedChild.enableLighting(true);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
         return parsedObject;

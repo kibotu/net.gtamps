@@ -2,7 +2,6 @@ package net.gtamps.android.core.renderer.graph;
 
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
 import net.gtamps.shared.IDirty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,11 +73,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      * Defines the current color material.
      */
     protected Material material = Material.LIGHT_GRAY;
-
-    /**
-     * Defines the texture and it's texture matrix uv coordinates.
-     */
-    protected TextureManager textureManager = new TextureManager();
 
     /**
      * Defines if mip maps are available.
@@ -587,10 +581,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     @Override
     final public void clearDirtyFlag() {
         isDirty = false;
-    }
-
-    public TextureManager getTextureManager() {
-        return textureManager;
     }
 
     public Material getMaterial() {

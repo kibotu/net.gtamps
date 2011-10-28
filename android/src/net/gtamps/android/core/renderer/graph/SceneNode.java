@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -281,6 +282,7 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	public final void cleanup(@NotNull ProcessingState state) {
+
 		// Internen Verarbeitungsvorgang aufrufen
 		cleanupInternal(state);
 
@@ -303,6 +305,7 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	public final void setup(@NotNull ProcessingState state) {
+
 		// Internen Verarbeitungsvorgang aufrufen
 		setupInternal(state);
 
