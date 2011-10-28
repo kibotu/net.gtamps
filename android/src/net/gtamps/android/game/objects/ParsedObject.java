@@ -1,8 +1,12 @@
 package net.gtamps.android.game.objects;
 
+import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.mesh.parser.IParser;
+import net.gtamps.android.core.renderer.mesh.parser.Parser;
+import net.gtamps.shared.Config;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -16,6 +20,14 @@ public class ParsedObject extends RenderableNode {
 
     public ParsedObject(int maxVertices, int maxFaces) {
         mesh = new Mesh(maxVertices, maxFaces);
+    }
+
+    public static ParsedObject parseObject(String objname, int textureResourceId, boolean generateMipMap) {
+        IParser objParser = Parser.createParser(Parser.Type.OBJ, Config.PACKAGE_NAME + objname, generateMipMap);
+        objParser.parse();
+        ParsedObject parsedObject = objParser.getParsedObject();
+        ((ParsedObject)parsedObject.get(0)).setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId, generateMipMap));
+        return parsedObject;
     }
 
     @Override
@@ -36,23 +48,9 @@ public class ParsedObject extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if(mesh != null) return;
     }
 
     @Override
     protected void setOptions() {
-        enableColorMaterialEnabled(true);
-        enableVertexColors(true);
-        enableNormals(true);
-        enableTextures(true);
-        enableDoubleSided(false);
-        enableLighting(false);
-        enableAlpha(true);
-//        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
-//        setPointSize(3);
-//        setPointSmoothing(true);
-//        setLineWidth(1);
-//        setLineSmoothing(true);
-        enableMipMap(false);
     }
 }

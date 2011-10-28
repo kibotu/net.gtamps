@@ -44,6 +44,15 @@ public class Entity extends GameActor implements Serializable {
         rota = this.useProperty("rota", 0);
 	}
 
+    public Entity(Type type) {
+        super(type.name().toLowerCase());
+        this.type = type;
+        x = this.useProperty("posx", 0);
+        y = this.useProperty("posy", 0);
+        z = this.useProperty("posz", 0);
+        rota = this.useProperty("rota", 0);
+    }
+
     private Type getType(String name) {
         try {
            return Type.valueOf(name.toUpperCase());
