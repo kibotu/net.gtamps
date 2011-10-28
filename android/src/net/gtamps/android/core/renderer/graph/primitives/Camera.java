@@ -227,7 +227,11 @@ public class Camera extends RenderableNode {
 	protected void renderInternal(@NotNull GL10 gl) {
 	}
 
-	/**
+    @Override
+    protected void setOptions() {
+    }
+
+    /**
 	 * Spezifische Implementierung des Bereinigungsvorganges
 	 *
 	 * @param state Die State-Referenz

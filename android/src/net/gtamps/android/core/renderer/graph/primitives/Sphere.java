@@ -83,7 +83,14 @@ public class Sphere extends RenderableNode {
         n.recycle();
         pos.recycle();
         posFull.recycle();
+    }
 
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    protected void setOptions() {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
@@ -97,11 +104,6 @@ public class Sphere extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
-
-    }
-
-    @Override
-    protected void renderInternal(@NotNull GL10 gl) {
     }
 
     @Override

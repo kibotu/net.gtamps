@@ -36,7 +36,7 @@ public class World {
         scene.setActiveCamera(camera);
         scene.getBackground().setAll(Color4.DARK_GRAY);
 
-        activeOjbect = new EntityView(new Entity("sphere"));
+        activeOjbect = new EntityView(new Entity("car_camaro"));
         scene.addChild(activeOjbect.getObject3d());
         scene.addChild(new Cube());
 
@@ -86,7 +86,6 @@ public class World {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/grid_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
-        parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
         parsedObject.setScaling(40, 40, 1);
 //        parsedObject.setDrawingStyle(OpenGLUtils.DrawingStyle.GL_LINES);
@@ -97,7 +96,6 @@ public class World {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/camaro_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
-        parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.camaro, true));
         parsedObject.setScaling(5, 5, 5);
         parsedObject.enableDoubleSided(true);
@@ -108,7 +106,6 @@ public class World {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/map1_obj", true);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
-        parsedObject.updateVbo();
         parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
         parsedObject.setScaling(0.5f, 0.5f, 0.5f);
         parsedObject.setPosition(0, 0, -3f);

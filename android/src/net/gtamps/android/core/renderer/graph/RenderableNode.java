@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer.graph;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.renderer.mesh.texture.Texture;
+import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
 import net.gtamps.shared.IDirty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +79,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines the texture and it's texture matrix uv coordinates.
      */
-    private Texture texture;
+    protected TextureManager textureManager = new TextureManager();
 
     /**
      * Defines if mip maps are available.
@@ -166,9 +167,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     protected void render(GL11 gl) {
         if(mesh == null) return;
-        if(isDirty) {
-            onDirty(gl);
-        }
+        if(isDirty) onDirty(gl);
 
         // shading
         gl.glShadeModel(shader.getValue());
@@ -227,7 +226,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
             // TODO find way to use active texture instead of bind texture
 		    // gl.glActiveTexture(texture.getTextureId());
-            gl.glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+            Texture texture = textureManager.size() > 0 ? textureManager.get(0) : null;
+            gl.glBindTexture(GL_TEXTURE_2D, textureManager.texture.getTextureId());
 
             // enable mip maps
             if(hasMipMap) {
@@ -237,10 +237,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             }
 
             // texture offset for repeating textures
-            if (texture.offsetU != 0 || texture.offsetV != 0) {
+            if (textureManager.get(0).offsetU != 0 || textureManager.get(0).offsetV != 0) {
                 gl.glMatrixMode(GL_TEXTURE);
                 gl.glLoadIdentity();
-                gl.glTranslatef(texture.offsetU, texture.offsetV, 0);
+                gl.glTranslatef(textureManager.get(0).offsetU, textureManager.get(0).offsetV, 0);
                 gl.glMatrixMode(GL_MODELVIEW);
             }
 
@@ -588,5 +588,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     @Override
     final public void clearDirtyFlag() {
         isDirty = false;
+    }
+
+    public TextureManager getTextureManager() {
+        return textureManager;
     }
 }

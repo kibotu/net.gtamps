@@ -20,7 +20,7 @@ public class City extends RenderableNode {
     public City(int vboResourceId, int textureResourceId, boolean generateMipMap) {
 //        setVbo(VboLoader.loadVbo(Registry.getContext(), vboResourceId));
 ////        setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId,generateMipMap));
-//        hasMipMap = generateMipMap;
+//        hasMipMap = generateMipMuzap;
     }
 
     @Override
@@ -37,5 +37,9 @@ public class City extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
+    }
+
+    @Override
+    protected void setOptions() {
     }
 }
