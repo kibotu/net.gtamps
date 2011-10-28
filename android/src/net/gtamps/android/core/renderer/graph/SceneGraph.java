@@ -28,7 +28,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
      * Defines the background color of the scene.
      */
     @NotNull
-    private static final Color4 background = new Color4(0,0,0,0);
+    private static Color4 background = new Color4(0,0,0,0);
     private static boolean isDirty = true;
 
 	/**
@@ -186,5 +186,9 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	public int getChildCount() {
 		return rootNode.getChildCount();
 	}
+
+    public void setBackground(Color4 color) {
+        this.background = color;
+    }
 }
 

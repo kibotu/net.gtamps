@@ -38,7 +38,14 @@ public class Sprite extends RenderableNode {
 
         mesh.faces.add(0, 1, 2);
         mesh.faces.add(2, 3, 0);
+    }
 
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    protected void setOptions() {
         enableColorMaterialEnabled(false);
         enableVertexColors(false);
         enableNormals(false);
@@ -52,10 +59,6 @@ public class Sprite extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
         enableMipMap(false);
-    }
-
-    @Override
-    protected void renderInternal(@NotNull GL10 gl) {
     }
 
     @Override

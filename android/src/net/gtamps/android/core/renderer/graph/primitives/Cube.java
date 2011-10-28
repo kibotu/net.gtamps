@@ -22,6 +22,23 @@ public class Cube extends RenderableNode {
     }
 
     @Override
+    protected void setOptions() {
+        enableColorMaterialEnabled(true);
+        enableVertexColors(true);
+        enableNormals(true);
+        enableTextures(false);
+        enableDoubleSided(false);
+        enableLighting(true);
+        enableAlpha(true);
+//        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
+//        setPointSize(3);
+//        setPointSmoothing(true);
+//        setLineWidth(1);
+//        setLineSmoothing(true);
+//        enableMipMap(false);
+    }
+
+    @Override
     protected void updateInternal(float deltat) {
     }
 
@@ -76,20 +93,6 @@ public class Cube extends RenderableNode {
         mesh.faces.add(16, 18, 19);
         mesh.faces.add(20, 21, 22);
         mesh.faces.add(20, 22, 23);
-
-        enableColorMaterialEnabled(true);
-        enableVertexColors(true);
-        enableNormals(true);
-        enableTextures(false);
-        enableDoubleSided(false);
-        enableLighting(true);
-        enableAlpha(true);
-//        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
-//        setPointSize(3);
-//        setPointSmoothing(true);
-//        setLineWidth(1);
-//        setLineSmoothing(true);
-//        enableMipMap(false);
     }
 
     @Override

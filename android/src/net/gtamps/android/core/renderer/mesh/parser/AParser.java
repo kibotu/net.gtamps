@@ -265,9 +265,9 @@ public abstract class AParser implements IParser {
 				fos.flush();
 				fos.close();
 			} catch (FileNotFoundException e) {
-				Logger.e(this,""+e.getMessage());
+				Logger.printException(this, e);
 			} catch (IOException e) {
-				Logger.e(this, ""+e.getMessage());
+				Logger.printException(this, e);
 			}
         }
 

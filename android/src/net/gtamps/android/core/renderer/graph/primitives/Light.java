@@ -165,6 +165,11 @@ public class Light extends RenderableNode {
     }
 
     @Override
+    protected void setOptions() {
+
+    }
+
+    @Override
     public void setPosition(float x, float y, float z) {
         super.setPosition(x, y, z);
     }

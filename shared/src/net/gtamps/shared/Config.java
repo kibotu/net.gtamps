@@ -18,6 +18,11 @@ final public class Config {
     public static final boolean DISPLAY_FRAME_RATE = false;
 
     /**
+     * PARSER
+     */
+    public static String PACKAGE_NAME = "net.gtamps.android:raw/";
+
+    /**
      * CAMERA
      */
     public static final float MIN_ZOOM = 0;

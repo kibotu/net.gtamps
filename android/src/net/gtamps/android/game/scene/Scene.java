@@ -81,4 +81,8 @@ public class Scene {
     public SceneGraph getSceneGraph() {
         return sceneGraph;
     }
+
+    public void setBackground(Color4 color) {
+        sceneGraph.setBackground(color);
+    }
 }

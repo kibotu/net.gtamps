@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.mesh;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.mesh.buffermanager.FaceManager;
 import net.gtamps.android.core.renderer.mesh.buffermanager.Vbo;
