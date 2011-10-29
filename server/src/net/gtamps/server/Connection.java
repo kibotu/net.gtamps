@@ -1,5 +1,7 @@
 package net.gtamps.server;
 
+import java.nio.channels.ClosedChannelException;
+
 import net.gtamps.shared.communication.ISerializer;
 import net.gtamps.shared.communication.Message;
 
@@ -8,7 +10,7 @@ import net.gtamps.shared.communication.Message;
  * 
  *
  */
-public final class Connection<H extends ISocketHandler> {
+public final class Connection<H extends ISocketHandler> implements IDataSink {
 	private final H socketHandler;
 	private final ISerializer serializer;
 	private final String id;
@@ -30,9 +32,9 @@ public final class Connection<H extends ISocketHandler> {
 		this.id = id;
 	}
 	
-	public void send(final Message msg) {
+	public void send(final Message msg) throws ClosedChannelException {
 		final byte[] bytes = serializer.serializeMessage(msg);
-		socketHandler.send(id, bytes);
+		sendData(bytes);
 	}
 	
 	public void onData(final byte[] bytes) {
@@ -78,6 +80,12 @@ public final class Connection<H extends ISocketHandler> {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void sendData(final byte[] data) throws ClosedChannelException {
+		socketHandler.send(id, data);
+		
 	}
 	
 	

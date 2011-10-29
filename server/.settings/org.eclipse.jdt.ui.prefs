@@ -1,4 +1,4 @@
-#Wed Oct 26 14:42:15 CEST 2011
+#Thu Oct 27 00:47:41 CEST 2011
 cleanup_settings_version=2
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
@@ -54,5 +54,5 @@ sp_cleanup.use_blocks_only_for_return_and_throw=false
 sp_cleanup.use_parentheses_in_expressions=false
 sp_cleanup.use_this_for_non_static_field_access=true
 sp_cleanup.use_this_for_non_static_field_access_only_if_necessary=true
-sp_cleanup.use_this_for_non_static_method_access=true
+sp_cleanup.use_this_for_non_static_method_access=false
 sp_cleanup.use_this_for_non_static_method_access_only_if_necessary=true
