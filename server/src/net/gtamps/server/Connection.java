@@ -1,48 +1,63 @@
 package net.gtamps.server;
 
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.Message;
+import org.xsocket.IDataSink;
+import org.xsocket.IDataSource;
+
 
 /**
  * immutable!
  * 
  *
  */
-public final class Connection<H extends ISocketHandler> {
-	private final H socketHandler;
-	private final ISerializer serializer;
+public final class Connection<H extends ISocketHandler> implements IDataSink {
+//	private final H socketHandler;
+//	private final ISerializer serializer;
+
+	
 	private final String id;
-//	private final String host;
+	private final IDataSink dataSink;
+	private final IDataSource dataSource;
+	
+	//	private final String host;
 //	private final int port;
 
-	public Connection(final String id, final H socketHandler, final ISerializer serializer) {
-		if (id == null) {
-			throw new IllegalArgumentException("'id' must not be null");
-		}
-		if (socketHandler == null) {
-			throw new IllegalArgumentException("'socketHandler' must not be null");
-		}
-		if (serializer == null) {
-			throw new IllegalArgumentException("'serializer' must not be null");
-		}
-		this.socketHandler = socketHandler;
-		this.serializer = serializer;
+	public Connection(final String id, final IDataSink dataSink, final IDataSource dataSource) {
 		this.id = id;
+		this.dataSink = dataSink;
+		this.dataSource = dataSource;
 	}
 	
-	public void send(final Message msg) {
-		final byte[] bytes = serializer.serializeMessage(msg);
-		socketHandler.send(id, bytes);
-	}
 	
-	public void onData(final byte[] bytes) {
-		if (bytes == null) {
-			throw new IllegalArgumentException("'bytes' must not be null");
-		}
-		final Message m = serializer.deserializeMessage(bytes);
-		//SessionManager.instance.receiveMessage(this, m);
-		ControlCenter.instance.receiveMessage(this, m);
-	}
+	
+	
+//	public Connection(final String id, final H socketHandler, final ISerializer serializer) {
+//		if (id == null) {
+//			throw new IllegalArgumentException("'id' must not be null");
+//		}
+//		if (socketHandler == null) {
+//			throw new IllegalArgumentException("'socketHandler' must not be null");
+//		}
+//		if (serializer == null) {
+//			throw new IllegalArgumentException("'serializer' must not be null");
+//		}
+//		this.socketHandler = socketHandler;
+//		this.serializer = serializer;
+//		this.id = id;
+//	}
+	
+//	public void send(final Message msg) {
+//		final byte[] bytes = serializer.serializeMessage(msg);
+//		socketHandler.send(id, bytes);
+//	}
+//
+//	public void onData(final byte[] bytes) {
+//		if (bytes == null) {
+//			throw new IllegalArgumentException("'bytes' must not be null");
+//		}
+//		final Message m = serializer.deserializeMessage(bytes);
+//		//SessionManager.instance.receiveMessage(this, m);
+//		ControlCenter.instance.receiveMessage(this, m);
+//	}
 
 	@Override
 	public int hashCode() {
@@ -64,10 +79,10 @@ public final class Connection<H extends ISocketHandler> {
 			return false;
 		}
 		final Connection<?> other = (Connection<?>) obj;
-		if (this.socketHandler.getClass() != other.socketHandler.getClass()) {
+		if (socketHandler.getClass() != other.socketHandler.getClass()) {
 			return false;
 		}
-		if (this.serializer.getClass() != other.serializer.getClass()) {
+		if (serializer.getClass() != other.serializer.getClass()) {
 			return false;
 		}
 		if (id == null) {
