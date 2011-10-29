@@ -86,24 +86,21 @@ public class ParseObjectData {
 					newUv.u = ba.uOffset + newUv.u * ba.uScale;
 					newUv.v = ba.vOffset + ((newUv.v + 1) * ba.vScale) - 1;
 				}
-				obj.vertices.addVertex(newVertex, newNormal, newColor, newUv);
+				obj.getMesh().addVertex(newVertex, newNormal, newColor, newUv);
 			}
 
 			if (face.faceLength == 3) {
-				obj.faces.add(
-                        new Face(faceIndex, faceIndex + 1, faceIndex + 2));
+				obj.getMesh().faces.add(new Face(faceIndex, faceIndex + 1, faceIndex + 2));
 			} else if (face.faceLength == 4) {
-				obj.faces.add(
-                        new Face(faceIndex, faceIndex + 1, faceIndex + 3));
-				obj.faces.add(
-                        new Face(faceIndex + 1, faceIndex + 2, faceIndex + 3));
+				obj.getMesh().faces.add(new Face(faceIndex, faceIndex + 1, faceIndex + 3));
+				obj.getMesh().faces.add(new Face(faceIndex + 1, faceIndex + 2, faceIndex + 3));
 			}
 
 			faceIndex += face.faceLength;
 		}
 
 		if (hasBitmaps) {
-			obj.textures.addById(textureAtlas.getId());
+			obj.getMesh().textures.addById(textureAtlas.getId());
 		}
 
 		cleanup();

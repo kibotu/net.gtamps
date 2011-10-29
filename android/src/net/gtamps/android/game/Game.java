@@ -2,14 +2,14 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.Registry;
-import net.gtamps.android.game.objects.EntityView;
-import net.gtamps.android.game.scene.World;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.shared.client.ConnectionManager;
+import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.scene.Hud;
 import net.gtamps.android.game.scene.Scene;
+import net.gtamps.android.game.scene.World;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.client.ConnectionManager;
 import net.gtamps.shared.communication.Message;
 import net.gtamps.shared.communication.MessageFactory;
 import net.gtamps.shared.communication.Sendable;
@@ -59,7 +59,7 @@ public class Game implements IGame{
         // connect
 //        connection.checkConnection();
 
-//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
 //        connection.start();
 //        connection.add(MessageFactory.createSessionRequest());
     }
@@ -90,8 +90,8 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
-            if(view != null) world.setActiveObject(view);
+//            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
+//            if(view != null) world.setActiveObject(view);
         }
 
         // on release
@@ -108,11 +108,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().move(temp);
+            world.getActiveObject().getObject3d().getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveObject().getNode().setRotation(0, 0, angle);
+            world.getActiveObject().getObject3d().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);
@@ -121,7 +121,7 @@ public class Game implements IGame{
             temp2.mulInPlace(40);
 
             Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
-            temp3.set(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getNode().getPosition());
+            temp3.set(temp2.x,temp2.y,camPos.z).addInPlace(world.getActiveObject().getObject3d().getPosition());
 
             // send driving impulses
             fireImpulse(angle, temp);
@@ -129,7 +129,7 @@ public class Game implements IGame{
 //            temp.recycle();
             scenes.get(0).getActiveCamera().setPosition(temp3);
         }
-        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getNode().getPosition());
+        scenes.get(0).getActiveCamera().setTarget(world.getActiveObject().getObject3d().getPosition());
 
         // Compute elapsed time
         finalDelta = SystemClock.elapsedRealtime() - startTime;

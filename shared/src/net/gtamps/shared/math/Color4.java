@@ -155,7 +155,7 @@ public class Color4 implements Comparable<Color4> {
     }
 
     public FloatBuffer asBuffer() {
-        final ByteBuffer vbb = ByteBuffer.allocateDirect(Color4.size());
+        final ByteBuffer vbb = ByteBuffer.allocateDirect(Color4.size() << 2);
         vbb.order(ByteOrder.nativeOrder());
         FloatBuffer buf = vbb.asFloatBuffer();
         fillBuffer(buf);
