@@ -19,4 +19,4 @@ default.properties
 *.class
 .metadata
 *.dex
-/cloc-1.55.exe
+*.exe

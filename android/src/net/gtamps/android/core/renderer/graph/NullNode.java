@@ -45,4 +45,8 @@ public final class NullNode extends SceneNode {
 	@Override
 	protected void setupInternal(@NotNull ProcessingState state) {
 	}
+
+    @Override
+    protected void setOptions() {
+    }
 }
