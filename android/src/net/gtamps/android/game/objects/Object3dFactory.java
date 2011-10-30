@@ -1,10 +1,15 @@
 package net.gtamps.android.game.objects;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.primitives.Cube;
+import net.gtamps.android.core.renderer.graph.primitives.Sphere;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 
 final public class Object3dFactory {
+
+    public final static String TAG = Object3dFactory.class.getSimpleName();
 
     private Object3dFactory() {
     }
@@ -14,64 +19,101 @@ final public class Object3dFactory {
     }
 
     public static RenderableNode create(Entity.Type type){
-        RenderableNode object3d = null;
         switch (type) {
-            case CAR_CAMARO: object3d = createCarCamaro(); break;
-            case CAR_RIVIERA: object3d = createCarRiveria(); break;
-            case CAR_CHEVROLET_CORVETTE: object3d = createCarChevroletCorvette(); break;
-            case HUMAN: object3d = createHuman(); break;
-            case HOUSE: object3d = createHouse(); break;
-            case BULLET: object3d = createBullet(); break;
-            case SPAWNPOINT: object3d = createSpawnPoint(); break;
-            case WAYPOINT: object3d = createWayPoint(); break;
-            case PLACEHOLDER: object3d = createCube(); break;
-            default: object3d = new Cube(); break;
+            case CAR_CAMARO: return createCarCamaro();
+            case CAR_RIVIERA: return createCarRiveria();
+            case CAR_CHEVROLET_CORVETTE: return createCarChevroletCorvette();
+            case HUMAN: return createHuman();
+            case HOUSE: return createHouse();
+            case BULLET: return createBullet();
+            case SPAWNPOINT: return createSpawnPoint();
+            case WAYPOINT: return createWayPoint();
+            case CUBE: return createCube();
+            case SPHERE: return createSphere();
+            case PLACEHOLDER: return createCube();
+            default: return createCube();
         }
-        return object3d;
     }
 
     private static RenderableNode createCarChevroletCorvette() {
-//        Object3d car = new Car(Car.Type.CHEVROLET_CORVETTE);
-//        ((PureVboNode)car.getNode()).enableTextures(false);
-        return null;
+        Logger.v(TAG, "Create chevrolet corvette_mtl.");
+        RenderableNode parsedObject = ParsedObject.parseObject("corvette_obj", R.drawable.placeholder,true);
+        RenderableNode parsedChild = (RenderableNode)parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(false);
+//        parsedChild.setMaterial(Material.RED);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(false);
+        parsedChild.enableDoubleSided(true);
+        parsedChild.enableLighting(true);
+        parsedChild.enableAlpha(true);
+        parsedChild.enableMipMap(true);
+        return parsedObject;
     }
 
     private static RenderableNode createCarRiveria() {
-//        Object3d object3d = new Car(Car.Type.RIVIERA);
-//        object3d.getNode().setScaling(5,5,5);
-        return null;
+        Logger.v(TAG, "Create riveria.");
+        RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera,true);
+        RenderableNode parsedChild = (RenderableNode)parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(false);
+        parsedChild.enableVertexColors(false);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(true);
+        parsedChild.enableDoubleSided(false);
+        parsedChild.enableLighting(true);
+        parsedChild.enableAlpha(true);
+        parsedChild.enableMipMap(true);
+        parsedChild.setScaling(10, 10, 10);
+        return parsedObject;
     }
 
     private static RenderableNode createCarCamaro() {
-        return new Car(Car.Type.CAMARO);
+        Logger.v(TAG, "Create camaro.");
+        RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro,true);
+        RenderableNode parsedChild = (RenderableNode)parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(false);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(true);
+        parsedChild.enableDoubleSided(true);
+        parsedChild.enableLighting(true);
+        parsedChild.enableAlpha(true);
+        parsedChild.enableMipMap(true);
+        return parsedObject;
     }
 
     private static RenderableNode createCube() {
+        Logger.v(TAG, "Create cube.");
         return new Cube();
     }
 
-    @Deprecated
-    public static RenderableNode createParsedObject(String resource, String textureResource) {
-        return new ParsedObject(0,0);
+    private static RenderableNode createSphere() {
+        Logger.v(TAG, "Create sphere.");
+        return new Sphere(1,20,10);
     }
 
     private static RenderableNode createWayPoint() {
+        Logger.v(TAG, "Create way point.");
         return createCube();
     }
 
     private static RenderableNode createBullet() {
+        Logger.v(TAG, "Create bullet.");
         return createCube();
     }
 
     private static RenderableNode createSpawnPoint() {
+        Logger.v(TAG, "Create spawnpoint.");
         return createCube();
     }
 
     private static RenderableNode createHouse() {
+        Logger.v(TAG, "Create house.");
         return createCube();
     }
 
     private static RenderableNode createHuman() {
+        Logger.v(TAG, "Create human.");
         return createCarRiveria();
     }
 }

@@ -5,7 +5,6 @@ import net.gtamps.shared.Utils.cache.ObjectFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Vector;
 
 /**
  * 3D-Vektor
@@ -500,4 +499,40 @@ public final class Vector3 implements Serializable{
     public static float angleIntBetween(Vector3 a, Vector3 b) {
         return a.angleInBetween(b);
     }
+
+    public void rotateX(float angle){
+        float cosRY = (float) Math.cos(angle);
+		float sinRY = (float) Math.sin(angle);
+
+		Vector3 temp = Vector3.createNew(x, y, z);
+
+		y = (temp.y*cosRY)-(temp.z*sinRY);
+		z = (temp.y*sinRY)+(temp.z*cosRY);
+
+        temp.recycle();
+	}
+
+	public void rotateY(float angle) {
+		float cosRY = (float) Math.cos(angle);
+		float sinRY = (float) Math.sin(angle);
+
+		Vector3 temp = Vector3.createNew(x, y, z);
+
+		x = (temp.x*cosRY)+(temp.z*sinRY);
+		z = (temp.x*-sinRY)+(temp.z*cosRY);
+
+        temp.recycle();
+	}
+
+	public void rotateZ(float angle) {
+		float cosRY = (float) Math.cos(angle);
+		float sinRY = (float) Math.sin(angle);
+
+		Vector3 temp = Vector3.createNew(x, y, z);
+
+		x = (temp.x*cosRY)-(temp.y*sinRY);
+		y = (temp.x*sinRY)+(temp.y*cosRY);
+
+        temp.recycle();
+	}
 }

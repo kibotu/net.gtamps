@@ -1,12 +1,12 @@
 package net.gtamps.server;
 
-import org.xsocket.connection.IConnectHandler;
-import org.xsocket.connection.IDataHandler;
-import org.xsocket.connection.IDisconnectHandler;
-import org.xsocket.connection.INonBlockingConnection;
+import java.nio.channels.ClosedChannelException;
 
-public interface ISocketHandler extends IDataHandler, IConnectHandler, IDisconnectHandler {
+import org.xsocket.connection.IHandler;
+
+public interface ISocketHandler extends IHandler {
 	
-	public void send(String connectionId, byte[] bytes);
+	public void send(String connectionId, byte[] bytes) throws ClosedChannelException;
+//	public void onData(ByteBuffer dataSource);
 
 }

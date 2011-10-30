@@ -39,7 +39,7 @@ public class Texture {
 		textureEnvs.add( new TextureEnvironment());
 	}
 
-    public int getTextureId() {
-        return Integer.parseInt(textureId);
+    public String getTextureId() {
+        return textureId;
     }
 }
