@@ -64,8 +64,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 	public void receiveMessage(final Connection<?> c, final Message msg) {
 		if (msg != null) {
 			Logger.getInstance().log(TAG, msg.toString());
-			final String sessionId = SessionManager.instance.getSessionForMessage(msg, c);
-			msg.setSessionId(sessionId);
+			SessionManager.instance.receiveMessage(c, msg);
 			inbox.add(msg);
 		}
 	}
@@ -86,10 +85,11 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		final List<Message> workingCopy = new LinkedList<Message>();
 		inbox.drainTo(workingCopy);
 		for (final Message msg : workingCopy) {
-			final String msgSessid = msg.getSessionId();
+			final Session session = SessionManager.instance.getSessionForMessage(msg);
+			final String sessid = session.getId();
 			for (final Sendable i : msg.sendables) {
-					assert msgSessid.equals(i.sessionId);
-					handleSendable(i);
+					i.sessionId = sessid;
+					handleSendable(session, i);
 			}
 		}
 		workingCopy.clear();
@@ -99,31 +99,34 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		final List<Sendable> workingCopy = new LinkedList<Sendable>();
 		//responsebox.drainTo(workingCopy);
 		responsebox.drainTo(workingCopy);
-		game.drainResponseQueue(workingCopy);
 		for (final Sendable response : workingCopy) {
 			sendInMessage(response);
 		}
 		workingCopy.clear();
+		game.drainResponseQueue(workingCopy);
+		for (final Sendable response : workingCopy) {
+				sendInMessage(response);
+		}
 	}
 	
 	private void processOutbox() {
 		
 	}
 	
-	private void handleSendable(final Sendable request) {
+	private void handleSendable(final Session session, final Sendable request) {
 		switch (request.type) {
 			case SESSION:
 				handleSession(request);
 				break;
 			case REGISTER:
-				handleRegister(request);
+				handleRegister(session, request);
 				break;
 			case LOGIN:
-				handleLogin(request);
+				handleLogin(session, request);
 				break;
 			case JOIN:
 			case LEAVE:
-				handleAuthenticatedRequest(request);
+				handleAuthenticatedRequest(session, request);
 				break;
 			case GETMAPDATA:
 			case GETPLAYER:
@@ -136,7 +139,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 			case RIGHT:
 			case SHOOT:
 			case SUICIDE:
-				handlePlayingRequest(request);
+				handlePlayingRequest(session, request);
 				break;
 			default:
 				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
@@ -150,27 +153,19 @@ public class ControlCenter implements Runnable, IMessageHandler {
 		handleResponse(response);
 	}
 	
-	private void handleRegister(final Sendable request) {
+	private void handleRegister(final Session s, final Sendable request) {
 		final AuthentificationData adata = (AuthentificationData) request.data;
 		if (adata == null || adata.username == null || adata.username.length() == 0 ||
 				adata.password == null || adata.password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
-		// TODO database; get real uid
-		Sendable response = null;
-		try {
-		SessionManager.instance.authenticateSession(request.sessionId, new User(99, adata.username));
-		response = request.createResponse(SendableType.REGISTER_OK);
-		} catch (final IllegalStateException e) {
-			response = request.createResponse(SendableType.REGISTER_BAD);
-		}
-		handleResponse(response);
- 	}
+		handleResponse(request.createResponse(SendableType.REGISTER_OK));
+	}
 
 	
-	private void handleLogin(final Sendable request) {
-		if (SessionManager.instance.isAuthenticated(request.sessionId)) {
+	private void handleLogin(final Session s, final Sendable request) {
+		if (s.isAuthenticated()) {
 			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
 		}
@@ -180,49 +175,47 @@ public class ControlCenter implements Runnable, IMessageHandler {
 			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
 			return;
 		}
-		// TODO database; get real uid
 		final User debugUser = new User(1, adata.username);
-		Sendable response = null;
-		try {
-			SessionManager.instance.authenticateSession(request.sessionId, debugUser);
-			response = request.createResponse(SendableType.LOGIN_OK);
-		} catch (final IllegalStateException e) {
-			// TODO log or something?
-			response = request.createResponse(SendableType.LOGIN_BAD);
-		} finally {
-			handleResponse(response);
-		}
+		s.setUser(debugUser);
+		handleResponse(request.createResponse(SendableType.LOGIN_OK));
 	}
 
-	private void handleAuthenticatedRequest(final Sendable request) {
-		if (!SessionManager.instance.isAuthenticated(request.sessionId)) {
+	private void handleAuthenticatedRequest(final Session s, final Sendable request) {
+		if (!s.isAuthenticated()) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
 		}
-		game.handleSendable(request);
+		game.handleSendable(s, request);
 	}
 	
 
-	private void handlePlayingRequest(final Sendable request) {
-		if (!SessionManager.instance.isPlaying(request.sessionId)) {
+	private void handlePlayingRequest(final Session s, final Sendable request) {
+		if (!s.isAuthenticated() || !s.isPlaying()) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
 		}
-		game.handleSendable(request);
+		game.handleSendable(s, request);
 	}
 	
-
-	private void sendInMessage(final Sendable response) {
+	private void sendInMessage(final Sendable r) {
+		final Session s = SessionManager.instance.getSessionById(r.sessionId);
 		final Message msg = new Message();
-		msg.setSessionId(response.sessionId);
-		msg.addSendable(response);
-		SessionManager.instance.sendMessage(msg);
+		msg.setSessionId(s.getId());
+		msg.addSendable(r);
+		final Connection<?> c = s.getConnection();
+		//debug
+		if (c == null) {
+			throw new NullPointerException("Session: " + s.toString());
+		}
+		c.send(msg);
 	}
-
 	
 	private IGame createGame(final String mapname) {
 		game = new Game();
 		return game;
 	}
+	
+
+	
 	
 }

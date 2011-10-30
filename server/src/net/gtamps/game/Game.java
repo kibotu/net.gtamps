@@ -11,8 +11,7 @@ import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.world.World;
 import net.gtamps.game.world.WorldFactory;
-import net.gtamps.server.SessionManager;
-import net.gtamps.server.User;
+import net.gtamps.server.Session;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.communication.Sendable;
@@ -39,10 +38,19 @@ public class Game implements IGame, Runnable {
 	
 	private static volatile int instanceCounter = 0;
 
+	private class MessagePair<T extends Sendable> {
+		public T sendable;
+		public Session session;
+		public MessagePair(final T sendable, final Session session) {
+			this.sendable = sendable;
+			this.session = session;
+		}
+	}
+
 	private final int id;
 	private final Thread thread;
-	private final BlockingQueue<Sendable> requestQueue = new LinkedBlockingQueue<Sendable>();
-	private final BlockingQueue<Sendable> commandQueue = new LinkedBlockingQueue<Sendable>();
+	private final BlockingQueue<MessagePair<Sendable>> requestQueue = new LinkedBlockingQueue<MessagePair<Sendable>>();
+	private final BlockingQueue<MessagePair<Sendable>> commandQueue = new LinkedBlockingQueue<MessagePair<Sendable>>();
 	private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
 	
 	private volatile boolean run;
@@ -148,11 +156,14 @@ public class Game implements IGame, Runnable {
 
 
 	@Override
-	public void handleSendable(final Sendable sendable) {
-		if (sendable == null) {
+	public void handleSendable(final Session s, final Sendable r) {
+		if (s == null) {
+			throw new IllegalArgumentException("'s' must not be null");
+		}
+		if (r == null) {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
-		switch(sendable.type) {
+		switch(r.type) {
 			case ACCELERATE:
 			case DECELERATE:
 			case ENTEREXIT:
@@ -160,14 +171,14 @@ public class Game implements IGame, Runnable {
 			case RIGHT:
 			case SHOOT:
 			case SUICIDE:
-				commandQueue.add(sendable);
+				commandQueue.add(new MessagePair<Sendable>(r, s));
 				break;
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
 			case JOIN:
 			case LEAVE:
-				requestQueue.add(sendable);
+				requestQueue.add(new MessagePair<Sendable>(r, s));
 				break;
 			default:
 				break;
@@ -180,44 +191,44 @@ public class Game implements IGame, Runnable {
 	}
 
 	private void processCommandQueue() {
-		final List<Sendable> commandPairs = new LinkedList<Sendable>();
+		final List<MessagePair<Sendable>> commandPairs = new LinkedList<MessagePair<Sendable>>();
 		commandQueue.drainTo(commandPairs);
-		for (final Sendable sendable : commandPairs) {
-			command(sendable);
+		for (final MessagePair<Sendable> pair : commandPairs) {
+			command(pair.session, pair.sendable);
 		}
 		commandPairs.clear();
 	}
 	
 	private void processRequestQueue() {
-		final List<Sendable> requestPairs = new LinkedList<Sendable>();
+		final List<MessagePair<Sendable>> requestPairs = new LinkedList<MessagePair<Sendable>>();
 		requestQueue.drainTo(requestPairs);
-		for (final Sendable sendable: requestPairs) {
-			final Sendable response = processRequest(sendable);
-			handleResponse(response);
+		for (final MessagePair<Sendable> pair: requestPairs) {
+			final Sendable response = processRequest(pair.session, pair.sendable);
+			handleResponse(pair.session, response);
 		}
 		requestPairs.clear();
 	}
 	
-	private Sendable processRequest(final Sendable request) {
+	private Sendable processRequest(final Session session, final Sendable request) {
 		Sendable response = null;
-		if (!(request.type.equals(SendableType.JOIN) || SessionManager.instance.isPlaying(request.sessionId))) {
+		if (session.getUser() == null) {
 			return request.createResponse(request.type.getNeedResponse());
 		}
 			switch(request.type) {
 				case JOIN:
-					response = join(request);
+					response = join(session, request);
 					break;
 				case GETMAPDATA:
 //					response = getMapData(session, request);
 					break;
 				case GETPLAYER:
-					response = getPlayer(request);
+					response = getPlayer(session, request);
 					break;
 				case GETUPDATE:
-					response = getUpdate(request);
+					response = getUpdate(session, request);
 					break;
 				case LEAVE:
-					response = leave(request);
+					response = leave(session, request);
 					break;
 				default:
 					break;
@@ -227,14 +238,14 @@ public class Game implements IGame, Runnable {
 	}
 	
 
-	private void handleResponse(final Sendable r) {
+	private void handleResponse(final Session s, final Sendable r) {
+		assert s != null;
 		assert r != null;
 		responseQueue.add(r);
 	}
 	
-	private void command(final Sendable cmd) {
-		final User user = SessionManager.instance.getUserForSession(cmd.sessionId);
-		final Player player = playerStorage.getPlayerForUser(user);
+	private void command(final Session session, final Sendable cmd) {
+		final Player player = playerStorage.getPlayerForUser(session.getUser());
 		if (player == null) {
 			return;
 		}
@@ -271,29 +282,26 @@ public class Game implements IGame, Runnable {
 	}
 
 	
-	private Sendable join(final Sendable sendable) {
+	private Sendable join(final Session session, final Sendable sendable) {
 		assert sendable.type.equals(SendableType.JOIN);
-		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-		final Player player = playerStorage.joinUser(user);
+		final Player player = playerStorage.joinUser(session.getUser());
 		if (player == null) {
 			return sendable.createResponse(SendableType.JOIN_BAD);
 		}
-		SessionManager.instance.joinSession(sendable.sessionId, this);
+		session.setGame(this);
 		return sendable.createResponse(SendableType.JOIN_OK);
 	}
 	
-	private Sendable leave(final Sendable sendable) {
+	private Sendable leave(final Session session, final Sendable sendable) {
 		assert sendable.type.equals(SendableType.LEAVE);
-		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-		playerStorage.leaveUser(user);
-		SessionManager.instance.leaveSession(sendable.sessionId);
+		playerStorage.leaveUser(session.getUser());
+		session.setGame(null);
 		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
 
-	private Sendable getPlayer(final Sendable request) {
+	private Sendable getPlayer(final Session session, final Sendable request) {
 		assert request.type.equals(SendableType.GETPLAYER);
-		final User user = SessionManager.instance.getUserForSession(request.sessionId);
-		final Player player = playerStorage.getPlayerForUser(user);
+		final Player player = playerStorage.getPlayerForUser(session.getUser());
 		if (player == null) {
 			return request.createResponse(SendableType.GETPLAYER_NEED);
 		}
@@ -303,13 +311,7 @@ public class Game implements IGame, Runnable {
 	}
 
 
-	private Sendable getUpdate(final Sendable sendable) {
-		assert sendable.type.equals(SendableType.GETUPDATE);
-		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-		final Player player = playerStorage.getPlayerForUser(user);
-		if (player == null) {
-			return sendable.createResponse(SendableType.GETPLAYER_NEED);
-		}
+	private Sendable getUpdate(final Session session, final Sendable sendable) {
 		final long baseRevision = ((RevisionData) sendable.data).revisionId;
 		final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
 		final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);

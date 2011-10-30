@@ -2,6 +2,7 @@ package net.gtamps.game;
 
 import java.util.Collection;
 
+import net.gtamps.server.Session;
 import net.gtamps.shared.communication.Sendable;
 
 public interface IGame {
@@ -11,7 +12,7 @@ public interface IGame {
 	public boolean isActive();
 	public long getId();
 	public String getName();
-	public void handleSendable(Sendable r);
+	public void handleSendable(Session s, Sendable r);
 	void drainResponseQueue(Collection<Sendable> target);
 	
 
