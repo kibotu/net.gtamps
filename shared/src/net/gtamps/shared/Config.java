@@ -7,7 +7,7 @@ final public class Config {
     /**
      * DEBUG
      */
-    public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
+    public static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
 
     /**
      * RENDERER
@@ -16,11 +16,6 @@ final public class Config {
     public static boolean ENABLE_FRAME_LIMITER = true;
     public static final long FPS = 1000/30;
     public static final boolean DISPLAY_FRAME_RATE = false;
-
-    /**
-     * PARSER
-     */
-    public static String PACKAGE_NAME = "net.gtamps.android:raw/";
 
     /**
      * CAMERA
@@ -32,14 +27,13 @@ final public class Config {
     /**
      * SOCKET
      */
-    public static final String TIL_IP_HOME = "192.168.1.27";
-    public static final String TIL_IP_JAN_HOME = "192.168.2.102";
-    public static final String TIL_IP_INI = "141.64.23.78";
-    public static final String JAN_IP_HOME = "192.168.2.101";
-	public static final String LOCALHOST = "localhost";
+    private static final String TIL_IP_HOME = "192.168.1.27";
+    private static final String TIL_IP_JAN_HOME = "192.168.2.102";
+    private static final String TIL_IP_INI = "141.64.23.78";
+    private static final String JAN_IP_HOME = "192.168.2.101";
 
-    public static final String SERVER_DEFAULT_HOST_ADDRESS = TIL_IP_HOME;
-    public static final int SERVER_DEFAULT_PORT = 8095;
+    public static final String SERVER_HOST_ADDRESS = TIL_IP_HOME;
+    public static final int SERVER_PORT = 8095;
 
     public static final int SOCKET_MAX_SEND_BUFFER_SIZE = 0xFFFF;
     public static final int SOCKET_MAX_RECEIVE_BUFFER_SIZE = 0xFFFF;
@@ -49,7 +43,7 @@ final public class Config {
     public static final long SOCKET_INBOX_LATENCY = 0;
     public static final long SOCKET_OUTBOX_LATENCY = 0;
     public static final long IMPULS_FREQUENCY = 0;
-    public static final int MAX_SOCKET_TIMEOUT = 14000;
+    public static final int MAX_SOCKET_TIMEOUT = 35000;
 
     private Config() { }
 }

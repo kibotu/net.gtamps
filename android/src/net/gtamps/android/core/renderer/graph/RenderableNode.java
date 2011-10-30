@@ -2,16 +2,14 @@ package net.gtamps.android.core.renderer.graph;
 
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.mesh.texture.Texture;
 import net.gtamps.shared.IDirty;
+import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-
-import static javax.microedition.khronos.opengles.GL10.*;
-import static javax.microedition.khronos.opengles.GL11.GL_ARRAY_BUFFER;
-import static javax.microedition.khronos.opengles.GL11.GL_ELEMENT_ARRAY_BUFFER;
 
 
 public abstract class RenderableNode extends SceneNode implements IDirty {
@@ -75,6 +73,11 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected Material material = Material.LIGHT_GRAY;
 
     /**
+     * Defines the texture and it's texture matrix uv coordinates.
+     */
+    private Texture texture;
+
+    /**
      * Defines if mip maps are available.
      */
     private boolean hasMipMap = false;
@@ -125,14 +128,14 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     }
 
     @Override
-    protected void processInternal(ProcessingState state) {
+    final protected void processInternal(ProcessingState state) {
 
         GL11 gl = state.getGl11();
 
         // Model view aktivieren
         gl.glPushMatrix();
 
-        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glMatrixMode(GL11.GL_MODELVIEW);
 
         // Objekt verschieben
         gl.glTranslatef(position.x, position.y, position.z);
@@ -146,6 +149,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         gl.glPushMatrix();
         gl.glScalef(dimension.x * scaling.x, dimension.y * scaling.y, dimension.z * scaling.z);
 
+        // Ambiente Farbe setzen
+        gl.glColor4f(material.getEmissive().r, material.getEmissive().g, material.getEmissive().b, material.getEmissive().a);
+
         render(gl);
         gl.glPopMatrix();
     }
@@ -158,102 +164,102 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Default rendering process.
      */
-    protected void render(GL11 gl) {
+    final protected void render(GL11 gl) {
         if(mesh == null) return;
-        if(isDirty) onDirty(gl);
+        if(isDirty) {
+            onDirty(gl);
+        }
 
         // shading
         gl.glShadeModel(shader.getValue());
 
         // enable color materials
         if(colorMaterialEnabled) {
-           gl.glEnable(GL_COLOR_MATERIAL);
+           gl.glEnable(GL10.GL_COLOR_MATERIAL);
         } else {
-           gl.glDisable(GL_COLOR_MATERIAL);
+           gl.glDisable(GL10.GL_COLOR_MATERIAL);
         }
 
         // enable vertex colors
         if(vertexColorsEnabled) {
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-            gl.glColorPointer(4, GL_FLOAT,0, 0);
-            gl.glEnableClientState(GL_COLOR_ARRAY);
+            gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
+            gl.glColorPointer(4, GL10.GL_FLOAT,0, 0);
+            gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         } else {
-            gl.glColor4f(material.getEmissive().r, material.getEmissive().g, material.getEmissive().b, material.getEmissive().a);
-            gl.glDisableClientState(GL_COLOR_ARRAY);
+            gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
         }
 
         // enable light
         if(lightingEnabled) {
             // enable vertex normals
             if(normalsEnabled) {
-                gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
-                gl.glNormalPointer(GL_FLOAT, 0, 0);
-                gl.glEnableClientState(GL_NORMAL_ARRAY);
-                gl.glEnable(GL_LIGHTING);
+                gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
+                gl.glNormalPointer(GL10.GL_FLOAT, 0, 0);
+                gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+                gl.glEnable(GL11.GL_LIGHTING);
             } else {
-                gl.glDisableClientState(GL_NORMAL_ARRAY);
+                gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
             }
         } else {
-            gl.glDisable(GL_LIGHTING);
+            gl.glDisable(GL11.GL_LIGHTING);
         }
 
         // enable back-face culling
         if (doubleSidedEnabled) {
-	        gl.glEnable(GL_CULL_FACE);
+	        gl.glEnable(GL10.GL_CULL_FACE);
         } else {
-            gl.glDisable(GL_CULL_FACE);
+            gl.glDisable(GL10.GL_CULL_FACE);
         }
 
         // enable alpha blending
         if(alphaEnabled) {
-            gl.glEnable(GL_BLEND);
-            gl.glEnable(GL_ALPHA_TEST);
+            gl.glEnable(GL10.GL_BLEND);
+            gl.glEnable(GL10.GL_ALPHA_TEST);
         } else {
-            gl.glDisable(GL_BLEND);
-            gl.glDisable(GL_ALPHA_TEST);
+            gl.glDisable(GL10.GL_BLEND);
+            gl.glDisable(GL10.GL_ALPHA_TEST);
         }
 
         // enable texture
         if(texturesEnabled) {
-            gl.glEnable(GL_TEXTURE_2D);
+            gl.glEnable(GL10.GL_TEXTURE_2D);
 
             // TODO find way to use active texture instead of bind texture
 		    // gl.glActiveTexture(texture.getTextureId());
-//            Texture texture = textureManager.get(0);
-//            int glId = Registry.getTextureLibrary().getTextureResourceIds().get(texture.getTextureId());
-            gl.glBindTexture(GL_TEXTURE_2D, textureId);
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, texture.getTextureId());
 
             // enable mip maps
             if(hasMipMap) {
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR_MIPMAP_NEAREST);
             } else {
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
             }
-//
-//            // texture offset for repeating textures
-//            if (textureManager.get(0).offsetU != 0 || textureManager.get(0).offsetV != 0) {
-//                gl.glMatrixMode(GL_TEXTURE);
-//                gl.glLoadIdentity();
-//                gl.glTranslatef(textureManager.get(0).offsetU, textureManager.get(0).offsetV, 0);
-//                gl.glMatrixMode(GL_MODELVIEW);
-//            }
+
+            // texture offset for repeating textures
+            if (texture.offsetU != 0 || texture.offsetV != 0) {
+                gl.glMatrixMode(GL10.GL_TEXTURE);
+                gl.glLoadIdentity();
+                gl.glTranslatef(texture.offsetU, texture.offsetV, 0);
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+            }
 
             // draw uvs
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
-            gl.glTexCoordPointer(2, GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
+            gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
+            gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         } else {
-            gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-            gl.glDisable(GL_TEXTURE_2D);
+            gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+            gl.glDisable(GL10.GL_TEXTURE_2D);
         }
+
 
         // drawing point setings
         if(drawingStyle.equals(DrawingStyle.GL_POINTS)) {
 			if (pointSmoothing) {
-                gl.glEnable(GL_POINT_SMOOTH);
+                gl.glEnable(GL10.GL_POINT_SMOOTH);
             }
 			else {
-				gl.glDisable(GL_POINT_SMOOTH);
+				gl.glDisable(GL10.GL_POINT_SMOOTH);
             }
 			gl.glPointSize(pointSize);
 		}
@@ -261,31 +267,31 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         // drawing line settings
         if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
 			if(lineSmoothing) {
-				gl.glEnable(GL_LINE_SMOOTH);
+				gl.glEnable(GL10.GL_LINE_SMOOTH);
 			}	else {
-				gl.glDisable(GL_LINE_SMOOTH);
+				gl.glDisable(GL10.GL_LINE_SMOOTH);
 			}
 			gl.glLineWidth(lineWidth);
 		}
 		
         // bind vertices
-        gl.glEnableClientState(GL_VERTEX_ARRAY);
-        gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
-        gl.glVertexPointer(3, GL_FLOAT, 0, 0);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 
         // actually draw the mesh by index buffer
-		gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
-		gl.glDrawElements(drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
+		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
+		gl.glDrawElements(drawingStyle.ordinal(), mesh.getVbo().indexBuffer.capacity(), GL11.GL_UNSIGNED_SHORT, 0);
 
         // deselect buffers
-        gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
-        gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+        gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		// Vertex Array-State deaktivieren
-		gl.glDisableClientState(GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		gl.glDisableClientState(GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 
         // additional rendering calls
         renderInternal(gl);
@@ -581,13 +587,5 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     @Override
     final public void clearDirtyFlag() {
         isDirty = false;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
     }
 }

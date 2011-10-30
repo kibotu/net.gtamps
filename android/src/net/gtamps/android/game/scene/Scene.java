@@ -1,6 +1,5 @@
 package net.gtamps.android.game.scene;
 
-import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.SceneGraph;
 import net.gtamps.android.core.renderer.graph.SceneNode;
@@ -28,9 +27,6 @@ public class Scene {
     public void addChild(RenderableNode object3D) {
         object3ds.add(object3D);
         sceneGraph.add(object3D);
-
-        // dirty hack to setup up during runtime; i'm grateful for suggestions though
-        Registry.getRenderer().addToSetupQueue(object3D);
     }
 
     public void removeChild(RenderableNode object3D) {
@@ -62,12 +58,16 @@ public class Scene {
         return null;
     }
 
-    public void setActiveCamera(@NotNull Camera camera) {
+    public void setActiveCamera(Camera camera) {
         sceneGraph.setActiveCamera(camera);
     }
 
     public Camera getActiveCamera() {
         return sceneGraph.getActiveCamera();
+    }
+
+    public void addNode(@NotNull SceneNode node) {
+        sceneGraph.add(node);
     }
 
     public void removeNode(@NotNull SceneNode node) {
@@ -80,9 +80,5 @@ public class Scene {
 
     public SceneGraph getSceneGraph() {
         return sceneGraph;
-    }
-
-    public void setBackground(Color4 color) {
-        sceneGraph.setBackground(color);
     }
 }

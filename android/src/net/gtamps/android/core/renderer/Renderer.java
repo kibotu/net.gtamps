@@ -20,8 +20,6 @@ import javax.microedition.khronos.opengles.GL11;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static javax.microedition.khronos.opengles.GL10.*;
-
 public class Renderer implements GLSurfaceView.Renderer{
 
     private static final String TAG = Renderer.class.getSimpleName();
@@ -86,7 +84,7 @@ public class Renderer implements GLSurfaceView.Renderer{
         }
         game.onDrawFrame();
 
-        gl10.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
+        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
         // Compute elapsed time
         final long finalDelta = SystemClock.elapsedRealtime() - startTime;
@@ -139,36 +137,36 @@ public class Renderer implements GLSurfaceView.Renderer{
 		// Do OpenGL settings which we are using as defaults, or which we will not be changing on-draw
 
 	    // Explicit depth settings
-        gl10.glEnable(GL_DITHER);                // Enable dithering
-		gl10.glEnable(GL_DEPTH_TEST);            // Enables Depth Testing
+        gl10.glEnable(GL10.GL_DITHER);                // Enable dithering
+		gl10.glEnable(GL10.GL_DEPTH_TEST);            // Enables Depth Testing
 		gl10.glClearDepthf(1.0f);                     // Depth Buffer Setup
-		gl10.glDepthFunc(GL_LEQUAL);
+		gl10.glDepthFunc(GL10.GL_LEQUAL);
 		gl10.glDepthRangef(0,1f);
 		gl10.glDepthMask(true);
 
-        gl10.glShadeModel(GL_SMOOTH);             // Enable Smooth Shading
+        gl10.glShadeModel(GL10.GL_SMOOTH);             // Enable Smooth Shading
 
 		// Alpha enabled
-		gl10.glEnable(GL_BLEND);
-		gl10.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		gl10.glEnable(GL10.GL_BLEND);
+		gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl10.glEnable(GL11.GL_ALPHA_TEST);
 
 		// kill alpha fragments
 		gl10.glAlphaFunc(GL11.GL_GREATER, 0.1f);
 
 //		// Texture
-		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // (OpenGL default is GL_NEAREST_MIPMAP)
-		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // (is OpenGL default)
+		gl10.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST); // (OpenGL default is GL_NEAREST_MIPMAP)
+		gl10.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR); // (is OpenGL default)
 
-        gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        gl10.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+        gl10.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
 
 		// CCW frontfaces only, by default
-		gl10.glFrontFace(GL_CCW);
-	    gl10.glCullFace(GL_BACK);
-	    gl10.glEnable(GL_CULL_FACE);
+		gl10.glFrontFace(GL10.GL_CCW);
+	    gl10.glCullFace(GL10.GL_BACK);
+	    gl10.glEnable(GL10.GL_CULL_FACE);
 
         //Really Nice Perspective Calculations
-        gl10.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+        gl10.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 	}
 }

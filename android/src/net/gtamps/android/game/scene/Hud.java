@@ -22,16 +22,16 @@ public class Hud {
 
         if(scene == null) {
             scene = new Scene();
-            camera =  new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
+            camera =  new Camera(0, 0,1, 0, 0, 0, 0, 1, 0);
             scene.setActiveCamera(camera);
             camera.enableDepthTest(false);
 
             ring = new AnimatedSprite();
             ring.setVisible(false);
-            scene.addChild(ring);
+            scene.addNode(ring);
             cursor = new AnimatedSprite();
             cursor.setVisible(false);
-            scene.addChild(cursor);
+            scene.addNode(cursor);
 
             ring.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);
             cursor.loadBufferedTexture(R.drawable.hud,R.raw.hud,true);

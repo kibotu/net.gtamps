@@ -1,7 +1,7 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import net.gtamps.shared.math.Color4;
+import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
      * Defines the background color of the scene.
      */
     @NotNull
-    private static Color4 background = new Color4(0,0,0,0);
+    private static final Color4 background = new Color4(0,0,0,0);
     private static boolean isDirty = true;
 
 	/**
@@ -76,10 +76,11 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 */
 	@Override
 	public void process(@NotNull ProcessingState state) {
-        if (activeCamera != null) {
-            activeCamera.setVisible(true);
-            activeCamera.process(state);
-            activeCamera.setVisible(false);
+        Camera camera = getActiveCamera();
+        if (camera != null) {
+            camera.setVisible(true);
+            camera.process(state);
+            camera.setVisible(false);
         }
 		rootNode.process(state);
 	}
@@ -105,7 +106,8 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	 * @param deltat Zeitdifferenz zum vorherigen Frame
 	 */
 	private void updateActiveCamera(float deltat) {
-		if (activeCamera != null) activeCamera.update(deltat);
+		Camera camera = getActiveCamera();
+		if (camera != null) camera.update(deltat);
 	}
 
 	/**
@@ -186,9 +188,5 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	public int getChildCount() {
 		return rootNode.getChildCount();
 	}
-
-    public void setBackground(Color4 color) {
-        this.background = color;
-    }
 }
 

@@ -125,7 +125,8 @@ public class ObjParser extends AParser implements IParser {
 
 	public ParsedObject getParsedObject() {
 		Logger.i(this, "Start object creation");
-		ParsedObject obj = new ParsedObject();
+		ParsedObject obj = new ParsedObject(0, 0);
+		int numObjects = parseObjects.size();
 		Bitmap texture = null;
 
 		if(textureAtlas.hasBitmaps()) {
@@ -134,10 +135,10 @@ public class ObjParser extends AParser implements IParser {
 			Registry.getTextureLibrary().addTexture(texture, textureAtlas.getId(), generateMipMap);
 		}
 		
-		for (int i = 0; i < parseObjects.size(); i++) {
+		for (int i = 0; i < numObjects; i++) {
 			ParseObjectData o = parseObjects.get(i);
 			Logger.i(this, "Creating object " + o.name);
-			obj.add(o.getParsedObject(materialMap, textureAtlas));
+			obj.children.add(o.getParsedObject(materialMap, textureAtlas));
 		}
 		
 		if(textureAtlas.hasBitmaps()) {

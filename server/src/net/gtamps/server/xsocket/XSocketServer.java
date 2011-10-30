@@ -1,9 +1,9 @@
 package net.gtamps.server.xsocket;
 
 import net.gtamps.server.ISocketHandler;
+import net.gtamps.shared.communication.ISerializer;
 
-import org.xsocket.connection.IServer;
-import org.xsocket.connection.Server;
+import org.xsocket.connection.*;
  
 public class XSocketServer implements Runnable
 {
@@ -12,12 +12,12 @@ public class XSocketServer implements Runnable
 	private static boolean isOnline = true;
 	private static boolean wasStarted = false;
 	
-	private final  ISocketHandler socketHandler;
+	private  ISocketHandler socketHandler;
 	
 	
 //	MessageHandler messageHandler;
   
-    public XSocketServer(final ISocketHandler socketHandler) {
+    public XSocketServer(ISocketHandler socketHandler) {
     	if (socketHandler == null) {
 			throw new IllegalArgumentException("'serializer' must not be null");
 		}
@@ -32,7 +32,7 @@ public class XSocketServer implements Runnable
             srv.close();
             isOnline = false;
         }
-        catch(final Exception ex)
+        catch(Exception ex)
         {
             System.out.println(ex.getMessage());
         }
@@ -42,11 +42,11 @@ public class XSocketServer implements Runnable
 	public void run() {
 		try
         {
-            srv = new Server(PORT, socketHandler);
+            srv = new Server(PORT, this.socketHandler);
             srv.run();
             isOnline = true;
         }
-        catch(final Exception ex)
+        catch(Exception ex)
         {
             System.out.println(ex.getMessage());
         }
