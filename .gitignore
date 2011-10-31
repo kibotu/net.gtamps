@@ -20,3 +20,6 @@ default.properties
 .metadata
 *.dex
 /cloc-1.55.exe
+
+server/.settings/org.eclipse.jdt.ui.prefs
+
