@@ -66,7 +66,7 @@ public class VertexManager {
     public short addVertex(
             float pointX, float pointY, float pointZ,
             float normalX, float normalY, float normalZ,
-            short colorR, short colorG, short colorB, short colorA,
+            float colorR, float colorG, float colorB, float colorA,
             float textureU, float textureV) {
 
         vertices.add(pointX, pointY, pointZ);

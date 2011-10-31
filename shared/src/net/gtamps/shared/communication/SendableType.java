@@ -14,6 +14,8 @@ public enum SendableType {
     REGISTER,
     SESSION,
     GETMAPDATA,
+    QUIT,
+    SPAWN,
 
     GETUPDATE_OK,
     GETPLAYER_OK,
@@ -23,7 +25,9 @@ public enum SendableType {
     REGISTER_OK,
     SESSION_OK,
     GETMAPDATA_OK,
-
+    QUIT_OK,
+    SPAWN_OK,
+    
     GETUPDATE_NEED,
     GETPLAYER_NEED,
     JOIN_NEED,
@@ -32,7 +36,9 @@ public enum SendableType {
     REGISTER_NEED,
     SESSION_NEED,
     GETMAPDATA_NEED,
-
+    QUIT_NEED,
+    SPAWN_NEED,
+    
     GETUPDATE_BAD,
     GETPLAYER_BAD,
     JOIN_BAD,
@@ -41,7 +47,10 @@ public enum SendableType {
     REGISTER_BAD,
     SESSION_BAD,
     GETMAPDATA_BAD,
+    QUIT_BAD,    
+    SPAWN_BAD,
 
+    
     GETUPDATE_ERROR,
     GETPLAYER_ERROR,
     JOIN_ERROR,
@@ -50,7 +59,9 @@ public enum SendableType {
     REGISTER_ERROR,
     SESSION_ERROR,
     GETMAPDATA_ERROR,
-
+    QUIT_ERROR,    
+    SPAWN_ERROR,
+    
     // commands
     ACCELERATE,
     DECELERATE,
@@ -60,6 +71,7 @@ public enum SendableType {
     LEFT,
     RIGHT,
     SUICIDE;
+	
     
     public SendableType getOKResponse() {
     	SendableType type = null;
@@ -125,5 +137,4 @@ public enum SendableType {
     	return type;
     }
 
-    
 }

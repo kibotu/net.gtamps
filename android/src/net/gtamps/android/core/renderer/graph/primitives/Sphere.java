@@ -1,169 +1,119 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
+import net.gtamps.android.core.renderer.graph.DrawingStyle;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.shared.math.Color4;
+import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 
-/**
- * Szenenknoten, der eine Kugel repräsentiert
- */
-@Deprecated
 public class Sphere extends RenderableNode {
 
-	/**
-	 * Der Radius der Kugel
-	 */
-	private final float radius;
+    /**
+     * 	Sphere stacks from pole to pole.
+     */
+    private int stacks;
+    /**
+     * 	Sphere slices around the equator.
+     */
+    private int slices;
 
-	/**
-	 * The number of subdivisions around the Z axis (similar to lines of longitude).
-	 */
-	private final int slices;
-
-	/**
-     * The number of subdivisions along the Z axis (similar to lines of latitude).
-	 */
-	private final int stacks;
-
-    	/**
-	 * Die Textur-ID.
-	 * <p>Gültige Werte liegen in Bereich 0..n</p>
-	 */
-	protected int textureId;
-
-	/**
-	 * Die Texturpuffer-ID
-	 * <p>Gültige Werte liegen in Bereich 0..n</p>
-	 */
-	private int textureBufferId;
-
-	/**
-	 * Der Offset im Texturpuffer
-	 * <p>Gültige Werte liegen in Bereich 0..n</p>
-	 */
-	private int textureBufferOffsetId;
-
-	/**
-	 * Initialisiert eine neue Instanz des SphereNodes
-	 * @param radius Der Radius
-	 * @param slices Die Anzahl der Slices (TODO: klären)
-	 * @param stacks Die Anzahl der Stacks (TODO: klären)
-	 */
-	public Sphere(float radius, int slices, int stacks) {
-		assert radius > 0;
-		assert slices >= 1;
-		assert stacks >= 1;
-
-		this.radius = radius;
-		this.slices = slices;
-		this.stacks = stacks;
-        reset();
+    public Sphere(float radius, int stacks, int slices) {
+        dimension.set(radius,radius,radius);
+        this.stacks = stacks;
+        this.slices = slices;
     }
 
-	/**
-	 * Setzt den Knoten zurück
-	 */
-	public final void reset() {
-		textureId = -1;
-		textureBufferId = -1;
-		textureBufferOffsetId = -1;
-	}
+    @Override
+    protected void setupInternal(@NotNull ProcessingState state) {
+        if(mesh != null)  return;
 
-	/**
-	 * Spezifische Implementierung des Rendervorganges
-	 *
-	 * @param gl Die OpenGL-Referenz
-	 */
-	@Override
-	protected void renderInternal(@NotNull GL10 gl) {
+        // new mesh
+        this.mesh = new Mesh((stacks+1) * (slices+1),stacks * slices * 2);
 
-		// OpenGL 1.1-Instanz beziehen
-		final GL11 gl11 = (GL11) gl;
+        Color4 emissive = material.getEmissive();
 
-         // bind texture
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+        int r, c;
 
-        gl11.glEnable(GL11.GL_TEXTURE_2D);
-        gl11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+		Vector3 n = Vector3.createNew();
+		Vector3 pos = Vector3.createNew();
+		Vector3 posFull = Vector3.createNew();
 
-		// alpha blending
-		gl11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        // vertices
+		for (r = 0; r <= slices; r++) {
+			float v = (float)r / (float)slices; // [0,1]
+			float theta1 = v * (float)Math.PI; // [0,PI]
 
-		gl11.glEnable(GL11.GL_BLEND);
+			n.set(0,1,0);
+			n.rotateZ(theta1);
 
-		// kill alpha fragments
-		gl11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
-		gl11.glEnable(GL11.GL_ALPHA_TEST);
+			for (c = 0; c <= stacks; c++) {
+				float u = (float)c / (float)stacks; // [0,1]
+				float theta2 = u * (float)(Math.PI * 2f); // [0,2PI]
+				pos.set(n);
+				pos.rotateY(theta2);
 
-		// ... und ab.
-		GLUT.glutSolidSphere(gl11, radius, slices, stacks);
+				posFull.set(pos);
+				posFull.mulInPlace(dimension.x);
 
-        gl11.glDisable(GL11.GL_TEXTURE_2D);
-        gl11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+				mesh.vertices.addVertex(posFull.x,posFull.y,posFull.z,pos.x,pos.y,pos.z,emissive.r,emissive.g,emissive.b,emissive.a,u,v);
+			}
+		}
 
-        gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-		gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
+		// faces
+		int colLength = stacks + 1;
 
-	/**
-	 * Spezifische Implementierung der Aktualisierungslogik
-	 *
-	 * @param deltat Zeitdifferenz zum vorherigen Frame
-	 */
-	@Override
-	protected void updateInternal(float deltat) {
-	}
+		for (r = 0; r < slices; r++) {
+			int offset = r * colLength;
 
-	/**
-	 * Spezifische Implementierung des Bereinigungsvorganges
-	 *
-	 * @param state Die State-Referenz
-	 */
-	@Override
-	protected void cleanupInternal(@NotNull ProcessingState state) {
-	}
+			for (c = 0; c < stacks; c++)
+			{
+				int ul = offset  +  c;
+				int ur = offset  +  c+1;
+				int br = offset  +  (int)(c + 1 + colLength);
+				int bl = offset  +  (int)(c + 0 + colLength);
 
-	/**
-	 * Spezifische Implementierung des Setupvorganges
-	 *
-	 * @param state Die State-Referenz
-	 */
-	@Override
-	protected void setupInternal(@NotNull ProcessingState state) {
-	}
+				mesh.faces.addQuad(ul, ur, br, bl);
+			}
+		}
 
-	/**
-	 * Setzt die Textur-ID
-	 *
-	 * @param textureId
-	 */
-	public final void setTextureId(final int textureId) {
-		this.textureId = textureId;
-	}
-
-	/**
-	 * Setzt die Textur-Puffer-ID
-	 *
-	 * @param textureBufferId
-	 */
-	public final void setTextureBufferId(final int textureBufferId) {
-		this.textureBufferId = textureBufferId;
-	}
-
-	/**
-	 * Setzt den Offset im Texturpuffer
-	 *
-	 * @param textureBufferOffsetId
-	 */
-	public final void setTextureBufferOffsetId(final int textureBufferOffsetId) {
-		this.textureBufferOffsetId = textureBufferOffsetId;
-	}
+        n.recycle();
+        pos.recycle();
+        posFull.recycle();
+    }
 
     @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    protected void setOptions() {
+        enableColorMaterialEnabled(true);
+        enableVertexColors(true);
+        enableNormals(true);
+        enableTextures(false);
+        enableDoubleSided(false);
+        enableLighting(true);
+        enableAlpha(true);
+        setDrawingStyle(DrawingStyle.GL_POINTS); // default anyway
+//        setPointSize(3);
+//        setPointSmoothing(true);
+//        setLineWidth(1);
+//        setLineSmoothing(true);
+//        enableMipMap(false);
+    }
+
+    @Override
+    protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void cleanupInternal(@NotNull ProcessingState state) {
+    }
+    @Override
     public void onDirty() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
