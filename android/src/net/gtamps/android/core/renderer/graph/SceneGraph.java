@@ -99,6 +99,15 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 		return rootNode.isVisible();
 	}
 
+    /**
+     * Sets visibility.
+     *
+     * @param isVisible
+     */
+    public void setVisible(boolean isVisible) {
+        rootNode.setVisible(isVisible);
+    }
+
 	/**
 	 * Aktualisiert die aktive Kamera.
 	 *

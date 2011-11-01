@@ -53,7 +53,7 @@ public class Cube extends RenderableNode {
         // new mesh
         this.mesh = new Mesh(24,12);
 
-        final float c = 1f;
+        final float c = 0.5f;
         Color4 emissive = material.getEmissive();
 
         mesh.addVertex(c, -c, -c,0, -c, 0,emissive.r, emissive.g, emissive.b, emissive.a,0, 0);

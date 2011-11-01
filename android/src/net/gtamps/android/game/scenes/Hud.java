@@ -23,10 +23,10 @@ public class Hud extends BasicScene {
         camera.enableDepthTest(false);
 
         ring = new AnimatedSprite();
-        ring.setVisible(false);
+        ring.setVisible(true);
         add(ring);
         cursor = new AnimatedSprite();
-        cursor.setVisible(false);
+        cursor.setVisible(true);
         add(cursor);
 
         ring.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);

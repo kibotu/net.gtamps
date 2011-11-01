@@ -1,16 +1,38 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
+import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
+import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.math.Color4;
+import net.gtamps.shared.state.State;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class Sprite extends RenderableNode {
 
+    protected BufferedTexture bufferedTexture;
+
     public Sprite() {
+        bufferedTexture = null;
+    }
+
+     public void setBufferedTexture(BufferedTexture bufferedTexture) {
+        this.bufferedTexture = bufferedTexture;
+        setTextureId(bufferedTexture.textureId);
+        setTextureBufferId(bufferedTexture.floatBufferId);
+        SpriteTetxure spriteTetxure = bufferedTexture.getAnimation(State.Type.IDLE)[0];
+        setTextureBufferOffsetId(spriteTetxure.offsetId);
+        dimension.set(spriteTetxure.width,spriteTetxure.height,0);
+        scaling.set(1,1,0);
+    }
+
+    public void loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {
+        setBufferedTexture(Registry.getTextureLibrary().loadBufferedTexture(textureResourceId, textureCoordinateResourceId, generateMipMap));
+        enableMipMap(generateMipMap);
     }
 
     @Override
@@ -25,16 +47,16 @@ public class Sprite extends RenderableNode {
         Color4 emissive = material.getEmissive();
 
         // oben rechts
-        mesh.addVertex(1, 1, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 0);
+        mesh.addVertex(0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 0);
 
         // oben links
-        mesh.addVertex(-1, 1, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(-0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
 
         // unten links
-        mesh.addVertex(-1, -1, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 1);
+        mesh.addVertex(-0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 1);
 
         // unten rechts
-        mesh.addVertex(1, -1, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 1);
+        mesh.addVertex(0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 1);
 
         mesh.faces.add(0, 1, 2);
         mesh.faces.add(2, 3, 0);
@@ -46,10 +68,10 @@ public class Sprite extends RenderableNode {
 
     @Override
     protected void setOptions() {
-        enableColorMaterialEnabled(false);
-        enableVertexColors(false);
-        enableNormals(false);
-        enableTextures(false);
+        enableColorMaterialEnabled(true);
+        enableVertexColors(true);
+        enableNormals(true);
+        enableTextures(true);
         enableDoubleSided(false);
         enableLighting(false);
         enableAlpha(true);
@@ -58,7 +80,7 @@ public class Sprite extends RenderableNode {
 //        setPointSmoothing(true);
 //        setLineWidth(1);
 //        setLineSmoothing(true);
-        enableMipMap(false);
+        enableMipMap(true);
     }
 
     @Override

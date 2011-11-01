@@ -45,7 +45,7 @@ final public class Object3dFactory {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
         return parsedObject;
@@ -60,7 +60,7 @@ final public class Object3dFactory {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
         parsedChild.setScaling(5,5,5);

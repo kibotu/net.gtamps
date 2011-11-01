@@ -19,7 +19,7 @@ final public class Logger {
     private static final String LINE_BREAKS = "\n\n\n\n\n";
 
     public enum Level {
-        DEBUG, VERBOSE, INFO, WARN, ERROR, NO_LOGGING
+        DEBUG_LOG_GL_CALLS, DEBUG_CHECK_GL_ERROR, DEBUG, VERBOSE, INFO, WARN, ERROR,  NO_LOGGING,
     }
 
     /**
