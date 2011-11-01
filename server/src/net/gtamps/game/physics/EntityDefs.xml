@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DEFS>
+<ENTITY name="car" type="CAR">
+	<PHYSICS dynamic="true">
+		<BODY 	
+			angular_damping="2"
+			linear_damping="1"
+			is_bullet = "false"/>
+		<SHAPE 
+			type="box" hx="3.1" hy="1.55" 
+			density="1" 
+			friction="0.1" 
+			restitution="0.5" 
+		/>
+		<SENSORSHAPE
+			type="box" hx="1" hy="2.5"
+			event="EventType.ENTITY_SENSE_DOOR"
+		/> 
+	</PHYSICS>
+	<MOBILITY
+		f_velocity = "1500"
+		f_steering = "200"
+		r_steering = "3"
+		slidyness = "0.5"
+		speed_max = "100"
+	/>
+	<DESTRUCTION remove="false" explode="true"/>
+	<HEALTH max="2000" dmgThresh="5" dmgMult="1" />
+	<DRIVABLE/>
+</ENTITY>
+
+<ENTITY name="human" type="HUMAN">
+	<PHYSICS dynamic="true">
+		<BODY 	
+			angular_damping="1.05"
+			linear_damping="0.01"
+			is_bullet = "false"
+		/>
+		<SHAPE 
+			type="circle" radius = "0.8" 
+			density="1" 
+			friction="0.1" 
+			restitution="0.5" 
+		/>
+	</PHYSICS>
+	<MOBILITY
+		f_velocity = "5"
+		f_steering = "2"
+		r_steering = "0"
+		slidyness = "0"
+		speed_max = "10"
+	/>
+	<SENSOR name="SensorDoorHandler"/>
+	<DESTRUCTION remove="false" explode="false"/>
+	<SHOOTING><SLOT xOffset="20" yOffset="20" weapon="gun"/></SHOOTING>
+	<HEALTH max="100" dmgThresh="1" dmgMult="1"/>
+</ENTITY>
+
+<WEAPON name="gun" ammo="bullet" impulse="100" delay="300" max="10"/>
+
+<ENTITY name="bullet" type="PROJECTILE">
+	<PHYSICS  dynamic="true">
+		<BODY 	
+			angular_damping="1.05"
+			linear_damping="0.01"
+			is_bullet = "true"
+		/>
+		<SHAPE 
+			type="circle" radius = "0.1" 
+			density="100" 
+			friction="0.1" 
+			restitution="0.5" 
+		/>
+	</PHYSICS>
+	<COLLISION amplify="5"/>
+</ENTITY>
+
+<ENTITY name="explosion">
+	<PHYSICS dynamic="false"/>
+	<EXPLOSION/>
+</ENTITY>
+
+<ENTITY name="spawnpoint">
+	<PHYSICS dynamic="false">
+		<SENSORSHAPE 
+			type="circle" radius = "3.5" 
+			event="EventType.ENTITY_SENSE_SPAWN"
+		/>
+	</PHYSICS>
+</ENTITY>
+
+<ENTITY name="house" type="SOLID">
+	<PHYSICS dynamic="false">
+		<SHAPE 
+			type="polygon" 
+			density="0" 
+			friction="0.0" 
+			restitution="0.0" 
+		/>
+	</PHYSICS>
+</ENTITY>
+
+<ENTITY name="empty">
+	<PHYSICS dynamic="false"/>
+</ENTITY>
+
+
+</DEFS>
