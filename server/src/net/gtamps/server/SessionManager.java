@@ -198,7 +198,6 @@ public final class SessionManager {
 		final long hi = uid.getMostSignificantBits() & 0xFF00000000000000l;
 		final long lo = uid.getLeastSignificantBits() & 0x00FFFFFFFFFFFFFFl;
 		final String id = Long.toHexString(hi | lo);
-		assert isValidId(id);
 		return id;
 	}
 }
