@@ -3,46 +3,84 @@ package net.gtamps.game.handler;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.gtamps.game.conf.PhysicalProperties;
-import net.gtamps.game.physics.PhysicsFactory;
+import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.World;
 
-public class PhysicsHandler extends SimplePhysicsHandler{
+public class MobilityHandler extends Handler {
+	
+	private static final LogType TAG = LogType.PHYSICS;
+	private static final EventType[] up = { EventType.ENTITY_COLLIDE, EventType.ENTITY_SENSE, EventType.ENTITY_BULLET_HIT };
+	private static final EventType[] down = { EventType.ACTION_EVENT, EventType.SESSION_UPDATE,
+			EventType.ENTITY_DESTROYED };
+	
+
+	private final MobilityProperties mobilityProperties;
+	private final SimplePhysicsHandler physics;
 	
 	protected ConcurrentLinkedQueue<GameEvent> actionQueue = new ConcurrentLinkedQueue<GameEvent>();
+
+	protected Body body;
+	protected World world;
 	
-	public PhysicsHandler(final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
-		super(parent, physicalRepresentation, physicalProperties);
+	protected float velocityForce;
+	protected float steeringForce;
+	protected float steeringRadius;
+	protected float slidyness;
+	
+	public MobilityHandler(final Entity parent, final MobilityProperties mobilityProperties, final SimplePhysicsHandler physicsHandler) {
+		super(Handler.Type.MOBILITY, parent);
+		this.mobilityProperties = mobilityProperties;
+		physics = physicsHandler;
+		world = physics.getWorld();
+		body = physicsHandler.getBody();
+		setSendsUp(up);
+		setReceivesDown(down);
+		connectUpwardsActor(parent);
+		
+	}
+	
+	@Override
+	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
+		if (type.isType(EventType.ACTION_EVENT)) {
+			actionQueue.add(event);
+		} else if (type.isType(EventType.SESSION_UPDATE)) {
+			update();
+		} else if (type.isType(EventType.ENTITY_DESTROYED)) {
+			// FIXME handle deactivation of action events differently
+			// there's supposed to be a driver handler or something anyway
+			parent.removeEventListener(EventType.ACTION_EVENT, this);
+		}
+	}
+
+	public void addAction(final GameEvent event) {
+		if (event.getType().isType(EventType.ACTION_EVENT)) {
+			actionQueue.add(event);
+		}
 	}
 	
 	@Override
 	public void enable() {
-		final int pixX = parent.x.value();
-		final int pixY = parent.y.value();
-		final int rota = parent.rota.value();
-		body = null;
-		while(body == null) {
-			body = PhysicsFactory.createHuman(world, physicalProperties, pixX, pixY, rota);
-		}
 		super.enable();
 	}
 	
-	@Override
 	public void update() {
 		
 		if (!isEnabled()) {
-			if (body != null) {
-				world.destroyBody(body);
-				body = null;
-			}
+//			if (body != null) {
+//				world.destroyBody(body);
+//				body = null;
+//			}
 			return;
 		}
 		
@@ -59,7 +97,7 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 				dispatchEvent(new CollisionEvent(parent, parent, 100f));
 			}
 			
-			if(physicalProperties.TYPE == PhysicalProperties.Type.CAR){
+			if(mobilityProperties.TYPE == MobilityProperties.Type.CAR){
 				if (pa == EventType.ACTION_ACCELERATE) {
 					final Vec2 force = new Vec2((float) Math.cos(body.getAngle())*velocityForce, (float) Math.sin(body.getAngle())*velocityForce);
 					body.applyForce(force, body.getWorldCenter());
@@ -77,7 +115,7 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 					body.applyForce(force.mul(steeringForce*forward), worldCenter.add(front.mul(steeringRadius)));
 				}
 			}
-			if(physicalProperties.TYPE == PhysicalProperties.Type.HUMAN){
+			if(mobilityProperties.TYPE == MobilityProperties.Type.HUMAN){
 				Logger.getInstance().log(LogType.PHYSICS, parent.toString());
 				if (pa == EventType.ACTION_ACCELERATE) {
 					final Vec2 force = new Vec2((float) Math.cos(body.getAngle())*velocityForce, (float) Math.sin(body.getAngle())*velocityForce);
@@ -92,17 +130,17 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 				}
 				if (pa == EventType.ACTION_TURNRIGHT) {
 					body.wakeUp();
-					body.setAngularVelocity(physicalProperties.STEERING_FORCE);
+					body.setAngularVelocity(mobilityProperties.STEERING_FORCE);
 				}
 				if (pa == EventType.ACTION_TURNLEFT) {
 					body.wakeUp();
-					body.setAngularVelocity(-physicalProperties.STEERING_FORCE);
+					body.setAngularVelocity(-mobilityProperties.STEERING_FORCE);
 				}
 			}
 		}
 		
 		
-		if(physicalProperties.TYPE == PhysicalProperties.Type.CAR){
+		if(mobilityProperties.TYPE == MobilityProperties.Type.CAR){
 //			Apply orthogonal friction, so that all the cars appear to run on "tracks"
 //			deteremines whether the current velocity is directed to the front of the vehicle.
 			final float speed = body.getLinearVelocity().length();
@@ -112,16 +150,14 @@ public class PhysicsHandler extends SimplePhysicsHandler{
 			body.setLinearVelocity(body.getLinearVelocity().mul(slidyness).add(frontvectorvelocity.mul(1f-slidyness)));
 		}
 		
-		if(physicalProperties.TYPE == PhysicalProperties.Type.HUMAN){
+		if(mobilityProperties.TYPE == MobilityProperties.Type.HUMAN){
 			body.setAngularVelocity(body.getAngularVelocity()*0.9f);
 			body.setLinearVelocity(body.getLinearVelocity().mul(0.9f));
 		}
-		if(physicalProperties.TYPE == PhysicalProperties.Type.CAR){
+		if(mobilityProperties.TYPE == MobilityProperties.Type.CAR){
 			body.setAngularVelocity(body.getAngularVelocity()*0.93f);
 			body.setLinearVelocity(body.getLinearVelocity().mul(0.96f));
 		}
-		
-		super.update();
 
 	}
 }

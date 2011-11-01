@@ -19,6 +19,12 @@ public class Entity extends GameActor implements Serializable {
 	static public enum Type {
         CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
     }
+	
+	//TODO: use!
+	public static String normalizeName(String name) {
+		return name.toUpperCase();
+	}
+
 
 	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
 
