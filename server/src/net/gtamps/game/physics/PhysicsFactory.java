@@ -1,22 +1,14 @@
 package net.gtamps.game.physics;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import net.gtamps.game.conf.PhysicalConstants;
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.conf.WorldConstants;
-import net.gtamps.game.handler.blueprints.MobilityBlueprint;
-import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.event.EventType;
 
-import org.jbox2d.collision.FilterData;
-import org.jbox2d.collision.MassData;
 import org.jbox2d.collision.shapes.CircleDef;
 import org.jbox2d.collision.shapes.PolygonDef;
-import org.jbox2d.collision.shapes.ShapeDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -26,166 +18,17 @@ public class PhysicsFactory {
 
 	private final static LogType TAG = LogType.PHYSICS;
 	
-	private PhysicsFactory() {
-		
-		// create Prototypes:
+	private PhysicsFactory(){
 		
 	}
 	
-	public static Box2DEngine createPhysics(final int pixWidth, final int pixHeight) {
-		final float minX = 0;
-		final float minY = 0;
-		final float maxX = lengthToPhysics(pixWidth);
-		final float maxY = lengthToPhysics(pixHeight);
+	public static Box2DEngine createPhysics(int pixWidth, int pixHeight) {
+		float minX = 0;
+		float minY = 0;
+		float maxX = lengthToPhysics(pixWidth);
+		float maxY = lengthToPhysics(pixHeight);
 		return new Box2DEngine(minX, minY, maxX, maxY);
 	}
-	
-	
-	public static PhysicsBlueprint createPhysicsBlueprint(final World world, final PhysicalProperties physprop) {
-		final PhysicsBlueprint blup = new PhysicsBlueprint(
-				world,
-				physpropToBodyDef(physprop),
-				isDynamic(physprop)
-		);
-		blup.addAllShapeDefs(physpropToShapeDefs(physprop));
-		return blup;
-	}
-	
-	public static MobilityBlueprint createMobilityBlueprint(final World world, final PhysicalProperties physprop) {
-		if (!isDynamic(physprop)) {
-			return null;
-		}
-		return new MobilityBlueprint(physpropToMobilityProp(physprop));
-	}
-	
-	private static boolean isDynamic(final PhysicalProperties physprop) {
-		switch (physprop) {
-			case Sportscar:
-			case Taxi:
-			case Human:
-			case Bullet:
-				return true;
-			case Empty:
-				return false;
-			default:
-				throw new IllegalStateException("handle all possible types");
-		}
-	}
-	
-	private static MobilityProperties physpropToMobilityProp(final PhysicalProperties physicalProperties) {
-		MobilityProperties.Type type;
-		switch(physicalProperties.TYPE) {
-			case CAR:
-				type = MobilityProperties.Type.CAR;
-				break;
-			case HUMAN:
-				type = MobilityProperties.Type.HUMAN;
-				break;
-			case BULLET:
-				type = MobilityProperties.Type.BULLET;
-				break;
-			case NONE:
-				type = MobilityProperties.Type.NONE;
-				break;
-			default:
-				throw new IllegalStateException("handle all possible types!");
-		}
-		return new MobilityProperties(
-				physicalProperties.VELOCITY_FORCE,
-				physicalProperties.STEERING_FORCE,
-				physicalProperties.STEERING_RADIUS,
-				physicalProperties.SLIDYNESS,
-				physicalProperties.MAX_SPEED,
-				type);
-	}
-	
-	private static Collection<ShapeDef> physpropToShapeDefs(final PhysicalProperties physicalProperties) {
-		final Collection<ShapeDef> defs = new ArrayList<ShapeDef>();
-		
-		// primary shape
-		
-		final ShapeDef def;
-		switch (physicalProperties.TYPE) {
-			case CAR:
-				def = new PolygonDef();
-				((PolygonDef)def).setAsBox(3.1f,1.55f);
-				break;
-			case HUMAN:
-				def = new CircleDef();
-				((CircleDef)def).radius = 0.8f;
-				break;
-			case BULLET:
-				def = new CircleDef();
-				((CircleDef)def).radius = 0.1f;
-				break;
-			case NONE:
-				def = new PolygonDef();
-				((PolygonDef)def).setAsBox(3.1f,1.55f);
-				break;
-			default:
-				// shouldn't get here
-				throw new IllegalStateException("treat all possible types");
-		}
-		
-		def.friction = physicalProperties.FRICTION;
-		def.restitution = physicalProperties.RESTITUTION;
-		def.density = physicalProperties.DENSITY;
-		def.filter = new FilterData();
-//		def.filter.categoryBits = shapeDef.filter.categoryBits;
-//		def.filter.maskBits = shapeDef.filter.maskBits;
-		def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
-		def.isSensor = false;
-		defs.add(def);
-		
-		// secondary shapes
-		switch (physicalProperties.TYPE) {
-		case CAR:
-			final CircleDef explosionSensorDef = new CircleDef();
-			explosionSensorDef.isSensor = true;
-			explosionSensorDef.radius = 100;
-			explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-			explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
-			final PolygonDef doorDef = new PolygonDef();
-			doorDef.setAsBox(1f, 2.5f);
-			doorDef.isSensor = true;
-			doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-			doorDef.userData = EventType.ENTITY_SENSE_DOOR;
-			defs.add(explosionSensorDef);
-			defs.add(doorDef);
-			break;
-		}
-		return defs;
-	}
-	
-	private static BodyDef physpropToBodyDef(final PhysicalProperties physicalProperties) {
-		final BodyDef bd = new BodyDef();
-		bd.angularDamping = physicalProperties.ANGULAR_DAMPING;
-		bd.isBullet = physicalProperties.TYPE.equals(PhysicalProperties.Type.BULLET);
-		bd.linearDamping = physicalProperties.LINEAR_DAMPING;
-//		allowSleep = null;
-//		angle = null;
-//		fixedRotation = null;
-//		massData = null;
-//		position = null;
-//		userData = null;
-		return bd;
-	}
-	
-	public static BodyDef copyBodyDef(final BodyDef other) {
-		final BodyDef bd = new BodyDef();
-		bd.angularDamping = other.angularDamping;
-		bd.isBullet = other.isBullet;
-		bd.linearDamping = other.linearDamping;
-		bd.allowSleep = other.allowSleep;
-		bd.angle = other.angle;
-		bd.fixedRotation = other.fixedRotation;
-		bd.massData = new MassData().clone();
-		bd.position = other.position.clone();
-		bd.userData = other.userData;
-		return bd;
-	}
-	
-	
 	
 	/**
 	 * creates a new car, puts it inside the box2d world and then returns it.
@@ -200,19 +43,19 @@ public class PhysicsFactory {
 	 *            the rotation in radians
 	 * @return
 	 */
-	public static Body createSportsCar(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int deg) {
+	public static Body createSportsCar(World world, PhysicalProperties physprop, int pixX, int pixY, int deg) {
 		Logger.i().log(TAG, "Creating car at x:"+pixX+" y:"+pixY+" deg:"+deg);
-		final float x = lengthToPhysics(pixX);
-		final float y = lengthToPhysics(pixY);
-		final float rotation = angleToPhysics(deg);
+		float x = lengthToPhysics(pixX);
+		float y = lengthToPhysics(pixY);
+		float rotation = angleToPhysics(deg);
 		
-		final BodyDef m_body_def = new BodyDef();
+		BodyDef m_body_def = new BodyDef();
 		m_body_def.position = new Vec2(x, y);
 		m_body_def.angle = rotation;
 		
-		final PolygonDef m_poly_def = new PolygonDef();
+		PolygonDef m_poly_def = new PolygonDef();
 		m_poly_def.density = physprop.DENSITY;
-		m_poly_def.friction = physprop.FRICTION;
+		m_poly_def.friction = physprop.FRICTION;		
 		m_poly_def.restitution = physprop.RESTITUTION;
 		// car image size is 31x64px
 		// that makes 3.1m x 6.4m
@@ -222,7 +65,7 @@ public class PhysicsFactory {
 //		m_poly_def.filter.maskBits = PhysicalConstants.COLLISION_MASK_ALL;
 		m_poly_def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
 		
-		final CircleDef explosionSensorDef = new CircleDef();
+		CircleDef explosionSensorDef = new CircleDef();
 		explosionSensorDef.isSensor = true;
 		explosionSensorDef.radius = 100;
 //		explosionSensorDef.filter.categoryBits = PhysicalConstants.COLLISION_CATEGORY_INSUBSTANTIAL;
@@ -230,7 +73,7 @@ public class PhysicsFactory {
 		explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
 		explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
 		
-		final PolygonDef doorDef = new PolygonDef();
+		PolygonDef doorDef = new PolygonDef();
 		doorDef.setAsBox(1f, 2.5f);
 		doorDef.isSensor = true;
 //		doorDef.filter.categoryBits = PhysicalConstants.COLLISION_CATEGORY_INSUBSTANTIAL;
@@ -269,18 +112,18 @@ public class PhysicsFactory {
 		return dynamicBody;
 	}
 	
-	public static Body createHuman(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int rota) {
+	public static Body createHuman(World world, PhysicalProperties physprop, int pixX, int pixY, int rota) {
 		Logger.i().log(TAG, "Creating human at x:"+pixX+" y:"+pixY);
 
-		final float x = lengthToPhysics(pixX);
-		final float y = lengthToPhysics(pixY);
-		final float rotation = angleToPhysics(rota);
+		float x = lengthToPhysics(pixX);
+		float y = lengthToPhysics(pixY);
+		float rotation = angleToPhysics(rota);
 
-		final BodyDef m_body_def = new BodyDef();
+		BodyDef m_body_def = new BodyDef();
 		m_body_def.position = new Vec2(x, y);
 		m_body_def.angle = rotation;
 			
-		final CircleDef m_shape = new CircleDef();
+		CircleDef m_shape = new CircleDef();
 		m_shape.density = physprop.DENSITY;
 		m_shape.friction = physprop.FRICTION;
 		m_shape.restitution = physprop.RESTITUTION;
@@ -301,31 +144,31 @@ public class PhysicsFactory {
 		return body;
 	}
 
-	public static Body createHouse(final World world, final int pixX, final int pixY) {
+	public static Body createHouse(World world, int pixX, int pixY) {
 		Logger.i().log(TAG, "Creating house at x:"+pixX+" y:"+pixY);
 		
-		final float x = lengthToPhysics(pixX);
-		final float y = lengthToPhysics(pixY);
-		final float rotation = angleToPhysics(0);
+		float x = lengthToPhysics(pixX);
+		float y = lengthToPhysics(pixY);
+		float rotation = angleToPhysics(0);
 
-		final BodyDef m_body_def = new BodyDef();
+		BodyDef m_body_def = new BodyDef();
 		m_body_def.position = new Vec2(x, y);
 		m_body_def.angle = rotation;
 
-		final PolygonDef m_poly_def = new PolygonDef();
+		PolygonDef m_poly_def = new PolygonDef();
 //		m_poly_def.density = 1.0f;
 		m_poly_def.friction = 0.1f;
 		m_poly_def.restitution = 0.5f;
 //		m_poly_def.filter.categoryBits = PhysicalConstants.COLLISION_CATEGORY_STATIONARY;
 //		m_poly_def.filter.maskBits = PhysicalConstants.COLLISION_MASK_ALL;
-		m_poly_def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_STATIONARY;
+		m_poly_def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_STATIONARY;		
 
 		// house image size is 64x64px
 		// that makes 6.4m x 6.4m
 		// but setAsBox takes half the sizes as values
 		m_poly_def.setAsBox(3.2f, 3.2f);
 		
-		final Body houseBody = world.createBody(m_body_def);
+		Body houseBody = world.createBody(m_body_def);
 
 		houseBody.m_userData = PhysicalProperties.Empty;
 		
@@ -333,17 +176,17 @@ public class PhysicsFactory {
 		return houseBody;
 	}
 	
-	public static Body createSpawnPoint(final World world, final int pixX, final int pixY, final Integer rotation) {
+	public static Body createSpawnPoint(World world, int pixX, int pixY, Integer rotation) {
 		Logger.i().log(TAG, "Creating spawnpoint at x:"+pixX+" y:"+pixY);
 		
-		final float x = lengthToPhysics(pixY);
-		final float y = lengthToPhysics(pixY);
+		float x = lengthToPhysics(pixY);
+		float y = lengthToPhysics(pixY);
 
-		final BodyDef body_def = new BodyDef();
+		BodyDef body_def = new BodyDef();
 		body_def.position = new Vec2(x, y);
 		body_def.angle = angleToPhysics(rotation);
 				
-		final CircleDef circle_def = new CircleDef();
+		CircleDef circle_def = new CircleDef();
 		circle_def.density = 0f;
 //		circle_def.friction = 0f;
 		circle_def.isSensor = true;
@@ -354,27 +197,27 @@ public class PhysicsFactory {
 		circle_def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
 		circle_def.userData = EventType.ENTITY_SENSE_SPAWN;
 		
-		final Body spawnBody = world.createBody(body_def);
+		Body spawnBody = world.createBody(body_def);
 		spawnBody.m_userData = PhysicalProperties.Empty;
 		spawnBody.createShape(circle_def);
 		return spawnBody;
 		
 	}
 	
-	public static Body createBullet(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int angle) {
+	public static Body createBullet(World world, PhysicalProperties physprop, int pixX, int pixY, int angle) {
 		Logger.i().log(TAG, "Creating bullet at x:"+pixX+" y:"+pixY);
 		
-		final float x = lengthToPhysics(pixX);
-		final float y = lengthToPhysics(pixY);
+		float x = lengthToPhysics(pixX);
+		float y = lengthToPhysics(pixY);
 
-		final Vec2 direction = new Vec2( (float) Math.cos(angleToPhysics(angle)), (float) Math.sin(angleToPhysics(angle)) );
+		Vec2 direction = new Vec2( (float) Math.cos(angleToPhysics(angle)), (float) Math.sin(angleToPhysics(angle)) );
 		
-		final BodyDef body_def = new BodyDef();
+		BodyDef body_def = new BodyDef();
 		body_def.position = new Vec2(x, y);
 		body_def.angle = angle;
 		body_def.isBullet = true;
 				
-		final CircleDef circle_def = new CircleDef();
+		CircleDef circle_def = new CircleDef();
 		circle_def.density = physprop.DENSITY;
 		circle_def.isSensor = false;
 		circle_def.radius = 0.1f;
@@ -395,19 +238,19 @@ public class PhysicsFactory {
 	}
 	
 	
-	public static float angleToPhysics(final int degrees) {
+	public static float angleToPhysics(int degrees) {
 		return (float) ((degrees % 360) * Math.PI / 180f);
 	}
 	
-	public static int angleToWorld(final float radians) {
+	public static int angleToWorld(float radians) {
 		return (int) (radians * 180f / Math.PI) % 360;
 	}
 	
-	public static float lengthToPhysics(final int pixels) {
+	public static float lengthToPhysics(int pixels) {
 		return pixels / WorldConstants.PIX_TO_PHYSICS_RATIO;
 	}
 	
-	public static int lengthToWorld(final float lengthUnits) {
+	public static int lengthToWorld(float lengthUnits) {
 		return (int) (lengthUnits * WorldConstants.PIX_TO_PHYSICS_RATIO);
 	}
 

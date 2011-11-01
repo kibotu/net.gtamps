@@ -1,20 +1,22 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
-import net.gtamps.android.core.math.Frustum;
+import android.opengl.GLU;
+import net.gtamps.shared.math.Frustum;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.math.Matrix4;
 import net.gtamps.shared.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
+
 /**
  * Kameraknoten
  */
 public class Camera extends RenderableNode {
+
 
 	/**
 	 * Der Sichtkegel
@@ -81,7 +83,8 @@ public class Camera extends RenderableNode {
         dimension.set(width, height, 0);
         // TODO: FUCK YOU 4/3 Aspect!!!!! Wir haben doch 800/480 = ~16:10 (1.6666)
         frustum.setAspectRatio(width/height);
-        Logger.i(this, "[width:" + width + "|height:" + height + "|aspect:" + frustum.getAspectRatio() + "]");
+        Logger.i(this,"[height:" + height + "|width:"+width+"|aspect:"+frustum.getAspectRatio()+"]");
+
     }
 
     /**

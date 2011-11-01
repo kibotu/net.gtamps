@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -145,8 +146,12 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @return Anzahl der direkten Kindknoten
 	 */
 	public int getChildCount() {
-		return childNodes.size();
+		return hasChildren() ? childNodes.size() : 0;
 	}
+
+    public boolean hasChildren() {
+        return childNodes != null && !childNodes.isEmpty();
+    }
 
 	/**
 	 * Gibt an, ob der Knoten sichtbar ist
@@ -228,13 +233,10 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		if (!positionOnly) updateInternal(deltat);
 		
 		// Alle Kindknoten rekursiv updaten
-		if (childNodes != null) {
-			int count = childNodes.size();
-			for (int i=0; i<count; ++i) {
-				childNodes.get(i).update(deltat, false, positionOnly);
-			}
-		}
-		
+        for (int i=0; i<getChildCount(); ++i) {
+            childNodes.get(i).update(deltat, false, positionOnly);
+        }
+
 		// Combined transformation als sauber markieren
 		combinedTransformationDirty = false;
 	}
@@ -256,12 +258,9 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 		processInternal(state);
 		
 		// Alle Kindknoten rekursiv verarbeiten
-		if (childNodes != null) {
-			int count = childNodes.size();
-			for (int i=0; i<count; ++i) {
-				childNodes.get(i).process(state);
-			}
-		}
+        for (int i=0; i < getChildCount(); ++i) {
+            childNodes.get(i).process(state);
+        }
 
         afterProcess(state);
 	}
@@ -283,16 +282,14 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	public final void cleanup(@NotNull ProcessingState state) {
+
 		// Internen Verarbeitungsvorgang aufrufen
 		cleanupInternal(state);
 
 		// Alle Kindknoten rekursiv verarbeiten
-		if (childNodes != null) {
-			int count = childNodes.size();
-			for (int i = 0; i < count; ++i) {
-				childNodes.get(i).cleanup(state);
-			}
-		}
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).cleanup(state);
+        }
 	}
 
 	/**
@@ -308,16 +305,15 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	public final void setup(@NotNull ProcessingState state) {
+
 		// Internen Verarbeitungsvorgang aufrufen
 		setupInternal(state);
 
 		// Alle Kindknoten rekursiv verarbeiten
-		if (childNodes != null) {
-			int count = childNodes.size();
-			for (int i = 0; i < count; ++i) {
-				childNodes.get(i).setup(state);
-			}
-		}
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).setup(state);
+        }
+        setOptions();
 	}
 
 	/**
@@ -326,4 +322,9 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
 	 * @param state Die State-Referenz
 	 */
 	protected abstract void setupInternal(@NotNull ProcessingState state);
+
+    /**
+     * Sets general options.
+     */
+    protected abstract void setOptions();
 }

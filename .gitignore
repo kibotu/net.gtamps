@@ -19,5 +19,11 @@ default.properties
 *.class
 .metadata
 *.dex
+<<<<<<< HEAD
+/cloc-1.55.exe
+
+server/.settings/org.eclipse.jdt.ui.prefs
+
+=======
 *.exe
-*.prefs
+>>>>>>> 43278f7c548f44534bf73d23d104d90d77d229ae

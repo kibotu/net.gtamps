@@ -11,8 +11,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConnectionManager implements IMessageManager {
 
-    private static final String TAG = ConnectionManager.class.getSimpleName();
-
     private final ConcurrentLinkedQueue<Message> inbox;
     private final ConcurrentLinkedQueue<Message> outbox;
     private IStream stream;
@@ -53,7 +51,7 @@ public class ConnectionManager implements IMessageManager {
     }
 
     public boolean connect() {
-        return connect(Config.SERVER_HOST_ADDRESS, Config.SERVER_PORT);
+        return connect(Config.SERVER_DEFAULT_HOST_ADDRESS, Config.SERVER_DEFAULT_PORT);
     }
 
     public boolean connect(String host, int port) {
