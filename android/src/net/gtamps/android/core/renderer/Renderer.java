@@ -3,13 +3,12 @@ package net.gtamps.android.core.renderer;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.Registry;
-import net.gtamps.android.core.renderer.graph.primitives.Light;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.android.game.Game;
-import net.gtamps.android.game.scene.Scene;
+import net.gtamps.android.game.scenes.BasicScene;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,7 @@ public class Renderer implements GLSurfaceView.Renderer{
     private Game game;
     private ProcessingState glState;
 
-    private ArrayList<Scene> scenes;
+    private ArrayList<BasicScene> basicScenes;
     private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
     public Renderer(Game game) {
@@ -43,19 +42,21 @@ public class Renderer implements GLSurfaceView.Renderer{
 
         // get mobile capabilities
         RenderCapabilities.setRenderCaps(gl10);
-        Light.MAX_AMOUNT_LIGHTS = RenderCapabilities.maxLights();
 
         // init game
         game.onCreate();
+        for(int i = 0; i < game.getScenes().size(); i++) {
+            game.getScenes().get(i).onCreate();
+        }
 
         // default opengl settings
         reset(gl10);
 
-        // finish scene graph setup
+        // finish basicScenes graph setup
 	    ProcessingState state = new ProcessingState();
 	    state.setGl(gl10);
         for(int i = 0; i < game.getScenes().size(); i++) {
-            game.getScenes().get(i).getSceneGraph().setup(state);
+            game.getScenes().get(i).getScene().setup(state);
         }
         // last best gc call
         final Runtime r = Runtime.getRuntime();
@@ -118,7 +119,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 
         // draw
         for(int i = 0; i < game.getScenes().size(); i++) {
-            game.getScenes().get(i).getSceneGraph().render(gl10);
+            game.getScenes().get(i).getScene().render(gl10);
         }
 
         // setup

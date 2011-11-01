@@ -356,4 +356,9 @@ public class Camera extends RenderableNode {
     public void enableDepthTest(boolean enableDepthTest) {
         hasDepthTest = enableDepthTest;
     }
+
+    @Override
+    public void afterProcess(ProcessingState state) {
+        // do nothing
+    }
 }
