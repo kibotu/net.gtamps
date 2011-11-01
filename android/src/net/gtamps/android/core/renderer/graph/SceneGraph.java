@@ -25,7 +25,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 	private Camera activeCamera;
 
     /**
-     * Defines the background color of the scene.
+     * Defines the background color of the scenes.
      */
     @NotNull
     private static Color4 background = new Color4(0,0,0,0);

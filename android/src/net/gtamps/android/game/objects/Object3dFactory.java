@@ -59,11 +59,11 @@ final public class Object3dFactory {
         parsedChild.enableVertexColors(false);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(false);
+        parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(true);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
-        parsedChild.setScaling(10, 10, 10);
+        parsedChild.setScaling(5,5,5);
         return parsedObject;
     }
 

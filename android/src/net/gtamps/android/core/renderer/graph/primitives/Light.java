@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
@@ -60,11 +61,6 @@ public class Light extends RenderableNode {
     private Type type;
 
     /**
-     * Will be changed by renderer on create. After {@link net.gtamps.android.core.renderer.RenderCapabilities} have been checked.
-     */
-    public static int MAX_AMOUNT_LIGHTS = 8;
-
-    /**
      * Light that has been reflected by other objects and hits the mesh in small amounts
      */
     public final Color4 ambient;
@@ -120,7 +116,7 @@ public class Light extends RenderableNode {
 
          if(availableLightIndices == null) {
             availableLightIndices = new ArrayList<Integer>();
-            for (int i = 0; i < MAX_AMOUNT_LIGHTS; i++) {
+            for (int i = 0; i < RenderCapabilities.maxLights(); i++) {
                 availableLightIndices.add(i);
             }
          }
@@ -260,10 +256,5 @@ public class Light extends RenderableNode {
 
     @Override
     public void onDirty() {
-    }
-
-    @Override
-    public void afterProcess(ProcessingState state) {
-        // do nothing
     }
 }

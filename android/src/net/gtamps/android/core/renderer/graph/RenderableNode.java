@@ -145,9 +145,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         // Object skalieren
         gl.glPushMatrix();
         gl.glScalef(dimension.x * scaling.x, dimension.y * scaling.y, dimension.z * scaling.z);
-
         render(gl);
         gl.glPopMatrix();
+        renderInternal(gl);
     }
 
     @Override
@@ -199,9 +199,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // enable back-face culling
         if (doubleSidedEnabled) {
-	        gl.glEnable(GL_CULL_FACE);
-        } else {
             gl.glDisable(GL_CULL_FACE);
+        } else {
+	        gl.glEnable(GL_CULL_FACE);
         }
 
         // enable alpha blending
@@ -286,9 +286,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 		gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		gl.glDisableClientState(GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL_COLOR_ARRAY);
-
-        // additional rendering calls
-        renderInternal(gl);
     }
 
     /**

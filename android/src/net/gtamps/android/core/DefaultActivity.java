@@ -1,6 +1,7 @@
 package net.gtamps.android.core;
 
 import android.app.Activity;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.utils.AndroidLogger;
@@ -28,10 +29,10 @@ public abstract class DefaultActivity extends Activity {
     }
 
     protected void glSurfaceViewConfig() {
-//        view.setEGLConfigChooser(8,8,8,8, 16, 0);
-//	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        view.setEGLConfigChooser(8,8,8,8, 16, 0);
+	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         // opengl debugging
-//        view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
+        view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
 //        view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
     }
 
