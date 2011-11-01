@@ -46,12 +46,14 @@ public final class EntityBlueprint {
 	public Entity createEntity(Integer pixX, Integer pixY, Integer deg) {
 		Entity entity = new Entity(this.name);
 		for (HandlerBlueprint hproto : handlerPrototypes) {
+			assert hproto != null;
 			entity.setHandler(hproto.createHandler(entity, pixX, pixY, deg));
 		}
 		return entity;
 	}
 
 	public void addHandlerPrototype(@NotNull HandlerBlueprint proto) {
+		assert proto != null;
 		handlerPrototypes.add(proto.copy());
 	}
 

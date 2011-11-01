@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.gtamps.game.conf.PhysicalProperties;
+import net.gtamps.game.handler.blueprints.HealthBlueprint;
 import net.gtamps.game.handler.blueprints.MobilityBlueprint;
 import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.game.physics.PhysicsFactory;
@@ -29,11 +30,12 @@ public class EntityFactory {
 	private static EntityBlueprint createBlueprint(final World world, final String normName) {
 		final EntityBlueprint blup = EntityBlueprint.get(normName);
 		final PhysicalProperties physprop;
-		if (normName.equals("car")) {
+		if (normName.equals("CAR")) {
 			physprop = PhysicalProperties.Sportscar;
-		} else if (normName.equals("human")) {
+		} else if (normName.equals("HUMAN")) {
 			physprop = PhysicalProperties.Human;
-		} else if (normName.equals("bullet")) {
+			blup.addHandlerPrototype(new HealthBlueprint(100, 1f, 1));
+		} else if (normName.equals("BULLET")) {
 			physprop = PhysicalProperties.Bullet;
 		} else {
 			physprop = PhysicalProperties.Empty;

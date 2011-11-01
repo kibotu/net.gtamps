@@ -15,6 +15,10 @@ public class MobilityBlueprint extends HandlerBlueprint {
 		super(Handler.Type.MOBILITY);
 		this.mobProp = mobProp;
 	}
+	
+	public MobilityBlueprint(final MobilityBlueprint other) {
+		this(other.mobProp);
+	}
 
 	@Override
 	public Handler createHandler(final Entity parent, final Integer pixX, final Integer pixY, final Integer deg) {
@@ -24,8 +28,7 @@ public class MobilityBlueprint extends HandlerBlueprint {
 
 	@Override
 	public HandlerBlueprint copy() {
-		// TODO Auto-generated method stub
-		return null;
+		return new MobilityBlueprint(this);
 	}
 	
 	
