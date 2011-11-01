@@ -7,7 +7,7 @@ final public class Config {
     /**
      * DEBUG
      */
-    public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
+    public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG_CHECK_GL_ERROR;
 
     /**
      * RENDERER

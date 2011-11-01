@@ -75,6 +75,7 @@ public class TextureLibrary {
 
         BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
         sBitmapOptions.inPreferredConfig = bitmapConfig;
+        sBitmapOptions.inScaled = false;
 
         Bitmap bitmap;
         if(flipped) {
@@ -101,7 +102,7 @@ public class TextureLibrary {
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, glTextureId);
 
 		if(generateMipMap && gl instanceof GL11) {
-            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR_MIPMAP_NEAREST);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST);
 			gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
 		} else {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);

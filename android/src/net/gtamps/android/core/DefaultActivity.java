@@ -1,7 +1,6 @@
 package net.gtamps.android.core;
 
 import android.app.Activity;
-import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.utils.AndroidLogger;
@@ -29,11 +28,12 @@ public abstract class DefaultActivity extends Activity {
     }
 
     protected void glSurfaceViewConfig() {
-        view.setEGLConfigChooser(8,8,8,8, 16, 0);
-	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        // opengl debugging
-        view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
-//        view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
+        // transparent: scene.background = color4.transparent
+        // manifest theme:translucent
+//        view.setEGLConfigChooser(8,8,8,8, 16, 0);
+//	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        if(Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0) view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
+        if(Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_LOG_GL_CALLS) <= 0) view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
     }
 
     @Override
@@ -75,7 +75,6 @@ public abstract class DefaultActivity extends Activity {
     }
 
     public void setRenderContinuously(boolean isContinuously) {
-//        view.setRenderMode((Config.renderContinuously = isContinuously) ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        view.setRenderMode((Config.renderContinuously = isContinuously) ? 1 : 0);
+        view.setRenderMode((Config.renderContinuously = isContinuously) ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 }

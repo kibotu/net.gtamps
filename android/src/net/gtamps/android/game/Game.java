@@ -6,6 +6,7 @@ import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.game.objects.EntityView;
 import net.gtamps.android.game.scenes.BasicScene;
 import net.gtamps.android.game.scenes.Hud;
+import net.gtamps.android.game.scenes.Menu;
 import net.gtamps.android.game.scenes.World;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -36,6 +37,7 @@ public class Game implements IGame{
     private boolean isDragging = false;
     private final Hud hud;
     private final World world;
+    private final Menu menu;
     private final ConnectionManager connection;
 
     public Game() {
@@ -45,6 +47,7 @@ public class Game implements IGame{
         scenes = new ArrayList<BasicScene>();
         hud = new Hud();
         world = new World();
+        menu = new Menu();
         connection = new ConnectionManager();
     }
 
@@ -52,16 +55,20 @@ public class Game implements IGame{
 
         // create world
         scenes.add(world);
+        world.getScene().setVisible(false);
 
         // hud
         scenes.add(hud);
+        hud.getScene().setVisible(false);
+
+        scenes.add(menu);
 
         // connect
-        connection.checkConnection();
-
-        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-        connection.start();
-        connection.add(MessageFactory.createSessionRequest());
+//        connection.checkConnection();
+//
+//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        connection.start();
+//        connection.add(MessageFactory.createSessionRequest());
     }
 
     @Override
@@ -71,7 +78,7 @@ public class Game implements IGame{
         }
 
         // check connection
-        connection.checkConnection();
+//        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
@@ -108,11 +115,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveView().getObject3d().getPosition().addInPlace(temp);
+            world.getActiveView().getObject3d().getPosition().addInPlace(temp);
             scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveView().getObject3d().setRotation(0, 0, angle);
+            world.getActiveView().getObject3d().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);

@@ -14,7 +14,7 @@ public enum AndroidLogger implements ILogger {
 
     @Override
     public void toast(@NotNull String o, String message) {
-        Toast t = Toast.makeText(Registry.getContext(), message, Toast.LENGTH_LONG);
+        Toast t = Toast.makeText(Registry.getContext().getApplicationContext(), message, Toast.LENGTH_SHORT);
         t.setGravity(Gravity.CENTER|Gravity.CENTER, 0, 0);
         t.show();
     }

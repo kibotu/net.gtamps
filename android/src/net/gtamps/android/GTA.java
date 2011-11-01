@@ -1,5 +1,6 @@
 package net.gtamps.android;
 
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.DefaultActivity;
@@ -32,6 +33,9 @@ public class GTA extends DefaultActivity {
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.setKeepScreenOn(true);
+
+        // !!!!!!! took me ages to find, but there are smooth images available now ^_^
+        view.getHolder().setFormat(PixelFormat.RGBA_8888);
 
         view.setOnTouchListener(InputEngine.getInstance());
     }

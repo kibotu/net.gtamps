@@ -146,6 +146,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 		gl10.glDepthFunc(GL_LEQUAL);
 		gl10.glDepthRangef(0,1f);
 		gl10.glDepthMask(true);
+        gl10.glEnable(GL_DITHER);
 
         gl10.glShadeModel(GL_SMOOTH);             // Enable Smooth Shading
 
@@ -158,7 +159,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 		gl10.glAlphaFunc(GL11.GL_GREATER, 0.1f);
 
 //		// Texture
-		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // (OpenGL default is GL_NEAREST_MIPMAP)
+		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST); // (OpenGL default is GL_NEAREST_MIPMAP)
 		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // (is OpenGL default)
 
         gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
