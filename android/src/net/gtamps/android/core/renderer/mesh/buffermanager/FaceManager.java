@@ -152,9 +152,4 @@ public class FaceManager {
 		buffer.position(0);
 		return new FaceManager(buffer, numElements);
 	}
-
-    public void addQuad(int upperLeft, int upperRight, int lowerRight, int lowerLeft) {
-        add((short)upperLeft, (short)lowerRight, (short)upperRight);
-		add((short)upperLeft, (short)lowerLeft, (short)lowerRight);
-    }
 }

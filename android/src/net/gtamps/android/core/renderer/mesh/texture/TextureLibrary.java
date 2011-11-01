@@ -92,6 +92,8 @@ public class TextureLibrary {
         int id = alloc(bitmap,generateMipMap);
         textureResourceIds.put(""+textureResourceId,id);
 
+        Logger.i(this, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + textureResourceId + "|hasMipMap=" + generateMipMap + "] Bitmap successfully loaded.");
+
         return id;
     }
 
@@ -116,8 +118,6 @@ public class TextureLibrary {
 
 		// 'upload' to gpu
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-
-        Logger.i(this, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + glTextureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
 
         //Clean up
         bitmap.recycle();
@@ -153,6 +153,7 @@ public class TextureLibrary {
 
     public String getNewAtlasId() {
         return "atlas" + (atlasId++);
+//        return "atlas".concat(Integer.toString(atlasId++));
     }
 
     public boolean contains(String textureId) {
