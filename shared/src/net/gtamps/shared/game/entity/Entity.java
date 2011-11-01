@@ -17,13 +17,14 @@ public class Entity extends GameActor implements Serializable {
 	private static final long serialVersionUID = -5466989016443709708L;
 
 	static public enum Type {
-        CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER;
+        CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, SPHERE;
     }
 	
 	//TODO: use!
 	public static String normalizeName(String name) {
 		return name.toUpperCase();
 	}
+	
 
 
 	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
@@ -41,6 +42,16 @@ public class Entity extends GameActor implements Serializable {
 	
 	private transient Player owner = null;
 
+	
+	public Entity(Type type) {
+		super(type.name().toLowerCase());
+        this.type = type;
+        x = this.useProperty("posx", 0);
+        y = this.useProperty("posy", 0);
+        z = this.useProperty("posz", 0);
+        rota = this.useProperty("rota", 0);
+	}
+	
 	public Entity(String name){
 		super(name);
         type = getType(name);
