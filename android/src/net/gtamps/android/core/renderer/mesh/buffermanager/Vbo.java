@@ -53,40 +53,42 @@ public class Vbo {
         // OpenGL 1.1-Instanz beziehen
         final GL11 gl11 = (GL11) gl;
 
+        // get buffer ids
         final IntBuffer buffer = IntBuffer.allocate(5);
         gl11.glGenBuffers(5, buffer);
-
-        // get ids
         vertexBufferId = buffer.get(0);
         indexBufferId = buffer.get(1);
         normalBufferId = buffer.get(2);
         colorBufferId = buffer.get(3);
         textureCoordinateBufferId = buffer.get(4);
 
-        // Vertex-VBO binden und beladen
+        // bind vertex buffer
         gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferId);
         gl11.glBufferData(GL11.GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL11.GL_STATIC_DRAW);
 
-        // Index-VBO binden und beladen
+        // bind index buffer
         gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
         gl11.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GL11.GL_STATIC_DRAW);
 
-        // Normal-VBO binden und beladen
-        gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, normalBufferId);
-        gl11.glBufferData(GL11.GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL11.GL_STATIC_DRAW);
+        // bind normal buffer
+        if(normalBuffer != null) {
+            gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, normalBufferId);
+            gl11.glBufferData(GL11.GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL11.GL_STATIC_DRAW);
+        }
 
+        // bind color buffer
         if (colorBuffer != null) {
-            // Color-VBO binden und beladen
             gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, colorBufferId);
             gl11.glBufferData(GL11.GL_ARRAY_BUFFER, colorBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, colorBuffer, GL11.GL_STATIC_DRAW);
         }
+
+        // bind uv buffer
         if (textureCoordinateBuffer != null) {
-            // Texture-VBO binden und beladen
             gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, textureCoordinateBufferId);
             gl11.glBufferData(GL11.GL_ARRAY_BUFFER, textureCoordinateBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, textureCoordinateBuffer, GL11.GL_STATIC_DRAW);
         }
 
-        // Puffer abwählen
+        // deselect buffers
         gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
         gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 

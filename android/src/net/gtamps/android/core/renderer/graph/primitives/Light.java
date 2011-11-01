@@ -1,5 +1,7 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
+import net.gtamps.android.core.renderer.RenderCapabilities;
+import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
@@ -59,11 +61,6 @@ public class Light extends RenderableNode {
     private Type type;
 
     /**
-     * Will be changed by renderer on create. After {@link net.gtamps.android.core.renderer.RenderCapabilities} have been checked.
-     */
-    public static int MAX_AMOUNT_LIGHTS = 8;
-
-    /**
      * Light that has been reflected by other objects and hits the mesh in small amounts
      */
     public final Color4 ambient;
@@ -103,6 +100,7 @@ public class Light extends RenderableNode {
     private int lightId;
 
     public Light() {
+         mesh = new Mesh(0,0);
          type = Type.DIRECTIONAL;
          ambient = new Color4(128,128,128, 255);
 		 diffuse = new Color4(255,255,255, 255);
@@ -118,7 +116,7 @@ public class Light extends RenderableNode {
 
          if(availableLightIndices == null) {
             availableLightIndices = new ArrayList<Integer>();
-            for (int i = 0; i < MAX_AMOUNT_LIGHTS; i++) {
+            for (int i = 0; i < RenderCapabilities.maxLights(); i++) {
                 availableLightIndices.add(i);
             }
          }
@@ -145,10 +143,10 @@ public class Light extends RenderableNode {
             gl11.glEnable(GL11.GL_RESCALE_NORMAL);
 
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, material.getAmbient().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, material.getDiffuse().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getSpecular().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, material.getEmissive().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, ambient.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, diffuse.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, specular.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, emissive.asBuffer());
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
@@ -162,6 +160,11 @@ public class Light extends RenderableNode {
         } else {
             gl.glDisable(GL11.GL_LIGHTING);
         }
+    }
+
+    @Override
+    protected void setOptions() {
+
     }
 
     @Override
@@ -253,10 +256,5 @@ public class Light extends RenderableNode {
 
     @Override
     public void onDirty() {
-    }
-
-    @Override
-    public void afterProcess(ProcessingState state) {
-        // do nothing
     }
 }
