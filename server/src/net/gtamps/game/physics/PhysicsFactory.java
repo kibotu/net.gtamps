@@ -11,6 +11,7 @@ import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.level.PhysicalShape;
 
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.MassData;
@@ -37,6 +38,9 @@ public class PhysicsFactory {
 		return new Box2DEngine(minX, minY, maxX, maxY);
 	}
 	
+	public static Body createHouseBodyFromLevelPhysicalShape(final PhysicalShape levelshape) {
+		return null;
+	}
 	
 	public static PhysicsBlueprint createPhysicsBlueprint(final World world, final PhysicalProperties physprop) {
 		final PhysicsBlueprint blup = new PhysicsBlueprint(
