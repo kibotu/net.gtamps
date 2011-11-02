@@ -3,6 +3,7 @@ package net.gtamps.android.game.scenes;
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.primitives.AnimatedSprite;
 import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.primitives.TextSprite;
 
 public class Menu extends BasicScene {
 
@@ -16,8 +17,9 @@ public class Menu extends BasicScene {
         background.setPosition(-0.15f,0,0);
         add(background);
 
-
-
+        TextSprite text = new TextSprite("Hello World");
+        text.setScaling(2f,2f,0, 2f);
+        add(text);
     }
 
     @Override

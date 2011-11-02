@@ -152,7 +152,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     @Override
     protected void afterProcess(@NotNull ProcessingState state) {
-       state.getGl().glPopMatrix();
+        state.getGl().glPopMatrix();
     }
 
     /**
@@ -239,8 +239,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //            }
 
             // draw uvs
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
-            gl.glTexCoordPointer(2, GL_FLOAT, 0, 0);
+            gl.glBindBuffer(GL_ARRAY_BUFFER, textureBufferId == 0 ? mesh.getVbo().textureCoordinateBufferId : textureBufferId);
+            gl.glTexCoordPointer(2, GL_FLOAT, 0, textureBufferOffsetId);
             gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         } else {
             gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -586,5 +586,29 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RenderableNode)) return false;
+
+        RenderableNode that = (RenderableNode) o;
+
+        if (textureBufferId != that.textureBufferId) return false;
+        if (textureBufferOffsetId != that.textureBufferOffsetId) return false;
+        if (textureId != that.textureId) return false;
+        if (!mesh.equals(that.mesh)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mesh.hashCode();
+        result = 31 * result + textureId;
+        result = 31 * result + textureBufferId;
+        result = 31 * result + textureBufferOffsetId;
+        return result;
     }
 }

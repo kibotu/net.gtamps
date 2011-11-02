@@ -42,30 +42,30 @@ final public class MessageFactory {
     }
 
     public static Message createAccelerateCommand(float value) {
-        return new Message(new Sendable(SendableType.ACCELERATE, new FloatData(value)));
+        return new Message(new Sendable(SendableType.ACTION_ACCELERATE, new FloatData(value)));
     }
 
     public static Message createDecelerateCommand(float value) {
-        return new Message(new Sendable(SendableType.DECELERATE, new FloatData(value)));
+        return new Message(new Sendable(SendableType.ACTION_DECELERATE, new FloatData(value)));
     }
 
     public static Message createRightCommand(float value) {
-        return new Message(new Sendable(SendableType.RIGHT, new FloatData(value)));
+        return new Message(new Sendable(SendableType.ACTION_RIGHT, new FloatData(value)));
     }
 
     public static Message createLeftCommand(float value) {
-        return new Message(new Sendable(SendableType.LEFT, new FloatData(value)));
+        return new Message(new Sendable(SendableType.ACTION_LEFT, new FloatData(value)));
     }
 
     public static Message createJoinCommand() {
-        return new Message(new Sendable(SendableType.ENTEREXIT));
+        return new Message(new Sendable(SendableType.ACTION_ENTEREXIT));
     }
 
     public static Message createRegisterCommand() {
-        return new Message(new Sendable(SendableType.SHOOT));
+        return new Message(new Sendable(SendableType.ACTION_SHOOT));
     }
 
     public static Message createLoginCommand() {
-        return new Message(new Sendable(SendableType.HANDBRAKE));
+        return new Message(new Sendable(SendableType.ACTION_HANDBRAKE));
     }
 }

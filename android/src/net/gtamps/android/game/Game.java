@@ -159,28 +159,28 @@ public class Game implements IGame{
 
         // up° 22.5 to -22.5°
         if(inRange(angle, 22.5f, -22.5f)) {
-            message.addSendable(new Sendable(SendableType.ACCELERATE,new FloatData(force.getLength())));
+            message.addSendable(new Sendable(SendableType.ACTION_ACCELERATE,new FloatData(force.getLength())));
         }
 
         // right up -22.5° to -67.5°
 
         // right -67.5° to -112.5°
         if(inRange(angle, -67.5f, -112.5f)) {
-            message.addSendable(new Sendable(SendableType.RIGHT,new FloatData(force.getLength())));
+            message.addSendable(new Sendable(SendableType.ACTION_RIGHT,new FloatData(force.getLength())));
         }
 
         // right down -112.5° to -157.5°
 
         // down -157.5° to -180° and 180° to 157.5°
         if(inRange(angle, -157.5f, -180f) || inRange(angle, 180f,157.5f)) {
-            message.addSendable(new Sendable(SendableType.DECELERATE,new FloatData(force.getLength())));
+            message.addSendable(new Sendable(SendableType.ACTION_DECELERATE,new FloatData(force.getLength())));
         }
 
         // left down 157.5° to 112.5°
 
         // left 112.5° to 67.5°
         if(inRange(angle, 112.5f, 67.5f)) {
-            message.addSendable(new Sendable(SendableType.LEFT,new FloatData(force.getLength())));
+            message.addSendable(new Sendable(SendableType.ACTION_LEFT,new FloatData(force.getLength())));
         }
 
         // left up 67.5° to 22.5°
