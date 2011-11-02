@@ -61,4 +61,28 @@ public class Mesh {
     public Vbo getVbo() {
         return vbo;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Mesh)) return false;
+
+        Mesh mesh = (Mesh) o;
+
+        if (!faces.equals(mesh.faces)) return false;
+        if (!textures.equals(mesh.textures)) return false;
+        if (!vbo.equals(mesh.vbo)) return false;
+        if (!vertices.equals(mesh.vertices)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = vertices.hashCode();
+        result = 31 * result + textures.hashCode();
+        result = 31 * result + faces.hashCode();
+        result = 31 * result + vbo.hashCode();
+        return result;
+    }
 }

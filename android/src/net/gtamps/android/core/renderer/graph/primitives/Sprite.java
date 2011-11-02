@@ -20,6 +20,28 @@ public class Sprite extends RenderableNode {
         bufferedTexture = null;
     }
 
+    /**
+     * Constructs a new Sprite.
+     *
+     * @param width
+     * @param height
+     * @param textureId
+     * @param textureCoordBufferId
+     * @param textureCoordBufferOffsetId
+     */
+    public Sprite(float width, float height, int textureId, int textureCoordBufferId, int textureCoordBufferOffsetId, boolean useMipMap) {
+        dimension.set(width,height,0);
+        setTextureId(textureId);
+        setTextureBufferId(textureCoordBufferId);
+        setTextureBufferOffsetId(textureCoordBufferOffsetId);
+        scaling.set(1,1,0);
+        enableMipMap(useMipMap);
+    }
+
+    public Sprite(int textureId, int textureCoordBufferid, @NotNull SpriteTetxure spriteTetxure, boolean useMipMap) {
+        this(spriteTetxure.width,spriteTetxure.height,textureId,textureCoordBufferid,spriteTetxure.offsetId,useMipMap);
+    }
+
      public void setBufferedTexture(BufferedTexture bufferedTexture) {
         this.bufferedTexture = bufferedTexture;
         setTextureId(bufferedTexture.textureId);
@@ -98,5 +120,27 @@ public class Sprite extends RenderableNode {
 
     @Override
     public void onDirty() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sprite)) return false;
+
+        Sprite sprite = (Sprite) o;
+
+        if (!bufferedTexture.equals(sprite.bufferedTexture)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return bufferedTexture.hashCode();
+    }
+
+    @Override
+    public Sprite clone() {
+        return new Sprite(dimension.x,dimension.y, textureId,textureBufferId,textureBufferOffsetId, hasMipMap());
     }
 }

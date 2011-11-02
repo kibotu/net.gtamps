@@ -18,6 +18,11 @@ final public class Config {
     public static final boolean DISPLAY_FRAME_RATE = false;
 
     /**
+     * FONT
+     */
+    public static final float DEFAULT_LETTER_SPACING = 0.005f;
+
+    /**
      * PARSER
      */
     public static String PACKAGE_NAME = "net.gtamps.android:raw/";

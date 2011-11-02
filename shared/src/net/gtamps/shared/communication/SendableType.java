@@ -63,14 +63,14 @@ public enum SendableType {
     SPAWN_ERROR,
     
     // commands
-    ACCELERATE,
-    DECELERATE,
-    ENTEREXIT,
-    SHOOT,
-    HANDBRAKE,
-    LEFT,
-    RIGHT,
-    SUICIDE;
+    ACTION_ACCELERATE,
+    ACTION_DECELERATE,
+    ACTION_ENTEREXIT,
+    ACTION_SHOOT,
+    ACTION_HANDBRAKE,
+    ACTION_LEFT,
+    ACTION_RIGHT,
+    ACTION_SUICIDE;
 	
     
     public SendableType getOKResponse() {
