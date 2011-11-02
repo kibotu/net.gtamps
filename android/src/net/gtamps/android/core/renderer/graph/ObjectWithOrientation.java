@@ -38,31 +38,31 @@ public class ObjectWithOrientation implements ISpatialObject {
 	 * Die Position
 	 */
 	@NotNull
-	protected Vector3 position = Vector3.createNew(0.f, 0.f, 0.f);
+	protected final Vector3 position = Vector3.createNew(0.f, 0.f, 0.f);
 
 	/**
 	 * Die Skalierung
 	 */
 	@NotNull
-	protected Vector3 scaling = Vector3.createNew(1.f, 1.f, 1.f);
+	protected final Vector3 scaling = Vector3.createNew(1.f, 1.f, 1.f);
 
 	/**
 	 * Die Rotation (Roll, Pitch, Yaw)
 	 */
 	@NotNull
-	protected Vector3 rotation = Vector3.createNew(0.f, 0.f, 0.f);
+	protected final Vector3 rotation = Vector3.createNew(0.f, 0.f, 0.f);
 
     /**
      * Die Dimensionen des Objektdingens in Einheiten
      */
     @NotNull
-    protected Vector3 dimension = Vector3.createNew(1f, 1f, 1f);
+    protected final Vector3 dimension = Vector3.createNew(1f, 1f, 1f);
 
 	/**
 	 * Die achsenorientierte Bounding Box des Elementes
 	 */
 	@NotNull
-	protected Box aabb = new Box(); // TODO: Cache verwenden
+	protected final Box aabb = new Box(); // TODO: Cache verwenden
 
 	/**
 	 * Bezieht die Bounding Box des Elementes

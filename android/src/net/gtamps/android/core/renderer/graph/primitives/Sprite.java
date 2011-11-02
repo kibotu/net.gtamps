@@ -141,6 +141,8 @@ public class Sprite extends RenderableNode {
 
     @Override
     public Sprite clone() {
-        return new Sprite(dimension.x,dimension.y, textureId,textureBufferId,textureBufferOffsetId, hasMipMap());
+        Sprite sprite = new Sprite(dimension.x,dimension.y, textureId,textureBufferId,textureBufferOffsetId, hasMipMap());
+        sprite.setPosition(position);
+        return sprite;
     }
 }

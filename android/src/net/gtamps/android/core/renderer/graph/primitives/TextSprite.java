@@ -59,6 +59,7 @@ public class TextSprite extends Sprite {
                 letter = letters.get(c).clone();
                 xOffset += letter.getDimension().x + letterSpacing;
                 letter.getPosition().x += xOffset;
+                letter.useSharedTextureCoordBuffer(true);
                 add(letter);
             }
         }
@@ -77,8 +78,9 @@ public class TextSprite extends Sprite {
             node = get(i);
             node.setScaling(x, y, z);
             // TODO compute correct letterspacing
-            node.getPosition().x += letterSpacing;
+            node.getPosition().x +=letterSpacing;
         }
+//        position.x += letterSpacing;
     }
 
     @Override

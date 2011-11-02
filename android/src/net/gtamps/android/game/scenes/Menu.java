@@ -13,13 +13,22 @@ public class Menu extends BasicScene {
 
         AnimatedSprite background = new AnimatedSprite();
         background.loadBufferedTexture(R.drawable.menubackground,R.raw.menu,true);
-        background.setScaling(4.1f, 3.3f, 0);
-        background.setPosition(-0.15f,0,0);
+        background.setPosition(-0.16601562f,0,0);
+        background.setDimension(1,1,0);
+        background.setScaling(1.67f,1,0);
         add(background);
 
-        TextSprite text = new TextSprite("Hello World");
-        text.setScaling(2f,2f,0, 2f);
-        add(text);
+        TextSprite start = new TextSprite("Start");
+        start.setPosition(-0.5f,0.1f,0);
+        add(start);
+
+        TextSprite options = new TextSprite("Options");
+        options.setPosition(-0.5f,0,0);
+        add(options);
+
+        TextSprite quit = new TextSprite("Quit");
+        quit.setPosition(-0.5f,-0.1f,0);
+        add(quit);
     }
 
     @Override
