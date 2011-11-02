@@ -207,13 +207,13 @@ public class ManualTypeSerializer implements ISerializer {
 		    	final String typeString = scanner.next();
 		    	type = SendableType.valueOf(typeString);
 		    	switch(type) {
-			    	case ACCELERATE:
-			    	case DECELERATE:
-			    	case ENTEREXIT:
-			    	case HANDBRAKE:
-			    	case LEFT:
-			    	case RIGHT:
-			    	case SHOOT:
+			    	case ACTION_ACCELERATE:
+			    	case ACTION_DECELERATE:
+			    	case ACTION_ENTEREXIT:
+			    	case ACTION_HANDBRAKE:
+			    	case ACTION_LEFT:
+			    	case ACTION_RIGHT:
+			    	case ACTION_SHOOT:
 			    		break;
 			    	case REGISTER:
 			    	case LOGIN:
