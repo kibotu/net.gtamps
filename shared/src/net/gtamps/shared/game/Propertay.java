@@ -56,11 +56,6 @@ public class Propertay<T> extends GameObject implements IProperty<T> {
 	}
 	
 	@Override
-	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
-		throw new UnsupportedOperationException("this type of gameObject does not support properties");
-	}
-	
-	@Override
 	public String toString() {
 		String s = String.format("%s: %s", this.name, this.value.toString());
 		return s;

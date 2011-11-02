@@ -137,10 +137,8 @@ public abstract class GameObject implements Serializable {
 	 * 									already exists under the same <code>name</code>,
 	 * 									or if the property couldn't be initialized for
 	 * 									any reason
-	 * @throws UnsupportedOperationException	if a gameObject type does not support the
-	 * 											use of properties
 	 */
-	public <T> IProperty<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+	public final <T> IProperty<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
 		String properName = name.toLowerCase();
 		Propertay<T> p = this.getProperty(properName);
 		if (p == null) {
