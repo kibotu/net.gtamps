@@ -26,9 +26,9 @@ import java.util.NoSuchElementException;
  * 
  */
 public abstract class GameObject implements Serializable {
-	/**
-	 * 
-	 */
+
+	public static final int INVALID_UID = UIDGenerator.INVALID_UID;
+	
 	private static final long serialVersionUID = 7826642603562424002L;
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "GameObject";

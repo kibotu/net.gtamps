@@ -128,14 +128,14 @@ public class ControlCenter implements Runnable, IMessageHandler {
 			case GETMAPDATA:
 			case GETPLAYER:
 			case GETUPDATE:
-			case ACCELERATE:
-			case DECELERATE:
-			case HANDBRAKE:
-			case ENTEREXIT:
-			case LEFT:
-			case RIGHT:
-			case SHOOT:
-			case SUICIDE:
+			case ACTION_ACCELERATE:
+			case ACTION_DECELERATE:
+			case ACTION_HANDBRAKE:
+			case ACTION_ENTEREXIT:
+			case ACTION_LEFT:
+			case ACTION_RIGHT:
+			case ACTION_SHOOT:
+			case ACTION_SUICIDE:
 				handlePlayingRequest(request);
 				break;
 			default:
