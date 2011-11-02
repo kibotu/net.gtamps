@@ -5,15 +5,23 @@ import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.player.Player;
 
+/**
+ *
+ * @deprecated kept on for legacy code reference
+ * 
+ * @author Jan Rabe, Tom Wallroth, Til Boerner
+ *
+ */
+@Deprecated
 public class IncarnationProperty extends Property {
 
 	private static final LogType TAG = LogType.GAMEWORLD;
 	
 	private Player player = null;
 	
-	public IncarnationProperty(GameObject parent) {
+	public IncarnationProperty(final GameObject parent) {
 		super(Property.Type.INCARNATION, parent);
-		this.hasChanged = false;
+		hasChanged = false;
 	}
 	
 //	@Override
@@ -25,18 +33,18 @@ public class IncarnationProperty extends Property {
 //		return e;
 //	}
 	
-	public void setPlayer(Player player) {
+	public void setPlayer(final Player player) {
 		if (player == null) {
 			throw new IllegalArgumentException("'player' must not be null");
 		}
-		Logger.i().log(TAG, player + " incarnation: " + this.parent);
+		Logger.i().log(TAG, player + " incarnation: " + parent);
 		this.player = player;
-		this.hasChanged = true;
-		this.setParentChanged();
+		hasChanged = true;
+		setParentChanged();
 	}
 	
 	public void removePlayer() {
-		this.player = null;
+		player = null;
 	}
 	
 

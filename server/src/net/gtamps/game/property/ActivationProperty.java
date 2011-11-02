@@ -2,24 +2,30 @@ package net.gtamps.game.property;
 
 import net.gtamps.shared.game.GameObject;
 
+// TODO create handler??
+
+@Deprecated
 public class ActivationProperty extends Property{
 
 	private boolean isEnabled = true;
 	
-	public ActivationProperty(GameObject parent) {
+	public ActivationProperty(final GameObject parent) {
 		super(Property.Type.ACTIVATION, parent);
 	}
 	
+	@Override
 	public void enable() {
-		this.isEnabled = true;
-		this.hasChanged = true;
-		this.setParentChanged();
+		isEnabled = true;
+		hasChanged = true;
+		setParentChanged();
 	}
+	@Override
 	public void disable(){
-		this.isEnabled = false;
-		this.hasChanged = true;
-		this.setParentChanged();
+		isEnabled = false;
+		hasChanged = true;
+		setParentChanged();
 	}
+	@Override
 	public boolean isEnabled(){
 		return isEnabled;
 	}
@@ -35,8 +41,8 @@ public class ActivationProperty extends Property{
 	
 	@Override
 	public String toString() {
-		String s = super.toString();
-		return s+" is activated: "+this.isEnabled();
+		final String s = super.toString();
+		return s+" is activated: "+isEnabled();
 	}
 
 }

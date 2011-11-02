@@ -30,7 +30,7 @@ public class GTAMultiplayerServer {
 	 */
 	public static void main(final String[] args) {
 		Logger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-		ServerChainFactory.createServerChainII(SOCK_HANDLER);
+		ServerChainFactory.createServerChain(SOCK_HANDLER);
 		ServerChainFactory.startHTTPServer(DEFAULT_PATH);
 //		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
 //		dbHandler.createPlayer("tom", "mysecretpassword");
