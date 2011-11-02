@@ -38,10 +38,10 @@ public class Entity extends GameActor implements Serializable {
 	 * rotation about z
 	 */
 	public final Propertay<Integer> rota;
+	public final Propertay<Integer> player;
 	public final Type type;
 	
-	private transient Player owner = null;
-
+	//TODO: fix the disconnect between the use of 'type' (client) and 'name' (server)	
 	
 	public Entity(Type type) {
 		super(type.name().toLowerCase());
@@ -50,15 +50,17 @@ public class Entity extends GameActor implements Serializable {
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
+        player = this.useProperty("player", Player.INVALID_UID);
 	}
 	
 	public Entity(String name){
 		super(name);
-        type = getType(name);
+        this.type = getType(name);
         x = this.useProperty("posx", 0);
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
+        player = this.useProperty("player", Player.INVALID_UID);
 	}
 
     private Type getType(String name) {
@@ -78,15 +80,15 @@ public class Entity extends GameActor implements Serializable {
 		if (p == null) {
 			throw new IllegalArgumentException("'p' must not be null");
 		}
-		this.owner = p;
+		this.player.set(p.getUid());
 	}
 	
 	public void removeOwner() {
-		this.owner = null;
+		this.player.set(Player.INVALID_UID);
 	}
 	
-	public Player getOwner() {
-		return this.owner;
+	public int getOwnerUid() {
+		return this.player.value();
 	}
 	
 	public void setHandler(Handler handler) {
