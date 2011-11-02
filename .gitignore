@@ -21,3 +21,4 @@ default.properties
 *.dex
 *.exe
 *.prefs
+*.ttf
