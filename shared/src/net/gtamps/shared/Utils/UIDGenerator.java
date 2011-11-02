@@ -8,6 +8,8 @@ package net.gtamps.shared.Utils;
  *
  */
 public class UIDGenerator {
+	
+	public static final int INVALID_UID = -1;
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "StaticUIDGenerator";
