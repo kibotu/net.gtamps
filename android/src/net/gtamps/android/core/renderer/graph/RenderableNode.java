@@ -83,6 +83,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected int textureId = 0;
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
+    private boolean useSharedTextureCoordBuffer = false;
 
     public void setTextureId(int textureId) {
         this.textureId = textureId;
@@ -239,7 +240,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //            }
 
             // draw uvs
-            gl.glBindBuffer(GL_ARRAY_BUFFER, textureBufferId == 0 ? mesh.getVbo().textureCoordinateBufferId : textureBufferId);
+            gl.glBindBuffer(GL_ARRAY_BUFFER, useSharedTextureCoordBuffer ? textureBufferId : mesh.getVbo().textureCoordinateBufferId);
             gl.glTexCoordPointer(2, GL_FLOAT, 0, textureBufferOffsetId);
             gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         } else {
@@ -610,5 +611,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         result = 31 * result + textureBufferId;
         result = 31 * result + textureBufferOffsetId;
         return result;
+    }
+
+    public void useSharedTextureCoordBuffer(boolean isUsing) {
+        useSharedTextureCoordBuffer = isUsing;
     }
 }

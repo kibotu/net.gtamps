@@ -20,7 +20,8 @@ final public class Config {
     /**
      * FONT
      */
-    public static final float DEFAULT_LETTER_SPACING = 0.005f;
+    public static final float DEFAULT_LETTER_SPACING = 0.01f;
+    public static final float DEFAULT_LETTER_SIZE = 1f;
 
     /**
      * PARSER
