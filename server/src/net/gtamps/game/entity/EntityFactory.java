@@ -66,7 +66,10 @@ public class EntityFactory {
 	}
 	
 	
-	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityCar(final World world, final int pixX, final int pixY, final int deg) {
 ////		float x = pixX / WorldConstants.PIX_TO_PHYSICS_RATIO;
 ////		float y = pixY / WorldConstants.PIX_TO_PHYSICS_RATIO;
@@ -87,7 +90,10 @@ public class EntityFactory {
 		final Entity entity = createEntity(world, "car", pixX, pixY, deg);
 		return entity;
 	}
-	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityHuman(final World world, final int pixX, final int pixY, final int deg, final EntityManager em) {
 //		final Body humanBody = PhysicsFactory.createHuman(world, PhysicalProperties.Human, pixX, pixY, deg);
 //		Logger.i().log(TAG,"Created human at position x:"+pixX+" y:"+pixY);
@@ -108,6 +114,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityHouse(final World world, final int pixX, final int pixY) {
 //
 //		final Body houseBody = PhysicsFactory.createHouse(world, pixX, pixY);
@@ -117,6 +127,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntitySpawnPoint(final World world, final int pixX, final int pixY, final Integer deg) {
 ////		float x = pixX / WorldConstants.PIX_TO_PHYSICS_RATIO;
 ////		float y = pixY / WorldConstants.PIX_TO_PHYSICS_RATIO;
@@ -133,6 +147,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityBullet(final World world, int pixX, int pixY, final int rotation, final int launchDistance) {
 		pixX += Math.cos(rotation/180.0*Math.PI)*launchDistance;
 		pixY += Math.sin(rotation/180.0*Math.PI)*launchDistance;
@@ -149,7 +167,5 @@ public class EntityFactory {
 		final Entity entity = createEntity(world, "bullet", pixX, pixY, rotation);
 		return entity;
 	}
-	
-	
 	
 }
