@@ -38,7 +38,7 @@ public abstract class GameObject implements Serializable {
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
-	private Map<String, Propertay<?>> properties = null;
+	private Map<String, IProperty<?>> properties = null;
 
 	/**
 	 * 
@@ -140,7 +140,7 @@ public abstract class GameObject implements Serializable {
 	 * @throws UnsupportedOperationException	if a gameObject type does not support the
 	 * 											use of properties
 	 */
-	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+	public <T> IProperty<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
 		String properName = name.toLowerCase();
 		Propertay<T> p = this.getProperty(properName);
 		if (p == null) {
@@ -155,6 +155,30 @@ public abstract class GameObject implements Serializable {
 		return p;
 	}
 	
+	//TODO: add private reserveProperty() to avoid deferred throwing of Expections
+	// 		from the lazy initialization of ProxyProperties
+	
+	/**
+	 * Like {@link #useProperty(String, Object)}, but the IProperty returned will not be
+	 * initialized until it is first used.
+	 * <p>
+	 * <strong>Note:</strong> Due to this lazy initialization technique, currently
+	 * {@link #useProperty(String, Object) useProperty(...)}'s Exceptions might 
+	 * get thrown upon the first use of a ProxyProperty obtained through this
+	 * method.
+	 * 
+	 * @param <T>	the type of the property
+	 * @param name	the name of the property; not <code>null</code>
+	 * @param value	the property's initial value; not <code>null</code>
+	 * @return		a property of the specified type, linked to this gameObject
+	 * 
+	 * @see #useProperty(String, Object)
+	 */
+	public final <T> IProperty<T> useLazyProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
+		return new ProxyProperty<T>(this, name, value);
+	}
+	
+	
 	/**
 	 * returns an iterator over all Properties currently in use for this
 	 * gameObject
@@ -162,18 +186,18 @@ public abstract class GameObject implements Serializable {
 	 * @return	an iterator over all Properties currently in use for this
 	 * gameObject
 	 */
-	public Iterable<Propertay<?>> getAllProperties() {
+	public Iterable<IProperty<?>> getAllProperties() {
 		if (this.properties == null) {
-			return new Iterable<Propertay<?>>() {
+			return new Iterable<IProperty<?>>() {
 				@Override
-				public Iterator<Propertay<?>> iterator() {
-					return new Iterator<Propertay<?>>(){
+				public Iterator<IProperty<?>> iterator() {
+					return new Iterator<IProperty<?>>(){
 						@Override
 						public boolean hasNext() {
 							return false;
 						}
 						@Override
-						public Propertay<?> next() {
+						public IProperty<?> next() {
 							throw new NoSuchElementException();
 						}
 						@Override
@@ -254,7 +278,7 @@ public abstract class GameObject implements Serializable {
 			throw new IllegalArgumentException("'p' must not be null");
 		}
 		if (this.properties == null) {
-			this.properties = new HashMap<String, Propertay<?>>();
+			this.properties = new HashMap<String, IProperty<?>>();
 		}
 		if(this.properties.containsKey(p.name)) {
 			throw new IllegalArgumentException("Property exists already: " + p);
@@ -271,7 +295,7 @@ public abstract class GameObject implements Serializable {
 		if (this.properties == null) {
 			return null;
 		}
-		Propertay<?> p = this.properties.get(name);
+		Propertay<?> p = (Propertay<?>) this.properties.get(name);
 		return (Propertay<T>) p;
 	}
 

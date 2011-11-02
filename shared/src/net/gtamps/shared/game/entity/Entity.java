@@ -1,18 +1,19 @@
 package net.gtamps.shared.game.entity;
 
-import net.gtamps.shared.game.handler.Handler;
-import net.gtamps.shared.game.player.Player;
-import net.gtamps.shared.game.GameActor;
-import net.gtamps.shared.game.Propertay;
-import net.gtamps.shared.game.event.GameEvent;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.gtamps.shared.game.GameActor;
+import net.gtamps.shared.game.IProperty;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.game.player.Player;
+
 public class Entity extends GameActor implements Serializable {
 
-    private static final String TAG = Entity.class.getSimpleName();
+    @SuppressWarnings("unused")
+	private static final String TAG = Entity.class.getSimpleName();
 
 	private static final long serialVersionUID = -5466989016443709708L;
 
@@ -31,14 +32,14 @@ public class Entity extends GameActor implements Serializable {
 
 //	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final Propertay<Integer> x;
-	public final Propertay<Integer> y;
-	public final Propertay<Integer> z;
+	public final IProperty<Integer> x;
+	public final IProperty<Integer> y;
+	public final IProperty<Integer> z;
 	/**
 	 * rotation about z
 	 */
-	public final Propertay<Integer> rota;
-	public final Propertay<Integer> player;
+	public final IProperty<Integer> rota;
+	public final IProperty<Integer> playerProperty;
 	public final Type type;
 	
 	//TODO: fix the disconnect between the use of 'type' (client) and 'name' (server)	
@@ -50,7 +51,7 @@ public class Entity extends GameActor implements Serializable {
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
-        player = this.useProperty("player", Player.INVALID_UID);
+        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
 	}
 	
 	public Entity(String name){
@@ -60,7 +61,7 @@ public class Entity extends GameActor implements Serializable {
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
-        player = this.useProperty("player", Player.INVALID_UID);
+        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
 	}
 
     private Type getType(String name) {
@@ -80,15 +81,16 @@ public class Entity extends GameActor implements Serializable {
 		if (p == null) {
 			throw new IllegalArgumentException("'p' must not be null");
 		}
-		this.player.set(p.getUid());
+		System.out.println("entity owner set to: " + p);
+		this.playerProperty.set(p.getUid());
 	}
 	
 	public void removeOwner() {
-		this.player.set(Player.INVALID_UID);
+		playerProperty.set(Player.INVALID_UID);
 	}
 	
 	public int getOwnerUid() {
-		return this.player.value();
+		return this.playerProperty.value();
 	}
 	
 	public void setHandler(Handler handler) {

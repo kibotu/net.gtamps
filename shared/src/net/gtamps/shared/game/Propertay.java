@@ -17,14 +17,16 @@ import org.jetbrains.annotations.NotNull;
  * 				{@link Object#hashCode() hashCode()} and {@link Object#equals() equals()}
  *
  */
-public class Propertay<T> extends AbstractPropertay<T> {
+public class Propertay<T> extends GameObject implements IProperty<T> {
 	
 	private static final long serialVersionUID = 6612996255584968605L;
 
+	private final GameObject parent;
 	private T value;
 
 	public Propertay(@NotNull GameObject parent, @NotNull String name, @NotNull T value) {
-		super(parent, name.toLowerCase());
+		super(name.toLowerCase());
+		this.parent = parent;
 		this.value = value;
 		this.parent.hasChanged = true;
 	}

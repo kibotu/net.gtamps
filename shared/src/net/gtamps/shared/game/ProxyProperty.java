@@ -2,16 +2,19 @@ package net.gtamps.shared.game;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ProxyProperty<T> extends AbstractPropertay<T> {
+public class ProxyProperty<T> extends GameObject implements IProperty<T> {
 	
 	private static final long serialVersionUID = -12578145798197928L;
 
 	@NotNull
+	private final GameObject parent;
+	@NotNull
 	private final T defaultValue;
-	private Propertay<T> actual = null;
+	private IProperty<T> actual = null;
 	
 	public ProxyProperty(GameObject parent, String name, @NotNull T defaultValue) {
-		super(parent, name);
+		super(name);
+		this.parent = parent;
 		this.defaultValue = defaultValue;
 	}
 	
@@ -51,7 +54,7 @@ public class ProxyProperty<T> extends AbstractPropertay<T> {
 		return getActual().hashCode();
 	}
 	
-	private Propertay<T> getActual() {
+	private IProperty<T> getActual() {
 		if (actual == null) {
 			actual = parent.useProperty(name, defaultValue);
 		}

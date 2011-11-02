@@ -20,6 +20,7 @@ import net.gtamps.shared.communication.data.RevisionData;
 import net.gtamps.shared.communication.data.StringData;
 import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
@@ -132,7 +133,7 @@ public class ManualTypeSerializer implements ISerializer {
 	    		addToken(bld, ENTITY);
 	    		addToken(bld, Integer.toString(e.getUid()));
 	    		addToken(bld, e.getName());
-	    		for (final Propertay<?> p : e.getAllProperties()) {
+	    		for (final IProperty<?> p : e.getAllProperties()) {
 	    			serializeProperty(bld, p);
 	    		}
     		}
@@ -150,7 +151,7 @@ public class ManualTypeSerializer implements ISerializer {
     	}
     }
     
-    private void serializeProperty(final StringBuilder bld, final Propertay<?> p) {
+    private void serializeProperty(final StringBuilder bld, final IProperty<?> p) {
 //    	if (p instanceof IntProperty) {
 //    		final IntProperty ip = (IntProperty)p;
 //    		addToken(bld, PROPERTY);
