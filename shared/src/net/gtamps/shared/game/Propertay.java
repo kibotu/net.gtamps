@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
  * 				{@link Object#hashCode() hashCode()} and {@link Object#equals() equals()}
  *
  */
-public class Propertay<T> extends GameObject implements Serializable {
+public class Propertay<T> extends GameObject implements IProperty<T> {
 	
 	private static final long serialVersionUID = 6612996255584968605L;
 
-	private transient final GameObject parent;
+	private final GameObject parent;
 	private T value;
 
 	public Propertay(@NotNull GameObject parent, @NotNull String name, @NotNull T value) {
@@ -31,18 +31,17 @@ public class Propertay<T> extends GameObject implements Serializable {
 		this.parent.hasChanged = true;
 	}
 	
-	public GameObject getParent() {
-		return this.parent;
-	}
-	
+	@Override
 	public T value() {
 		return this.value;
 	}
 	
+	@Override
 	public String getAsString() {
 		return this.value.toString();
 	}
 	
+	@Override
 	public boolean set(T value) {
 		if (value == null) {
 			throw new IllegalArgumentException("'value' must not be null");
@@ -54,11 +53,6 @@ public class Propertay<T> extends GameObject implements Serializable {
 		this.hasChanged = true;
 		this.parent.hasChanged = true;
 		return true;
-	}
-	
-	@Override
-	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
-		throw new UnsupportedOperationException("this type of gameObject does not support properties");
 	}
 	
 	@Override

@@ -124,10 +124,4 @@ public class GameEvent extends GameObject {
 		return false;
 	}
 	
-	@Override
-	public <T> Propertay<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
-		throw new UnsupportedOperationException("operation not supported by " + this.getClass().getSimpleName());
-		
-	}
-
 }
