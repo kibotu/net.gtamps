@@ -12,6 +12,7 @@ import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.level.PhysicalShape;
+import net.gtamps.shared.math.Vector3;
 
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.MassData;
@@ -38,8 +39,14 @@ public class PhysicsFactory {
 		return new Box2DEngine(minX, minY, maxX, maxY);
 	}
 	
-	public static Body createHouseBodyFromLevelPhysicalShape(final PhysicalShape levelshape) {
-		return null;
+	public static PhysicsBlueprint createHouseBlueprintFromLevelPhysicalShape(final World world, final PhysicalShape levelshape) {
+		final PhysicsBlueprint blup = createPhysicsBlueprint(world, PhysicalProperties.Empty);
+		final PolygonDef polyDef = new PolygonDef();
+		for (final Vector3 vertex : levelshape) {
+			polyDef.addVertex(new Vec2(vertex.x, vertex.y));
+		}
+		blup.addShapeDef(polyDef);
+		return blup;
 	}
 	
 	public static PhysicsBlueprint createPhysicsBlueprint(final World world, final PhysicalProperties physprop) {
@@ -120,24 +127,23 @@ public class PhysicsFactory {
 				((CircleDef)def).radius = 0.1f;
 				break;
 			case NONE:
-				def = new PolygonDef();
-				((PolygonDef)def).setAsBox(3.1f,1.55f);
+				def = null;
 				break;
 			default:
 				// shouldn't get here
 				throw new IllegalStateException("treat all possible types");
 		}
-		
-		def.friction = physicalProperties.FRICTION;
-		def.restitution = physicalProperties.RESTITUTION;
-		def.density = physicalProperties.DENSITY;
-		def.filter = new FilterData();
-//		def.filter.categoryBits = shapeDef.filter.categoryBits;
-//		def.filter.maskBits = shapeDef.filter.maskBits;
-		def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
-		def.isSensor = false;
-		defs.add(def);
-		
+		if (def != null) {
+			def.friction = physicalProperties.FRICTION;
+			def.restitution = physicalProperties.RESTITUTION;
+			def.density = physicalProperties.DENSITY;
+			def.filter = new FilterData();
+	//		def.filter.categoryBits = shapeDef.filter.categoryBits;
+	//		def.filter.maskBits = shapeDef.filter.maskBits;
+			def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
+			def.isSensor = false;
+			defs.add(def);
+		}
 		// secondary shapes
 		switch (physicalProperties.TYPE) {
 		case CAR:

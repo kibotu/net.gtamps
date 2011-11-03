@@ -11,11 +11,13 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.entity.EntityBlueprint;
+import net.gtamps.shared.level.PhysicalShape;
 
 import org.jbox2d.dynamics.World;
 
 public class EntityFactory {
 	
+	@SuppressWarnings("unused")
 	private static LogType TAG = LogType.GAMEWORLD;
 
 	//TODO refactor to get rid of physics.World parameters
@@ -63,6 +65,15 @@ public class EntityFactory {
 	public static Entity createEntity(final World world, final String name, final int pixX, final int pixY, final int deg) {
 		final String normName = Entity.normalizeName(name);
 		return getBlueprint(world, normName).createEntity(pixX, pixY, deg);
+	}
+	
+	//TODO de-uglify
+	public static Entity createSpecialEntityHouse(final World world, final PhysicalShape pshape, final int pixX, final int pixY, final int deg) {
+		final String houseName = "house";
+		final String normName = Entity.normalizeName(houseName);
+		final EntityBlueprint houseblup = getBlueprint(world, normName);
+		houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(world, pshape));
+		return houseblup.createEntity(pixX, pixY, deg);
 	}
 	
 	
