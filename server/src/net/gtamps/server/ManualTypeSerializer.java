@@ -129,6 +129,7 @@ public class ManualTypeSerializer implements ISerializer {
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
     	for (final GameObject e : udata.gameObjects) {
     		//TODO other cases
+    		addToken(bld, ">>>");
     		if (e instanceof Entity) {
 	    		addToken(bld, ENTITY);
 	    		addToken(bld, Integer.toString(e.getUid()));
@@ -136,8 +137,7 @@ public class ManualTypeSerializer implements ISerializer {
 	    		for (final IProperty<?> p : e.getAllProperties()) {
 	    			serializeProperty(bld, p);
 	    		}
-    		}
-    		if (e instanceof GameEvent) {
+    		} else if (e instanceof GameEvent) {
     			final GameEvent event = (GameEvent) e;
     			addToken(bld, EVENT);
     			addToken(bld, event.getType().name());
@@ -147,7 +147,13 @@ public class ManualTypeSerializer implements ISerializer {
     			addToken(bld, EVENT_TARGET);
     			addToken(bld, Integer.toString(event.getTargetUid()));
     			//TODO
+    		} else {
+    			addToken(bld, "!!!!!!!!UNKNOWN GAMEOBJECT!!!!");
+    			addToken(bld, e.getName());
+    			addToken(bld, Integer.toString(e.getUid()));
+    			addToken(bld, e.toString());
     		}
+
     	}
     }
     
