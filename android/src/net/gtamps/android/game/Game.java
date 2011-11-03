@@ -55,20 +55,21 @@ public class Game implements IGame{
 
         // create world
         scenes.add(world);
-        world.getScene().setVisible(false);
+//        world.getScene().setVisible(false);
 
         // hud
         scenes.add(hud);
-        hud.getScene().setVisible(false);
+//        hud.getScene().setVisible(false);
 
-        scenes.add(menu);
+//        scenes.add(menu);
+        menu.getScene().setVisible(false);
 
         // connect
-//        connection.checkConnection();
-//
-//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-//        connection.start();
-//        connection.add(MessageFactory.createSessionRequest());
+        connection.checkConnection();
+
+        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+        connection.start();
+        connection.add(MessageFactory.createSessionRequest());
     }
 
     @Override
@@ -78,7 +79,7 @@ public class Game implements IGame{
         }
 
         // check connection
-//        connection.checkConnection();
+        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
@@ -97,6 +98,8 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
+//            menu.showOptionsScreen();
+
 //            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
 //            if(view != null) world.setActiveObject(view);
         }
@@ -115,11 +118,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-            world.getActiveView().getObject3d().getPosition().addInPlace(temp);
+//            world.getActiveView().getObject3d().getPosition().addInPlace(temp);
             scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-            world.getActiveView().getObject3d().setRotation(0, 0, angle);
+//            world.getActiveView().getObject3d().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);
