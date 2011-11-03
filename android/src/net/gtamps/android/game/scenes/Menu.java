@@ -1,34 +1,130 @@
 package net.gtamps.android.game.scenes;
 
 import net.gtamps.android.R;
+import net.gtamps.android.core.renderer.graph.NullNode;
 import net.gtamps.android.core.renderer.graph.primitives.AnimatedSprite;
 import net.gtamps.android.core.renderer.graph.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.primitives.TextSprite;
 
 public class Menu extends BasicScene {
 
+    private NullNode startScreen = new NullNode();
+    private NullNode optionScreen = new NullNode();
+    private NullNode serverListScreen = new NullNode();
+
     @Override
     public void onCreate() {
         setActiveCamera(new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0));
+        getActiveCamera().setZoomFactor(1.6f);
 
+        buildStartScreen();
+        buildOptionsScreen();
+        buildServerListScreen();
+    }
+
+    public void showStartScreen() {
+        startScreen.setVisible(true);
+        optionScreen.setVisible(false);
+        serverListScreen.setVisible(false);
+    }
+
+    public void showOptionsScreen() {
+        startScreen.setVisible(false);
+        optionScreen.setVisible(true);
+        serverListScreen.setVisible(false);
+    }
+
+    public void showServerListScreen() {
+        startScreen.setVisible(false);
+        optionScreen.setVisible(false);
+        serverListScreen.setVisible(true);
+    }
+
+    private void buildServerListScreen() {
+
+        // background
+        AnimatedSprite background = new AnimatedSprite();
+        background.loadBufferedTexture(R.drawable.serverlistbackground,R.raw.menu,true);
+        serverListScreen.add(background);
+
+        // headline
+        TextSprite headline = new TextSprite("Choose Server");
+        float distanceLeft = -0.39f;
+        headline.setPosition(distanceLeft,0.18f,0.0f);
+        serverListScreen.add(headline);
+
+        // add to scene
+        add(serverListScreen);
+    }
+
+    private void buildOptionsScreen() {
+
+        // background
+        AnimatedSprite background = new AnimatedSprite();
+        background.loadBufferedTexture(R.drawable.optionsbackground,R.raw.menu,true);
+        optionScreen.add(background);
+
+        float distanceLeft = -0.25f;
+
+        // headline
+        TextSprite headline = new TextSprite("Options");
+        headline.setPosition(distanceLeft,0.18f,0.0f);
+        optionScreen.add(headline);
+
+        // login
+        TextSprite login = new TextSprite("Login");
+        login.setPosition(distanceLeft,0.05f,0.0f);
+        optionScreen.add(login);
+
+        // register
+        TextSprite register = new TextSprite("Register");
+        register.setPosition(distanceLeft,-0.02f,0.0f);
+        optionScreen.add(register);
+
+        // graphic
+        TextSprite graphic = new TextSprite("Graphic");
+        graphic.setPosition(distanceLeft,-0.1f,0.0f);
+        optionScreen.add(graphic);
+
+        // back
+        TextSprite back = new TextSprite("Back");
+        back.setPosition(distanceLeft,-0.17f,0.0f);
+        optionScreen.add(back);
+
+        // add to scene
+        add(optionScreen);
+    }
+
+    private void buildStartScreen() {
+
+        // background
         AnimatedSprite background = new AnimatedSprite();
         background.loadBufferedTexture(R.drawable.menubackground,R.raw.menu,true);
-        background.setPosition(-0.16601562f,0,0);
-        background.setDimension(1,1,0);
-        background.setScaling(1.67f,1,0);
-        add(background);
+        startScreen.add(background);
 
+        // headline
+        TextSprite headline = new TextSprite("GTAMPS");
+        headline.setPosition(-0.315f,0.15f,0.1f);
+        startScreen.add(headline);
+
+        // start button
+        float distanceLeft = -0.35f;
         TextSprite start = new TextSprite("Start");
-        start.setPosition(-0.5f,0.1f,0);
-        add(start);
+        start.setPosition(distanceLeft,0.03f,0);
+        startScreen.add(start);
 
+        // options button
         TextSprite options = new TextSprite("Options");
-        options.setPosition(-0.5f,0,0);
-        add(options);
+        options.setPosition(distanceLeft,-0.055f,0);
+        startScreen.add(options);
 
+        // quit button
         TextSprite quit = new TextSprite("Quit");
-        quit.setPosition(-0.5f,-0.1f,0);
-        add(quit);
+        quit.setPosition(distanceLeft,-0.15f,0);
+        startScreen.add(quit);
+
+        // add to scene
+        add(startScreen);
     }
 
     @Override
