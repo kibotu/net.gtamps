@@ -144,9 +144,11 @@ final public class Logger {
     public static void printException(@NotNull String id, @NotNull Exception e) {
         printStackTrace(id, e.getStackTrace());
         Logger.e(id, e.getMessage());
-        Logger.e(id, "-------------------------------------------------------------------------------");
-        printStackTrace(id, e.getCause().getStackTrace());
-        Logger.e(id, e.getCause().getMessage());
+        if(e.getCause() != null && e.getCause().getStackTrace() != null) {
+            Logger.e(id, "-------------------------------------------------------------------------------");
+            printStackTrace(id, e.getCause().getStackTrace());
+            Logger.e(id, e.getCause().getMessage());
+        }
     }
 
     public static void printStackTrace(@NotNull String id, @NotNull StackTraceElement[] stackTrace) {
