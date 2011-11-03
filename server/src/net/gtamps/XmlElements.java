@@ -8,6 +8,7 @@ package net.gtamps;
  * @author jan, tom, til
  *
  */
+@Deprecated
 public enum XmlElements {
 	
 	MESSAGE("message", "m"),
@@ -19,8 +20,8 @@ public enum XmlElements {
 	SINGLE_RESPONSE("response", "r"),
 	UPDATE("gamecontent", "gc"),
 	ENTITY("go", "go"),
-	PROPERTY("property", "p"), 
-	PLAYER("player", "pl"), 
+	PROPERTY("property", "p"),
+	PLAYER("player", "pl"),
 	MAPDATA("map", "md"),
 	SINGLE_EVENT("event", "e"),
 	EVENTS("events", "ee"),
@@ -37,7 +38,7 @@ public enum XmlElements {
 
 	private final String debugName;
 	private final String productionName;
-	private XmlElements(String debugName, String productionName) {
+	private XmlElements(final String debugName, final String productionName) {
 		assert debugName != null : "'debugName' must not be null";
 		assert productionName != null : "'productionName' must not be null";
 //		assert isUniqueName(debugName, true) : "debugname is not unique: " + debugName;
@@ -58,9 +59,9 @@ public enum XmlElements {
 		return productionName;
 	}
 	
-	private boolean isUniqueName(String name, boolean debug) {
-		for (XmlElements e : XmlElements.values()) {
-			String check = debug ? e.debugName : e.productionName;
+	private boolean isUniqueName(final String name, final boolean debug) {
+		for (final XmlElements e : XmlElements.values()) {
+			final String check = debug ? e.debugName : e.productionName;
 			if (name.equalsIgnoreCase(check)) {
 				return false;
 			}

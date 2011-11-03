@@ -1,41 +1,35 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.game.RevisionKeeper;
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.entity.EntityManager;
-import net.gtamps.game.property.PositionProperty;
-import net.gtamps.game.property.Property;
-import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
-import org.jdom.Element;
-
 public class ShootingHandler extends Handler{
-	private EventType[] sendsUp = {};
-	private EventType[] receivesDown = {EventType.ACTION_SHOOT};
+	private final EventType[] sendsUp = {};
+	private final EventType[] receivesDown = {EventType.ACTION_SHOOT};
 
 	EntityManager entityManager;
 	long lastShot = System.currentTimeMillis();
 	
-	public ShootingHandler(Entity parent, EntityManager em) {
+	public ShootingHandler(final Entity parent, final EntityManager em) {
 		super(Handler.Type.SHOOTING, parent);
-		this.entityManager = em;
-		this.setSendsUp(sendsUp);
-		this.setReceivesDown(receivesDown);
-		this.connectUpwardsActor(parent);
+		entityManager = em;
+		setSendsUp(sendsUp);
+		setReceivesDown(receivesDown);
+		connectUpwardsActor(parent);
 	}
 	@Override
-	public void receiveEvent(GameEvent event) {
-		EventType type = event.getType();
+	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
 		if (type.isType(EventType.ACTION_SHOOT)) {
 			if(System.currentTimeMillis()-lastShot>WorldConstants.GUN_SHOT_MILLIS){
 				entityManager.createEntityBullet(parent.x.value(), parent.y.value(), parent.rota.value());
 				lastShot = System.currentTimeMillis();
 			}
-		} 
+		}
 	}
 	
 //	@Override

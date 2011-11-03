@@ -1,9 +1,15 @@
 package net.gtamps.game.property;
 
-import net.gtamps.XmlElements;
 import net.gtamps.shared.game.GameActor;
 import net.gtamps.shared.game.GameObject;
 
+/**
+ * @deprecated	replaced by net.gtamps.shared.game.IProperty
+ *
+ * @author Jan Rabe, Tom Wallroth, Til Boerner
+ *
+ */
+@Deprecated
 public abstract class Property extends GameActor {
 
 	public enum Type {
@@ -13,18 +19,18 @@ public abstract class Property extends GameActor {
 	protected final GameObject parent;
 	protected final Property.Type type;
 
-	public Property(Property.Type type, GameObject parent) {
+	public Property(final Property.Type type, final GameObject parent) {
 		super(type.name().toLowerCase());
 		this.parent = parent;
 		this.type = type;
 	}
 	
 	public Property.Type getType() {
-		return this.type;
+		return type;
 	}
 
 	protected void setParentChanged() {
-		this.parent.setChanged();
+		parent.setChanged();
 	}
 	
 	@Override

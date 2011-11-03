@@ -3,7 +3,7 @@ package net.gtamps.game.handler;
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.game.Propertay;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
@@ -14,9 +14,9 @@ import net.gtamps.shared.game.handler.Handler;
 public class HealthHandler extends Handler {
 	private static final LogType TAG = LogType.GAMEWORLD;
 
-	private final Propertay<Boolean> isAlive;
-	private final Propertay<Integer> health;
-	private final Propertay<Float> healthRatio;
+	private final IProperty<Boolean> isAlive;
+	private final IProperty<Integer> health;
+	private final IProperty<Float> healthRatio;
 	private final int maxHealth;
 	private final int dmgThreshold;
 	private final float dmgMultiplier;

@@ -11,6 +11,8 @@ import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.level.PhysicalShape;
+import net.gtamps.shared.math.Vector3;
 
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.MassData;
@@ -27,9 +29,6 @@ public class PhysicsFactory {
 	private final static LogType TAG = LogType.PHYSICS;
 	
 	private PhysicsFactory() {
-		
-		// create Prototypes:
-		
 	}
 	
 	public static Box2DEngine createPhysics(final int pixWidth, final int pixHeight) {
@@ -40,6 +39,15 @@ public class PhysicsFactory {
 		return new Box2DEngine(minX, minY, maxX, maxY);
 	}
 	
+	public static PhysicsBlueprint createHouseBlueprintFromLevelPhysicalShape(final World world, final PhysicalShape levelshape) {
+		final PhysicsBlueprint blup = createPhysicsBlueprint(world, PhysicalProperties.Empty);
+		final PolygonDef polyDef = new PolygonDef();
+		for (final Vector3 vertex : levelshape) {
+			polyDef.addVertex(new Vec2(vertex.x, vertex.y));
+		}
+		blup.addShapeDef(polyDef);
+		return blup;
+	}
 	
 	public static PhysicsBlueprint createPhysicsBlueprint(final World world, final PhysicalProperties physprop) {
 		final PhysicsBlueprint blup = new PhysicsBlueprint(
@@ -119,24 +127,23 @@ public class PhysicsFactory {
 				((CircleDef)def).radius = 0.1f;
 				break;
 			case NONE:
-				def = new PolygonDef();
-				((PolygonDef)def).setAsBox(3.1f,1.55f);
+				def = null;
 				break;
 			default:
 				// shouldn't get here
 				throw new IllegalStateException("treat all possible types");
 		}
-		
-		def.friction = physicalProperties.FRICTION;
-		def.restitution = physicalProperties.RESTITUTION;
-		def.density = physicalProperties.DENSITY;
-		def.filter = new FilterData();
-//		def.filter.categoryBits = shapeDef.filter.categoryBits;
-//		def.filter.maskBits = shapeDef.filter.maskBits;
-		def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
-		def.isSensor = false;
-		defs.add(def);
-		
+		if (def != null) {
+			def.friction = physicalProperties.FRICTION;
+			def.restitution = physicalProperties.RESTITUTION;
+			def.density = physicalProperties.DENSITY;
+			def.filter = new FilterData();
+	//		def.filter.categoryBits = shapeDef.filter.categoryBits;
+	//		def.filter.maskBits = shapeDef.filter.maskBits;
+			def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
+			def.isSensor = false;
+			defs.add(def);
+		}
 		// secondary shapes
 		switch (physicalProperties.TYPE) {
 		case CAR:
@@ -190,6 +197,8 @@ public class PhysicsFactory {
 	/**
 	 * creates a new car, puts it inside the box2d world and then returns it.
 	 * 
+	 * @deprecated see other static methods
+	 * 
 	 * @param uid
 	 * 			  the uid of this entity;
 	 * @param x
@@ -200,6 +209,7 @@ public class PhysicsFactory {
 	 *            the rotation in radians
 	 * @return
 	 */
+	@Deprecated
 	public static Body createSportsCar(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int deg) {
 		Logger.i().log(TAG, "Creating car at x:"+pixX+" y:"+pixY+" deg:"+deg);
 		final float x = lengthToPhysics(pixX);
@@ -269,6 +279,10 @@ public class PhysicsFactory {
 		return dynamicBody;
 	}
 	
+	/**
+	 * @deprecated see other static methods	 *
+	 */
+	@Deprecated
 	public static Body createHuman(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int rota) {
 		Logger.i().log(TAG, "Creating human at x:"+pixX+" y:"+pixY);
 
@@ -301,6 +315,10 @@ public class PhysicsFactory {
 		return body;
 	}
 
+	/**
+	 * @deprecated see other static methods
+	 */
+	@Deprecated
 	public static Body createHouse(final World world, final int pixX, final int pixY) {
 		Logger.i().log(TAG, "Creating house at x:"+pixX+" y:"+pixY);
 		
@@ -333,6 +351,10 @@ public class PhysicsFactory {
 		return houseBody;
 	}
 	
+	/**
+	 * @deprecated see other static methods
+	 */
+	@Deprecated
 	public static Body createSpawnPoint(final World world, final int pixX, final int pixY, final Integer rotation) {
 		Logger.i().log(TAG, "Creating spawnpoint at x:"+pixX+" y:"+pixY);
 		
@@ -360,7 +382,10 @@ public class PhysicsFactory {
 		return spawnBody;
 		
 	}
-	
+	/**
+	 * @deprecated see other static methods
+	 */
+	@Deprecated
 	public static Body createBullet(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int angle) {
 		Logger.i().log(TAG, "Creating bullet at x:"+pixX+" y:"+pixY);
 		

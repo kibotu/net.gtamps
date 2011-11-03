@@ -3,7 +3,7 @@ package net.gtamps.game.handler;
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.shared.game.Propertay;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -30,8 +30,8 @@ public class SimplePhysicsHandler extends Handler {
 	protected float steeringRadius;
 	protected float slidyness;
 	
-	protected final Propertay<Integer> speedxProperty;
-	protected final Propertay<Integer> speedyProperty;
+	protected final IProperty<Integer> speedxProperty;
+	protected final IProperty<Integer> speedyProperty;
 
 	public SimplePhysicsHandler(final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
 		super(Handler.Type.PHYSICS, parent);

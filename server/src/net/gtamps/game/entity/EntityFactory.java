@@ -11,11 +11,13 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.entity.EntityBlueprint;
+import net.gtamps.shared.level.PhysicalShape;
 
 import org.jbox2d.dynamics.World;
 
 public class EntityFactory {
 	
+	@SuppressWarnings("unused")
 	private static LogType TAG = LogType.GAMEWORLD;
 
 	//TODO refactor to get rid of physics.World parameters
@@ -65,8 +67,20 @@ public class EntityFactory {
 		return getBlueprint(world, normName).createEntity(pixX, pixY, deg);
 	}
 	
+	//TODO de-uglify
+	public static Entity createSpecialEntityHouse(final World world, final PhysicalShape pshape, final int pixX, final int pixY, final int deg) {
+		final String houseName = "house";
+		final String normName = Entity.normalizeName(houseName);
+		final EntityBlueprint houseblup = getBlueprint(world, normName);
+		houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(world, pshape));
+		return houseblup.createEntity(pixX, pixY, deg);
+	}
 	
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityCar(final World world, final int pixX, final int pixY, final int deg) {
 ////		float x = pixX / WorldConstants.PIX_TO_PHYSICS_RATIO;
 ////		float y = pixY / WorldConstants.PIX_TO_PHYSICS_RATIO;
@@ -87,7 +101,10 @@ public class EntityFactory {
 		final Entity entity = createEntity(world, "car", pixX, pixY, deg);
 		return entity;
 	}
-	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityHuman(final World world, final int pixX, final int pixY, final int deg, final EntityManager em) {
 //		final Body humanBody = PhysicsFactory.createHuman(world, PhysicalProperties.Human, pixX, pixY, deg);
 //		Logger.i().log(TAG,"Created human at position x:"+pixX+" y:"+pixY);
@@ -108,6 +125,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityHouse(final World world, final int pixX, final int pixY) {
 //
 //		final Body houseBody = PhysicsFactory.createHouse(world, pixX, pixY);
@@ -117,6 +138,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntitySpawnPoint(final World world, final int pixX, final int pixY, final Integer deg) {
 ////		float x = pixX / WorldConstants.PIX_TO_PHYSICS_RATIO;
 ////		float y = pixY / WorldConstants.PIX_TO_PHYSICS_RATIO;
@@ -133,6 +158,10 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * @deprecated see {@link #createEntity(World, String, int, int, int)}
+	 */
+	@Deprecated
 	public static Entity createEntityBullet(final World world, int pixX, int pixY, final int rotation, final int launchDistance) {
 		pixX += Math.cos(rotation/180.0*Math.PI)*launchDistance;
 		pixY += Math.sin(rotation/180.0*Math.PI)*launchDistance;
@@ -149,7 +178,5 @@ public class EntityFactory {
 		final Entity entity = createEntity(world, "bullet", pixX, pixY, rotation);
 		return entity;
 	}
-	
-	
 	
 }
