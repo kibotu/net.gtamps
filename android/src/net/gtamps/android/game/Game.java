@@ -65,11 +65,11 @@ public class Game implements IGame{
         menu.getScene().setVisible(false);
 
         // connect
-//        connection.checkConnection();
+        connection.checkConnection();
 
-//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-//        connection.start();
-//        connection.add(MessageFactory.createSessionRequest());
+        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+        connection.start();
+        connection.add(MessageFactory.createSessionRequest());
     }
 
     int menuloop = 0;
@@ -81,7 +81,7 @@ public class Game implements IGame{
         }
 
         // check connection
-//        connection.checkConnection();
+        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
