@@ -51,7 +51,8 @@ public class Entity extends GameActor implements Serializable {
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
-        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+        playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 	
 	public Entity(String name){
@@ -61,7 +62,8 @@ public class Entity extends GameActor implements Serializable {
         y = this.useProperty("posy", 0);
         z = this.useProperty("posz", 0);
         rota = this.useProperty("rota", 0);
-        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+        playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 
     private Type getType(String name) {
