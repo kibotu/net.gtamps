@@ -1,12 +1,12 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
 import android.opengl.GLU;
-import net.gtamps.shared.math.Frustum;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -18,11 +18,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class Camera extends RenderableNode {
 
 
-	/**
-	 * Der Sichtkegel
-	 */
-	@NotNull
-	private Frustum frustum = new Frustum(16f/10f, 45.0f, 0.01f, 1000.0f);
+    /**
+     * Der Sichtkegel
+     */
+    @NotNull
+    private Frustum frustum = new Frustum(16f / 10f, 45.0f, 0.01f, 1000.0f);
 
     /**
      * Viewport-Koordinaten
@@ -32,58 +32,60 @@ public class Camera extends RenderableNode {
 
     private boolean hasDepthTest = true;
 
-	/**
-	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
-	 * @param frustum Der Sichtkegel
-	 */
-	public Camera(@NotNull Frustum frustum) {
-		this.frustum = frustum;
-	}
+    /**
+     * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
+     *
+     * @param frustum Der Sichtkegel
+     */
+    public Camera(@NotNull Frustum frustum) {
+        this.frustum = frustum;
+    }
 
-	/**
-	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
-	 *
-	 * @param position Die Position der Kamera
-	 * @param lookAt Der Punkt, auf den die Kamera blickt
-	 * @param up Der Hoch-Vektor der Kamera
-	 */
-	public Camera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
-		define(position, lookAt, up);
-	}
+    /**
+     * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
+     *
+     * @param position Die Position der Kamera
+     * @param lookAt   Der Punkt, auf den die Kamera blickt
+     * @param up       Der Hoch-Vektor der Kamera
+     */
+    public Camera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
+        define(position, lookAt, up);
+    }
 
-	/**
-	 * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
-	 *
-	 * @param positionX X-Komponente des Positionsvektors
-	 * @param positionY Y-Komponente des Positionsvektors
-	 * @param positionZ Z-Komponente des Positionsvektors
-	 * @param eyeX X-Komponente des Sichtvektors
-	 * @param eyeY Y-Komponente des Sichtvektors
-	 * @param eyeZ Z-Komponente des Sichtvektors
-	 * @param upX X-Komponente des Hochvektors
-	 * @param upY Y-Komponente des Hochvektors
-	 * @param upZ Z-Komponente des Hochvektors
+    /**
+     * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
+     *
+     * @param positionX X-Komponente des Positionsvektors
+     * @param positionY Y-Komponente des Positionsvektors
+     * @param positionZ Z-Komponente des Positionsvektors
+     * @param eyeX      X-Komponente des Sichtvektors
+     * @param eyeY      Y-Komponente des Sichtvektors
+     * @param eyeZ      Z-Komponente des Sichtvektors
+     * @param upX       X-Komponente des Hochvektors
+     * @param upY       Y-Komponente des Hochvektors
+     * @param upZ       Z-Komponente des Hochvektors
      * @see <a href="http://assets.stupeflix.com/code/images/cartesian.png">coordinate system</a>
-	 */
-	public Camera(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
-		define( positionX, positionY, positionZ,
-				eyeX, eyeY, eyeZ,
-				upX, upY, upZ);
-	}
+     */
+    public Camera(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
+        define(positionX, positionY, positionZ,
+                eyeX, eyeY, eyeZ,
+                upX, upY, upZ);
+    }
 
     /**
      * Setzt den Viewport
-     * @param x X-Koordinate in px
-     * @param y Y-Koordinate in px
-     * @param width Breite in px
+     *
+     * @param x      X-Koordinate in px
+     * @param y      Y-Koordinate in px
+     * @param width  Breite in px
      * @param height Höhe in px
      */
     public void setViewport(float x, float y, float width, float height) {
         viewportCoords.set(x, y, 0);
         dimension.set(width, height, 0);
         // TODO: FUCK YOU 4/3 Aspect!!!!! Wir haben doch 800/480 = ~16:10 (1.6666)
-        frustum.setAspectRatio(width/height);
-        Logger.i(this,"[height:" + height + "|width:"+width+"|aspect:"+frustum.getAspectRatio()+"]");
+        frustum.setAspectRatio(width / height);
+        Logger.i(this, "[height:" + height + "|width:" + width + "|aspect:" + frustum.getAspectRatio() + "]");
 
     }
 
@@ -109,6 +111,7 @@ public class Camera extends RenderableNode {
 
     /**
      * Aspektratio ermitteln
+     *
      * @return
      */
     public float getAspectRatio() {
@@ -117,59 +120,64 @@ public class Camera extends RenderableNode {
 
     /**
      * Liefert den Winkel des horizontalen Sichtbereiches unter Beachtung des Zoomfaktors
+     *
      * @return Der Winkel in Radians
      */
     public float getHorizontalFieldOfViewEffective() {
         return frustum.getHorizontalFieldOfViewEffective();
     }
 
-	/**
-	 * Bezieht den Sichtkegel
-	 * @return
-	 */
-	@NotNull
-	public Frustum getFrustum() {
-		return frustum;
-	}
-
-	/**
-	 * Setzt den Sichtkegel
-	 * @param frustum Der Kegel
-	 */
-	@Deprecated
-	public void setFrustum(@NotNull Frustum frustum) {
-		this.frustum = frustum;
-        setPosition(frustum.getPosition()); // TODO: Referenz verwenden
-	}
-
-	/**
-	 * Setzt die Kameraparameter
-	 * @param position Die Position der Kamera
-	 * @param lookAt Der Punkt, auf den die Kamera blickt
-	 * @param up Der Hoch-Vektor der Kamera
-	 * @see #define(float, float, float, float, float, float, float, float, float)
-	 */
-	public void define(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
-        this.position.set(position);
-		frustum.setCamera(this.position, lookAt, up);
-	}
+    /**
+     * Bezieht den Sichtkegel
+     *
+     * @return
+     */
+    @NotNull
+    public Frustum getFrustum() {
+        return frustum;
+    }
 
     /**
-	 * Setzt die Kameraparameter
-	 * @param positionX X-Komponente des Positionsvektors
-	 * @param positionY Y-Komponente des Positionsvektors
-	 * @param positionZ Z-Komponente des Positionsvektors
-	 * @param eyeX X-Komponente des Sichtvektors
-	 * @param eyeY Y-Komponente des Sichtvektors
-	 * @param eyeZ Z-Komponente des Sichtvektors
-	 * @param upX X-Komponente des Hochvektors
-	 * @param upY Y-Komponente des Hochvektors
-	 * @param upZ Z-Komponente des Hochvektors
-	 */
-	public void define(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
-		position.set(positionX, positionY, positionZ);
-		frustum.setCamera(position, Vector3.createNew(eyeX, eyeY, eyeZ), Vector3.createNew(upX, upY, upZ));
-	}
+     * Setzt den Sichtkegel
+     *
+     * @param frustum Der Kegel
+     */
+    @Deprecated
+    public void setFrustum(@NotNull Frustum frustum) {
+        this.frustum = frustum;
+        setPosition(frustum.getPosition()); // TODO: Referenz verwenden
+    }
+
+    /**
+     * Setzt die Kameraparameter
+     *
+     * @param position Die Position der Kamera
+     * @param lookAt   Der Punkt, auf den die Kamera blickt
+     * @param up       Der Hoch-Vektor der Kamera
+     * @see #define(float, float, float, float, float, float, float, float, float)
+     */
+    public void define(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
+        this.position.set(position);
+        frustum.setCamera(this.position, lookAt, up);
+    }
+
+    /**
+     * Setzt die Kameraparameter
+     *
+     * @param positionX X-Komponente des Positionsvektors
+     * @param positionY Y-Komponente des Positionsvektors
+     * @param positionZ Z-Komponente des Positionsvektors
+     * @param eyeX      X-Komponente des Sichtvektors
+     * @param eyeY      Y-Komponente des Sichtvektors
+     * @param eyeZ      Z-Komponente des Sichtvektors
+     * @param upX       X-Komponente des Hochvektors
+     * @param upY       Y-Komponente des Hochvektors
+     * @param upZ       Z-Komponente des Hochvektors
+     */
+    public void define(float positionX, float positionY, float positionZ, float eyeX, float eyeY, float eyeZ, float upX, float upY, float upZ) {
+        position.set(positionX, positionY, positionZ);
+        frustum.setCamera(position, Vector3.createNew(eyeX, eyeY, eyeZ), Vector3.createNew(upX, upY, upZ));
+    }
 
     /**
      * Rotates the camera (hopefully correctly)
@@ -181,21 +189,22 @@ public class Camera extends RenderableNode {
      */
     public void rotate(float angle, float x, float y, float z) {
         frustum.rotate(angle, x, y, z);
-	}
+    }
 
-	/**
-	 * Spezifische Implementierung der Aktualisierungslogik
-	 *
-	 * @param deltat Zeitdifferenz zum vorherigen Frame
-	 */
-	@Override
-	protected void updateInternal(float deltat) {
-		// Nur nötig, wenn Kamera animiert wird. --> Pfade setzen, ...
+    /**
+     * Spezifische Implementierung der Aktualisierungslogik
+     *
+     * @param deltat Zeitdifferenz zum vorherigen Frame
+     */
+    @Override
+    protected void updateInternal(float deltat) {
+        // Nur nötig, wenn Kamera animiert wird. --> Pfade setzen, ...
 //        frustum.setPosition(position);
-	}
+    }
 
     /**
      * Spezifische Implementierung des Verarbeitungsvorganges
+     *
      * @param state Die State-Referenz
      */
     @Override
@@ -207,51 +216,51 @@ public class Camera extends RenderableNode {
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         GLU.gluPerspective(gl, getHorizontalFieldOfViewEffective(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());
-		GLU.gluLookAt(gl, frustum.getPosition().x, frustum.getPosition().y, frustum.getPosition().z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
+        GLU.gluLookAt(gl, frustum.getPosition().x, frustum.getPosition().y, frustum.getPosition().z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        if(hasDepthTest) {
-		    gl.glEnable(GL10.GL_DEPTH_TEST);
+        if (hasDepthTest) {
+            gl.glEnable(GL10.GL_DEPTH_TEST);
         } else {
             gl.glDisable(GL10.GL_DEPTH_TEST);
         }
     }
 
     /**
-	 * Spezifische Implementierung des Rendervorganges
-	 *
-	 * @param gl Die OpenGL-Referenz
-	 */
-	@Override
-	protected void renderInternal(@NotNull GL10 gl) {
-	}
+     * Spezifische Implementierung des Rendervorganges
+     *
+     * @param gl Die OpenGL-Referenz
+     */
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+    }
 
     @Override
     protected void setOptions() {
     }
 
     /**
-	 * Spezifische Implementierung des Bereinigungsvorganges
-	 *
-	 * @param state Die State-Referenz
-	 */
-	@Override
-	protected void cleanupInternal(@NotNull ProcessingState state) {
-		// Sollte nicht nötig sein
-	}
+     * Spezifische Implementierung des Bereinigungsvorganges
+     *
+     * @param state Die State-Referenz
+     */
+    @Override
+    protected void cleanupInternal(@NotNull ProcessingState state) {
+        // Sollte nicht nötig sein
+    }
 
-	/**
-	 * Spezifische Implementierung des Setupvorganges
-	 *
-	 * @param state Die State-Referenz
-	 */
-	@Override
-	protected void setupInternal(@NotNull ProcessingState state) {
-		// Sollte nicht nötig sein
-	}
+    /**
+     * Spezifische Implementierung des Setupvorganges
+     *
+     * @param state Die State-Referenz
+     */
+    @Override
+    protected void setupInternal(@NotNull ProcessingState state) {
+        // Sollte nicht nötig sein
+    }
 
-	/**
+    /**
      * Setzt den Sichtpunkt der Kamera absolut, ohne die Position zu verändern
      *
      * @param point Der Zielpunkt
@@ -283,32 +292,32 @@ public class Camera extends RenderableNode {
     /**
      * Verschiebt die Kamera (und ggf. den Sichtpunkt) relativ um den angegebenen Wert.
      *
-     * @param offset Der Wert
+     * @param offset     Der Wert
      * @param moveTarget Gibt an, ob das Ziel auch verschoben werden soll
      */
     public void move(@NotNull Vector3 offset, boolean moveTarget) {
-       frustum.move(offset,moveTarget);
+        frustum.move(offset, moveTarget);
     }
 
     public void setPosition(float x, float y, float z) {
-        frustum.setPosition(x,y,z);
+        frustum.setPosition(x, y, z);
     }
 
     public void setPosition(@NotNull Vector3 position) {
         frustum.setPosition(position);
     }
 
-	/**
-	 * Verschiebt die Kamera (und ggf. den Sichtpunkt) relativ um den angegebenen Wert.
-	 *
-	 * @param offsetX     Wert der X-Bewegung
-	 * @param offsetY     Wert der Y-Bewegung
-	 * @param offsetZ     Wert der Z-Bewegung
-	 * @param moveTarget Gibt an, ob das Ziel auch verschoben werden soll
-	 */
-	public void move(float offsetX, float offsetY, float offsetZ, boolean moveTarget) {
-		frustum.move(offsetX,offsetY,offsetZ,moveTarget);
-	}
+    /**
+     * Verschiebt die Kamera (und ggf. den Sichtpunkt) relativ um den angegebenen Wert.
+     *
+     * @param offsetX    Wert der X-Bewegung
+     * @param offsetY    Wert der Y-Bewegung
+     * @param offsetZ    Wert der Z-Bewegung
+     * @param moveTarget Gibt an, ob das Ziel auch verschoben werden soll
+     */
+    public void move(float offsetX, float offsetY, float offsetZ, boolean moveTarget) {
+        frustum.move(offsetX, offsetY, offsetZ, moveTarget);
+    }
 
     /**
      * Setzt den Zoomfaktor und prüft auf "unmögliche/ungewollte Zoomwerte"
@@ -317,13 +326,14 @@ public class Camera extends RenderableNode {
      */
     public void setZoomFactor(float factor) {
         assert factor > 0;
-        if (frustum.getHorizontalFieldOfView()/factor >= Config.MIN_ZOOM && frustum.getHorizontalFieldOfView()/factor <= Config.MAX_ZOOM){
+        if (frustum.getHorizontalFieldOfView() / factor >= Config.MIN_ZOOM && frustum.getHorizontalFieldOfView() / factor <= Config.MAX_ZOOM) {
             frustum.setHorizontalFieldOfView(frustum.getHorizontalFieldOfView(), factor);
         }
     }
 
     /**
      * Liefert den Zoomfaktor
+     *
      * @return Der Zoomfaktor
      */
     public float getZoomFactor() {
@@ -334,7 +344,7 @@ public class Camera extends RenderableNode {
      * Setzt den horizontalen Blickwinkel
      *
      * @param fovAngleRadians Der Blickwinkel in Radians
-     * @param resetZoom Gibt an, ob der Zoom zurückgesetzt werden soll
+     * @param resetZoom       Gibt an, ob der Zoom zurückgesetzt werden soll
      */
     public void setFieldOfViewHorizontal(float fovAngleRadians, boolean resetZoom) {
         frustum.setHorizontalFieldOfView(fovAngleRadians, resetZoom);

@@ -35,16 +35,16 @@ public class Vbo {
     }
 
     private void positionZero() {
-        if(vertexBuffer != null ) vertexBuffer.position(0);
-        if(indexBuffer != null) indexBuffer.position(0);
-        if(normalBuffer != null) normalBuffer.position(0);
-        if(colorBuffer != null) colorBuffer.position(0);
-        if(textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
+        if (vertexBuffer != null) vertexBuffer.position(0);
+        if (indexBuffer != null) indexBuffer.position(0);
+        if (normalBuffer != null) normalBuffer.position(0);
+        if (colorBuffer != null) colorBuffer.position(0);
+        if (textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
     }
 
     public void allocBuffers(GL10 gl) {
 
-        if(isAllocated) {
+        if (isAllocated) {
             return;
         }
 
@@ -71,7 +71,7 @@ public class Vbo {
         gl11.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GL11.GL_STATIC_DRAW);
 
         // bind normal buffer
-        if(normalBuffer != null) {
+        if (normalBuffer != null) {
             gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, normalBufferId);
             gl11.glBufferData(GL11.GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL11.GL_STATIC_DRAW);
         }
@@ -93,7 +93,7 @@ public class Vbo {
         gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         isAllocated = true;
-        Logger.i(this,toString());
+        Logger.i(this, toString());
     }
 
     public boolean isAllocated() {
@@ -130,8 +130,8 @@ public class Vbo {
         vertexBuffer.clear();
         indexBuffer.clear();
         normalBuffer.clear();
-        if(colorBuffer != null) colorBuffer.clear();
-        if(textureCoordinateBuffer != null) textureCoordinateBuffer.clear();
+        if (colorBuffer != null) colorBuffer.clear();
+        if (textureCoordinateBuffer != null) textureCoordinateBuffer.clear();
     }
 
     public void deallocate() {
@@ -140,7 +140,7 @@ public class Vbo {
 
     @Override
     public String toString() {
-        return  "[isAllocated=" + isAllocated +
+        return "[isAllocated=" + isAllocated +
                 "|vertexBId=" + vertexBufferId +
                 "|indexBId=" + indexBufferId +
                 "|normalBId=" + normalBufferId +

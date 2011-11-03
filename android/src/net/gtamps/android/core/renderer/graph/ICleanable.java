@@ -7,8 +7,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ICleanable {
 
-	/**
+    /**
      * Bereinigt den Knoten und alle Kindknoten
+     *
      * @param state Die State-Referenz
      */
     public void cleanup(@NotNull ProcessingState state);

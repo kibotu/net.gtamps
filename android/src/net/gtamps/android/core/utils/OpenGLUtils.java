@@ -5,7 +5,7 @@ import java.util.List;
 
 final public class OpenGLUtils {
 
-	public static final int BYTES_PER_FLOAT = 4;
+    public static final int BYTES_PER_FLOAT = 4;
     public static final int BYTES_PER_SHORT = 2;
 
     // static
@@ -207,15 +207,15 @@ final public class OpenGLUtils {
      * @return FloatBuffer with xyz.
      */
     public static FloatBuffer makeFloatBuffer3(float x, float y, float z) {
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(3 * BYTES_PER_FLOAT);
-		byteBuffer.order(ByteOrder.nativeOrder());
-		FloatBuffer buffer = byteBuffer.asFloatBuffer();
-		buffer.put(x);
-		buffer.put(y);
-		buffer.put(z);
-		buffer.position(0);
-		return buffer;
-	}
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(3 * BYTES_PER_FLOAT);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        FloatBuffer buffer = byteBuffer.asFloatBuffer();
+        buffer.put(x);
+        buffer.put(y);
+        buffer.put(z);
+        buffer.position(0);
+        return buffer;
+    }
 
     /**
      * Convenience Method for creating a FloatBuffer out of 3 values.
@@ -226,15 +226,15 @@ final public class OpenGLUtils {
      * @param a
      * @return FloatBuffer with rgba.
      */
-	public static FloatBuffer makeFloatBuffer4(float r, float g, float b, float a) {
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * BYTES_PER_FLOAT);
-		byteBuffer.order(ByteOrder.nativeOrder());
-		FloatBuffer buffer = byteBuffer.asFloatBuffer();
-		buffer.put(r);
-		buffer.put(g);
-		buffer.put(b);
-		buffer.put(a);
-		buffer.position(0);
-		return buffer;
-	}
+    public static FloatBuffer makeFloatBuffer4(float r, float g, float b, float a) {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * BYTES_PER_FLOAT);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        FloatBuffer buffer = byteBuffer.asFloatBuffer();
+        buffer.put(r);
+        buffer.put(g);
+        buffer.put(b);
+        buffer.put(a);
+        buffer.position(0);
+        return buffer;
+    }
 }

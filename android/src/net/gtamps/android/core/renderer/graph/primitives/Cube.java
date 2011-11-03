@@ -3,7 +3,7 @@ package net.gtamps.android.core.renderer.graph.primitives;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.shared.math.Color4;
+import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -11,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Cube extends RenderableNode {
 
     public Cube(int width, int height, int depth) {
-        dimension.set(width,height,depth);
+        dimension.set(width, height, depth);
     }
 
     public Cube() {
@@ -48,38 +48,38 @@ public class Cube extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if(mesh != null)  return;
+        if (mesh != null) return;
 
         // new mesh
-        this.mesh = new Mesh(24,12);
+        this.mesh = new Mesh(24, 12);
 
         final float c = 0.5f;
         Color4 emissive = material.getEmissive();
 
-        mesh.addVertex(c, -c, -c,0, -c, 0,emissive.r, emissive.g, emissive.b, emissive.a,0, 0);
-        mesh.addVertex(c, -c, c,0, -c, 0,emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
-        mesh.addVertex(-c, -c, c,0, -c, 0,emissive.r, emissive.g, emissive.b, emissive.a,  c, c);
-        mesh.addVertex(-c, -c, -c, 0, -c, 0,emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
-        mesh.addVertex(c, c, -c,  0, c, 0,emissive.r, emissive.g, emissive.b, emissive.a,0, 0);
-        mesh.addVertex(-c, c, -c,0, c, 0,emissive.r, emissive.g, emissive.b, emissive.a,  c, 0);
-        mesh.addVertex(-c, c, c,0, c, 0,emissive.r, emissive.g, emissive.b, emissive.a, c, c);
-        mesh.addVertex(c, c, c,  0, c, 0,emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
-        mesh.addVertex(c, -c, -c,c, 0, 0,emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
-        mesh.addVertex(c, c, -c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a,  c, 0);
-        mesh.addVertex(c, c, c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a,c, c);
-        mesh.addVertex(c, -c, c,c, 0, 0,emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
-        mesh.addVertex(c, -c, c,-0, -0, c,emissive.r, emissive.g, emissive.b, emissive.a,0, 0);
-        mesh.addVertex(c, c, c, -0, -0, c,emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
+        mesh.addVertex(c, -c, -c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(c, -c, c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
+        mesh.addVertex(-c, -c, c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
+        mesh.addVertex(-c, -c, -c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
+        mesh.addVertex(c, c, -c, 0, c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(-c, c, -c, 0, c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
+        mesh.addVertex(-c, c, c, 0, c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
+        mesh.addVertex(c, c, c, 0, c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
+        mesh.addVertex(c, -c, -c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(c, c, -c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
+        mesh.addVertex(c, c, c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
+        mesh.addVertex(c, -c, c, c, 0, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
+        mesh.addVertex(c, -c, c, -0, -0, c, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(c, c, c, -0, -0, c, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
         mesh.addVertex(-c, c, c, -0, -0, c, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
         mesh.addVertex(-c, -c, c, -0, -0, c, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
-        mesh.addVertex(-c, -c, c,-c, -0, -0, emissive.r, emissive.g, emissive.b, emissive.a,  0, 0);
-        mesh.addVertex(-c, c, c, -c, -0, -0,  emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
-        mesh.addVertex(-c, c, -c,-c, -0, -0,  emissive.r, emissive.g, emissive.b, emissive.a,   c, c);
+        mesh.addVertex(-c, -c, c, -c, -0, -0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(-c, c, c, -c, -0, -0, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
+        mesh.addVertex(-c, c, -c, -c, -0, -0, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
         mesh.addVertex(-c, -c, -c, -c, -0, -0, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
-        mesh.addVertex(c, c, -c,0, 0, -c,  emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(c, c, -c, 0, 0, -c, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
         mesh.addVertex(c, -c, -c, 0, 0, -c, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);
-        mesh.addVertex(-c,  -c, -c,0, 0, -c, emissive.r, emissive.g, emissive.b, emissive.a,  c, c);
-        mesh.addVertex(-c, c, -c, 0, 0, -c,  emissive.r, emissive.g, emissive.b, emissive.a,0, c);
+        mesh.addVertex(-c, -c, -c, 0, 0, -c, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
+        mesh.addVertex(-c, c, -c, 0, 0, -c, emissive.r, emissive.g, emissive.b, emissive.a, 0, c);
 
         mesh.faces.add(0, 1, 2);
         mesh.faces.add(0, 2, 3);

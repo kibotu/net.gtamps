@@ -19,9 +19,11 @@ public enum DrawingStyle {
 //    GL_POLYGON(GL11.GL_POLYGON);
 
     private final int value;
+
     private DrawingStyle(int value) {
         this.value = value;
     }
+
     public int getValue() {
         return value;
     }

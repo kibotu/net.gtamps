@@ -1,14 +1,14 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
 import net.gtamps.android.core.renderer.RenderCapabilities;
-import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 /**
  * Lightning source based on @see <a href="http://glprogramming.com/red/chapter05.html#name4">Creating Light Sources</a>
  */
+@Deprecated
 public class Light extends RenderableNode {
 
 
@@ -26,15 +27,17 @@ public class Light extends RenderableNode {
         /**
          * directional light (x,y,z is the light direction) like the sun
          */
-        DIRECTIONAL (0),
+        DIRECTIONAL(0),
         /**
          * positional light like a fireball. Any value other than 0 treated as non-directional
          */
-        POSITIONAL (1);
+        POSITIONAL(1);
         private final float value;
+
         private Type(float value) {
             this.value = value;
         }
+
         public float getValue() {
             return value;
         }
@@ -43,12 +46,12 @@ public class Light extends RenderableNode {
     /**
      * static pool for available GL_LIGHT ids
      */
-	private static ArrayList<Integer> availableLightIndices;
+    private static ArrayList<Integer> availableLightIndices;
 
-	/**
-	 * Direction is a vector and should be normalized.
-	 */
-	private FloatBuffer direction;
+    /**
+     * Direction is a vector and should be normalized.
+     */
+    private FloatBuffer direction;
 
     /**
      * Holds the position for convenience reasons additionally with the type.
@@ -76,16 +79,16 @@ public class Light extends RenderableNode {
     public final Color4 specular;
 
     /**
-     *  setting for the emissive light color like a sun
+     * setting for the emissive light color like a sun
      */
     public final Color4 emissive;
 
     /**
-     *  angle [0..180]
+     * angle [0..180]
      */
     private float spotCutoffAngle;
     /**
-     *  exponent [0..128]
+     * exponent [0..128]
      */
     private float spotExponent;
 
@@ -100,26 +103,26 @@ public class Light extends RenderableNode {
     private int lightId;
 
     public Light() {
-         mesh = new Mesh(0,0);
-         type = Type.DIRECTIONAL;
-         ambient = new Color4(128,128,128, 255);
-		 diffuse = new Color4(255,255,255, 255);
-		 specular = new Color4(0,0,0,255);
-		 emissive = new Color4(0,0,0,255);
-         direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
-		 spotCutoffAngle = 180;
-		 spotExponent = 0;
-         attenuation = Vector3.createNew(1f, 0f, 0f);
-		 positionAndTypeBuffer = OpenGLUtils.makeFloatBuffer4(0, 0, 0, 0);
-         setPosition(0,0,0);
-         commitPositionAndTypeBuffer();
+        mesh = new Mesh(0, 0);
+        type = Type.DIRECTIONAL;
+        ambient = new Color4(128, 128, 128, 255);
+        diffuse = new Color4(255, 255, 255, 255);
+        specular = new Color4(0, 0, 0, 255);
+        emissive = new Color4(0, 0, 0, 255);
+        direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
+        spotCutoffAngle = 180;
+        spotExponent = 0;
+        attenuation = Vector3.createNew(1f, 0f, 0f);
+        positionAndTypeBuffer = OpenGLUtils.makeFloatBuffer4(0, 0, 0, 0);
+        setPosition(0, 0, 0);
+        commitPositionAndTypeBuffer();
 
-         if(availableLightIndices == null) {
+        if (availableLightIndices == null) {
             availableLightIndices = new ArrayList<Integer>();
             for (int i = 0; i < RenderCapabilities.maxLights(); i++) {
                 availableLightIndices.add(i);
             }
-         }
+        }
         if (availableLightIndices.isEmpty()) {
             Logger.i(this, "GL_LIGHT resources exceeded.");
         }
@@ -188,52 +191,52 @@ public class Light extends RenderableNode {
     }
 
     /**
-	 * 0 = no attenuation towards edges of spotlight. Max is 128.
-	 * Default is 0, matching OpenGL's default value.
-	 */
+     * 0 = no attenuation towards edges of spotlight. Max is 128.
+     * Default is 0, matching OpenGL's default value.
+     */
     public void setSpotExponent(float value) {
-		spotExponent = Utils.clamp(value,0,128);
-	}
+        spotExponent = Utils.clamp(value, 0, 128);
+    }
 
     /**
      * GL_POSITION takes 4 arguments, the first 3 being x/y/z position,
-	 * and the 4th being what we're calling 'type' (positional or directional)
+     * and the 4th being what we're calling 'type' (positional or directional)
      */
     public void commitPositionAndTypeBuffer() {
         OpenGLUtils.addFloat4PositionZero(positionAndTypeBuffer, getPosition().x, getPosition().y, getPosition().z, type.getValue());
-	}
+    }
 
     public void setDirection(float x, float y, float z) {
         OpenGLUtils.addFloat3PositionZero(direction, x, y, z);
     }
 
     /**
-	 * No cutoff angle (ie, no spotlight effect)
-	 * (represented internally with a value of 180)
-	 */
+     * No cutoff angle (ie, no spotlight effect)
+     * (represented internally with a value of 180)
+     */
     public void setSpotCutoffAngle(float angle) {
-        if(angle == 180) {
+        if (angle == 180) {
             setSpotCutoffAngleNone();
         } else {
-           spotCutoffAngle = Utils.clamp(angle, 0, 90);
+            spotCutoffAngle = Utils.clamp(angle, 0, 90);
         }
-	}
-
-	/**
-	 * No cutoff angle (ie, no spotlight effect)
-	 * (represented internally with a value of 180)
-	 */
-	public void setSpotCutoffAngleNone() {
-		spotCutoffAngle = 180;
-	}
+    }
 
     /**
-	 * Defaults are 1,0,0 (resulting in no attenuation over distance),
-	 * which match OpenGL default values.
-	 */
-	public void setAttenuation(float constant, float linear, float quadratic) {
-		attenuation.set(constant, linear, quadratic);
-	}
+     * No cutoff angle (ie, no spotlight effect)
+     * (represented internally with a value of 180)
+     */
+    public void setSpotCutoffAngleNone() {
+        spotCutoffAngle = 180;
+    }
+
+    /**
+     * Defaults are 1,0,0 (resulting in no attenuation over distance),
+     * which match OpenGL default values.
+     */
+    public void setAttenuation(float constant, float linear, float quadratic) {
+        attenuation.set(constant, linear, quadratic);
+    }
 
     public void setType(Type type) {
         commitPositionAndTypeBuffer();
@@ -242,7 +245,7 @@ public class Light extends RenderableNode {
 
     @Override
     public String toString() {
-        return "Light_"+lightId+"[" +
+        return "Light_" + lightId + "[" +
                 "type=" + type +
                 ", ambient=" + ambient +
                 ", diffuse=" + diffuse +

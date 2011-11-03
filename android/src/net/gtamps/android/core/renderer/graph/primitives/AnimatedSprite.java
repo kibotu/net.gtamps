@@ -1,7 +1,7 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
-import net.gtamps.shared.state.State;
+import net.gtamps.shared.game.state.State;
 import org.jetbrains.annotations.NotNull;
 
 public class AnimatedSprite extends Sprite {
@@ -25,6 +25,6 @@ public class AnimatedSprite extends Sprite {
         final int index = (int) (animation.length / 100f * percentage);
 
         setTextureBufferOffsetId(animation[index].offsetId);
-        dimension.set(animation[index].width, animation[index].height,0);
+        dimension.set(animation[index].width, animation[index].height, 0);
     }
 }
