@@ -61,16 +61,18 @@ public class Game implements IGame{
         scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
-//        scenes.add(menu);
+        scenes.add(menu);
         menu.getScene().setVisible(false);
 
         // connect
-        connection.checkConnection();
+//        connection.checkConnection();
 
-        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-        connection.start();
-        connection.add(MessageFactory.createSessionRequest());
+//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        connection.start();
+//        connection.add(MessageFactory.createSessionRequest());
     }
+
+    int menuloop = 0;
 
     @Override
     public void onDrawFrame() {
@@ -79,7 +81,7 @@ public class Game implements IGame{
         }
 
         // check connection
-        connection.checkConnection();
+//        connection.checkConnection();
 
         // handle inbox messages
         while(!connection.isEmpty()) {
@@ -98,7 +100,11 @@ public class Game implements IGame{
         if (inputEngine.getDownState()){
 //            Utils.log(TAG, "finger down");
             isDragging = true;
-//            menu.showOptionsScreen();
+
+            if(menuloop % 3 == 0) menu.showStartScreen();
+            if(menuloop % 3 == 1) menu.showOptionsScreen();
+            if(menuloop % 3 == 2) menu.showServerListScreen();
+            menuloop++;
 
 //            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
 //            if(view != null) world.setActiveObject(view);

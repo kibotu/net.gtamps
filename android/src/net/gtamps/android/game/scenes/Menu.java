@@ -20,6 +20,9 @@ public class Menu extends BasicScene {
         buildStartScreen();
         buildOptionsScreen();
         buildServerListScreen();
+        startScreen.setVisible(true);
+        optionScreen.setVisible(false);
+        serverListScreen.setVisible(false);
     }
 
     public void showStartScreen() {
@@ -43,9 +46,9 @@ public class Menu extends BasicScene {
     private void buildServerListScreen() {
 
         // background
-        AnimatedSprite background = new AnimatedSprite();
-        background.loadBufferedTexture(R.drawable.serverlistbackground,R.raw.menu,true);
-        serverListScreen.add(background);
+        AnimatedSprite serverListScreenBackground = new AnimatedSprite();
+        serverListScreenBackground.loadBufferedTexture(R.drawable.serverlistscreenbackground,R.raw.menu,true);
+        serverListScreen.add(serverListScreenBackground);
 
         // headline
         TextSprite headline = new TextSprite("Choose Server");
@@ -60,9 +63,9 @@ public class Menu extends BasicScene {
     private void buildOptionsScreen() {
 
         // background
-        AnimatedSprite background = new AnimatedSprite();
-        background.loadBufferedTexture(R.drawable.optionsbackground,R.raw.menu,true);
-        optionScreen.add(background);
+        AnimatedSprite optionScreenBackground = new AnimatedSprite();
+        optionScreenBackground.loadBufferedTexture(R.drawable.optionsscreenbackground,R.raw.menu,true);
+        optionScreen.add(optionScreenBackground);
 
         float distanceLeft = -0.25f;
 
@@ -98,9 +101,9 @@ public class Menu extends BasicScene {
     private void buildStartScreen() {
 
         // background
-        AnimatedSprite background = new AnimatedSprite();
-        background.loadBufferedTexture(R.drawable.menubackground,R.raw.menu,true);
-        startScreen.add(background);
+        AnimatedSprite startScreenBackground = new AnimatedSprite();
+        startScreenBackground.loadBufferedTexture(R.drawable.startscreenbackground,R.raw.menu,true);
+        startScreen.add(startScreenBackground);
 
         // headline
         TextSprite headline = new TextSprite("GTAMPS");
