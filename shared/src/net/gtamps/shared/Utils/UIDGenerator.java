@@ -1,5 +1,7 @@
 package net.gtamps.shared.Utils;
 
+import java.io.Serializable;
+
 /**
  * Outsourced from SlackAndHayMain to reduce dependencies, which makes
  * unit testing a little easier.
@@ -7,7 +9,7 @@ package net.gtamps.shared.Utils;
  * @author til
  *
  */
-public class UIDGenerator {
+public class UIDGenerator implements Serializable {
 	
 	public static final int INVALID_UID = -1;
 
