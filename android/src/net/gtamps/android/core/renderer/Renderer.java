@@ -156,7 +156,7 @@ public class Renderer implements GLSurfaceView.Renderer{
 		gl10.glEnable(GL11.GL_ALPHA_TEST);
 
 		// kill alpha fragments
-		gl10.glAlphaFunc(GL11.GL_GREATER, 0.001f);
+		gl10.glAlphaFunc(GL11.GL_GREATER,Config.ALPHA_KILL_FRAGMENTS_TOLERANCE);
 
 //		// Texture
 		gl10.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST); // (OpenGL default is GL_NEAREST_MIPMAP)
