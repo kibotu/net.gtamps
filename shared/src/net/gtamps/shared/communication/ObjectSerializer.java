@@ -36,7 +36,8 @@ public class ObjectSerializer implements ISerializer{
     			UpdateData data = (UpdateData) sendable.data;
     			for (GameObject go : data.gameObjects) {
     				Class<? extends GameObject> c = go.getClass();
-    				if (!Entity.class.isAssignableFrom(c) || !GameEvent.class.isAssignableFrom(c)) {
+    				if (!Entity.class.isAssignableFrom(c) && !GameEvent.class.isAssignableFrom(c)) {
+//   					if (Entity.class.equals(c) ) {
     					throw new IllegalStateException(go.toString());
     				}
     				for (IProperty p : go.getAllProperties()) {
