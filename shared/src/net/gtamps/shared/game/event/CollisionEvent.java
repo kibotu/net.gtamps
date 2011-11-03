@@ -3,12 +3,12 @@ package net.gtamps.shared.game.event;
 import net.gtamps.shared.game.GameObject;
 
 public class CollisionEvent extends GameEvent {
-	
 
-	public CollisionEvent(GameObject source, GameObject target, float impulse) {
-		super(EventType.ENTITY_COLLIDE, source, target, Float.toString(impulse));
-	}
-	
+
+    public CollisionEvent(GameObject source, GameObject target, float impulse) {
+        super(EventType.ENTITY_COLLIDE, source, target, Float.toString(impulse));
+    }
+
 //	@Override
 //	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
 //		Element e = super.toXMLElement(baseRevision, keeper);
@@ -17,10 +17,10 @@ public class CollisionEvent extends GameEvent {
 //		}
 //		return e;
 //	}
-	
-	public float getImpulse() {
-		return Float.parseFloat(this.value);
-	}
+
+    public float getImpulse() {
+        return Float.parseFloat(this.value);
+    }
 
 
 }

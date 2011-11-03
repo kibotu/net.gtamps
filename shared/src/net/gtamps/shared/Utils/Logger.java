@@ -154,6 +154,7 @@ final public class Logger {
     public static void printStackTrace(@NotNull String id, @NotNull StackTraceElement[] stackTrace) {
         StringBuilder error = new StringBuilder();
         for(StackTraceElement stackTraceElement: stackTrace) {
+//            error.append(stackTraceElement.toString().substring(Math.max(0,stackTraceElement.toString().length()-80),stackTraceElement.toString().length()) + "\n");
             error.append(stackTraceElement + "\n");
         }
         Logger.e(id, error.toString());

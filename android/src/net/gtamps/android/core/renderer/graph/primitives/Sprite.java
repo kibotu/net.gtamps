@@ -1,13 +1,13 @@
 package net.gtamps.android.core.renderer.graph.primitives;
 
-import net.gtamps.android.core.Registry;
+import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
-import net.gtamps.shared.math.Color4;
-import net.gtamps.shared.state.State;
+import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.game.state.State;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -30,26 +30,26 @@ public class Sprite extends RenderableNode {
      * @param textureCoordBufferOffsetId
      */
     public Sprite(float width, float height, int textureId, int textureCoordBufferId, int textureCoordBufferOffsetId, boolean useMipMap) {
-        dimension.set(width,height,0);
+        dimension.set(width, height, 0);
         setTextureId(textureId);
         setTextureBufferId(textureCoordBufferId);
         setTextureBufferOffsetId(textureCoordBufferOffsetId);
-        scaling.set(1,1,0);
+        scaling.set(1, 1, 0);
         enableMipMap(useMipMap);
     }
 
     public Sprite(int textureId, int textureCoordBufferid, @NotNull SpriteTetxure spriteTetxure, boolean useMipMap) {
-        this(spriteTetxure.width,spriteTetxure.height,textureId,textureCoordBufferid,spriteTetxure.offsetId,useMipMap);
+        this(spriteTetxure.width, spriteTetxure.height, textureId, textureCoordBufferid, spriteTetxure.offsetId, useMipMap);
     }
 
-     public void setBufferedTexture(BufferedTexture bufferedTexture) {
+    public void setBufferedTexture(BufferedTexture bufferedTexture) {
         this.bufferedTexture = bufferedTexture;
         setTextureId(bufferedTexture.textureId);
         setTextureBufferId(bufferedTexture.floatBufferId);
         SpriteTetxure spriteTetxure = bufferedTexture.getAnimation(State.Type.IDLE)[0];
         setTextureBufferOffsetId(spriteTetxure.offsetId);
-        dimension.set(spriteTetxure.width,spriteTetxure.height,0);
-        scaling.set(1,1,0);
+        dimension.set(spriteTetxure.width, spriteTetxure.height, 0);
+        scaling.set(1, 1, 0);
     }
 
     public void loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {
@@ -59,12 +59,12 @@ public class Sprite extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if(mesh != null) {
+        if (mesh != null) {
             return;
         }
 
         // new mesh
-        this.mesh = new Mesh(4,2);
+        this.mesh = new Mesh(4, 2);
 
         Color4 emissive = material.getEmissive();
 
@@ -111,11 +111,11 @@ public class Sprite extends RenderableNode {
 
     @Override
     protected void cleanupInternal(@NotNull ProcessingState state) {
-		// OpenGL 1.1-Instanz beziehen
-		//final GL11 gl11 = state.getGl11();
+        // OpenGL 1.1-Instanz beziehen
+        //final GL11 gl11 = state.getGl11();
 
-		// Puffer aufräumen
-		//gl11.glDeleteBuffers(2, new int [] { _vertexVboId, _indexVboId,}, 0);
+        // Puffer aufräumen
+        //gl11.glDeleteBuffers(2, new int [] { _vertexVboId, _indexVboId,}, 0);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class Sprite extends RenderableNode {
 
     @Override
     public Sprite clone() {
-        Sprite sprite = new Sprite(dimension.x,dimension.y, textureId,textureBufferId,textureBufferOffsetId, hasMipMap());
+        Sprite sprite = new Sprite(dimension.x, dimension.y, textureId, textureBufferId, textureBufferOffsetId, hasMipMap());
         sprite.setPosition(position);
         return sprite;
     }

@@ -11,142 +11,128 @@ import java.nio.IntBuffer;
  * hardware's concrete OpenGL capabilities that are relevant to
  * supported features.
  */
-public class RenderCapabilities  {
+public class RenderCapabilities {
 
     private static final String TAG = RenderCapabilities.class.getSimpleName();
 
-	private static float _openGlVersion;
-	private static boolean _isGl10Only;
-	private static int _maxTextureUnits;
-	private static int _maxTextureSize;
-	private static int _aliasedPointSizeMin;
-	private static int _aliasedPointSizeMax;
-	private static int _smoothPointSizeMin;
-	private static int _smoothPointSizeMax;
-	private static int _aliasedLineSizeMin;
-	private static int _aliasedLineSizeMax;
-	private static int _smoothLineSizeMin;
-	private static int _smoothLineSizeMax;
-	private static int _maxLights;
-	
-	
-	public static float openGlVersion()
-	{
-		return _openGlVersion;
-	}
-	
-	public static boolean isGl10Only()
-	{
-		return _isGl10Only;
-	}
+    private static float _openGlVersion;
+    private static boolean _isGl10Only;
+    private static int _maxTextureUnits;
+    private static int _maxTextureSize;
+    private static int _aliasedPointSizeMin;
+    private static int _aliasedPointSizeMax;
+    private static int _smoothPointSizeMin;
+    private static int _smoothPointSizeMax;
+    private static int _aliasedLineSizeMin;
+    private static int _aliasedLineSizeMax;
+    private static int _smoothLineSizeMin;
+    private static int _smoothLineSizeMax;
+    private static int _maxLights;
 
-	public static int maxTextureUnits()
-	{
-		return _maxTextureUnits;
-	}
-	
-	public static int aliasedPointSizeMin()
-	{
-		return _aliasedPointSizeMin;
-	}
-	
-	public static int aliasedPointSizeMax()
-	{
-		return _aliasedPointSizeMax;
-	}
-	
-	public static int smoothPointSizeMin()
-	{
-		return _smoothPointSizeMin;
-	}
-	
-	public static int smoothPointSizeMax()
-	{
-		return _smoothPointSizeMax;
-	}
-	
-	public static int aliasedLineSizeMin()
-	{
-		return _aliasedLineSizeMin;
-	}
-	
-	public static int aliasedLineSizeMax()
-	{
-		return _aliasedLineSizeMax;
-	}
-	
-	public static int smoothLineSizeMin()
-	{
-		return _smoothLineSizeMin;
-	}
-	
-	public static int smoothLineSizeMax()
-	{
-		return _smoothLineSizeMax;
-	}
-	
-	public static int maxLights()
-	{
-		return _maxLights;
-	}
-	
-	/**
-	 * Called by Renderer.onSurfaceCreate() 
-	 */
-	static void setRenderCaps(GL10 $gl) /* package-private*/
-	{
-	    IntBuffer i;
 
-	    // OpenGL ES version
-		if ($gl instanceof GL11) {
-			_openGlVersion = 1.1f;
-		}
-		else {
-			_openGlVersion = 1.0f;
-		}
-		
-	    // Max texture units
-		i = IntBuffer.allocate(1);
-		$gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_UNITS, i);
-		_maxTextureUnits = i.get(0);
-		
-	    // Max texture size
-		i = IntBuffer.allocate(1);
-		$gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, i);
-		_maxTextureSize = i.get(0);
-		
-		// Aliased point size range
-		i = IntBuffer.allocate(2);
-		$gl.glGetIntegerv(GL10.GL_ALIASED_POINT_SIZE_RANGE, i);
-		_aliasedPointSizeMin = i.get(0);
-		_aliasedPointSizeMax = i.get(1);
+    public static float openGlVersion() {
+        return _openGlVersion;
+    }
 
-		// Smooth point size range
-		i = IntBuffer.allocate(2);
-		$gl.glGetIntegerv(GL10.GL_SMOOTH_POINT_SIZE_RANGE, i);
-		_smoothPointSizeMin = i.get(0);
-		_smoothPointSizeMax = i.get(1);
+    public static boolean isGl10Only() {
+        return _isGl10Only;
+    }
 
-		// Aliased line width range
-		i = IntBuffer.allocate(2);
-		$gl.glGetIntegerv(GL10.GL_ALIASED_LINE_WIDTH_RANGE, i);
-		_aliasedLineSizeMin = i.get(0);
-		_aliasedLineSizeMax = i.get(1);
+    public static int maxTextureUnits() {
+        return _maxTextureUnits;
+    }
 
-		// Smooth line width range
-		i = IntBuffer.allocate(2);
-		$gl.glGetIntegerv(GL10.GL_SMOOTH_LINE_WIDTH_RANGE, i);
-		_smoothLineSizeMin = i.get(0);
-		_smoothLineSizeMax = i.get(1);
-		
-	    // Max lights
-		i = IntBuffer.allocate(1);
-		$gl.glGetIntegerv(GL10.GL_MAX_LIGHTS, i);
-		_maxLights = i.get(0);
+    public static int aliasedPointSizeMin() {
+        return _aliasedPointSizeMin;
+    }
 
-		Logger.i(TAG, "RenderCapabilities - openGLVersion: " + _openGlVersion);
-		Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + _maxTextureUnits);
-		Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + _maxTextureSize);
-		Logger.i(TAG, "RenderCapabilities - maxLights: " + _maxLights);
-	}
+    public static int aliasedPointSizeMax() {
+        return _aliasedPointSizeMax;
+    }
+
+    public static int smoothPointSizeMin() {
+        return _smoothPointSizeMin;
+    }
+
+    public static int smoothPointSizeMax() {
+        return _smoothPointSizeMax;
+    }
+
+    public static int aliasedLineSizeMin() {
+        return _aliasedLineSizeMin;
+    }
+
+    public static int aliasedLineSizeMax() {
+        return _aliasedLineSizeMax;
+    }
+
+    public static int smoothLineSizeMin() {
+        return _smoothLineSizeMin;
+    }
+
+    public static int smoothLineSizeMax() {
+        return _smoothLineSizeMax;
+    }
+
+    public static int maxLights() {
+        return _maxLights;
+    }
+
+    /**
+     * Called by Renderer.onSurfaceCreate()
+     */
+    static void setRenderCaps(GL10 $gl) /* package-private*/ {
+        IntBuffer i;
+
+        // OpenGL ES version
+        if ($gl instanceof GL11) {
+            _openGlVersion = 1.1f;
+        } else {
+            _openGlVersion = 1.0f;
+        }
+
+        // Max texture units
+        i = IntBuffer.allocate(1);
+        $gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_UNITS, i);
+        _maxTextureUnits = i.get(0);
+
+        // Max texture size
+        i = IntBuffer.allocate(1);
+        $gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_SIZE, i);
+        _maxTextureSize = i.get(0);
+
+        // Aliased point size range
+        i = IntBuffer.allocate(2);
+        $gl.glGetIntegerv(GL10.GL_ALIASED_POINT_SIZE_RANGE, i);
+        _aliasedPointSizeMin = i.get(0);
+        _aliasedPointSizeMax = i.get(1);
+
+        // Smooth point size range
+        i = IntBuffer.allocate(2);
+        $gl.glGetIntegerv(GL10.GL_SMOOTH_POINT_SIZE_RANGE, i);
+        _smoothPointSizeMin = i.get(0);
+        _smoothPointSizeMax = i.get(1);
+
+        // Aliased line width range
+        i = IntBuffer.allocate(2);
+        $gl.glGetIntegerv(GL10.GL_ALIASED_LINE_WIDTH_RANGE, i);
+        _aliasedLineSizeMin = i.get(0);
+        _aliasedLineSizeMax = i.get(1);
+
+        // Smooth line width range
+        i = IntBuffer.allocate(2);
+        $gl.glGetIntegerv(GL10.GL_SMOOTH_LINE_WIDTH_RANGE, i);
+        _smoothLineSizeMin = i.get(0);
+        _smoothLineSizeMax = i.get(1);
+
+        // Max lights
+        i = IntBuffer.allocate(1);
+        $gl.glGetIntegerv(GL10.GL_MAX_LIGHTS, i);
+        _maxLights = i.get(0);
+
+        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + _openGlVersion);
+        Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + _maxTextureUnits);
+        Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + _maxTextureSize);
+        Logger.i(TAG, "RenderCapabilities - maxLights: " + _maxLights);
+    }
 }

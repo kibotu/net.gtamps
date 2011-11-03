@@ -4,8 +4,8 @@ import net.gtamps.android.core.renderer.graph.DrawingStyle;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.shared.math.Color4;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -13,72 +13,71 @@ import javax.microedition.khronos.opengles.GL10;
 public class Sphere extends RenderableNode {
 
     /**
-     * 	Sphere stacks from pole to pole.
+     * Sphere stacks from pole to pole.
      */
     private int stacks;
     /**
-     * 	Sphere slices around the equator.
+     * Sphere slices around the equator.
      */
     private int slices;
 
     public Sphere(float radius, int stacks, int slices) {
-        dimension.set(radius,radius,radius);
+        dimension.set(radius, radius, radius);
         this.stacks = stacks;
         this.slices = slices;
     }
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if(mesh != null)  return;
+        if (mesh != null) return;
 
         // new mesh
-        this.mesh = new Mesh((stacks+1) * (slices+1),stacks * slices * 2);
+        this.mesh = new Mesh((stacks + 1) * (slices + 1), stacks * slices * 2);
 
         Color4 emissive = material.getEmissive();
 
         int r, c;
 
-		Vector3 n = Vector3.createNew();
-		Vector3 pos = Vector3.createNew();
-		Vector3 posFull = Vector3.createNew();
+        Vector3 n = Vector3.createNew();
+        Vector3 pos = Vector3.createNew();
+        Vector3 posFull = Vector3.createNew();
 
         // vertices
-		for (r = 0; r <= slices; r++) {
-			float v = (float)r / (float)slices; // [0,1]
-			float theta1 = v * (float)Math.PI; // [0,PI]
+        for (r = 0; r <= slices; r++) {
+            float v = (float) r / (float) slices; // [0,1]
+            float theta1 = v * (float) Math.PI; // [0,PI]
 
-			n.set(0,1,0);
-			n.rotateZ(theta1);
+            n.set(0, 1, 0);
+            n.rotateZ(theta1);
 
-			for (c = 0; c <= stacks; c++) {
-				float u = (float)c / (float)stacks; // [0,1]
-				float theta2 = u * (float)(Math.PI * 2f); // [0,2PI]
-				pos.set(n);
-				pos.rotateY(theta2);
+            for (c = 0; c <= stacks; c++) {
+                float u = (float) c / (float) stacks; // [0,1]
+                float theta2 = u * (float) (Math.PI * 2f); // [0,2PI]
+                pos.set(n);
+                pos.rotateY(theta2);
 
-				posFull.set(pos);
-				posFull.mulInPlace(dimension.x);
+                posFull.set(pos);
+                posFull.mulInPlace(dimension.x);
 
-				mesh.vertices.addVertex(posFull.x,posFull.y,posFull.z,pos.x,pos.y,pos.z,emissive.r,emissive.g,emissive.b,emissive.a,u,v);
-			}
-		}
+                mesh.vertices.addVertex(posFull.x, posFull.y, posFull.z, pos.x, pos.y, pos.z, emissive.r, emissive.g, emissive.b, emissive.a, u, v);
+            }
+        }
 
-		// faces
-		int colLength = stacks + 1;
+        // faces
+        int colLength = stacks + 1;
 
-		for (r = 0; r < slices; r++) {
-			int offset = r * colLength;
+        for (r = 0; r < slices; r++) {
+            int offset = r * colLength;
 
-			for (c = 0; c < stacks; c++)
-			{
-				int ul = offset  +  c;
-				int ur = offset  +  c+1;
-				int br = offset  +  (int)(c + 1 + colLength);
-				int bl = offset  +  (int)(c + 0 + colLength);
+            for (c = 0; c < stacks; c++) {
+                int ul = offset + c;
+                int ur = offset + c + 1;
+                int br = offset + (int) (c + 1 + colLength);
+                int bl = offset + (int) (c + 0 + colLength);
 
-				mesh.faces.addQuad(ul, ur, br, bl);
-			}
-		}
+                mesh.faces.addQuad(ul, ur, br, bl);
+            }
+        }
 
         n.recycle();
         pos.recycle();
@@ -113,6 +112,7 @@ public class Sphere extends RenderableNode {
     @Override
     protected void cleanupInternal(@NotNull ProcessingState state) {
     }
+
     @Override
     public void onDirty() {
     }

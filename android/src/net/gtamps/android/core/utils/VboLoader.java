@@ -31,10 +31,10 @@ public class VboLoader {
 
     public static Vbo loadVbo(Context context, int resourceId) {
 
-        if(vboCache == null) {
+        if (vboCache == null) {
             vboCache = new HashMap<Integer, Vbo>();
         }
-        if(vboCache.containsKey(resourceId)) {
+        if (vboCache.containsKey(resourceId)) {
             return vboCache.get(resourceId);
         }
 
@@ -47,11 +47,11 @@ public class VboLoader {
         final Element colorsElement = root.getChild("colors").getChild("diffuse");
         final Element texturesElement = root.getChild("textureCoords");
 
-        final float [] vertices = parseFloats(verticesElement);
-        final short [] indices = parseShorts(indicesElement);
-        final float [] normals = parseFloats(normalsElement);
-        final float [] colors = parseFloats(colorsElement);
-        final float [] textureCoords = parseFloats(texturesElement);
+        final float[] vertices = parseFloats(verticesElement);
+        final short[] indices = parseShorts(indicesElement);
+        final float[] normals = parseFloats(normalsElement);
+        final float[] colors = parseFloats(colorsElement);
+        final float[] textureCoords = parseFloats(texturesElement);
 
         // allocate buffers
         FloatBuffer vertexBuffer = OpenGLUtils.toFloatBufferPositionZero(vertices);
@@ -60,27 +60,27 @@ public class VboLoader {
         FloatBuffer colorBuffer = (colors.length > 1) ? OpenGLUtils.toFloatBufferPositionZero(colors) : null;
         FloatBuffer textureBuffer = (textureCoords.length > 1) ? OpenGLUtils.toFloatBufferPositionZero(textureCoords) : null;
 
-        Vbo vbo = new Vbo(vertexBuffer,indexBuffer,normalBuffer,colorBuffer,textureBuffer);
-        vboCache.put(resourceId,vbo);
+        Vbo vbo = new Vbo(vertexBuffer, indexBuffer, normalBuffer, colorBuffer, textureBuffer);
+        vboCache.put(resourceId, vbo);
         return vbo;
     }
 
     private static short[] parseShorts(Element element) {
-        String [] values = element.getText().split(" ");
-        short [] result = new short[values.length];
-        for(int i = 0; i < values.length; i++) {
+        String[] values = element.getText().split(" ");
+        short[] result = new short[values.length];
+        for (int i = 0; i < values.length; i++) {
             result[i] = Short.parseShort(values[i]);
         }
         return result;
     }
 
     private static float[] parseFloats(Element element) {
-        String [] values = element.getText().split(" ");
-        float [] result = new float[values.length];
-        if(values.length < 2) {
+        String[] values = element.getText().split(" ");
+        float[] result = new float[values.length];
+        if (values.length < 2) {
             return result;
         }
-        for(int i = 0; i < values.length; i++) {
+        for (int i = 0; i < values.length; i++) {
             result[i] = Float.parseFloat(values[i]);
         }
         return result;
