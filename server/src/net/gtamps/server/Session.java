@@ -1,7 +1,7 @@
 package net.gtamps.server;
 
 import net.gtamps.game.IGame;
-import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.serializer.communication.SendableType;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -126,7 +126,7 @@ public final class Session {
 	}
 	
 	Session reconnect(final Connection<?> c) {
-		if (this.isConnected() && connection.equals(c)) {
+		if (isConnected() && connection.equals(c)) {
 			return this;
 		}
 		return changeState(State.CONNECTED, c, game, user);
@@ -140,14 +140,14 @@ public final class Session {
 		if (user != null && !user.equals(u)) {
 			throw new IllegalStateException("session can only re-authenticate: user already set");
 		}
-		if (this.isAuthenticated()) {
+		if (isAuthenticated()) {
 			return this;
 		}
 		return changeState(State.AUTHENTICATED, connection, game, u);
 	}
 	
 	Session reauthenticate() {
-		if (this.isAuthenticated()) {
+		if (isAuthenticated()) {
 			return this;
 		}
 		return changeState(State.AUTHENTICATED, connection, game, user);

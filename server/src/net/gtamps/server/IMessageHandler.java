@@ -1,6 +1,6 @@
 package net.gtamps.server;
 
-import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.serializer.communication.Message;
 
 public interface IMessageHandler {
 

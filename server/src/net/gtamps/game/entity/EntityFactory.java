@@ -11,7 +11,7 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.entity.EntityBlueprint;
-import net.gtamps.shared.level.PhysicalShape;
+import net.gtamps.shared.game.level.PhysicalShape;
 
 import org.jbox2d.dynamics.World;
 

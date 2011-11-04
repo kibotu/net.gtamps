@@ -2,7 +2,7 @@ package net.gtamps.game;
 
 import java.util.Collection;
 
-import net.gtamps.shared.communication.Sendable;
+import net.gtamps.shared.serializer.communication.Sendable;
 
 public interface IGame {
 	

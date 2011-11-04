@@ -7,23 +7,23 @@ import java.util.Scanner;
 
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageDeserializationException;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableDeserializationException;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.AuthentificationData;
-import net.gtamps.shared.communication.data.ISendableData;
-import net.gtamps.shared.communication.data.PlayerData;
-import net.gtamps.shared.communication.data.RevisionData;
-import net.gtamps.shared.communication.data.StringData;
-import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.MessageDeserializationException;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableDeserializationException;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.AuthentificationData;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
+import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.StringData;
+import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import org.jetbrains.annotations.NotNull;
 

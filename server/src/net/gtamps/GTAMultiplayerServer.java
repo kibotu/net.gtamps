@@ -7,8 +7,8 @@ import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
 import net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler;
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.ObjectSerializer;
+import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.ObjectSerializer;
 
 public class GTAMultiplayerServer {
 	

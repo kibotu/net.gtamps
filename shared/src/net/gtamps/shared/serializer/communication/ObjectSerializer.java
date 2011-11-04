@@ -24,24 +24,7 @@ public class ObjectSerializer implements ISerializer {
 
     @Override
     public byte[] serializeMessage(@NotNull Message message) {
-
-        //DEBUG
-        for (Sendable sendable : message.sendables) {
-            if (sendable.type.equals(SendableType.GETUPDATE_OK)) {
-                UpdateData data = (UpdateData) sendable.data;
-                for (GameObject go : data.gameObjects) {
-                    Class<? extends GameObject> c = go.getClass();
-                    if (!Entity.class.isAssignableFrom(c) && !GameEvent.class.isAssignableFrom(c)) {
-//   					if (Entity.class.equals(c) ) {
-                        throw new IllegalStateException(go.toString());
-                    }
-                    for (IProperty p : go.getAllProperties()) {
-                        System.out.println(p.toString());
-                    }
-                }
-            }
-        }
-
+   	
         try {
             byteOutputStream = new ByteArrayOutputStream();
             objectOutputStream = new ObjectOutputStream(byteOutputStream);
@@ -66,4 +49,6 @@ public class ObjectSerializer implements ISerializer {
         }
         return message;
     }
+    
+    
 }
