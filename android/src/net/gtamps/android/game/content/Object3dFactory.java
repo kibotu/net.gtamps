@@ -55,12 +55,13 @@ final public class Object3dFactory {
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
 //        parsedChild.setMaterial(Material.RED);
-        parsedChild.enableNormals(false);
+        parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(true);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(false);
+        parsedChild.enableMipMap(true);
+        parsedChild.setScaling(0.3f, 0.3f, 0.3f);
         return parsedObject;
     }
 
@@ -68,8 +69,8 @@ final public class Object3dFactory {
         Logger.v(TAG, "Create riveria.");
         RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
-        parsedChild.enableColorMaterialEnabled(false);
-        parsedChild.enableVertexColors(false);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
@@ -85,7 +86,7 @@ final public class Object3dFactory {
         RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(false);
+        parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(false);

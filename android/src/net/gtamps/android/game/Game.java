@@ -3,7 +3,7 @@ package net.gtamps.android.game;
 import android.os.SystemClock;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
-import net.gtamps.android.core.renderer.DefaultRenderActivity;
+import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
@@ -27,7 +27,7 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import java.util.ArrayList;
 
-public class Game implements DefaultRenderActivity.IRenderActivity {
+public class Game implements BasicRenderActivity.IRenderActivity {
 
     private boolean isRunning;
     private boolean isPaused;

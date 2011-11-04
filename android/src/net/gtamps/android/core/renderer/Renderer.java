@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer;
 
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
@@ -23,13 +24,13 @@ import static javax.microedition.khronos.opengles.GL10.GL_SMOOTH;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
-    private DefaultRenderActivity.IRenderActivity renderActivity;
+    private BasicRenderActivity.IRenderActivity renderActivity;
     private ProcessingState glState;
 
     private ArrayList<BasicScene> basicScenes;
     private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
-    public Renderer(DefaultRenderActivity.IRenderActivity renderActivity) {
+    public Renderer(BasicRenderActivity.IRenderActivity renderActivity) {
         this.renderActivity = renderActivity;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
@@ -137,6 +138,46 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     public void addToSetupQueue(@NotNull SceneNode node) {
         runtimeSetupQueue.add(node);
+    }
+
+    public int createProgram(String vertexSource, String fragmentSource) {
+        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexSource);
+        int pixelShader = loadShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+        int program = glCreateProgram();
+        if (program != 0) {
+            glAttachShader(program, vertexShader);
+//            checkGlError("glAttachShader");
+            glAttachShader(program, pixelShader);
+//            checkGlError("glAttachShader");
+            glLinkProgram(program);
+            int[] linkStatus = new int[1];
+            glGetProgramiv(program, GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] != GLES20.GL_TRUE) {
+                Logger.e(this, "Could not link program: ");
+                Logger.e(this, glGetProgramInfoLog(program));
+                glDeleteProgram(program);
+                program = 0;
+            }
+        }
+        return program;
+    }
+
+    private int loadShader(int shaderType, String source) {
+        int shader = glCreateShader(shaderType);
+        if (shader != 0) {
+            glShaderSource(shader, source);
+            glCompileShader(shader);
+            int[] compiled = new int[1];
+            glGetShaderiv(shader, GL_COMPILE_STATUS, compiled, 0);
+            if (compiled[0] == 0) {
+                Logger.e(this, "Could not compile shader " + shaderType + ":");
+                Logger.e(this, glGetShaderInfoLog(shader));
+                glDeleteShader(shader);
+                shader = 0;
+            }
+        }
+        return shader;
     }
 
     private void reset(GL10 gl10) {

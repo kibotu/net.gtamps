@@ -37,8 +37,8 @@ public class EntityView implements IDirty {
     }
 
     public void update(Entity serverEntity) {
-        setDirtyFlag();
         entity = serverEntity;
+        setDirtyFlag();
         onDirty();
     }
 
