@@ -28,7 +28,7 @@ public class World extends EntityScene {
         setBackground(Color4.DARK_GRAY);
 
         activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
-//        activeView.getObject3d().add(getSpotLight());
+        activeView.getObject3d().add(getSpotLight());
         add(activeView);
         EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
         camaro.getObject3d().setPosition(-3, 0, 0);
@@ -38,37 +38,36 @@ public class World extends EntityScene {
         riviera.getObject3d().setPosition(3, 0, 0);
         add(riviera);
 
-
         add(new EntityView(addPlane()));
-        add(new EntityView(getSunLight()));
+//        add(new EntityView(getSunLight()));
     }
 
     public static Light getSpotLight() {
         Light spot = new Light();
-        spot.setPosition(0, 2, 3);
+        spot.setPosition(0, 3, 3);
         spot.setDirection(0, 0, -1);
-        spot.getMaterial().getAmbient().setAll(255, 255, 255, 255);
-        spot.getMaterial().getDiffuse().setAll(255, 255, 255, 255);
-        spot.getMaterial().getSpecular().setAll(255, 255, 255, 255);
+        spot.getMaterial().getAmbient().setAll(128, 128, 128, 128);
+        spot.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
+        spot.getMaterial().getSpecular().setAll(128, 128, 128, 128);
         spot.setType(Light.Type.POSITIONAL);
-        spot.setSpotCutoffAngle(60);
-        spot.setSpotExponent(4);
-        spot.setAttenuation(0.6f, 0, 0);
+        spot.setSpotCutoffAngle(90);
+        spot.setSpotExponent(16);
+        spot.setAttenuation(0.6f, 0.1f, 0f);
         spot.setRotation(60, 0, 0);
         return spot;
     }
 
     public static Light getSunLight() {
         Light sun = new Light();
-        sun.setPosition(0, 0, 10);
+        sun.setPosition(0, 0, 20);
         sun.setDirection(0, 0, -1);
-        sun.getMaterial().getAmbient().setAll(0, 0, 0, 255);
-        sun.getMaterial().getDiffuse().setAll(100, 100, 100, 255);
-        sun.getMaterial().getSpecular().setAll(0, 0, 0, 255);
-        sun.setType(Light.Type.DIRECTIONAL);
-        sun.setSpotCutoffAngle(80);
-        sun.setSpotExponent(4);
-        sun.setAttenuation(0.5f, 0, 0);
+        sun.getMaterial().getAmbient().setAll(128, 128, 128, 128);
+        sun.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
+        sun.getMaterial().getSpecular().setAll(128, 128, 128, 128);
+        sun.setType(Light.Type.POSITIONAL);
+        sun.setSpotCutoffAngle(160);
+        sun.setSpotExponent(22);
+        sun.setAttenuation(1, 0, 0);
         return sun;
     }
 
@@ -77,14 +76,14 @@ public class World extends EntityScene {
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.setScaling(40, 40, 1f);
         parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(false);
+        parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(true);
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
-        parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
+        parsedChild.getRenderState().shader = RenderState.Shader.SMOOTH;
         parsedChild.enableMipMap(true);
         return parsedObject;
     }

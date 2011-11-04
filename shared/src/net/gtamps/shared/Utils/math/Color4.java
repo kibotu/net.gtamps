@@ -101,15 +101,6 @@ public class Color4 implements Comparable<Color4> {
     }
 
     /**
-     * Test this color for blackness.
-     *
-     * @return True if black, else false.
-     */
-    public boolean isBlack() {
-        return this.equals(Color4.BLACK);
-    }
-
-    /**
      * Calculate the sum of two colors.
      *
      * @param c The second color.

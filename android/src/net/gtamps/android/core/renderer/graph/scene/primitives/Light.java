@@ -15,12 +15,12 @@ import javax.microedition.khronos.opengles.GL11;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import static javax.microedition.khronos.opengles.GL11.*;
+
 /**
  * Lightning source based on @see <a href="http://glprogramming.com/red/chapter05.html#name4">Creating Light Sources</a>
  */
-@Deprecated
 public class Light extends RenderableNode {
-
 
 
     public enum Type {
@@ -120,26 +120,26 @@ public class Light extends RenderableNode {
         GL11 gl11 = (GL11) gl;
 
         if (isVisible()) {
-            gl11.glEnable(GL11.GL_LIGHTING);
-            gl11.glEnable(GL11.GL_LIGHT0 + lightId);
-            gl11.glEnable(GL11.GL_NORMALIZE);
-            gl11.glEnable(GL11.GL_RESCALE_NORMAL);
+            gl11.glEnable(GL_LIGHTING);
+            gl11.glEnable(GL_LIGHT0 + lightId);
+            gl11.glEnable(GL_NORMALIZE);
+            gl11.glEnable(GL_RESCALE_NORMAL);
 
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, material.getAmbient().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, material.getDiffuse().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getSpecular().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
-//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
-//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
+            gl11.glLightfv(GL_LIGHT0 + lightId, GL_POSITION, positionAndTypeBuffer);
+            gl11.glLightfv(GL_LIGHT0 + lightId, GL_AMBIENT, material.getAmbient().asBuffer());
+            gl11.glLightfv(GL_LIGHT0 + lightId, GL_DIFFUSE, material.getDiffuse().asBuffer());
+            gl11.glLightfv(GL_LIGHT0 + lightId, GL_SPECULAR, material.getSpecular().asBuffer());
+            gl11.glLightfv(GL_LIGHT0 + lightId, GL_SPOT_DIRECTION, direction);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
 //            Utils.log(this, ""+diffuse.getColorBuffer().get(0) + " "+diffuse.getColorBuffer().get(1)+ " "+diffuse.getColorBuffer().get(2) + " "+diffuse.getColorBuffer().get(3));
 
-//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_CONSTANT_ATTENUATION, attenuation.x);
-//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_LINEAR_ATTENUATION, attenuation.y);
-//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_QUADRATIC_ATTENUATION, attenuation.z);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_CONSTANT_ATTENUATION, attenuation.x);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_LINEAR_ATTENUATION, attenuation.y);
+            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_QUADRATIC_ATTENUATION, attenuation.z);
             commitPositionAndTypeBuffer();
         } else {
-            gl.glDisable(GL11.GL_LIGHTING);
+            gl.glDisable(GL_LIGHTING);
         }
     }
 
