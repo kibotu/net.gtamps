@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class Light extends RenderableNode {
 
 
+
     public enum Type {
         /**
          * directional light (x,y,z is the light direction) like the sun
@@ -64,26 +65,6 @@ public class Light extends RenderableNode {
     private Type type;
 
     /**
-     * Light that has been reflected by other objects and hits the mesh in small amounts
-     */
-    public final Color4 ambient;
-
-    /**
-     * setting diffuse light color like a bulb or neon tube
-     */
-    public final Color4 diffuse;
-
-    /**
-     * setting specular light color like a halogen spot
-     */
-    public final Color4 specular;
-
-    /**
-     * setting for the emissive light color like a sun
-     */
-    public final Color4 emissive;
-
-    /**
      * angle [0..180]
      */
     private float spotCutoffAngle;
@@ -105,10 +86,10 @@ public class Light extends RenderableNode {
     public Light() {
         mesh = new Mesh(0, 0);
         type = Type.DIRECTIONAL;
-        ambient = new Color4(128, 128, 128, 255);
-        diffuse = new Color4(255, 255, 255, 255);
-        specular = new Color4(0, 0, 0, 255);
-        emissive = new Color4(0, 0, 0, 255);
+        material.getAmbient().setAll(128, 128, 128, 255);
+        material.getDiffuse().setAll(255, 255, 255, 255);
+        material.getSpecular().setAll(0, 0, 0, 255);
+        material.getEmissive().setAll(0, 0, 0, 255);
         direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
         spotCutoffAngle = 180;
         spotExponent = 0;
@@ -135,7 +116,7 @@ public class Light extends RenderableNode {
     }
 
     @Override
-    protected void renderInternal(@NotNull GL10 gl) {
+    protected void render(GL11 gl) {
 
         GL11 gl11 = (GL11) gl;
 
@@ -146,23 +127,26 @@ public class Light extends RenderableNode {
             gl11.glEnable(GL11.GL_RESCALE_NORMAL);
 
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, ambient.asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, diffuse.asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, specular.asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_EMISSION, emissive.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, Color4.RED.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, material.getDiffuse().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getDiffuse().asBuffer());
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
-            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
-            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
-
+//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
+//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
 //            Utils.log(this, ""+diffuse.getColorBuffer().get(0) + " "+diffuse.getColorBuffer().get(1)+ " "+diffuse.getColorBuffer().get(2) + " "+diffuse.getColorBuffer().get(3));
 
-            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_CONSTANT_ATTENUATION, attenuation.x);
-            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_LINEAR_ATTENUATION, attenuation.y);
-            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_QUADRATIC_ATTENUATION, attenuation.z);
+//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_CONSTANT_ATTENUATION, attenuation.x);
+//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_LINEAR_ATTENUATION, attenuation.y);
+//            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_QUADRATIC_ATTENUATION, attenuation.z);
             commitPositionAndTypeBuffer();
         } else {
             gl.glDisable(GL11.GL_LIGHTING);
         }
+    }
+
+    @Override
+    protected void renderInternal(@NotNull GL10 gl) {
+
     }
 
     @Override
@@ -187,7 +171,6 @@ public class Light extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-
     }
 
     /**
@@ -239,25 +222,44 @@ public class Light extends RenderableNode {
     }
 
     public void setType(Type type) {
-        commitPositionAndTypeBuffer();
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "Light_" + lightId + "[" +
-                "type=" + type +
-                ", ambient=" + ambient +
-                ", diffuse=" + diffuse +
-                ", specular=" + specular +
-                ", emissive=" + emissive +
-                ", spotCutoffAngle=" + spotCutoffAngle +
-                ", spotExponent=" + spotExponent +
-                ", attenuation=" + attenuation +
-                "] successfully added.";
+        commitPositionAndTypeBuffer();
     }
 
     @Override
     public void onDirty() {
+    }
+
+
+    public FloatBuffer getDirection() {
+        return direction;
+    }
+
+    public static ArrayList<Integer> getAvailableLightIndices() {
+        return availableLightIndices;
+    }
+
+    public FloatBuffer getPositionAndTypeBuffer() {
+        return positionAndTypeBuffer;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public float getSpotCutoffAngle() {
+        return spotCutoffAngle;
+    }
+
+    public float getSpotExponent() {
+        return spotExponent;
+    }
+
+    public Vector3 getAttenuation() {
+        return attenuation;
+    }
+
+    public int getLightId() {
+        return lightId;
     }
 }

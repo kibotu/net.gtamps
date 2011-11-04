@@ -178,7 +178,7 @@ public class ObjParser extends AParser implements IParser {
                                 currentMaterial));
                     }
                 } else if (type.equals(DIFFUSE_COLOR) && !type.equals(DIFFUSE_TEX_MAP)) {
-                    Color4 diffuseColor = new Color4(Float.parseFloat(parts[1]) * 255.0f, Float.parseFloat(parts[2]) * 255.0f, Float.parseFloat(parts[3]) * 255.0f, 255.0f);
+                    Color4 diffuseColor = new Color4(Float.parseFloat(parts[1]) , Float.parseFloat(parts[2]), Float.parseFloat(parts[3]) , 1);
                     materialMap.get(currentMaterial).diffuseColor = diffuseColor;
                 } else if (type.equals(DIFFUSE_TEX_MAP)) {
                     if (parts.length > 1) {
@@ -200,7 +200,7 @@ public class ObjParser extends AParser implements IParser {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.printException(this, e);
         }
     }
 
