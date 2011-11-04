@@ -29,7 +29,7 @@ public class World extends EntityScene {
         setBackground(Color4.DARK_GRAY);
 
         activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
-//        activeOjbect.getObject3d().add(getSpotLight());
+        activeView.getObject3d().add(getSpotLight());
         add(activeView);
         EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
         camaro.getObject3d().setPosition(-3, 0, 0);
@@ -39,6 +39,7 @@ public class World extends EntityScene {
         riviera.getObject3d().setPosition(3, 0, 0);
         add(riviera);
 
+
         add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));
     }
@@ -47,9 +48,9 @@ public class World extends EntityScene {
         Light spot = new Light();
         spot.setPosition(0, 2, 3);
         spot.setDirection(0, 0, -1);
-        spot.getMaterial().getAmbient().setAll(255, 255, 255, 255);
+        spot.getMaterial().getAmbient().setAll(1, 1, 1, 1);
         spot.getMaterial().getDiffuse().setAll(0, 0, 0, 0);
-        spot.getMaterial().getSpecular().setAll(255, 255, 255, 255);
+        spot.getMaterial().getSpecular().setAll(1, 1, 1, 1);
         spot.getMaterial().getEmissive().setAll(0, 0, 0, 0);
         spot.setType(Light.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
@@ -79,15 +80,15 @@ public class World extends EntityScene {
     }
 
     public static RenderableNode addPlane() {
-        ParsedObject parsedObject = ParsedObject.parseObject("city_obj", R.drawable.grid, true);
+        ParsedObject parsedObject = ParsedObject.parseObject("grid_obj", R.drawable.grid, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.setScaling(40, 40, 1f);
         parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(true);
+        parsedChild.enableVertexColors(false);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(false);
+        parsedChild.enableLighting(true);
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.setShader(IShader.Type.FLAT);
@@ -95,7 +96,7 @@ public class World extends EntityScene {
         return parsedObject;
     }
 
-     public static RenderableNode addLevel() {
+    public static RenderableNode addLevel() {
         ParsedObject parsedObject = ParsedObject.parseObject("city_obj", R.drawable.grid, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
