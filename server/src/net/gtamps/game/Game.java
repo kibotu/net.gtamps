@@ -15,15 +15,15 @@ import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.PlayerData;
-import net.gtamps.shared.communication.data.RevisionData;
-import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 
 /**

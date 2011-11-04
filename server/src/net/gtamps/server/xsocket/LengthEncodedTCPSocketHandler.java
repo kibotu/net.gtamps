@@ -12,7 +12,7 @@ import net.gtamps.server.Connection;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.ISerializer;
 
 import org.jetbrains.annotations.NotNull;
 import org.xsocket.connection.INonBlockingConnection;

@@ -10,9 +10,9 @@ import net.gtamps.game.handler.blueprints.MobilityBlueprint;
 import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.game.event.EventType;
-import net.gtamps.shared.level.PhysicalShape;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.game.level.PhysicalShape;
 
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.MassData;

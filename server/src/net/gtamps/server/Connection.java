@@ -1,7 +1,7 @@
 package net.gtamps.server;
 
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.Message;
 
 /**
  * immutable!

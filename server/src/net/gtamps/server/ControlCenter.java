@@ -11,11 +11,11 @@ import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.AuthentificationData;
-import net.gtamps.shared.communication.data.StringData;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.AuthentificationData;
+import net.gtamps.shared.serializer.communication.data.StringData;
 
 public class ControlCenter implements Runnable, IMessageHandler {
 	private static final LogType TAG = LogType.SERVER;
