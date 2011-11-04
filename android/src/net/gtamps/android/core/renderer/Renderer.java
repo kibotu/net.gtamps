@@ -143,9 +143,9 @@ public class Renderer implements GLSurfaceView.Renderer {
         gl10.glDepthFunc(GL_LEQUAL);
         gl10.glDepthRangef(0, 1f);
         gl10.glDepthMask(true);
-        gl10.glEnable(GL_DITHER);
 
         gl10.glShadeModel(GL_SMOOTH);             // Enable Smooth Shading
+        gl10.glEnable(GL10.GL_LIGHTING);
 
         // Alpha enabled
         gl10.glEnable(GL_BLEND);

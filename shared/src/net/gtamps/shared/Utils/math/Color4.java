@@ -164,6 +164,7 @@ public class Color4 implements Comparable<Color4> {
     }
 
     public void fillBuffer(FloatBuffer buf) {
+        buf.position(0);
         buf.put(r);
         buf.put(g);
         buf.put(b);
