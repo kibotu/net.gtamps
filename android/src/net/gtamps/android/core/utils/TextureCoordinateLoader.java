@@ -4,7 +4,7 @@ import android.content.Context;
 import net.gtamps.android.core.renderer.mesh.texture.BufferedTexture;
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.state.State;
+import net.gtamps.shared.game.state.State;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -72,7 +72,7 @@ public class TextureCoordinateLoader {
         // get animations
         HashMap<State.Type, Integer[]> animations = parseAnimation(doc.getRootElement().getChildren("animation"));
 
-        Logger.i(TAG, "[sprites:"+gltextures.length+"|animations:"+animations.size()+"|id:"+bufferId+"] Texture Coordinates successfully loaded.");
+        Logger.i(TAG, "[sprites:" + gltextures.length + "|animations:" + animations.size() + "|id:" + bufferId + "] Texture Coordinates successfully loaded.");
 
         // return new xml texture
         return new BufferedTexture(textureId, bufferId, gltextures, animations);

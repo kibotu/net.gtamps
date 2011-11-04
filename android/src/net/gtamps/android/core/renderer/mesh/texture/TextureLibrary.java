@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.opengl.GLUtils;
-import net.gtamps.android.core.Registry;
+import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.utils.TextureCoordinateLoader;
 import net.gtamps.shared.Utils.Logger;
 
@@ -39,7 +39,7 @@ public class TextureLibrary {
      * Holds Buffered Texture Coordinates in order to keep track of loaded xml resource ids.
      */
     private HashMap<Integer, BufferedTexture> textureCoordinatesResourceIds;
-	private static int atlasId = 0;
+    private static int atlasId = 0;
 
     /**
      * Constructs the texture proxy.
@@ -54,10 +54,10 @@ public class TextureLibrary {
 
     public BufferedTexture loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {
 
-        if(textureCoordinatesResourceIds.containsKey(textureCoordinateResourceId)) {
-           return textureCoordinatesResourceIds.get(textureCoordinateResourceId);
+        if (textureCoordinatesResourceIds.containsKey(textureCoordinateResourceId)) {
+            return textureCoordinatesResourceIds.get(textureCoordinateResourceId);
         }
-        BufferedTexture bufferedTexture = TextureCoordinateLoader.loadTextureCoordinates(gl, Registry.getContext(), textureCoordinateResourceId, loadTexture(textureResourceId,generateMipMap));
+        BufferedTexture bufferedTexture = TextureCoordinateLoader.loadTextureCoordinates(gl, Registry.getContext(), textureCoordinateResourceId, loadTexture(textureResourceId, generateMipMap));
         textureCoordinatesResourceIds.put(textureCoordinateResourceId, bufferedTexture);
 
         return bufferedTexture;
@@ -69,7 +69,7 @@ public class TextureLibrary {
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap, Bitmap.Config bitmapConfig, boolean flipped) {
 
-        if(textureResourceIds.containsKey(textureResourceId)) {
+        if (textureResourceIds.containsKey(textureResourceId)) {
             return textureResourceIds.get(textureResourceId);
         }
 
@@ -78,11 +78,11 @@ public class TextureLibrary {
         sBitmapOptions.inScaled = false;
 
         Bitmap bitmap;
-        if(flipped) {
+        if (flipped) {
             // We need to flip the textures vertically
             final Matrix flip = new Matrix();
             flip.postScale(1f, -1f);
-             // Generate one texture pointer...
+            // Generate one texture pointer...
             Bitmap temp = BitmapFactory.decodeResource(Registry.getContext().getResources(), textureResourceId, sBitmapOptions);
             bitmap = Bitmap.createBitmap(temp, 0, 0, temp.getWidth(), temp.getHeight(), flip, true);
             temp.recycle();
@@ -90,24 +90,24 @@ public class TextureLibrary {
             bitmap = BitmapFactory.decodeResource(Registry.getContext().getResources(), textureResourceId, sBitmapOptions);
         }
 
-        int id = alloc(bitmap,generateMipMap);
-        textureResourceIds.put(""+textureResourceId,id);
+        int id = alloc(bitmap, generateMipMap);
+        textureResourceIds.put("" + textureResourceId, id);
 
         return id;
     }
 
     private int alloc(Bitmap bitmap, boolean generateMipMap) {
 
-		int glTextureId = newTextureID(gl);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, glTextureId);
+        int glTextureId = newTextureID(gl);
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, glTextureId);
 
-		if(generateMipMap && gl instanceof GL11) {
+        if (generateMipMap && gl instanceof GL11) {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST);
-			gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
-		} else {
+            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
+        } else {
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-			gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
-		}
+            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
+        }
 
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 
@@ -115,16 +115,16 @@ public class TextureLibrary {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
         gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
 
-		// 'upload' to gpu
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        // 'upload' to gpu
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
 
         Logger.i(this, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + glTextureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
 
         //Clean up
         bitmap.recycle();
 
-		return glTextureId;
-	}
+        return glTextureId;
+    }
 
     /**
      * Clear if no textures need to be loaded again.
@@ -147,10 +147,10 @@ public class TextureLibrary {
     }
 
     private void deleteTexture(int textureId) {
-		int[] a = new int[1];
-		a[0] = textureId;
-		gl.glDeleteTextures(1, a, 0);
-	}
+        int[] a = new int[1];
+        a[0] = textureId;
+        gl.glDeleteTextures(1, a, 0);
+    }
 
     public String getNewAtlasId() {
         return "atlas" + (atlasId++);
@@ -161,8 +161,8 @@ public class TextureLibrary {
     }
 
     public int addTexture(Bitmap texture, String atlasId, boolean generateMipMap) {
-        int textureId = alloc(texture,generateMipMap);
-        textureResourceIds.put(atlasId,textureId);
+        int textureId = alloc(texture, generateMipMap);
+        textureResourceIds.put(atlasId, textureId);
         return textureId;
     }
 }

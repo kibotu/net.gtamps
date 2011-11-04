@@ -1,6 +1,5 @@
 package net.gtamps.shared.Utils.cache;
 
-import net.gtamps.shared.Utils.lists.DoubleLinkedListNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,9 +1,9 @@
 package net.gtamps.android.core.renderer.mesh.buffermanager;
 
-import net.gtamps.shared.math.Color4;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.renderer.mesh.Vertex;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Vector3;
 
 public class VertexManager {
 
@@ -126,7 +126,7 @@ public class VertexManager {
     }
 
     public void addAll(Vertex... vertices) {
-        for(Vertex vertex : vertices) {
+        for (Vertex vertex : vertices) {
             addVertex(vertex.position, vertex.normal, vertex.color, vertex.uv);
         }
     }
