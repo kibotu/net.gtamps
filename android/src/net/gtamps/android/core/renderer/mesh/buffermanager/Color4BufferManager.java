@@ -9,10 +9,10 @@ import java.nio.FloatBuffer;
 public class Color4BufferManager {
 
     public static final int PROPERTIES_PER_ELEMENT = 4;
-    public static final int BYTES_PER_PROPERTY = 4;
+        public static final int BYTES_PER_PROPERTY = 4;
 
-    private FloatBuffer buffer;
-    private int numElements;
+        private FloatBuffer buffer;
+        private int numElements = 0;
 
     public Color4BufferManager(FloatBuffer buffer, int size) {
         ByteBuffer bb = ByteBuffer.allocateDirect(buffer.limit() * BYTES_PER_PROPERTY);

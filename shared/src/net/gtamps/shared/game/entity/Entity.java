@@ -26,7 +26,6 @@ public class Entity extends GameActor implements Serializable {
         return name.toUpperCase();
     }
 
-
     //public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
 
     //	protected Map<Property.Type,Property> properties;

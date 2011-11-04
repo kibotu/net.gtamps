@@ -53,14 +53,14 @@ final public class Object3dFactory {
         RenderableNode parsedObject = ParsedObject.parseObject("corvette_obj", R.drawable.placeholder, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(false);
+        parsedChild.enableVertexColors(true);
 //        parsedChild.setMaterial(Material.RED);
-        parsedChild.enableNormals(true);
+        parsedChild.enableNormals(false);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
-        parsedChild.enableAlpha(true);
-        parsedChild.enableMipMap(true);
+        parsedChild.enableAlpha(false);
+        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 
@@ -88,9 +88,9 @@ final public class Object3dFactory {
         parsedChild.enableVertexColors(false);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
-        parsedChild.enableAlpha(true);
+        parsedChild.enableDoubleSided(false);
+        parsedChild.enableLighting(false);
+        parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
         return parsedObject;
     }

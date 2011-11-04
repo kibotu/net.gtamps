@@ -30,6 +30,12 @@ public class EntityView implements IDirty {
         onDirty();
     }
 
+    @Deprecated
+    public EntityView(RenderableNode node) {
+        entity = new Entity("bla");
+        object3d = node;
+    }
+
     public void update(Entity serverEntity) {
         setDirtyFlag();
         entity = serverEntity;

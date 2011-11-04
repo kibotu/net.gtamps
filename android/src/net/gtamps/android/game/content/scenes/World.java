@@ -1,16 +1,14 @@
 package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.renderer.Registry;
-import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
-import net.gtamps.android.core.renderer.mesh.parser.IParser;
-import net.gtamps.android.core.renderer.mesh.parser.Parser;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -33,23 +31,26 @@ public class World extends EntityScene {
         activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
 //        activeOjbect.getObject3d().add(getSpotLight());
         add(activeView);
-        EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
+        EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
         camaro.getObject3d().setPosition(-3, 0, 0);
         add(camaro);
 
-        EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
+        EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_CHEVROLET_CORVETTE));
         riviera.getObject3d().setPosition(3, 0, 0);
         add(riviera);
+
+        add(new EntityView(addPlane()));
+//        add(new EntityView(getSunLight()));
     }
 
     public static Light getSpotLight() {
         Light spot = new Light();
         spot.setPosition(0, 2, 3);
         spot.setDirection(0, 0, -1);
-        spot.diffuse.setAll(255, 255, 255, 255);
-        spot.ambient.setAll(0, 0, 0, 0);
-        spot.specular.setAll(255, 255, 255, 255);
-        spot.emissive.setAll(0, 0, 0, 0);
+        spot.getMaterial().getAmbient().setAll(255, 255, 255, 255);
+        spot.getMaterial().getDiffuse().setAll(0, 0, 0, 0);
+        spot.getMaterial().getSpecular().setAll(255, 255, 255, 255);
+        spot.getMaterial().getEmissive().setAll(0, 0, 0, 0);
         spot.setType(Light.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
         spot.setSpotExponent(4);
@@ -60,29 +61,33 @@ public class World extends EntityScene {
 
     public static Light getSunLight() {
         Light sun = new Light();
-        sun.setPosition(0, 0, 10);
+        sun.setPosition(0, 0, 3);
         sun.setDirection(0, 0, -1);
-        sun.diffuse.setAll(128, 128, 128, 255);
-        sun.ambient.setAll(0, 0, 0, 0);
-        sun.specular.setAll(128, 128, 128, 255);
-        sun.emissive.setAll(0, 0, 0, 0);
-        sun.setType(Light.Type.POSITIONAL);
-        sun.setSpotCutoffAngle(60);
+        sun.getMaterial().getAmbient().setAll(128, 128, 128, 255);
+        sun.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
+        sun.getMaterial().getSpecular().setAll(128, 128, 128, 255);
+        sun.getMaterial().getEmissive().setAll(0, 0, 0, 0);
+        sun.setType(Light.Type.DIRECTIONAL);
+        sun.setSpotCutoffAngle(80);
         sun.setSpotExponent(4);
         sun.setAttenuation(0.5f, 0, 0);
+
+        Logger.d(World.class.getSimpleName(), sun.getDirection().get(0) + " " + sun.getDirection().get(1) + " "+ sun.getDirection().get(2));
+        Logger.d(World.class.getSimpleName(), sun.getPositionAndTypeBuffer().get(0) + " " + sun.getPositionAndTypeBuffer().get(1) + " "+ sun.getPositionAndTypeBuffer().get(2)+ " "+ sun.getPositionAndTypeBuffer().get(3));
+
         return sun;
     }
 
     public static RenderableNode addPlane() {
-        ParsedObject parsedObject = ParsedObject.parseObject("grid_obj", R.drawable.grid, true);
+        ParsedObject parsedObject = ParsedObject.parseObject("city_obj", R.drawable.grid, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
-        parsedChild.setScaling(40, 40, 0);
-        parsedChild.enableColorMaterialEnabled(false);
+        parsedChild.setScaling(40, 40, 1f);
+        parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(false);
-        parsedChild.enableLighting(true);
+        parsedChild.enableDoubleSided(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.setShader(IShader.Type.FLAT);
@@ -90,13 +95,20 @@ public class World extends EntityScene {
         return parsedObject;
     }
 
-    public static RenderableNode addLevel() {
-        IParser objParser = Parser.createParser(Parser.Type.OBJ, "net.gtamps.android:raw/map1_obj", true);
-        objParser.parse();
-        ParsedObject parsedObject = objParser.getParsedObject();
-        parsedObject.setTextureId(Registry.getTextureLibrary().loadTexture(R.drawable.grid, true));
+     public static RenderableNode addLevel() {
+        ParsedObject parsedObject = ParsedObject.parseObject("city_obj", R.drawable.grid, true);
+        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(true);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(true);
+        parsedChild.enableDoubleSided(true);
+        parsedChild.enableLighting(false);
+        parsedChild.enableAlpha(false);
         parsedObject.setScaling(0.5f, 0.5f, 0.5f);
         parsedObject.setPosition(0, 0, -3f);
+        parsedChild.setShader(IShader.Type.FLAT);
+        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 
