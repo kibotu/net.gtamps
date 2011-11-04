@@ -7,7 +7,6 @@ import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
@@ -127,9 +126,9 @@ public class Light extends RenderableNode {
             gl11.glEnable(GL11.GL_RESCALE_NORMAL);
 
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_POSITION, positionAndTypeBuffer);
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, Color4.RED.asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_AMBIENT, material.getAmbient().asBuffer());
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_DIFFUSE, material.getDiffuse().asBuffer());
-            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getDiffuse().asBuffer());
+            gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPECULAR, material.getSpecular().asBuffer());
             gl11.glLightfv(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_DIRECTION, direction);
 //            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
 //            gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);

@@ -1,14 +1,13 @@
 package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
+import net.gtamps.android.core.renderer.graph.RenderState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,7 @@ public class World extends EntityScene {
         setBackground(Color4.DARK_GRAY);
 
         activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
-        activeView.getObject3d().add(getSpotLight());
+//        activeView.getObject3d().add(getSpotLight());
         add(activeView);
         EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
         camaro.getObject3d().setPosition(-3, 0, 0);
@@ -41,17 +40,16 @@ public class World extends EntityScene {
 
 
         add(new EntityView(addPlane()));
-//        add(new EntityView(getSunLight()));
+        add(new EntityView(getSunLight()));
     }
 
     public static Light getSpotLight() {
         Light spot = new Light();
         spot.setPosition(0, 2, 3);
         spot.setDirection(0, 0, -1);
-        spot.getMaterial().getAmbient().setAll(1, 1, 1, 1);
-        spot.getMaterial().getDiffuse().setAll(0, 0, 0, 0);
-        spot.getMaterial().getSpecular().setAll(1, 1, 1, 1);
-        spot.getMaterial().getEmissive().setAll(0, 0, 0, 0);
+        spot.getMaterial().getAmbient().setAll(255, 255, 255, 255);
+        spot.getMaterial().getDiffuse().setAll(255, 255, 255, 255);
+        spot.getMaterial().getSpecular().setAll(255, 255, 255, 255);
         spot.setType(Light.Type.POSITIONAL);
         spot.setSpotCutoffAngle(60);
         spot.setSpotExponent(4);
@@ -62,20 +60,15 @@ public class World extends EntityScene {
 
     public static Light getSunLight() {
         Light sun = new Light();
-        sun.setPosition(0, 0, 3);
+        sun.setPosition(0, 0, 10);
         sun.setDirection(0, 0, -1);
-        sun.getMaterial().getAmbient().setAll(128, 128, 128, 255);
-        sun.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
-        sun.getMaterial().getSpecular().setAll(128, 128, 128, 255);
-        sun.getMaterial().getEmissive().setAll(0, 0, 0, 0);
+        sun.getMaterial().getAmbient().setAll(0, 0, 0, 255);
+        sun.getMaterial().getDiffuse().setAll(100, 100, 100, 255);
+        sun.getMaterial().getSpecular().setAll(0, 0, 0, 255);
         sun.setType(Light.Type.DIRECTIONAL);
         sun.setSpotCutoffAngle(80);
         sun.setSpotExponent(4);
         sun.setAttenuation(0.5f, 0, 0);
-
-        Logger.d(World.class.getSimpleName(), sun.getDirection().get(0) + " " + sun.getDirection().get(1) + " "+ sun.getDirection().get(2));
-        Logger.d(World.class.getSimpleName(), sun.getPositionAndTypeBuffer().get(0) + " " + sun.getPositionAndTypeBuffer().get(1) + " "+ sun.getPositionAndTypeBuffer().get(2)+ " "+ sun.getPositionAndTypeBuffer().get(3));
-
         return sun;
     }
 
@@ -91,7 +84,7 @@ public class World extends EntityScene {
         parsedChild.enableLighting(true);
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
-        parsedChild.setShader(IShader.Type.FLAT);
+        parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
         parsedChild.enableMipMap(true);
         return parsedObject;
     }
@@ -104,11 +97,11 @@ public class World extends EntityScene {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(false);
+        parsedChild.enableLighting(true);
         parsedChild.enableAlpha(false);
         parsedObject.setScaling(0.5f, 0.5f, 0.5f);
         parsedObject.setPosition(0, 0, -3f);
-        parsedChild.setShader(IShader.Type.FLAT);
+        parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
         parsedChild.enableMipMap(true);
         return parsedObject;
     }

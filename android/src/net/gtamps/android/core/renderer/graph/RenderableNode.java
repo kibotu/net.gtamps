@@ -1,7 +1,5 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.android.core.renderer.graph.scene.DrawingStyle;
-import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.IDirty;
@@ -62,14 +60,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     private boolean alphaEnabled = false;
 
     /**
-     * Defines the shader.
+     * Render state. Defines blending, shader and drawingstyle state.
      */
-    private IShader.Type shader = IShader.Type.SMOOTH;
-
-    /**
-     * Defines the drawing style.
-     */
-    private DrawingStyle drawingStyle = DrawingStyle.GL_TRIANGLES;
+    private RenderState renderState = new RenderState();
 
     /**
      * Defines the current color material.
@@ -166,7 +159,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (isDirty) onDirty(gl);
 
         // shading
-        gl.glShadeModel(shader.getValue());
+        gl.glShadeModel(renderState.shader.getValue());
 
         // enable color materials
         if (colorMaterialEnabled) {
@@ -211,6 +204,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (alphaEnabled) {
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_ALPHA_TEST);
+            gl.glBlendFunc(renderState.blendState.sfactor, renderState.blendState.dfactor);
         } else {
             gl.glDisable(GL_BLEND);
             gl.glDisable(GL_ALPHA_TEST);
@@ -251,7 +245,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // drawing point setings
-        if (drawingStyle.equals(DrawingStyle.GL_POINTS)) {
+        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_POINTS)) {
             if (pointSmoothing) {
                 gl.glEnable(GL_POINT_SMOOTH);
             } else {
@@ -261,7 +255,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // drawing line settings
-        if (drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
+        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINES) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_LOOP) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_STRIP)) {
             if (lineSmoothing) {
                 gl.glEnable(GL_LINE_SMOOTH);
             } else {
@@ -277,7 +271,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // actually draw the mesh by index buffer
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
-        gl.glDrawElements(drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
+        gl.glDrawElements(renderState.drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
 
         // deselect buffers
         gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -420,42 +414,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     final public void enableLighting(boolean lightingEnabled) {
         this.lightingEnabled = lightingEnabled;
-    }
-
-    /**
-     * Gets the current shader for this node.
-     *
-     * @return shader type
-     */
-    final public IShader.Type getShader() {
-        return shader;
-    }
-
-    /**
-     * Gets drawing style.
-     *
-     * @return drawing style
-     */
-    final public DrawingStyle getDrawingStyle() {
-        return drawingStyle;
-    }
-
-    /**
-     * Sets drawing style.
-     *
-     * @param drawingStyle
-     */
-    final public void setDrawingStyle(DrawingStyle drawingStyle) {
-        this.drawingStyle = drawingStyle;
-    }
-
-    /**
-     * Sets shader typ.
-     *
-     * @param shader
-     */
-    final public void setShader(IShader.Type shader) {
-        this.shader = shader;
     }
 
     /**
@@ -616,5 +574,13 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     public void useSharedTextureCoordBuffer(boolean isUsing) {
         useSharedTextureCoordBuffer = isUsing;
+    }
+
+    public RenderState getRenderState() {
+        return renderState;
+    }
+
+    public void setRenderState(RenderState renderState) {
+        this.renderState = renderState;
     }
 }
