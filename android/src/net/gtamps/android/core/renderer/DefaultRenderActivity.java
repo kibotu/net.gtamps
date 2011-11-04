@@ -1,6 +1,7 @@
 package net.gtamps.android.core.renderer;
 
 import android.app.Activity;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -9,6 +10,8 @@ import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 
 import java.util.ArrayList;
+
+import static android.opengl.GLES20.*;
 
 /**
  * @see <a href="http://developer.android.com/images/activity_lifecycle.png">Activity LifeCycle</a>
@@ -93,5 +96,45 @@ public abstract class DefaultRenderActivity extends Activity {
 
     public void setRenderContinuously(boolean isContinuously) {
         view.setRenderMode((Config.renderContinuously = isContinuously) ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    }
+
+    public int createProgram(String vertexSource, String fragmentSource) {
+        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexSource);
+        int pixelShader = loadShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+        int program = glCreateProgram();
+        if (program != 0) {
+            glAttachShader(program, vertexShader);
+//            checkGlError("glAttachShader");
+            glAttachShader(program, pixelShader);
+//            checkGlError("glAttachShader");
+            glLinkProgram(program);
+            int[] linkStatus = new int[1];
+            glGetProgramiv(program, GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] != GLES20.GL_TRUE) {
+                Logger.e(this, "Could not link program: ");
+                Logger.e(this, glGetProgramInfoLog(program));
+                glDeleteProgram(program);
+                program = 0;
+            }
+        }
+        return program;
+    }
+
+    private int loadShader(int shaderType, String source) {
+        int shader = glCreateShader(shaderType);
+        if (shader != 0) {
+            glShaderSource(shader, source);
+            glCompileShader(shader);
+            int[] compiled = new int[1];
+            glGetShaderiv(shader, GL_COMPILE_STATUS, compiled, 0);
+            if (compiled[0] == 0) {
+                Logger.e(this, "Could not compile shader " + shaderType + ":");
+                Logger.e(this, glGetShaderInfoLog(shader));
+                glDeleteShader(shader);
+                shader = 0;
+            }
+        }
+        return shader;
     }
 }

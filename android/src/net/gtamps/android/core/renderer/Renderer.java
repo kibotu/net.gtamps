@@ -1,6 +1,5 @@
 package net.gtamps.android.core.renderer;
 
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
@@ -34,47 +33,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         this.renderActivity = renderActivity;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
-
-    public int createProgram(String vertexSource, String fragmentSource) {
-        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexSource);
-        int pixelShader = loadShader(GL_FRAGMENT_SHADER, fragmentSource);
-
-        int program = glCreateProgram();
-        if (program != 0) {
-            glAttachShader(program, vertexShader);
-//            checkGlError("glAttachShader");
-            glAttachShader(program, pixelShader);
-//            checkGlError("glAttachShader");
-            glLinkProgram(program);
-            int[] linkStatus = new int[1];
-            glGetProgramiv(program, GL_LINK_STATUS, linkStatus, 0);
-            if (linkStatus[0] != GLES20.GL_TRUE) {
-                Logger.e(this, "Could not link program: ");
-                Logger.e(this, glGetProgramInfoLog(program));
-                glDeleteProgram(program);
-                program = 0;
-            }
-        }
-    return program;
-}
-
-    private int loadShader(int shaderType, String source) {
-        int shader = glCreateShader(shaderType);
-            if (shader != 0) {
-                glShaderSource(shader, source);
-                glCompileShader(shader);
-                int[] compiled = new int[1];
-                glGetShaderiv(shader, GL_COMPILE_STATUS, compiled, 0);
-                if (compiled[0] == 0) {
-                    Logger.e(this,  "Could not compile shader " + shaderType + ":");
-                    Logger.e(this,  glGetShaderInfoLog(shader));
-                    glDeleteShader(shader);
-                    shader = 0;
-                }
-            }
-        return shader;
-    }
-
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
@@ -219,6 +177,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         gl10.glEnable(GL_CULL_FACE);
 
         //Really Nice Perspective Calculations
+//        gl10.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
         gl10.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     }
 }

@@ -1,6 +1,5 @@
 package net.gtamps.android.core.renderer.graph.scene.primitives;
 
-import net.gtamps.android.core.renderer.graph.scene.DrawingStyle;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
@@ -97,7 +96,8 @@ public class Sphere extends RenderableNode {
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);
-        setDrawingStyle(DrawingStyle.GL_POINTS); // default anyway
+
+//        getRenderState().drawingStyle = RenderState.DrawingStyle.GL_POINTS; // default anyway
 //        setPointSize(3);
 //        setPointSmoothing(true);
 //        setLineWidth(1);
