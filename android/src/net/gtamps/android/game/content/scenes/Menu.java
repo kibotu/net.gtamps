@@ -1,11 +1,11 @@
 package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.renderer.BasicScene;
-import net.gtamps.android.core.renderer.graph.NullNode;
-import net.gtamps.android.core.renderer.graph.primitives.AnimatedSprite;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
-import net.gtamps.android.core.renderer.graph.primitives.TextSprite;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
+import net.gtamps.android.core.renderer.graph.scene.primitives.NullNode;
+import net.gtamps.android.core.renderer.graph.scene.primitives.AnimatedSprite;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.TextSprite;
 
 public class Menu extends BasicScene {
 

@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer.mesh.parser;
 
-import net.gtamps.android.core.renderer.graph.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.mesh.Face;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.renderer.mesh.parser.AParser.BitmapAsset;

@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer.mesh.parser;
 
-import net.gtamps.android.core.renderer.graph.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 
 /**
  * Interface for 3D object parsers

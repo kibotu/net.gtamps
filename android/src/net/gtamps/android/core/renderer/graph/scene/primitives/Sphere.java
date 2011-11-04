@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer.graph.scene.primitives;
 
-import net.gtamps.android.core.renderer.graph.DrawingStyle;
+import net.gtamps.android.core.renderer.graph.scene.DrawingStyle;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;

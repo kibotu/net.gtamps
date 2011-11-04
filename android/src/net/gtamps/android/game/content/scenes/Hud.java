@@ -2,10 +2,10 @@ package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.renderer.BasicScene;
-import net.gtamps.android.core.renderer.graph.primitives.AnimatedSprite;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
-import net.gtamps.android.core.renderer.graph.primitives.Sprite;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
+import net.gtamps.android.core.renderer.graph.scene.primitives.AnimatedSprite;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Sprite;
 import net.gtamps.shared.game.state.State;
 
 public class Hud extends BasicScene {

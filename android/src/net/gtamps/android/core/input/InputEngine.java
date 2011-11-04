@@ -3,7 +3,7 @@ package net.gtamps.android.core.input;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

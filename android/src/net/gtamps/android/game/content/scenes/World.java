@@ -2,11 +2,11 @@ package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.Registry;
-import net.gtamps.android.core.renderer.graph.IShader;
+import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
-import net.gtamps.android.core.renderer.graph.primitives.Light;
-import net.gtamps.android.core.renderer.graph.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
+import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.mesh.parser.IParser;
 import net.gtamps.android.core.renderer.mesh.parser.Parser;
 import net.gtamps.android.game.PlayerManager;

@@ -2,9 +2,9 @@ package net.gtamps.android.game.content;
 
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.primitives.Cube;
-import net.gtamps.android.core.renderer.graph.primitives.ParsedObject;
-import net.gtamps.android.core.renderer.graph.primitives.Sphere;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
+import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 

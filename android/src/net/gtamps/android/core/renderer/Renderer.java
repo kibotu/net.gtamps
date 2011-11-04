@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
@@ -20,7 +21,6 @@ import static javax.microedition.khronos.opengles.GL10.*;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
-    private static final String TAG = Renderer.class.getSimpleName();
     private DefaultRenderActivity.IRenderActivity renderActivity;
     private ProcessingState glState;
 

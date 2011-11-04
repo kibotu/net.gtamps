@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author sunside
  */
-public class ObjectWithOrientation implements ISpatialObject {
+public abstract class ObjectWithOrientation implements ISpatialObject {
 
     /**
      * Gibt an, ob das Objekt eingefroren ist
