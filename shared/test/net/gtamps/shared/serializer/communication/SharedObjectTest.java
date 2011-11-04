@@ -65,7 +65,7 @@ class WrongExtensionWrongMemberDeclaresOKType extends SharedObject {
 
 public class SharedObjectTest extends Assert {
 
-	static final String SERIALIZATION_LINE = "[[[------- serialization: ----->]]]";
+	static final String SERIALIZATION_LINE = "";
 
 	@Test
 	public void OKSelfTest() {

@@ -3,7 +3,6 @@ package net.gtamps.shared.serializer.communication;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 
@@ -35,6 +34,11 @@ public class SharedObject {
 		boolean.class, byte.class, char.class, short.class, int.class, long.class,
 		float.class, double.class,	Boolean.class, Byte.class, Character.class, Short.class,
 		Integer.class, Long.class,	Float.class, Double.class, String.class,
+		Class.class,
+		boolean[].class, byte[].class, char[].class, short[].class, int[].class, long[].class,
+		float[].class, double[].class,	Boolean[].class, Byte[].class, Character[].class, Short[].class,
+		Integer[].class, Long[].class,	Float[].class, Double[].class, String[].class,
+		
 	}; 
 
 	public static transient final String SHARED_PACKAGE_NAME;
@@ -45,7 +49,7 @@ public class SharedObject {
 	}
 	
 	 //TODO use 
-	private static final Set<Class<?>> checked = new HashSet<Class<?>>();
+	private static transient final Set<Class<?>> checked = new HashSet<Class<?>>();
 	
 	 //TODO check OTHER_INTRANSIENT_MEMBER_CLASSES for finality
 	private static void selfTest() throws IllegalArgumentException {
@@ -56,36 +60,33 @@ public class SharedObject {
 	//////
 	// INSTANCE
 	//////
+
 	
-	public SharedObject() {
+	public SharedObject()   {
 		assert isShareable() : String.format("object class is not in shared package: %s", 
 				this.getClass().getCanonicalName());
+		// use static set, don't use assertions
+		//TODO find unchecked exception to throw
 	}
 	
 	public final boolean isShareable() {
-		boolean ok =  isShareable(this, this.getClass());
+		boolean ok =  isShareable(this.getClass(), 0);
 		return ok;
 	}
 	
-//	private boolean isShareable(Class<?> runtimeClass) {
-	private boolean isShareable(Object o, Class<?> classToCheck) {
+	//TODO build message, throw exception on violation	
+	private boolean isShareable(Class<?> classToCheck, int recursionLevel) {
 		Class<? extends Object> runtimeClass = classToCheck;
-// let through allowed classes
-		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
-//			if (c.equals(runtimeClass)) {
-			if (c.isAssignableFrom(runtimeClass)) {
-				return true;
-			}
+// is it a java.lang.String? -> exception. ^^ 
+		if (String.class.equals(runtimeClass)) {
+			return true;
 		}
-// not a SharedObject?
-		if (!SharedObject.class.isAssignableFrom(runtimeClass)) { 
-			System.out.println("not a shared object: " + runtimeClass);
-			return false;
-		}
-// not in shared package?
+		boolean isAllowedClass = isAnAllowedClass(runtimeClass); 
 		String runtimeClassName = runtimeClass.getCanonicalName();
-		if (!runtimeClassName.startsWith(SHARED_PACKAGE_NAME)) {
-			System.out.println("wrong package: " + runtimeClass);
+// not a SharedObject in shared package or otherwise allowed?
+		if (!(SharedObject.class.isAssignableFrom(runtimeClass)
+				&& runtimeClassName.startsWith(SHARED_PACKAGE_NAME))
+			&& !isAllowedClass) { 
 			return false;
 		}
 // all non-transient fields shareable?
@@ -93,33 +94,24 @@ public class SharedObject {
 			if ( Modifier.isTransient(field.getModifiers() )) {
 				continue;
 			}
-			Object value = null;
 			Class<?> fieldType = field.getType();
-			try {
-				value = field.get(o);
-			} catch (NullPointerException e) {
-				// o is null and passed all tests so far = good enough
-				return true;
-			} catch (IllegalArgumentException e) {
-				throw new NoSuchElementException("shouldn't get here");
-			} catch (IllegalAccessException e) {
-				value = null;
-			}
 			if (runtimeClass.isAssignableFrom(fieldType)) {
 				continue;
 			}
-//			if (value.getClass().equals(runtimeClass)) {
-//					continue;
-//			}
-			// avoid endless recursion
-//			if (runtimeClass.isAssignableFrom(value.getClass())) {
-//				return true;
-//			}
-			if (!isShareable(value, fieldType)) {
-				System.out.println("> bad member (" + field.getName() + ") in: " + runtimeClass);
+			if (!isShareable(fieldType, recursionLevel + 1)) {
 				return false;
 			}
 		}
 		return true;
 	}
+	
+	private boolean isAnAllowedClass(Class<?> checkMe) {
+		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+			if (c.equals(checkMe)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
