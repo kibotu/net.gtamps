@@ -1,8 +1,10 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.android.core.renderer.graph.scene.DrawingStyle;
+import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.shared.IDirty;
+import net.gtamps.shared.Utils.IDirty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,27 +34,27 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines if the node needs cull-facing.
      */
-	private boolean doubleSidedEnabled = false;
+    private boolean doubleSidedEnabled = false;
 
     /**
      * Defines if the node has textures.
      */
-	private boolean texturesEnabled = false;
+    private boolean texturesEnabled = false;
 
     /**
      * Defines if the node has normals.
      */
-	private boolean normalsEnabled = false;
+    private boolean normalsEnabled = false;
 
     /**
      * Defines if the node has color materials.
      */
-	private boolean colorMaterialEnabled = false;
+    private boolean colorMaterialEnabled = false;
 
     /**
      * Defines if the node has lighting.
      */
-	private boolean lightingEnabled = false;
+    private boolean lightingEnabled = false;
 
     /**
      * Defines if alpha blending is enabled.
@@ -100,22 +102,22 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines the point size, if drawn as GL_POINTS.
      */
-	private float pointSize = 3f;
+    private float pointSize = 3f;
 
     /**
      * Defines if points are to be drawn smooth.
      */
-	private boolean pointSmoothing = true;
+    private boolean pointSmoothing = true;
 
     /**
      * Defines the line width if drawn as GL_LINES.
      */
-	private float lineWidth = 1f;
+    private float lineWidth = 1f;
 
     /**
      * Defines if lines are to be drawn smooth.
      */
-	private boolean lineSmoothing = true;
+    private boolean lineSmoothing = true;
 
     public RenderableNode(@Nullable Mesh mesh) {
         this.mesh = mesh;
@@ -160,23 +162,23 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      * Default rendering process.
      */
     protected void render(GL11 gl) {
-        if(mesh == null) return;
-        if(isDirty) onDirty(gl);
+        if (mesh == null) return;
+        if (isDirty) onDirty(gl);
 
         // shading
         gl.glShadeModel(shader.getValue());
 
         // enable color materials
-        if(colorMaterialEnabled) {
-           gl.glEnable(GL_COLOR_MATERIAL);
+        if (colorMaterialEnabled) {
+            gl.glEnable(GL_COLOR_MATERIAL);
         } else {
-           gl.glDisable(GL_COLOR_MATERIAL);
+            gl.glDisable(GL_COLOR_MATERIAL);
         }
 
         // enable vertex colors
-        if(vertexColorsEnabled) {
+        if (vertexColorsEnabled) {
             gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-            gl.glColorPointer(4, GL_FLOAT,0, 0);
+            gl.glColorPointer(4, GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL_COLOR_ARRAY);
         } else {
             gl.glColor4f(material.getEmissive().r, material.getEmissive().g, material.getEmissive().b, material.getEmissive().a);
@@ -184,9 +186,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable light
-        if(lightingEnabled) {
+        if (lightingEnabled) {
             // enable vertex normals
-            if(normalsEnabled) {
+            if (normalsEnabled) {
                 gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
                 gl.glNormalPointer(GL_FLOAT, 0, 0);
                 gl.glEnableClientState(GL_NORMAL_ARRAY);
@@ -202,11 +204,11 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (doubleSidedEnabled) {
             gl.glDisable(GL_CULL_FACE);
         } else {
-	        gl.glEnable(GL_CULL_FACE);
+            gl.glEnable(GL_CULL_FACE);
         }
 
         // enable alpha blending
-        if(alphaEnabled) {
+        if (alphaEnabled) {
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_ALPHA_TEST);
         } else {
@@ -215,17 +217,17 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable texture
-        if(texturesEnabled) {
+        if (texturesEnabled) {
             gl.glEnable(GL_TEXTURE_2D);
 
             // TODO find way to use active texture instead of bind texture
-		    // gl.glActiveTexture(texture.getTextureId());
+            // gl.glActiveTexture(texture.getTextureId());
 //            Texture texture = textureManager.get(0);
 //            int glId = Registry.getTextureLibrary().getTextureResourceIds().get(texture.getTextureId());
             gl.glBindTexture(GL_TEXTURE_2D, textureId);
 
             // enable mip maps
-            if(hasMipMap) {
+            if (hasMipMap) {
                 gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
             } else {
                 gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -249,44 +251,43 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // drawing point setings
-        if(drawingStyle.equals(DrawingStyle.GL_POINTS)) {
-			if (pointSmoothing) {
+        if (drawingStyle.equals(DrawingStyle.GL_POINTS)) {
+            if (pointSmoothing) {
                 gl.glEnable(GL_POINT_SMOOTH);
+            } else {
+                gl.glDisable(GL_POINT_SMOOTH);
             }
-			else {
-				gl.glDisable(GL_POINT_SMOOTH);
-            }
-			gl.glPointSize(pointSize);
-		}
+            gl.glPointSize(pointSize);
+        }
 
         // drawing line settings
-        if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
-			if(lineSmoothing) {
-				gl.glEnable(GL_LINE_SMOOTH);
-			}	else {
-				gl.glDisable(GL_LINE_SMOOTH);
-			}
-			gl.glLineWidth(lineWidth);
-		}
-		
+        if (drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
+            if (lineSmoothing) {
+                gl.glEnable(GL_LINE_SMOOTH);
+            } else {
+                gl.glDisable(GL_LINE_SMOOTH);
+            }
+            gl.glLineWidth(lineWidth);
+        }
+
         // bind vertices
         gl.glEnableClientState(GL_VERTEX_ARRAY);
         gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
         gl.glVertexPointer(3, GL_FLOAT, 0, 0);
 
         // actually draw the mesh by index buffer
-		gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
-		gl.glDrawElements(drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
+        gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
+        gl.glDrawElements(drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
 
         // deselect buffers
         gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		// Vertex Array-State deaktivieren
-		gl.glDisableClientState(GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		gl.glDisableClientState(GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GL_COLOR_ARRAY);
+        // Vertex Array-State deaktivieren
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL_COLOR_ARRAY);
     }
 
     /**
@@ -295,7 +296,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected abstract void renderInternal(@NotNull GL10 gl);
 
     final public void onDirty(GL10 gl) {
-        if(mesh == null) return;
+        if (mesh == null) return;
         mesh.setup(gl);
         clearDirtyFlag();
     }
@@ -535,7 +536,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      *
      * @return <code>true</code> if enabled
      */
-    public boolean hasMipMap(){
+    public boolean hasMipMap() {
         return hasMipMap;
     }
 

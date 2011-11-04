@@ -7,23 +7,23 @@ import java.util.Scanner;
 
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageDeserializationException;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableDeserializationException;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.AuthentificationData;
-import net.gtamps.shared.communication.data.ISendableData;
-import net.gtamps.shared.communication.data.PlayerData;
-import net.gtamps.shared.communication.data.RevisionData;
-import net.gtamps.shared.communication.data.StringData;
-import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.MessageDeserializationException;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableDeserializationException;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.AuthentificationData;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
+import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.StringData;
+import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -129,6 +129,7 @@ public class ManualTypeSerializer implements ISerializer {
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
     	for (final GameObject e : udata.gameObjects) {
     		//TODO other cases
+    		addToken(bld, ">>>");
     		if (e instanceof Entity) {
 	    		addToken(bld, ENTITY);
 	    		addToken(bld, Integer.toString(e.getUid()));
@@ -136,8 +137,7 @@ public class ManualTypeSerializer implements ISerializer {
 	    		for (final IProperty<?> p : e.getAllProperties()) {
 	    			serializeProperty(bld, p);
 	    		}
-    		}
-    		if (e instanceof GameEvent) {
+    		} else if (e instanceof GameEvent) {
     			final GameEvent event = (GameEvent) e;
     			addToken(bld, EVENT);
     			addToken(bld, event.getType().name());
@@ -147,7 +147,13 @@ public class ManualTypeSerializer implements ISerializer {
     			addToken(bld, EVENT_TARGET);
     			addToken(bld, Integer.toString(event.getTargetUid()));
     			//TODO
+    		} else {
+    			addToken(bld, "!!!!!!!!UNKNOWN GAMEOBJECT!!!!");
+    			addToken(bld, e.getName());
+    			addToken(bld, Integer.toString(e.getUid()));
+    			addToken(bld, e.toString());
     		}
+
     	}
     }
     

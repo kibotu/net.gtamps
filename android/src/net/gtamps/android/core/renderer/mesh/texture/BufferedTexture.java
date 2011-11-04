@@ -1,6 +1,6 @@
 package net.gtamps.android.core.renderer.mesh.texture;
 
-import net.gtamps.shared.state.State;
+import net.gtamps.shared.game.state.State;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class BufferedTexture {
     public BufferedTexture(int textureId, int floatBufferId, @NotNull SpriteTetxure[] spriteTetxures, @NotNull HashMap<State.Type, Integer[]> animations) {
         this.textureId = textureId;
         this.floatBufferId = floatBufferId;
-        this.animations = convertIndicesToAnimations(spriteTetxures,animations);
+        this.animations = convertIndicesToAnimations(spriteTetxures, animations);
     }
 
     /**
@@ -41,13 +41,13 @@ public class BufferedTexture {
 
         HashMap<State.Type, SpriteTetxure[]> anims = new HashMap<State.Type, SpriteTetxure[]>();
 
-        for(HashMap.Entry<State.Type, Integer[]> entry: indexedAnims.entrySet()){
+        for (HashMap.Entry<State.Type, Integer[]> entry : indexedAnims.entrySet()) {
             Integer[] temp = entry.getValue();
             SpriteTetxure[] textures = new SpriteTetxure[temp.length];
-            for(int i = 0; i < temp.length; i++) {
+            for (int i = 0; i < temp.length; i++) {
                 textures[i] = spriteTetxures[temp[i]];
             }
-            anims.put(entry.getKey(),textures);
+            anims.put(entry.getKey(), textures);
         }
 
         indexedAnims.clear();

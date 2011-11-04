@@ -27,7 +27,7 @@ public class EventManager extends GameActor {
 		
 		// all received events will be communicated via getUpdate()
 		addEventListener(EventType.GAME_EVENT, this);
-		removeEventListener(EventType.SESSION_UPDATE, this);
+		removeEventListener(EventType.SESSION_EVENT, this);
 		removeEventListener(EventType.ACTION_ACCELERATE, this);
 		removeEventListener(EventType.ACTION_DECELERATE, this);
 		removeEventListener(EventType.ACTION_TURNLEFT, this);
