@@ -70,33 +70,30 @@ public class SharedObject {
 	}
 	
 	public final boolean isShareable() {
-		boolean ok =  isShareable(this.getClass(), 0);
-		return ok;
+		return isShareable(this.getClass(), 0);
 	}
 	
 	//TODO build message, throw exception on violation	
-	private boolean isShareable(Class<?> classToCheck, int recursionLevel) {
-		Class<? extends Object> runtimeClass = classToCheck;
+	private boolean isShareable(Class<? extends Object> classToCheck, int recursionLevel) {
 // is it a java.lang.String? -> no harm, let it slide. ^^ 
-		if (java.lang.String.class.equals(runtimeClass)) {
+		if (java.lang.String.class.equals(classToCheck)) {
 			return true;
 		}
-		boolean isAllowedClass = isAnAllowedClass(runtimeClass); 
-		String runtimeClassName = runtimeClass.getCanonicalName();
+		String className = classToCheck.getCanonicalName();
 // not a SharedObject in shared package or otherwise allowed?
-		if (!(SharedObject.class.isAssignableFrom(runtimeClass)
-				&& runtimeClassName.startsWith(SHARED_PACKAGE_NAME))
-			&& !isAllowedClass) { 
+		if (!(SharedObject.class.isAssignableFrom(classToCheck)
+				&& className.startsWith(SHARED_PACKAGE_NAME))
+			&& !isAllowedClass(classToCheck)) { 
 			return false;
 		}
 // all non-transient fields shareable?
-		for (Field field : runtimeClass.getDeclaredFields() ) {
+		for (Field field : classToCheck.getDeclaredFields() ) {
 			if ( Modifier.isTransient(field.getModifiers() )) {
 				continue;
 			}
 			Class<?> fieldType = field.getType();
-			if (runtimeClass.isAssignableFrom(fieldType)) {
-				continue;
+			if (classToCheck.isAssignableFrom(fieldType)) {
+				continue;	// prevent mad recursion
 			}
 			if (!isShareable(fieldType, recursionLevel + 1)) {
 				return false;
@@ -105,7 +102,7 @@ public class SharedObject {
 		return true;
 	}
 	
-	private boolean isAnAllowedClass(Class<?> checkMe) {
+	private boolean isAllowedClass(Class<?> checkMe) {
 		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
 			if (c.equals(checkMe)) {
 				return true;
