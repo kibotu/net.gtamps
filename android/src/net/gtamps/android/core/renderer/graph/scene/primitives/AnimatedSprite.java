@@ -1,4 +1,4 @@
-package net.gtamps.android.core.renderer.graph.primitives;
+package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.mesh.texture.SpriteTetxure;
 import net.gtamps.shared.game.state.State;

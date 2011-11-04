@@ -1,4 +1,4 @@
-package net.gtamps.android.core.renderer.graph.primitives;
+package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import android.opengl.GLU;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
