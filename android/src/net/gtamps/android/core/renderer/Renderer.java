@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer;
 
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
@@ -17,7 +18,9 @@ import javax.microedition.khronos.opengles.GL11;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static javax.microedition.khronos.opengles.GL10.*;
+import static android.opengl.GLES20.*;
+import static javax.microedition.khronos.opengles.GL10.GL_PERSPECTIVE_CORRECTION_HINT;
+import static javax.microedition.khronos.opengles.GL10.GL_SMOOTH;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
@@ -32,8 +35,56 @@ public class Renderer implements GLSurfaceView.Renderer {
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
 
+    public int createProgram(String vertexSource, String fragmentSource) {
+        int vertexShader = loadShader(GL_VERTEX_SHADER, vertexSource);
+        int pixelShader = loadShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+        int program = glCreateProgram();
+        if (program != 0) {
+            glAttachShader(program, vertexShader);
+//            checkGlError("glAttachShader");
+            glAttachShader(program, pixelShader);
+//            checkGlError("glAttachShader");
+            glLinkProgram(program);
+            int[] linkStatus = new int[1];
+            glGetProgramiv(program, GL_LINK_STATUS, linkStatus, 0);
+            if (linkStatus[0] != GLES20.GL_TRUE) {
+                Logger.e(this, "Could not link program: ");
+                Logger.e(this, glGetProgramInfoLog(program));
+                glDeleteProgram(program);
+                program = 0;
+            }
+        }
+    return program;
+}
+
+    private int loadShader(int shaderType, String source) {
+        int shader = glCreateShader(shaderType);
+            if (shader != 0) {
+                glShaderSource(shader, source);
+                glCompileShader(shader);
+                int[] compiled = new int[1];
+                glGetShaderiv(shader, GL_COMPILE_STATUS, compiled, 0);
+                if (compiled[0] == 0) {
+                    Logger.e(this,  "Could not compile shader " + shaderType + ":");
+                    Logger.e(this,  glGetShaderInfoLog(shader));
+                    glDeleteShader(shader);
+                    shader = 0;
+                }
+            }
+        return shader;
+    }
+
+
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+
+//        GLES11 gles =  (GLES11) gl10;
+//        if(gles == null) {
+//            throw new ClassCastException("no opengles11");
+//        }
+
+
         Logger.I(this, "Surface created.");
         Registry.setTextureLibrary(new TextureLibrary(gl10));
 
