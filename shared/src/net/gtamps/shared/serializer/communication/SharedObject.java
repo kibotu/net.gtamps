@@ -20,7 +20,7 @@ import java.util.Set;
  * </ul>
  * 
  * 
- * @author til
+ * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
  */
 public class SharedObject {
@@ -77,8 +77,8 @@ public class SharedObject {
 	//TODO build message, throw exception on violation	
 	private boolean isShareable(Class<?> classToCheck, int recursionLevel) {
 		Class<? extends Object> runtimeClass = classToCheck;
-// is it a java.lang.String? -> exception. ^^ 
-		if (String.class.equals(runtimeClass)) {
+// is it a java.lang.String? -> no harm, let it slide. ^^ 
+		if (java.lang.String.class.equals(runtimeClass)) {
 			return true;
 		}
 		boolean isAllowedClass = isAnAllowedClass(runtimeClass); 
