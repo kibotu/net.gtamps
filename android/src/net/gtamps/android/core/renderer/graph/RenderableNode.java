@@ -1,5 +1,7 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.android.core.renderer.graph.scene.DrawingStyle;
+import net.gtamps.android.core.renderer.graph.scene.IShader;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.IDirty;

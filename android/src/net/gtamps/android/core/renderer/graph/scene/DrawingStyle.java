@@ -1,4 +1,4 @@
-package net.gtamps.android.core.renderer.graph;
+package net.gtamps.android.core.renderer.graph.scene;
 
 import javax.microedition.khronos.opengles.GL11;
 

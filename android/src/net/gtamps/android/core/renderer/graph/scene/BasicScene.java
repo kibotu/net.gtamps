@@ -1,8 +1,9 @@
-package net.gtamps.android.core.renderer;
+package net.gtamps.android.core.renderer.graph.scene;
 
-import net.gtamps.android.core.renderer.graph.SceneGraph;
+import net.gtamps.android.core.renderer.Registry;
+import net.gtamps.android.core.renderer.graph.scene.SceneGraph;
 import net.gtamps.android.core.renderer.graph.SceneNode;
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;

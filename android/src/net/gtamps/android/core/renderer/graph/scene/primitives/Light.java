@@ -1,4 +1,4 @@
-package net.gtamps.android.core.renderer.graph.primitives;
+package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.graph.ProcessingState;

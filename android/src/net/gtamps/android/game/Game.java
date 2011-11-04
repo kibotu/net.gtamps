@@ -2,7 +2,7 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.renderer.BasicScene;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.DefaultRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.game.content.EntityView;

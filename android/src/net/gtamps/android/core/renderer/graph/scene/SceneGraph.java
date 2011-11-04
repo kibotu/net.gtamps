@@ -1,6 +1,11 @@
-package net.gtamps.android.core.renderer.graph;
+package net.gtamps.android.core.renderer.graph.scene;
 
-import net.gtamps.android.core.renderer.graph.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.IProcessable;
+import net.gtamps.android.core.renderer.graph.IUpdatableLogic;
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.NullNode;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

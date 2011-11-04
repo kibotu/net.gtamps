@@ -1,6 +1,6 @@
 package net.gtamps.android.game.content.scenes;
 
-import net.gtamps.android.core.renderer.BasicScene;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.game.content.EntityView;
 import org.jetbrains.annotations.NotNull;

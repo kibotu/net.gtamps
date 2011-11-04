@@ -2,7 +2,7 @@ package net.gtamps.android.core.renderer.mesh.parser;
 
 import android.graphics.Bitmap;
 import net.gtamps.android.core.renderer.Registry;
-import net.gtamps.android.core.renderer.graph.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Utils.Logger;

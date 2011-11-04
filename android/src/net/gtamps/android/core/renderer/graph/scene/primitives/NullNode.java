@@ -1,5 +1,7 @@
-package net.gtamps.android.core.renderer.graph;
+package net.gtamps.android.core.renderer.graph.scene.primitives;
 
+import net.gtamps.android.core.renderer.graph.ProcessingState;
+import net.gtamps.android.core.renderer.graph.SceneNode;
 import org.jetbrains.annotations.NotNull;
 
 /**

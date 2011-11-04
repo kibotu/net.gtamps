@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.utils.AndroidLogger;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
