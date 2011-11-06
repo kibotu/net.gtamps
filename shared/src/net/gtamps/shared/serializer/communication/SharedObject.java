@@ -30,14 +30,14 @@ public class SharedObject {
 	//////
 	
 	// add only final classes
-	public static transient final Class<?>[] OTHER_INTRANSIENT_MEMBER_CLASSES = new Class<?>[] {
+	public static transient final Class<?>[] OTHER_INTRANSIENT_MEMBER_CLASSES = {
 		boolean.class, byte.class, char.class, short.class, int.class, long.class,
-		float.class, double.class,	Boolean.class, Byte.class, Character.class, Short.class,
-		Integer.class, Long.class,	Float.class, Double.class, String.class,
+		float.class, double.class, Boolean.class, Byte.class, Character.class, Short.class,
+		Integer.class, Long.class, Float.class, Double.class, String.class,
 		Class.class,
 		boolean[].class, byte[].class, char[].class, short[].class, int[].class, long[].class,
-		float[].class, double[].class,	Boolean[].class, Byte[].class, Character[].class, Short[].class,
-		Integer[].class, Long[].class,	Float[].class, Double[].class, String[].class,
+		float[].class, double[].class, Boolean[].class, Byte[].class, Character[].class, Short[].class,
+		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
 		
 	}; 
 
@@ -92,7 +92,7 @@ public class SharedObject {
 				continue;
 			}
 			Class<?> fieldType = field.getType();
-			if (classToCheck.isAssignableFrom(fieldType)) {
+			if (SharedObject.class.isAssignableFrom(fieldType)) {
 				continue;	// prevent mad recursion
 			}
 			if (!isShareable(fieldType, recursionLevel + 1)) {

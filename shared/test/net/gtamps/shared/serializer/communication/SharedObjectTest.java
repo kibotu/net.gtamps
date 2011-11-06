@@ -63,6 +63,15 @@ class WrongExtensionWrongMemberDeclaresOKType extends SharedObject {
 	SharedObject subclassField = new WrongExtensionWrongMemberButIsNull();
 }
 
+class OKMutualReferenceA extends SharedObject {
+	OKMutualReferenceB b = new OKMutualReferenceB(); 
+}
+
+class OKMutualReferenceB extends SharedObject {
+	OKMutualReferenceA a; 
+}
+
+
 public class SharedObjectTest extends Assert {
 
 	static final String SERIALIZATION_LINE = "";
@@ -115,6 +124,15 @@ public class SharedObjectTest extends Assert {
 	public void OKExtensionAnnotationTest() {
 		System.out.println("\n\nNEW TEST\n======== OKExtensionAnnotation");
 		OKExtensionAnnotation o = new OKExtensionAnnotation();
+		System.out.println(SERIALIZATION_LINE);
+		assert o.isShareable();
+		System.out.println("\n\n");
+	}
+	
+	@Test
+	public void OKMutualReferenceTest() {
+		System.out.println("\n\nNEW TEST\n======== OKExtensionAnnotation");
+		OKMutualReferenceA o = new OKMutualReferenceA();
 		System.out.println(SERIALIZATION_LINE);
 		assert o.isShareable();
 		System.out.println("\n\n");
