@@ -49,6 +49,7 @@ public class SharedObject {
 	}
 	
 	 //TODO use 
+//	private static transient final Map<Class<?>, Boolean> checked = new HashMap<Class<?>, Boolean>();
 	private static transient final Set<Class<?>> checked = new HashSet<Class<?>>();
 	
 	 //TODO check OTHER_INTRANSIENT_MEMBER_CLASSES for finality
@@ -63,42 +64,56 @@ public class SharedObject {
 
 	
 	public SharedObject()   {
-		assert isShareable() : String.format("object class is not in shared package: %s", 
-				this.getClass().getCanonicalName());
-		// use static set, don't use assertions
-		//TODO find unchecked exception to throw
+		try {
+			testShareable(this.getClass());
+		} catch (InstantiationException e) {
+			throw new ClassCastException(e.getLocalizedMessage());
+		}
 	}
 	
 	public final boolean isShareable() {
-		return isShareable(this.getClass(), 0);
-	}
-	
-	//TODO build message, throw exception on violation	
-	private boolean isShareable(Class<? extends Object> classToCheck, int recursionLevel) {
-// is it a java.lang.String? -> no harm, let it slide. ^^ 
-		if (java.lang.String.class.equals(classToCheck)) {
-			return true;
-		}
-		String className = classToCheck.getCanonicalName();
-// not a SharedObject in shared package or otherwise allowed?
-		if (!(SharedObject.class.isAssignableFrom(classToCheck)
-				&& className.startsWith(SHARED_PACKAGE_NAME))
-			&& !isAllowedClass(classToCheck)) { 
+		try {
+			testShareable(this.getClass());
+		} catch (InstantiationException e) {
 			return false;
 		}
-// all non-transient fields shareable?
-		for (Field field : classToCheck.getDeclaredFields() ) {
-			if ( Modifier.isTransient(field.getModifiers() )) {
-				continue;
+		return true;
+	}
+	
+	private boolean testShareable(Class<? extends Object> classToCheck) throws InstantiationException {
+		{
+			if (checked.contains(classToCheck)) {
+				return true;
 			}
-			Class<?> fieldType = field.getType();
-			if (SharedObject.class.isAssignableFrom(fieldType)) {
-				continue;	// prevent mad recursion
-			}
-			if (!isShareable(fieldType, recursionLevel + 1)) {
-				return false;
+			if (java.lang.String.class.equals(classToCheck)) {
+				return true;				// no harm, let it slide. ^^
 			}
 		}
+		String className = classToCheck.getCanonicalName();
+		String simpleClassName = classToCheck.getSimpleName();
+		{
+			if (!(SharedObject.class.isAssignableFrom(classToCheck)
+					&& className.startsWith(SHARED_PACKAGE_NAME))
+				&& !isAllowedClass(classToCheck)) {
+				throw new InstantiationException(simpleClassName + " is not a shared class");
+			}
+			for (Field field : classToCheck.getDeclaredFields() ) {
+				if ( Modifier.isTransient(field.getModifiers() )) {
+					continue;
+				}
+				Class<?> fieldType = field.getType();
+				if (SharedObject.class.isAssignableFrom(fieldType)) {
+					continue;	// prevent mad recursion (SharedObjects take care of themselves)
+				}
+				try {
+					testShareable(fieldType);
+				} catch (InstantiationException ie) {
+					String message = simpleClassName + "." + field.getName() + ":\n" + ie.getMessage();
+					throw new InstantiationException(message);
+				}
+			}
+		}
+		checked.add(classToCheck);
 		return true;
 	}
 	
