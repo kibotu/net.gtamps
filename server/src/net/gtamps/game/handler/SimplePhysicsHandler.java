@@ -1,11 +1,9 @@
 package net.gtamps.game.handler;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.shared.game.Propertay;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -19,36 +17,31 @@ public class SimplePhysicsHandler extends Handler {
 	@SuppressWarnings("unused")
 	private static final LogType TAG = LogType.PHYSICS;
 	private static final EventType[] up = { EventType.ENTITY_COLLIDE, EventType.ENTITY_SENSE, EventType.ENTITY_BULLET_HIT };
-	private static final EventType[] down = { EventType.ACTION_EVENT, EventType.SESSION_UPDATE,
+	private static final EventType[] down = { EventType.SESSION_UPDATE,
 			EventType.ENTITY_DESTROYED };
 
 	protected Entity parent;
 	protected Body body;
 	protected World world;
-	// TODO
-	protected ConcurrentLinkedQueue<GameEvent> actionQueue = new ConcurrentLinkedQueue<GameEvent>();
+
 	protected PhysicalProperties physicalProperties;
 	protected float velocityForce;
 	protected float steeringForce;
 	protected float steeringRadius;
 	protected float slidyness;
 	
-	protected final Propertay<Integer> speedxProperty;
-	protected final Propertay<Integer> speedyProperty;
+	protected final IProperty<Integer> speedxProperty;
+	protected final IProperty<Integer> speedyProperty;
 
 	public SimplePhysicsHandler(final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
 		super(Handler.Type.PHYSICS, parent);
 		this.parent = parent;
 		body = physicalRepresentation;
 		world = body.getWorld();
-		this.physicalProperties = physicalProperties;
+//		this.physicalProperties = physicalProperties;
 		setSendsUp(up);
 		setReceivesDown(down);
 		connectUpwardsActor(parent);
-		velocityForce = physicalProperties.VELOCITY_FORCE;
-		steeringForce = physicalProperties.STEERING_FORCE;
-		steeringRadius = physicalProperties.STEERING_RADIUS;
-		slidyness = physicalProperties.SLIDYNESS;
 
 		speedxProperty = parent.useProperty("speedx", 0);
 		speedyProperty = parent.useProperty("speedy", 0);
@@ -58,19 +51,13 @@ public class SimplePhysicsHandler extends Handler {
 	public void receiveEvent(final GameEvent event) {
 		final EventType type = event.getType();
 		if (type.isType(EventType.ACTION_EVENT)) {
-			actionQueue.add(event);
+			// nothing
 		} else if (type.isType(EventType.SESSION_UPDATE)) {
 			update();
 		} else if (type.isType(EventType.ENTITY_DESTROYED)) {
 			// FIXME handle deactivation of action events differently
 			// there's supposed to be a driver handler or something anyway
 			parent.removeEventListener(EventType.ACTION_EVENT, this);
-		}
-	}
-
-	public void addAction(final GameEvent event) {
-		if (event.getType().isType(EventType.ACTION_EVENT)) {
-			actionQueue.add(event);
 		}
 	}
 
@@ -97,6 +84,13 @@ public class SimplePhysicsHandler extends Handler {
 		speedxProperty.set(PhysicsFactory.lengthToWorld(body.getLinearVelocity().x));
 		speedyProperty.set(PhysicsFactory.lengthToWorld(body.getLinearVelocity().y));
 	}
-
+	
+	Body getBody() {
+		return body;
+	}
+	
+	World getWorld() {
+		return world;
+	}
 
 }

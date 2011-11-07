@@ -7,22 +7,23 @@ import java.util.Scanner;
 
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.ISerializer;
-import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageDeserializationException;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableDeserializationException;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.AuthentificationData;
-import net.gtamps.shared.communication.data.ISendableData;
-import net.gtamps.shared.communication.data.PlayerData;
-import net.gtamps.shared.communication.data.RevisionData;
-import net.gtamps.shared.communication.data.StringData;
-import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.serializer.communication.AbstractSharedSerializer;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.MessageDeserializationException;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableDeserializationException;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.AuthentificationData;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
+import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.StringData;
+import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
  */
-public class ManualTypeSerializer implements ISerializer {
+public class ManualTypeSerializer extends AbstractSharedSerializer {
 	private static final LogType TAG = LogType.SERVER;
 	
 	public static String DELIMITER = " ";
@@ -65,7 +66,7 @@ public class ManualTypeSerializer implements ISerializer {
 	public static String INTEGER = "INT";
 
     @Override
-    public byte[] serializeMessage(@NotNull final Message message) {
+    public byte[] serializeMessageOverride(@NotNull final Message message) {
     	Logger.getInstance().log(TAG, "serializing message: " + message);
     	final StringBuilder bld = new StringBuilder();
     	addToken(bld, MESSAGE);
@@ -128,15 +129,15 @@ public class ManualTypeSerializer implements ISerializer {
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
     	for (final GameObject e : udata.gameObjects) {
     		//TODO other cases
+    		addToken(bld, ">>>");
     		if (e instanceof Entity) {
 	    		addToken(bld, ENTITY);
 	    		addToken(bld, Integer.toString(e.getUid()));
 	    		addToken(bld, e.getName());
-	    		for (final Propertay<?> p : e.getAllProperties()) {
+	    		for (final IProperty<?> p : e.getAllProperties()) {
 	    			serializeProperty(bld, p);
 	    		}
-    		}
-    		if (e instanceof GameEvent) {
+    		} else if (e instanceof GameEvent) {
     			final GameEvent event = (GameEvent) e;
     			addToken(bld, EVENT);
     			addToken(bld, event.getType().name());
@@ -146,11 +147,17 @@ public class ManualTypeSerializer implements ISerializer {
     			addToken(bld, EVENT_TARGET);
     			addToken(bld, Integer.toString(event.getTargetUid()));
     			//TODO
+    		} else {
+    			addToken(bld, "!!!!!!!!UNKNOWN GAMEOBJECT!!!!");
+    			addToken(bld, e.getName());
+    			addToken(bld, Integer.toString(e.getUid()));
+    			addToken(bld, e.toString());
     		}
+
     	}
     }
     
-    private void serializeProperty(final StringBuilder bld, final Propertay<?> p) {
+    private void serializeProperty(final StringBuilder bld, final IProperty<?> p) {
 //    	if (p instanceof IntProperty) {
 //    		final IntProperty ip = (IntProperty)p;
 //    		addToken(bld, PROPERTY);
@@ -207,13 +214,13 @@ public class ManualTypeSerializer implements ISerializer {
 		    	final String typeString = scanner.next();
 		    	type = SendableType.valueOf(typeString);
 		    	switch(type) {
-			    	case ACCELERATE:
-			    	case DECELERATE:
-			    	case ENTEREXIT:
-			    	case HANDBRAKE:
-			    	case LEFT:
-			    	case RIGHT:
-			    	case SHOOT:
+			    	case ACTION_ACCELERATE:
+			    	case ACTION_DECELERATE:
+			    	case ACTION_ENTEREXIT:
+			    	case ACTION_HANDBRAKE:
+			    	case ACTION_LEFT:
+			    	case ACTION_RIGHT:
+			    	case ACTION_SHOOT:
 			    		break;
 			    	case REGISTER:
 			    	case LOGIN:

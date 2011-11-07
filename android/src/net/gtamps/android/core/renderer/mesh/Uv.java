@@ -1,27 +1,27 @@
 package net.gtamps.android.core.renderer.mesh;
 
 /**
- * Simple VO used for texture positioning 
+ * Simple VO used for texture positioning
  */
 public class Uv {
 
-	public float u;
-	public float v;
-	
-	public Uv()	{
-		u = 0;
-		v = 0;
-	}
-	
-	public Uv(float u, float v)	{
-		this.u = u;
-		this.v = v;
-	}
+    public float u;
+    public float v;
+
+    public Uv() {
+        u = 0;
+        v = 0;
+    }
+
+    public Uv(float u, float v) {
+        this.u = u;
+        this.v = v;
+    }
 
     @Override
-	public Uv clone() {
-		return new Uv(u, v);
-	}
+    public Uv clone() {
+        return new Uv(u, v);
+    }
 
     @Override
     public String toString() {

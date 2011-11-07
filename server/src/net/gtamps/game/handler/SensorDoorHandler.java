@@ -1,7 +1,5 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.game.property.PositionProperty;
-import net.gtamps.game.property.Property;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -45,27 +43,27 @@ import net.gtamps.shared.game.player.Player;
  */
 public class SensorDoorHandler extends SensorHandler {
 
-	public SensorDoorHandler(Entity parent) {
+	public SensorDoorHandler(final Entity parent) {
 		super(EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
-		EventType[] receives = { EventType.ENTITY_SENSE_DOOR,
+		final EventType[] receives = { EventType.ENTITY_SENSE_DOOR,
 				EventType.ACTION_ENTEREXIT };
-		this.setReceivesDown(receives);
-		this.connectUpwardsActor(parent);
+		setReceivesDown(receives);
+		connectUpwardsActor(parent);
 	}
 
 	@Override
-	public void act(GameEvent event) {
+	public void act(final GameEvent event) {
 		// Logger.i().log(TAG, getParent() + " looking for things to enter");
-		Player player = (Player) event.getSource();
+		final Player player = (Player) event.getSource();
 		float minDistance = Float.POSITIVE_INFINITY;
 		Entity closest = null;
-		for (Entity e : sensed) {
+		for (final Entity e : sensed) {
 			if (e.getHandler(Handler.Type.DRIVER) == null) {
 				continue;
 			}
-			float dx = parent.x.value() - e.x.value();
-			float dy = parent.y.value() - e.y.value();
-			float dist = dx * dx + dy * dy;
+			final float dx = parent.x.value() - e.x.value();
+			final float dy = parent.y.value() - e.y.value();
+			final float dist = dx * dx + dy * dy;
 			if (dist < minDistance) {
 				minDistance = dist;
 				closest = e;
@@ -73,7 +71,7 @@ public class SensorDoorHandler extends SensorHandler {
 		}
 		if (closest != null) {
 			// Logger.i().log(TAG, getParent() + " trying to enter " + closest);
-			DriverHandler driver = (DriverHandler) closest
+			final DriverHandler driver = (DriverHandler) closest
 					.getHandler(Handler.Type.DRIVER);
 			if (driver != null) {
 				driver.enter(player);

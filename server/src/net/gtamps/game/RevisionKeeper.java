@@ -10,9 +10,13 @@ package net.gtamps.game;
  * All revision sequences start with the value of {@link #START_REVISION}.
  * </p>
  *
- * @author jan, tom, til
+ *@deprecated	revisions are now linked to gameTime, which is centrally
+ *				kept by a {@link TimeKeeper timeKeeper}
  *
+ * @author jan, tom, til
+ *@see TimeKeeper
  */
+@Deprecated
 public class RevisionKeeper {
 	/**
 	 *  The current revision right after initialization of a new
@@ -31,7 +35,7 @@ public class RevisionKeeper {
 	 * 					which is basically a key or password to some
 	 * 					of the revisionKeeper's methods.
 	 */
-	public RevisionKeeper(Object master) {
+	public RevisionKeeper(final Object master) {
 		if (master == null) {
 			throw new IllegalArgumentException("'master' must not be null");
 		}
@@ -51,7 +55,7 @@ public class RevisionKeeper {
 	 * {@link #updateRevision(Object)}, the value returned by this
 	 * method will become the current revision.
 	 * 
-	 * @return 	the number that will be returned as 
+	 * @return 	the number that will be returned as
 	 * 			{@link RevisionKeeper#getCurrentRevision()} after the next
 	 * 			call to {@link updateRevision(Object)}
 	 */
@@ -74,15 +78,15 @@ public class RevisionKeeper {
 	
 	/**
 	 * Update the {@link #getCurrentRevision() current revision} to a
-	 * {@link #getNextRevision() new value}, if {@link #updateIsRequired() necessary}. 
+	 * {@link #getNextRevision() new value}, if {@link #updateIsRequired() necessary}.
 	 * 
-	 * @param master	the object that was used to 
+	 * @param master	the object that was used to
 	 * 					{@link #RevisionKeeper(Object) initialize} this
 	 * 					RevisionKeeper
 	 * @return	the revision number that is now {@link #getCurrentRevision() current}
 	 * @throws IllegalArgumentException if <code>master</code> is not the correct object
 	 */
-	public long updateRevision(Object master) throws IllegalArgumentException {
+	public long updateRevision(final Object master) throws IllegalArgumentException {
 		if (!master.equals(this.master)) {
 			throw new IllegalArgumentException("this is not my master: " + master);
 		}

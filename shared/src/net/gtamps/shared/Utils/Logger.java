@@ -19,7 +19,7 @@ final public class Logger {
     private static final String LINE_BREAKS = "\n\n\n\n\n";
 
     public enum Level {
-        DEBUG, VERBOSE, INFO, WARN, ERROR, NO_LOGGING
+        DEBUG_LOG_GL_CALLS, DEBUG_CHECK_GL_ERROR, DEBUG, VERBOSE, INFO, WARN, ERROR,  NO_LOGGING,
     }
 
     /**
@@ -142,12 +142,22 @@ final public class Logger {
     }
 
     public static void printException(@NotNull String id, @NotNull Exception e) {
+        printStackTrace(id, e.getStackTrace());
+        Logger.e(id, e.getMessage());
+        if(e.getCause() != null && e.getCause().getStackTrace() != null) {
+            Logger.e(id, "-------------------------------------------------------------------------------");
+            printStackTrace(id, e.getCause().getStackTrace());
+            Logger.e(id, e.getCause().getMessage());
+        }
+    }
+
+    public static void printStackTrace(@NotNull String id, @NotNull StackTraceElement[] stackTrace) {
         StringBuilder error = new StringBuilder();
-        for(StackTraceElement stackTraceElement: e.getStackTrace()) {
+        for(StackTraceElement stackTraceElement: stackTrace) {
+//            error.append(stackTraceElement.toString().substring(Math.max(0,stackTraceElement.toString().length()-80),stackTraceElement.toString().length()) + "\n");
             error.append(stackTraceElement + "\n");
         }
         Logger.e(id, error.toString());
-        Logger.e(id, e.getMessage());
     }
 
     public static void printException(@NotNull Object id, Exception e) {

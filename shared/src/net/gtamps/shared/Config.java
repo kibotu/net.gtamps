@@ -7,7 +7,7 @@ final public class Config {
     /**
      * DEBUG
      */
-    public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
+    public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG_CHECK_GL_ERROR;
 
     /**
      * RENDERER
@@ -16,6 +16,13 @@ final public class Config {
     public static boolean ENABLE_FRAME_LIMITER = true;
     public static final long FPS = 1000/30;
     public static final boolean DISPLAY_FRAME_RATE = false;
+    public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE =  0.3f;
+
+    /**
+     * FONT
+     */
+    public static final float DEFAULT_LETTER_SPACING = 0.01f;
+    public static final float DEFAULT_LETTER_SIZE = 1f;
 
     /**
      * PARSER
@@ -38,7 +45,7 @@ final public class Config {
     public static final String JAN_IP_HOME = "192.168.2.101";
 	public static final String LOCALHOST = "localhost";
 
-    public static final String SERVER_DEFAULT_HOST_ADDRESS = TIL_IP_HOME;
+    public static final String SERVER_DEFAULT_HOST_ADDRESS = TIL_IP_INI;
     public static final int SERVER_DEFAULT_PORT = 8095;
 
     public static final int SOCKET_MAX_SEND_BUFFER_SIZE = 0xFFFF;

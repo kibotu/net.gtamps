@@ -1,12 +1,13 @@
-# Blender MTL File: 'quit.blend'
+# Blender MTL File: ''
 # Material Count: 1
-newmtl None_car_riviera_car__car_riviera.jpg
-Ns 96.078431
+newmtl None_car_riviera_car_
+Ns 92.156863
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.512000 0.512000
+Kd 0.409600 0.409600 0.409600
 Ks 0.800000 0.800000 0.800000
 Ni 1.000000
 d 1.000000
 illum 2
 map_Kd riviera.jpg
+
 

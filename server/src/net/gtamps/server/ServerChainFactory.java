@@ -9,26 +9,7 @@ public class ServerChainFactory {
 	
 	private static SimpleHttpServer httpServer = null;
 	
-	public static ConnectionManager createServerChain() {
-		// hither:
-		final ConnectionManager connectionManager = new ConnectionManager();
-//		Logger.i().log(LogType.SERVER, "Started ConnectionManager...");
-//		CommandHandler	commandHandler = new CommandHandler(connectionManager);
-//		Logger.i().log(LogType.SERVER, "Started CommandHandler...");
-//		RequestHandler requestHandler = new RequestHandler(connectionManager);
-//		Logger.i().log(LogType.SERVER, "Started RequestHandler...");
-//		MessageHandler messageHandler = new MessageHandler(commandHandler, requestHandler);
-//		Logger.i().log(LogType.SERVER, "Started MessageHandler...");
-//		new Thread(new XSocketServer(messageHandler)).start();
-//		Logger.i().log(LogType.SERVER, "Started XSocketServer...");
 
-		// wither:
-		// handled in Constructors
-	//	new Thread(new XSocketServer()).start();
-		return connectionManager;
-		
-	}
-	
 	public static void startHTTPServer(final String path){
 		if(httpServer == null){
 			try {
@@ -45,7 +26,7 @@ public class ServerChainFactory {
 		}
 	}
 
-	public static void createServerChainII(final ISocketHandler handler) {
+	public static void createServerChain(final ISocketHandler handler) {
 		new Thread(new XSocketServer(handler)).start();
 	}
 

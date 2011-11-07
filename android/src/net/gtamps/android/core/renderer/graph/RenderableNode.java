@@ -1,8 +1,9 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.shared.IDirty;
+import net.gtamps.shared.Utils.IDirty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,27 +33,27 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines if the node needs cull-facing.
      */
-	private boolean doubleSidedEnabled = false;
+    private boolean doubleSidedEnabled = false;
 
     /**
      * Defines if the node has textures.
      */
-	private boolean texturesEnabled = false;
+    private boolean texturesEnabled = false;
 
     /**
      * Defines if the node has normals.
      */
-	private boolean normalsEnabled = false;
+    private boolean normalsEnabled = false;
 
     /**
      * Defines if the node has color materials.
      */
-	private boolean colorMaterialEnabled = false;
+    private boolean colorMaterialEnabled = false;
 
     /**
      * Defines if the node has lighting.
      */
-	private boolean lightingEnabled = false;
+    private boolean lightingEnabled = false;
 
     /**
      * Defines if alpha blending is enabled.
@@ -60,14 +61,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     private boolean alphaEnabled = false;
 
     /**
-     * Defines the shader.
+     * Render state. Defines blending, shader and drawingstyle state.
      */
-    private IShader.Type shader = IShader.Type.SMOOTH;
-
-    /**
-     * Defines the drawing style.
-     */
-    private DrawingStyle drawingStyle = DrawingStyle.GL_TRIANGLES;
+    private RenderState renderState = new RenderState();
 
     /**
      * Defines the current color material.
@@ -83,6 +79,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected int textureId = 0;
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
+    private boolean useSharedTextureCoordBuffer = false;
 
     public void setTextureId(int textureId) {
         this.textureId = textureId;
@@ -99,22 +96,22 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines the point size, if drawn as GL_POINTS.
      */
-	private float pointSize = 3f;
+    private float pointSize = 3f;
 
     /**
      * Defines if points are to be drawn smooth.
      */
-	private boolean pointSmoothing = true;
+    private boolean pointSmoothing = true;
 
     /**
      * Defines the line width if drawn as GL_LINES.
      */
-	private float lineWidth = 1f;
+    private float lineWidth = 1f;
 
     /**
      * Defines if lines are to be drawn smooth.
      */
-	private boolean lineSmoothing = true;
+    private boolean lineSmoothing = true;
 
     public RenderableNode(@Nullable Mesh mesh) {
         this.mesh = mesh;
@@ -145,37 +142,40 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         // Object skalieren
         gl.glPushMatrix();
         gl.glScalef(dimension.x * scaling.x, dimension.y * scaling.y, dimension.z * scaling.z);
-
         render(gl);
         gl.glPopMatrix();
+        renderInternal(gl);
     }
 
     @Override
     protected void afterProcess(@NotNull ProcessingState state) {
-       state.getGl().glPopMatrix();
+        state.getGl().glPopMatrix();
     }
 
     /**
      * Default rendering process.
      */
     protected void render(GL11 gl) {
-        if(mesh == null) return;
-        if(isDirty) onDirty(gl);
+        if (mesh == null) return;
+        if (isDirty) onDirty(gl);
 
         // shading
-        gl.glShadeModel(shader.getValue());
+        gl.glShadeModel(renderState.shader.getValue());
+
+//        Registry.getRenderer().createProgram();
+
 
         // enable color materials
-        if(colorMaterialEnabled) {
-           gl.glEnable(GL_COLOR_MATERIAL);
+        if (colorMaterialEnabled) {
+            gl.glEnable(GL_COLOR_MATERIAL);
         } else {
-           gl.glDisable(GL_COLOR_MATERIAL);
+            gl.glDisable(GL_COLOR_MATERIAL);
         }
 
         // enable vertex colors
-        if(vertexColorsEnabled) {
+        if (vertexColorsEnabled) {
             gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-            gl.glColorPointer(4, GL_FLOAT,0, 0);
+            gl.glColorPointer(4, GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL_COLOR_ARRAY);
         } else {
             gl.glColor4f(material.getEmissive().r, material.getEmissive().g, material.getEmissive().b, material.getEmissive().a);
@@ -183,9 +183,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable light
-        if(lightingEnabled) {
+        if (lightingEnabled) {
             // enable vertex normals
-            if(normalsEnabled) {
+            if (normalsEnabled) {
                 gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
                 gl.glNormalPointer(GL_FLOAT, 0, 0);
                 gl.glEnableClientState(GL_NORMAL_ARRAY);
@@ -199,32 +199,33 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // enable back-face culling
         if (doubleSidedEnabled) {
-	        gl.glEnable(GL_CULL_FACE);
-        } else {
             gl.glDisable(GL_CULL_FACE);
+        } else {
+            gl.glEnable(GL_CULL_FACE);
         }
 
         // enable alpha blending
-        if(alphaEnabled) {
+        if (alphaEnabled) {
             gl.glEnable(GL_BLEND);
             gl.glEnable(GL_ALPHA_TEST);
+            gl.glBlendFunc(renderState.blendState.sfactor, renderState.blendState.dfactor);
         } else {
             gl.glDisable(GL_BLEND);
             gl.glDisable(GL_ALPHA_TEST);
         }
 
         // enable texture
-        if(texturesEnabled) {
+        if (texturesEnabled) {
             gl.glEnable(GL_TEXTURE_2D);
 
             // TODO find way to use active texture instead of bind texture
-		    // gl.glActiveTexture(texture.getTextureId());
+            // gl.glActiveTexture(texture.getTextureId());
 //            Texture texture = textureManager.get(0);
 //            int glId = Registry.getTextureLibrary().getTextureResourceIds().get(texture.getTextureId());
             gl.glBindTexture(GL_TEXTURE_2D, textureId);
 
             // enable mip maps
-            if(hasMipMap) {
+            if (hasMipMap) {
                 gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
             } else {
                 gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -239,8 +240,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //            }
 
             // draw uvs
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
-            gl.glTexCoordPointer(2, GL_FLOAT, 0, 0);
+            gl.glBindBuffer(GL_ARRAY_BUFFER, useSharedTextureCoordBuffer ? textureBufferId : mesh.getVbo().textureCoordinateBufferId);
+            gl.glTexCoordPointer(2, GL_FLOAT, 0, textureBufferOffsetId);
             gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         } else {
             gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -248,47 +249,43 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // drawing point setings
-        if(drawingStyle.equals(DrawingStyle.GL_POINTS)) {
-			if (pointSmoothing) {
+        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_POINTS)) {
+            if (pointSmoothing) {
                 gl.glEnable(GL_POINT_SMOOTH);
+            } else {
+                gl.glDisable(GL_POINT_SMOOTH);
             }
-			else {
-				gl.glDisable(GL_POINT_SMOOTH);
-            }
-			gl.glPointSize(pointSize);
-		}
+            gl.glPointSize(pointSize);
+        }
 
         // drawing line settings
-        if(drawingStyle.equals(DrawingStyle.GL_LINES) || drawingStyle.equals(DrawingStyle.GL_LINE_LOOP) || drawingStyle.equals(DrawingStyle.GL_LINE_STRIP)) {
-			if(lineSmoothing) {
-				gl.glEnable(GL_LINE_SMOOTH);
-			}	else {
-				gl.glDisable(GL_LINE_SMOOTH);
-			}
-			gl.glLineWidth(lineWidth);
-		}
-		
+        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINES) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_LOOP) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_STRIP)) {
+            if (lineSmoothing) {
+                gl.glEnable(GL_LINE_SMOOTH);
+            } else {
+                gl.glDisable(GL_LINE_SMOOTH);
+            }
+            gl.glLineWidth(lineWidth);
+        }
+
         // bind vertices
         gl.glEnableClientState(GL_VERTEX_ARRAY);
         gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
         gl.glVertexPointer(3, GL_FLOAT, 0, 0);
 
         // actually draw the mesh by index buffer
-		gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
-		gl.glDrawElements(drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
+        gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
+        gl.glDrawElements(renderState.drawingStyle.getValue(), mesh.getVbo().indexBuffer.capacity(), GL_UNSIGNED_SHORT, 0);
 
         // deselect buffers
         gl.glBindBuffer(GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		// Vertex Array-State deaktivieren
-		gl.glDisableClientState(GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		gl.glDisableClientState(GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GL_COLOR_ARRAY);
-
-        // additional rendering calls
-        renderInternal(gl);
+        // Vertex Array-State deaktivieren
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL_COLOR_ARRAY);
     }
 
     /**
@@ -297,7 +294,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected abstract void renderInternal(@NotNull GL10 gl);
 
     final public void onDirty(GL10 gl) {
-        if(mesh == null) return;
+        if (mesh == null) return;
         mesh.setup(gl);
         clearDirtyFlag();
     }
@@ -424,42 +421,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     }
 
     /**
-     * Gets the current shader for this node.
-     *
-     * @return shader type
-     */
-    final public IShader.Type getShader() {
-        return shader;
-    }
-
-    /**
-     * Gets drawing style.
-     *
-     * @return drawing style
-     */
-    final public DrawingStyle getDrawingStyle() {
-        return drawingStyle;
-    }
-
-    /**
-     * Sets drawing style.
-     *
-     * @param drawingStyle
-     */
-    final public void setDrawingStyle(DrawingStyle drawingStyle) {
-        this.drawingStyle = drawingStyle;
-    }
-
-    /**
-     * Sets shader typ.
-     *
-     * @param shader
-     */
-    final public void setShader(IShader.Type shader) {
-        this.shader = shader;
-    }
-
-    /**
      * Gets point size.
      *
      * @return point size
@@ -537,7 +498,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      *
      * @return <code>true</code> if enabled
      */
-    public boolean hasMipMap(){
+    public boolean hasMipMap() {
         return hasMipMap;
     }
 
@@ -589,5 +550,41 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RenderableNode)) return false;
+
+        RenderableNode that = (RenderableNode) o;
+
+        if (textureBufferId != that.textureBufferId) return false;
+        if (textureBufferOffsetId != that.textureBufferOffsetId) return false;
+        if (textureId != that.textureId) return false;
+        if (!mesh.equals(that.mesh)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mesh.hashCode();
+        result = 31 * result + textureId;
+        result = 31 * result + textureBufferId;
+        result = 31 * result + textureBufferOffsetId;
+        return result;
+    }
+
+    public void useSharedTextureCoordBuffer(boolean isUsing) {
+        useSharedTextureCoordBuffer = isUsing;
+    }
+
+    public RenderState getRenderState() {
+        return renderState;
+    }
+
+    public void setRenderState(RenderState renderState) {
+        this.renderState = renderState;
     }
 }

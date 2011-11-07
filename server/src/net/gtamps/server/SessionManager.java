@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import net.gtamps.game.IGame;
-import net.gtamps.shared.communication.Message;
+import net.gtamps.shared.serializer.communication.Message;
 
 public final class SessionManager {
 	
@@ -198,7 +198,6 @@ public final class SessionManager {
 		final long hi = uid.getMostSignificantBits() & 0xFF00000000000000l;
 		final long lo = uid.getLeastSignificantBits() & 0x00FFFFFFFFFFFFFFl;
 		final String id = Long.toHexString(hi | lo);
-		assert isValidId(id);
 		return id;
 	}
 }

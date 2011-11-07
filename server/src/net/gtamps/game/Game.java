@@ -15,15 +15,15 @@ import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.communication.Sendable;
-import net.gtamps.shared.communication.SendableType;
-import net.gtamps.shared.communication.data.PlayerData;
-import net.gtamps.shared.communication.data.RevisionData;
-import net.gtamps.shared.communication.data.UpdateData;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 
 /**
@@ -153,13 +153,13 @@ public class Game implements IGame, Runnable {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
 		switch(sendable.type) {
-			case ACCELERATE:
-			case DECELERATE:
-			case ENTEREXIT:
-			case LEFT:
-			case RIGHT:
-			case SHOOT:
-			case SUICIDE:
+			case ACTION_ACCELERATE:
+			case ACTION_DECELERATE:
+			case ACTION_ENTEREXIT:
+			case ACTION_LEFT:
+			case ACTION_RIGHT:
+			case ACTION_SHOOT:
+			case ACTION_SUICIDE:
 				commandQueue.add(sendable);
 				break;
 			case GETMAPDATA:
@@ -240,29 +240,29 @@ public class Game implements IGame, Runnable {
 		}
 		EventType type = null;
 		switch(cmd.type) {
-		case ACCELERATE:
+		case ACTION_ACCELERATE:
 			type = EventType.ACTION_ACCELERATE;
 			break;
-		case DECELERATE:
+		case ACTION_DECELERATE:
 			type = EventType.ACTION_DECELERATE;
 			break;
-		case LEFT:
+		case ACTION_LEFT:
 			type = EventType.ACTION_TURNLEFT;
 			break;
-		case RIGHT:
+		case ACTION_RIGHT:
 			type = EventType.ACTION_TURNRIGHT;
 			break;
-		case ENTEREXIT:
+		case ACTION_ENTEREXIT:
 			type = EventType.ACTION_ENTEREXIT;
 			Logger.i().log(TAG, "ENTER/EXIT received" );
 			break;
-		case SHOOT:
+		case ACTION_SHOOT:
 			type = EventType.ACTION_SHOOT;
 			break;
-		case HANDBRAKE:
+		case ACTION_HANDBRAKE:
 			type = EventType.ACTION_HANDBRAKE;
 			break;
-		case SUICIDE:
+		case ACTION_SUICIDE:
 			type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {

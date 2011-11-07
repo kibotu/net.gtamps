@@ -1,14 +1,15 @@
 package net.gtamps.android;
 
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import net.gtamps.android.core.DefaultActivity;
-import net.gtamps.android.core.Registry;
 import net.gtamps.android.core.input.InputEngine;
+import net.gtamps.android.core.renderer.BasicRenderActivity;
+import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.Renderer;
 import net.gtamps.android.game.Game;
 
-public class GTA extends DefaultActivity {
+public class GTA extends BasicRenderActivity {
 
     public static final String TAG = GTA.class.getSimpleName();
 
@@ -26,12 +27,15 @@ public class GTA extends DefaultActivity {
         view = new GLSurfaceView(this);
         glSurfaceViewConfig();
         view.setRenderer(renderer);
-		setRenderContinuously(true);
+        setRenderContinuously(true);
         onCreateSetContentView();
 
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.setKeepScreenOn(true);
+
+        // !!!!!!! took me ages to find, but there are smooth images available now ^_^
+        view.getHolder().setFormat(PixelFormat.RGBA_8888);
 
         view.setOnTouchListener(InputEngine.getInstance());
     }
