@@ -8,16 +8,23 @@ import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
-import net.gtamps.shared.game.GameActor;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
-public class World extends GameActor {
+public class World implements IGameEventListener, IGameEventDispatcher {
 
 	/**
 	 * generated value
 	 */
 	private static final long serialVersionUID = 1821222727619509975L;
+	
+	private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
+	
+	private final String name;
 	private final int width;
 	private final int height;
 	
@@ -28,9 +35,12 @@ public class World extends GameActor {
 	public final PlayerManager playerManager;
 	public final EntityManager entityManager;
 
+	private long revision;
+
+
 	public World(final String name, final int width, final int height, final Box2DEngine physics) {
-		super(name);
 		Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: "+width+"x"+height);
+		this.name = name;
 		this.physics = physics;
 		this.width = width;
 		this.height = height;
@@ -46,6 +56,18 @@ public class World extends GameActor {
 		
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public long getRevision() {
+		return revision;
+	}
+	
+	public void updateRevision(final long newRevision) {
+		revision = newRevision;
+	}
+	
 	public int getWidth() {
 		return width;
 	}
@@ -58,15 +80,6 @@ public class World extends GameActor {
 		return physics;
 	}
 
-	//TODO
-//	@Override
-//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-//		Element e = super.toXMLElement(baseRevision, keeper);
-//		e.setAttribute(new Attribute("width",width+""));
-//		e.setAttribute(new Attribute("height",height+""));
-//		return e;
-//	}
-	
 	public void addSpawnPoint(final Entity sp) {
 		if (sp == null) {
 			throw new IllegalArgumentException("'sp' must not be null");
@@ -77,9 +90,27 @@ public class World extends GameActor {
 	public Entity getRandomSpawnPoint(){
 		return spawnPoints.get((int) (spawnPoints.size()*Math.random()));
 	}
-	
-//	public void addEntity(Entity e){
-//		this.entityList.add(e);
-//	}
+
+	@Override
+	public void addEventListener(final EventType type, final IGameEventListener listener) {
+		eventDispatcher.addEventListener(type, listener);
+	}
+
+	@Override
+	public void removeEventListener(final EventType type, final IGameEventListener listener) {
+		eventDispatcher.removeEventListener(type, listener);
+	}
+
+	@Override
+	public void dispatchEvent(final GameEvent event) {
+		eventDispatcher.dispatchEvent(event);
+		
+	}
+
+	@Override
+	public void receiveEvent(final GameEvent event) {
+		dispatchEvent(event);
+		
+	}
 	
 }

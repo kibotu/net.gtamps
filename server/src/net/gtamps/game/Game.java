@@ -100,21 +100,22 @@ public class Game implements IGame, Runnable {
 	@Override
 	public void run() {
 		isActive = true;
-		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
+//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
 		while(run) {
 			gameTime.startCycle();
 			doCycle();
 			gameTime.endCycle();
 			sleepIfCycleTimeRemaining();
 		}
-		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
+//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
 		isActive = false;
 	}
 	
 	private void doCycle() {
 		world.updateRevision(gameTime.getTotalDurationMillis());
 		world.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
-		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
+		//TODO
+//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
 
 		//for fps debugging
 //		lastUpdate += timeElapsedInSeceonds;
