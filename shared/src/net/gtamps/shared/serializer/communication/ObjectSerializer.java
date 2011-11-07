@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-public class ObjectSerializer extends AbstractSharedSerializer {
+public class ObjectSerializer implements ISerializer {
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -23,7 +23,7 @@ public class ObjectSerializer extends AbstractSharedSerializer {
     }
 
     @Override
-    protected byte[] serializeMessageOverride(@NotNull Message message) {
+	public byte[] serializeMessage(@NotNull Message message) {
         try {
             byteOutputStream = new ByteArrayOutputStream();
             objectOutputStream = new ObjectOutputStream(byteOutputStream);

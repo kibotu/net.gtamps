@@ -1,6 +1,5 @@
 package net.gtamps.server;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -12,7 +11,7 @@ import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.serializer.communication.AbstractSharedSerializer;
+import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageDeserializationException;
 import net.gtamps.shared.serializer.communication.Sendable;
@@ -22,6 +21,7 @@ import net.gtamps.shared.serializer.communication.data.AuthentificationData;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.SharedList;
 import net.gtamps.shared.serializer.communication.data.StringData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
 
@@ -50,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
  */
-public class ManualTypeSerializer extends AbstractSharedSerializer {
+public class ManualTypeSerializer implements ISerializer {
 	private static final LogType TAG = LogType.SERVER;
 	
 	public static String DELIMITER = " ";
@@ -66,7 +66,7 @@ public class ManualTypeSerializer extends AbstractSharedSerializer {
 	public static String INTEGER = "INT";
 
     @Override
-    public byte[] serializeMessageOverride(@NotNull final Message message) {
+    public byte[] serializeMessage(@NotNull final Message message) {
     	Logger.getInstance().log(TAG, "serializing message: " + message);
     	final StringBuilder bld = new StringBuilder();
     	addToken(bld, MESSAGE);
@@ -284,7 +284,7 @@ public class ManualTypeSerializer extends AbstractSharedSerializer {
 		final UpdateData data = new UpdateData(0, revId);
 		Entity entity = getEntity(scanner);
 		//TODO
-		final ArrayList<GameObject> entities = new ArrayList<GameObject>();
+		final SharedList<GameObject> entities = new SharedList<GameObject>();
 		while (entity != null) {
 			entities.add(entity);
 			entity = getEntity(scanner);

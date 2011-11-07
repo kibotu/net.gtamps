@@ -1,6 +1,8 @@
 package net.gtamps.shared.serializer.communication.data;
 
-public class AuthentificationData implements ISendableData {
+import net.gtamps.shared.SharedObject;
+
+public class AuthentificationData extends SharedObject implements ISendableData {
 
     private static final long serialVersionUID = -2582506868524601136L;
     public final String username;

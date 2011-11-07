@@ -23,6 +23,7 @@ import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.SharedList;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 
@@ -314,7 +315,7 @@ public class Game implements IGame, Runnable {
 		final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
 		final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);
 		final UpdateData update = new UpdateData(baseRevision, world.getRevision());
-		update.gameObjects =  new ArrayList<GameObject>();
+		update.gameObjects =  new SharedList<GameObject>();
 	    update.gameObjects.addAll(entities);
 		update.gameObjects.addAll(events);
 		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);

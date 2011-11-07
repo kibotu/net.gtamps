@@ -1,6 +1,8 @@
 package net.gtamps.shared.serializer.communication.data;
 
-public class StringData implements ISendableData {
+import net.gtamps.shared.SharedObject;
+
+public class StringData extends SharedObject implements ISendableData {
     public final String value;
 
     public StringData(String value) {
