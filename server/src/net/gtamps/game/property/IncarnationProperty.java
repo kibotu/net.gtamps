@@ -21,7 +21,7 @@ public class IncarnationProperty extends Property {
 	
 	public IncarnationProperty(final GameObject parent) {
 		super(Property.Type.INCARNATION, parent);
-		hasChanged = false;
+//		hasChanged = false;
 	}
 	
 //	@Override
@@ -39,7 +39,7 @@ public class IncarnationProperty extends Property {
 		}
 		Logger.i().log(TAG, player + " incarnation: " + parent);
 		this.player = player;
-		hasChanged = true;
+//		hasChanged = true;
 		setParentChanged();
 	}
 	

@@ -1,6 +1,6 @@
 package net.gtamps.game.property;
 
-import net.gtamps.shared.game.GameActor;
+import net.gtamps.game.LocalGameActor;
 import net.gtamps.shared.game.GameObject;
 
 /**
@@ -10,7 +10,7 @@ import net.gtamps.shared.game.GameObject;
  *
  */
 @Deprecated
-public abstract class Property extends GameActor {
+public abstract class Property extends LocalGameActor {
 
 	public enum Type {
 		POSITION, SPEED, HEALTH, OWNER, INCARNATION, DRIVER, ACTIVATION
@@ -33,8 +33,8 @@ public abstract class Property extends GameActor {
 		parent.setChanged();
 	}
 	
-	@Override
-	public String toString() {
-		return name + " [" + revision + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return name + " [" + revision + "]";
+//	}
 }

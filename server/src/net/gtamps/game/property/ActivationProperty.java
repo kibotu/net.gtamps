@@ -16,13 +16,13 @@ public class ActivationProperty extends Property{
 	@Override
 	public void enable() {
 		isEnabled = true;
-		hasChanged = true;
+//		hasChanged = true;
 		setParentChanged();
 	}
 	@Override
 	public void disable(){
 		isEnabled = false;
-		hasChanged = true;
+//		hasChanged = true;
 		setParentChanged();
 	}
 	@Override

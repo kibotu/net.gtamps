@@ -117,14 +117,14 @@ public class DriverHandler extends Handler {
 		}
 		driver = player;
 		player.setEntity(getParent());
-		hasChanged = true;
+//		hasChanged = true;
 		getParent().setChanged();
 	}
 
 	public void removeDriver() {
 		driver.removeEntity();
 		driver = null;
-		hasChanged = true;
+//		hasChanged = true;
 		getParent().setChanged();
 	}
 
