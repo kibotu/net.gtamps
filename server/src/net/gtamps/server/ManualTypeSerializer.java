@@ -12,7 +12,7 @@ import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.communication.AbstractSharedSerializer;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageDeserializationException;
 import net.gtamps.shared.serializer.communication.Sendable;
@@ -50,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
  */
-public class ManualTypeSerializer implements ISerializer {
+public class ManualTypeSerializer extends AbstractSharedSerializer {
 	private static final LogType TAG = LogType.SERVER;
 	
 	public static String DELIMITER = " ";
@@ -66,7 +66,7 @@ public class ManualTypeSerializer implements ISerializer {
 	public static String INTEGER = "INT";
 
     @Override
-    public byte[] serializeMessage(@NotNull final Message message) {
+    public byte[] serializeMessageOverride(@NotNull final Message message) {
     	Logger.getInstance().log(TAG, "serializing message: " + message);
     	final StringBuilder bld = new StringBuilder();
     	addToken(bld, MESSAGE);
