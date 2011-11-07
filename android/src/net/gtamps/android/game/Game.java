@@ -93,7 +93,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             }
         }
 
-        onDrawFrame2();
+//        onDrawFrame2();
     }
 
     private void onDrawFrame2() {
