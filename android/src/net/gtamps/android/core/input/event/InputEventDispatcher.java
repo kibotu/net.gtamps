@@ -1,4 +1,4 @@
-package net.gtamps.android.core.input;
+package net.gtamps.android.core.input.event;
 
 import java.util.LinkedList;
 

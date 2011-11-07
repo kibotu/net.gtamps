@@ -1,4 +1,4 @@
-package net.gtamps.android.core.input;
+package net.gtamps.android.core.input.event;
 
 import net.gtamps.shared.serializer.communication.SendableType;
 
