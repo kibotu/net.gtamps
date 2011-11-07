@@ -3,6 +3,8 @@ package net.gtamps.shared;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -140,7 +142,7 @@ public class SharedObject implements Serializable {
 		}
 		String simpleClassName = classToCheck.getSimpleName();
 		if (!satisfiesClassRequirements(classToCheck)) {
-			failMessage.append(simpleClassName + " is not shared");
+			failMessage.append(classToCheck.getCanonicalName() + " is not shared");
 			return false;
 		}
 		for (Field field : classToCheck.getDeclaredFields() ) {
@@ -150,7 +152,7 @@ public class SharedObject implements Serializable {
 				continue;
 			}
 			Class<?> fieldType = field.getType();
-			if (SharedObject.class.isAssignableFrom(fieldType)) {
+			if (SharedObject.class.isAssignableFrom(fieldType) || classToCheck.isEnum()) {
 				continue;	// prevent mad recursion (SharedObjects take care of themselves)
 			}
 			if (isAllowedForFinalMembers(fieldType)) {
@@ -160,6 +162,14 @@ public class SharedObject implements Serializable {
 					failMessage.append(msg);
 					return false;
 				}
+//				Type type = field.getGenericType();
+//				if (type instanceof ParameterizedType) {
+//					System.out.println(type);
+//					if (genericsAreOkay((ParameterizedType) type)) {
+//						continue;
+//					}
+//					return false;
+//				}
 				Object value = null;
 				try {
 					value = field.get(this); 
@@ -173,6 +183,9 @@ public class SharedObject implements Serializable {
 				}
 				fieldType = value.getClass(); 
 			}
+			if (isGeneric(field)) {
+				continue;
+			}
 			if (!isShareable(fieldType, failMessage)) {
 				String msg = simpleClassName + "." + fieldName + ":\n";
 				failMessage.insert(0, msg);
@@ -183,9 +196,41 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
+	private boolean isGeneric(Field field) {
+			String[] generics = null;
+			try {
+				Field genericField = field.getDeclaringClass().getDeclaredField("generics");
+				generics = (String[]) genericField.get(this);
+			} catch (SecurityException e) {
+				return false;
+			} catch (NoSuchFieldException e) {
+				return false;
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				return false;
+			}
+			System.out.println("generics: " + generics);
+			for (String name : generics) {
+				if (name.equals(field.getName())) {
+					return true;
+				}
+			}
+		return false;
+	}
+	
+	private boolean genericsAreOkay(ParameterizedType ptype) {
+			for (Type type : ptype.getActualTypeArguments()) {
+				System.out.println(type);
+			}
+		return true;
+	}
+	
 	private boolean satisfiesClassRequirements(Class<?> c) {
-		if (!(SharedObject.class.isAssignableFrom(c)	
-				&& c.getCanonicalName().startsWith(SHARED_PACKAGE_NAME))
+		if (! ((SharedObject.class.isAssignableFrom(c) || c.isInterface() || c.isEnum())
+				&& c.getCanonicalName().startsWith(SHARED_PACKAGE_NAME)
+			 	)
 			&& !isAllowedClass(c)) {
 			return false;
 		}
