@@ -205,7 +205,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
                 }
             };
         }
-        return this.properties.values();
+        return this.properties.map.values();
     }
 
     @Override
@@ -263,7 +263,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.getCause().printStackTrace();
         }
         return p;
     }
@@ -276,14 +276,14 @@ public abstract class GameObject extends SharedObject implements Serializable {
         if (this.properties == null) {
             this.properties = new SharedMap<String, IProperty<?>>();
         }
-        if (this.properties.containsKey(p.name)) {
+        if (this.properties.map.containsKey(p.name)) {
             throw new IllegalArgumentException("Property exists already: " + p);
         }
-        this.properties.put(p.name, p);
+        this.properties.map.put(p.name, p);
     }
 
     private void removeProperty(String name) {
-        this.properties.remove(name);
+        this.properties.map.remove(name);
     }
 
     @SuppressWarnings("unchecked")
@@ -291,7 +291,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
         if (this.properties == null) {
             return null;
         }
-        Propertay<?> p = (Propertay<?>) this.properties.get(name);
+        Propertay<?> p = (Propertay<?>) this.properties.map.get(name);
         return (Propertay<T>) p;
     }
 
