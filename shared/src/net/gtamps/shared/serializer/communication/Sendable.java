@@ -1,10 +1,12 @@
 package net.gtamps.shared.serializer.communication;
 
+import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Sendable implements ISendable {
+public class Sendable extends SharedObject implements ISendable {
 
     private static final long serialVersionUID = 5034854192792203952L;
 

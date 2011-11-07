@@ -28,7 +28,8 @@ import java.awt.image.Raster;
 
 import javax.swing.JComponent;
 
-import net.gtamps.shared.level.EntityPosition;
+import net.gtamps.shared.game.level.EntityPosition;
+
 
 public class MapView extends JComponent implements MouseListener, MouseMotionListener {
 	private MapModel mm;

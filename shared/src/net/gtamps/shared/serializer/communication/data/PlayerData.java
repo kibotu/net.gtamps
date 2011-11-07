@@ -1,9 +1,11 @@
 package net.gtamps.shared.serializer.communication.data;
 
+import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.game.player.Player;
+
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerData implements ISendableData {
+public class PlayerData extends SharedObject implements ISendableData {
 
     private static final long serialVersionUID = 550206152646014214L;
 

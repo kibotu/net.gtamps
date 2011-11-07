@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Die Eingabeengine
  */
+
+@Deprecated
 final public class InputEngine implements OnTouchListener {
 
     /**
