@@ -1,7 +1,7 @@
 package net.gtamps.android.core.input;
 
 import android.util.Log;
-import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.serializer.communication.SendableType;
 
 public class DebugInputEventListener implements InputEventListener{
 

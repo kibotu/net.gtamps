@@ -2,7 +2,7 @@ package net.gtamps.android.core.input;
 
 import java.util.LinkedList;
 
-import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.serializer.communication.SendableType;
 
 public class InputEventDispatcher {
 	

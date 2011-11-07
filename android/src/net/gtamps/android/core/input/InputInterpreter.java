@@ -1,6 +1,6 @@
 package net.gtamps.android.core.input;
 
-import net.gtamps.shared.communication.SendableType;
+import net.gtamps.shared.serializer.communication.SendableType;
 
 public class InputInterpreter {
 	
@@ -22,14 +22,14 @@ public class InputInterpreter {
 		//TODO
 		if(actionType.equals(ActionType.PLAYER_MOVEMENT)){
 			if(y<0.5f){
-				eventDispatcher.dispatch(SendableType.ACCELERATE, (0.5f-y)*2f);
+				eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, (0.5f-y)*2f);
 			} else {
-				eventDispatcher.dispatch(SendableType.DECELERATE, (y-0.5f)*2f);	
+				eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, (y-0.5f)*2f);	
 			}
 			if(x<0.5f){
-				eventDispatcher.dispatch(SendableType.LEFT, (0.5f-x)*2f);		
+				eventDispatcher.dispatch(SendableType.ACTION_LEFT, (0.5f-x)*2f);		
 			} else {
-				eventDispatcher.dispatch(SendableType.DECELERATE, (x-0.5f)*2f);
+				eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, (x-0.5f)*2f);
 			}
 			
 		}
