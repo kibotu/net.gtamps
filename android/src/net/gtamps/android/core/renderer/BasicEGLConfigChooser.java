@@ -22,14 +22,15 @@ public class BasicEGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
         EGLConfig result = null;
 
-        for (int i = 0; i < configurations; i++) {
+        int i = 0;
+        for (i = 0; i < configurations; i++) {
             Logger.v(this, "Configuration #" + i);
-            Logger.v(this, egl + " " + display + " " + conf[i]);
+//            print(egl, display, conf[i]);
             result = better(result, conf[i], egl, display);
         }
 
         Logger.v(this, "Chosen EGLConfig:");
-        Logger.v(this, egl + " " + display + " " + result);
+        print(egl, display, result);
 
         return result;
     }
@@ -78,5 +79,33 @@ public class BasicEGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
         }
 
         return result;
+    }
+
+    private void print(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
+
+        int[] value = new int[1];
+
+        Logger.v(this, String.format("conf = %s", eglConfig));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_RED_SIZE, value);
+        Logger.v(this, String.format("EGL_RED_SIZE  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_BLUE_SIZE, value);
+        Logger.v(this, String.format("EGL_BLUE_SIZE  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_GREEN_SIZE, value);
+        Logger.v(this, String.format("EGL_GREEN_SIZE  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_ALPHA_SIZE, value);
+        Logger.v(this, String.format("EGL_ALPHA_SIZE  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_DEPTH_SIZE, value);
+        Logger.v(this, String.format("EGL_DEPTH_SIZE  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_ALPHA_FORMAT, value);
+        Logger.v(this, String.format("EGL_ALPHA_FORMAT  = %d", value[0]));
+
+        egl.eglGetConfigAttrib(display, eglConfig, EGL10.EGL_ALPHA_MASK_SIZE, value);
+        Logger.v(this, String.format("EGL_ALPHA_MASK_SIZE  = %d", value[0]));
     }
 }
