@@ -18,10 +18,11 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import net.gtamps.shared.level.EntityPosition;
-import net.gtamps.shared.level.Level;
-import net.gtamps.shared.level.PhysicalShape;
-import net.gtamps.shared.math.Vector3;
+import net.gtamps.shared.Utils.math.Vector3;
+import net.gtamps.shared.game.level.EntityPosition;
+import net.gtamps.shared.game.level.Level;
+import net.gtamps.shared.game.level.PhysicalShape;
+
 
 public class MapFile implements Serializable {
 	/**

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import net.gtamps.shared.game.entity.Entity.Type;
-import net.gtamps.shared.level.EntityPosition;
+import net.gtamps.shared.game.level.EntityPosition;
 
 public class MapModel {
 	

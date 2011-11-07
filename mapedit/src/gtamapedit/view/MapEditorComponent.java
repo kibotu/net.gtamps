@@ -37,7 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.gtamps.shared.game.entity.Entity.Type;
-import net.gtamps.shared.level.EntityPosition;
+import net.gtamps.shared.game.level.EntityPosition;
 
 import processing.core.PApplet;
 
