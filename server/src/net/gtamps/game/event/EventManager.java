@@ -5,14 +5,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import net.gtamps.game.world.World;
-import net.gtamps.shared.game.GameActor;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
-public class EventManager extends GameActor {
+public class EventManager extends GameEventDispatcher implements IGameEventListener {
 	
 	public static final long EVENT_TIMEOUT_MILLIS = 30000000;
 	
@@ -21,7 +22,6 @@ public class EventManager extends GameActor {
 	private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
 	
 	public EventManager(final World world) {
-		super("EventManager");
 		
 		this.world = world;
 		
@@ -58,7 +58,7 @@ public class EventManager extends GameActor {
 	private void add(final GameEvent event) {
 		event.updateRevision(world.getRevision());
 		archive.put(event, event);
-		super.setChanged();
+//		super.setChanged();
 	}
 
 }

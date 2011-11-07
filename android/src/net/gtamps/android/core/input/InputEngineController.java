@@ -24,18 +24,18 @@ public class InputEngineController implements OnTouchListener{
 	public static InputEngineController getInstance(){
 		if(instance==null){
 			instance = new InputEngineController();	
-			setLayout(new DummyLayout());
+			instance.setLayout(new DummyLayout());
 		}
 		return instance;
 	}
 	
-	public static void setLayout(AbstractInputLayout layout) {
-		InputEngineController.layout = layout;
+	public void setLayout(AbstractInputLayout layout) {
 		inputEventDispatcher = new InputEventDispatcher();
 		layout.setInputEventDispatcher(inputEventDispatcher);
+		InputEngineController.layout = layout;
 	}
 	
-	public static InputEventDispatcher getInputEventDispatcher() {
+	public InputEventDispatcher getInputEventDispatcher() {
 		return inputEventDispatcher;
 	}
 

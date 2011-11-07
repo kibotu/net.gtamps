@@ -25,7 +25,7 @@ public class TouchInputWindow implements OnTouchListener{
 		float normY = event.getY()/resolutionY;
 		for(TouchInputButton tib : buttons.keySet()){
 			if(tib.isHit(normX, normY)){
-				((InputInterpreter)buttons.get(tib)).interpretTouch(tib.getX()-normX,tib.getY()-normY);
+				((InputInterpreter)buttons.get(tib)).interpretTouch(normX-tib.getX(),normY-tib.getY());
 			}
 		}
 		return true;

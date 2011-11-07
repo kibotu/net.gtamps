@@ -1,5 +1,8 @@
 package net.gtamps.shared.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 
 
@@ -15,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class Propertay<T> extends GameObject implements IProperty<T> {
 
     private static final long serialVersionUID = 6612996255584968605L;
+    public static transient final String[] generics = {"value"};
 
     private final GameObject parent;
     private T value;

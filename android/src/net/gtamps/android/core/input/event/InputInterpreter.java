@@ -1,13 +1,13 @@
 package net.gtamps.android.core.input.event;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.SendableType;
 
 public class InputInterpreter {
 	
 	private ActionType actionType;
 	private InputEventDispatcher eventDispatcher;
-	public InputInterpreter(InputEventDispatcher evdi, ActionType actionType){
-		this.eventDispatcher = evdi;
+	public InputInterpreter(ActionType actionType){
 		this.actionType = actionType;
 	}
 	/**
@@ -29,7 +29,7 @@ public class InputInterpreter {
 			if(x<0.5f){
 				eventDispatcher.dispatch(SendableType.ACTION_LEFT, (0.5f-x)*2f);		
 			} else {
-				eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, (x-0.5f)*2f);
+				eventDispatcher.dispatch(SendableType.ACTION_RIGHT, (x-0.5f)*2f);
 			}
 			
 		}
@@ -38,4 +38,7 @@ public class InputInterpreter {
 		}
 	}
 
+	public void setEventDispatcher(InputEventDispatcher eventDispatcher) {
+		this.eventDispatcher = eventDispatcher;
+	}
 }

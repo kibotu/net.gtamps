@@ -1,11 +1,15 @@
 package net.gtamps.shared.game;
 
-import net.gtamps.shared.game.event.*;
-
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.gtamps.shared.game.IGameActor;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
  * <p>
@@ -20,7 +24,7 @@ import java.util.Set;
  * By declaring which types of events a gameActor intends
  * to send upwards, and which types it will handle when passed down, these
  * connections can be joined automatically, by using
- * {@link #connectUpwardsActor(GameActor)}.
+ * {@link #connectUpwardsActor(SharedGameActor)}.
  * </p><p>
  * Owing to the indiscriminate nature of {@link IGameEventDispatcher}-style
  * event handling (events themselves have no sense of the direction they're
@@ -34,8 +38,7 @@ import java.util.Set;
  *
  * @author jan, tom, til
  */
-public abstract class GameActor extends GameObject implements
-        IGameEventDispatcher, IGameEventListener, Serializable {
+public class SharedGameActor extends GameObject implements IGameActor {
 
     /**
      *
@@ -55,23 +58,34 @@ public abstract class GameActor extends GameObject implements
     private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
     private boolean enabled = true;
 
-    public GameActor(String name) {
-        super(name);
-        // TODO Auto-generated constructor stub
+    public SharedGameActor(final String name) {
+    	super(name);
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#isEnabled()
+	 */
+    @Override
+	public boolean isEnabled() {
+        return enabled;
     }
 
-    public void enable() {
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#enable()
+	 */
+    @Override
+	public void enable() {
         //Logger.i().log(LogType.GAMEWORLD, "Enabling Game Actor "+this);
-        this.enabled = true;
+        enabled = true;
         //Logger.i().log(LogType.GAMEWORLD, this+" was enabled "+this.enabled);
     }
 
-    public void disable() {
-        this.enabled = false;
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#disable()
+	 */
+    @Override
+	public void disable() {
+        enabled = false;
     }
 
     /**
@@ -91,22 +105,23 @@ public abstract class GameActor extends GameObject implements
      *                                  both ways between this actor and the other one
      * @see EventType
      */
-    protected void connectUpwardsActor(GameActor other) {
+    @Override
+    public void connectUpwardsActor(final SharedGameActor other) {
         {
             if (other == this) {
-                String msg = "Trying to connect a gameActor to itself. " +
+                final String msg = "Trying to connect a gameActor to itself. " +
                         "This is not allowed.";
                 throw new IllegalArgumentException(msg);
             }
-            Set<EventType> intersection = upAndDownIntersection();
+            final Set<EventType> intersection = upAndDownIntersection();
             if (intersection.size() != 0) {
-                String msg = "'sendsUp' and 'receivesDown' have common EventTypes: "
+                final String msg = "'sendsUp' and 'receivesDown' have common EventTypes: "
                         + intersection;
                 throw new IllegalStateException(msg);
             }
         }
         if (sendsUp != null) {
-            this.registerListenigActor(other, sendsUp);
+            registerListenigActor(other, sendsUp);
         }
         if (receivesDown != null) {
             other.registerListenigActor(this, receivesDown);
@@ -115,45 +130,50 @@ public abstract class GameActor extends GameObject implements
 
     /**
      * @param actor
-     * @see #connectUpwardsActor(GameActor)
+     * @see #connectUpwardsActor(SharedGameActor)
      */
-    protected void connectDownwardsActor(GameActor actor) {
+    @Override
+    public void connectDownwardsActor(final SharedGameActor actor) {
         actor.connectUpwardsActor(this);
     }
 
-    protected void disconnectUpwardsActor(GameActor other) {
-        this.removeEventListener(EventType.GAME_EVENT, other);
+    @Override
+    public void disconnectUpwardsActor(final SharedGameActor other) {
+        removeEventListener(EventType.GAME_EVENT, other);
         other.removeEventListener(EventType.GAME_EVENT, this);
     }
 
-    protected void disconnectDownwardsActor(GameActor actor) {
+    @Override
+    public void disconnectDownwardsActor(final SharedGameActor actor) {
         actor.disconnectUpwardsActor(this);
     }
 
     /**
      * Declare the types of gameEvents this actor wants to pass upwards.
      * Must have no types in common with {@link #setReceivesDown(EventType[]) receivesDown}.
-     * Use before {@link #connectUpwardsActor(GameActor)} or
-     * {@link #connectDownwardsActor(GameActor)}.
+     * Use before {@link #connectUpwardsActor(SharedGameActor)} or
+     * {@link #connectDownwardsActor(SharedGameActor)}.
      */
-    protected void setSendsUp(EventType[] sendsUp) {
+    @Override
+    public void setSendsUp(final EventType[] sendsUp) {
         this.sendsUp = new HashSet<EventType>(Arrays.asList(sendsUp));
     }
 
     /**
      * Declare the types of gameEvents this actor is interested in receiving
      * from upwards. Must have no types in common with {@link #setSendsUp(EventType[]) sendsUp}.
-     * Use before {@link #connectUpwardsActor(GameActor)} or
-     * {@link #connectDownwardsActor(GameActor)}.
+     * Use before {@link #connectUpwardsActor(SharedGameActor)} or
+     * {@link #connectDownwardsActor(SharedGameActor)}.
      */
-    protected void setReceivesDown(EventType[] receivesDown) {
+    @Override
+    public void setReceivesDown(final EventType[] receivesDown) {
         this.receivesDown = new HashSet<EventType>(Arrays.asList(receivesDown));
     }
 
 
-    private void registerListenigActor(GameActor listener, Set<EventType> types) {
-        for (EventType type : types) {
-            this.addEventListener(type, listener);
+    private void registerListenigActor(final SharedGameActor listener, final Set<EventType> types) {
+        for (final EventType type : types) {
+            addEventListener(type, listener);
         }
     }
 
@@ -166,10 +186,10 @@ public abstract class GameActor extends GameObject implements
      * upwards and receives from there
      */
     private Set<EventType> upAndDownIntersection() {
-        Set<EventType> intersection = new HashSet<EventType>();
+        final Set<EventType> intersection = new HashSet<EventType>();
         if (sendsUp != null && receivesDown != null) {
-            for (EventType upType : sendsUp) {
-                for (EventType downType : receivesDown) {
+            for (final EventType upType : sendsUp) {
+                for (final EventType downType : receivesDown) {
                     if (upType.isType(downType)) {
                         intersection.add(upType);
                     } else if (downType.isType(upType)) {
@@ -181,24 +201,36 @@ public abstract class GameActor extends GameObject implements
         return intersection;
     }
 
-    @Override
-    public void receiveEvent(GameEvent event) {
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#receiveEvent(net.gtamps.shared.game.event.GameEvent)
+	 */
+	@Override
+    public void receiveEvent(final GameEvent event) {
         //Logger.i().log(LogType.GAMEWORLD, this+" "+event);
         dispatchEvent(event);
     }
 
-    @Override
-    public void addEventListener(EventType type, IGameEventListener listener) {
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#addEventListener(net.gtamps.shared.game.event.EventType, net.gtamps.shared.game.event.IGameEventListener)
+	 */
+	@Override
+    public void addEventListener(final EventType type, final IGameEventListener listener) {
         eventDispatcher.addEventListener(type, listener);
     }
 
-    @Override
-    public void removeEventListener(EventType type, IGameEventListener listener) {
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#removeEventListener(net.gtamps.shared.game.event.EventType, net.gtamps.shared.game.event.IGameEventListener)
+	 */
+	@Override
+    public void removeEventListener(final EventType type, final IGameEventListener listener) {
         eventDispatcher.removeEventListener(type, listener);
     }
 
+    /* (non-Javadoc)
+	 * @see net.gtamps.shared.game.IGameActor#dispatchEvent(net.gtamps.shared.game.event.GameEvent)
+	 */
     @Override
-    public void dispatchEvent(GameEvent event) {
+    public void dispatchEvent(final GameEvent event) {
         eventDispatcher.dispatchEvent(event);
     }
 
