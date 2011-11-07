@@ -53,8 +53,12 @@ public class SharedObject implements Serializable {
 		float[].class, double[].class, Boolean[].class, Byte[].class, Character[].class, Short[].class,
 		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
 		SharedObject[].class,
-//		java.util.List.class, java.util.Map.class,
 	}; 
+	
+	public static transient final Class<?>[] ALLOWED_IF_FINAL_MEMBER = {
+		java.util.List.class, java.util.Map.class, java.util.ArrayList.class,
+		java.util.HashMap.class
+	};
 
 	/**
 	 * the name of the package SharedObject is part of 
@@ -118,7 +122,7 @@ public class SharedObject implements Serializable {
 		assert isShareable();
 	}
 	
-	private boolean isShareable() {
+	public final boolean isShareable() throws ClassCastException {
 		StringBuilder failMessage = new StringBuilder();
 		if (!isShareable(this.getClass(), failMessage)) {
 			String msg = "class extends SharedObject but is not shared:\n" + failMessage.toString();
@@ -134,23 +138,43 @@ public class SharedObject implements Serializable {
 		if (checked.contains(classToCheck)) {
 			return true;
 		}
-		String className = classToCheck.getCanonicalName();
-		if (!(SharedObject.class.isAssignableFrom(classToCheck)	
-				&& className.startsWith(SHARED_PACKAGE_NAME))
-			&& !isAllowedClass(classToCheck)) {
-			failMessage.append(className + " is not shared");
+		String simpleClassName = classToCheck.getSimpleName();
+		if (!satisfiesClassRequirements(classToCheck)) {
+			failMessage.append(simpleClassName + " is not shared");
 			return false;
 		}
 		for (Field field : classToCheck.getDeclaredFields() ) {
-			if ( Modifier.isTransient(field.getModifiers() )) {
+			String fieldName = field.getName();
+			int fieldModifiers = field.getModifiers();
+			if ( Modifier.isTransient(fieldModifiers) ) {
 				continue;
 			}
 			Class<?> fieldType = field.getType();
 			if (SharedObject.class.isAssignableFrom(fieldType)) {
 				continue;	// prevent mad recursion (SharedObjects take care of themselves)
 			}
+			if (isAllowedForFinalMembers(fieldType)) {
+				if ( !(Modifier.isFinal(fieldModifiers) && Modifier.isPublic(fieldModifiers)) ) {
+					String msg = String.format("%s.%s: type (%s) is allowed, but field must be public final",
+							simpleClassName, fieldName, fieldType.getSimpleName());
+					failMessage.append(msg);
+					return false;
+				}
+				Object value = null;
+				try {
+					value = field.get(this); 
+				} catch (IllegalAccessException e) {
+					assert false : String.format("SharedObject.isShared(class): Illegal Access on %s %s.%s",
+							fieldType.getSimpleName(), simpleClassName, fieldName);
+					continue;
+				}
+				if (value == null) {
+					continue;
+				}
+				fieldType = value.getClass(); 
+			}
 			if (!isShareable(fieldType, failMessage)) {
-				String msg = className + "." + field.getName() + ":\n";
+				String msg = simpleClassName + "." + fieldName + ":\n";
 				failMessage.insert(0, msg);
 				return false;
 			}
@@ -159,8 +183,26 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
+	private boolean satisfiesClassRequirements(Class<?> c) {
+		if (!(SharedObject.class.isAssignableFrom(c)	
+				&& c.getCanonicalName().startsWith(SHARED_PACKAGE_NAME))
+			&& !isAllowedClass(c)) {
+			return false;
+		}
+		return true;
+	}
+	
 	private boolean isAllowedClass(Class<?> checkMe) {
 		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+			if (c.equals(checkMe)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isAllowedForFinalMembers(Class<?> checkMe) {
+		for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
 			if (c.equals(checkMe)) {
 				return true;
 			}

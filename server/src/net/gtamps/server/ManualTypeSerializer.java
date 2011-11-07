@@ -72,7 +72,7 @@ public class ManualTypeSerializer implements ISerializer {
     	addToken(bld, MESSAGE);
     	final String sessId = message.getSessionId();
     	addToken(bld, (sessId==null || sessId.length()==0) ? "" : sessId);
-    	for (final Sendable s : message.sendables) {
+    	for (final Sendable s : message.sendables.list) {
     		serializeSendable(bld, s);
     	}
     	return bld.toString().getBytes();
@@ -127,7 +127,7 @@ public class ManualTypeSerializer implements ISerializer {
     }
     
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
-    	for (final GameObject e : udata.gameObjects) {
+    	for (final GameObject e : udata.gameObjects.list) {
     		//TODO other cases
     		addToken(bld, ">>>");
     		if (e instanceof Entity) {
@@ -286,7 +286,7 @@ public class ManualTypeSerializer implements ISerializer {
 		//TODO
 		final SharedList<GameObject> entities = new SharedList<GameObject>();
 		while (entity != null) {
-			entities.add(entity);
+			entities.list.add(entity);
 			entity = getEntity(scanner);
 		}
 		data.gameObjects = entities;

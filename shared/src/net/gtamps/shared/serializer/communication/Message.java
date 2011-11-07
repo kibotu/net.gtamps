@@ -16,7 +16,7 @@ public class Message extends SharedObject {
 
     public Message(@NotNull Sendable sendable) {
         this();
-        sendables.add(sendable);
+        sendables.list.add(sendable);
     }
 
     public Message() {
@@ -24,7 +24,7 @@ public class Message extends SharedObject {
     }
 
     public void addSendable(Sendable sendable) {
-        sendables.add(sendable);
+        sendables.list.add(sendable);
     }
 
     public
@@ -35,7 +35,7 @@ public class Message extends SharedObject {
 
     public void setSessionId(@NotNull String sessionId) {
         this.sessionId = sessionId;
-        for (Sendable s : sendables) {
+        for (Sendable s : sendables.list) {
             s.sessionId = sessionId;
         }
     }

@@ -316,8 +316,8 @@ public class Game implements IGame, Runnable {
 		final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);
 		final UpdateData update = new UpdateData(baseRevision, world.getRevision());
 		update.gameObjects =  new SharedList<GameObject>();
-	    update.gameObjects.addAll(entities);
-		update.gameObjects.addAll(events);
+	    update.gameObjects.list.addAll(entities);
+		update.gameObjects.list.addAll(events);
 		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = update;
 		return updateResponse;
