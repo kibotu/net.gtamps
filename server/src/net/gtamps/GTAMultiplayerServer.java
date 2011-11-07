@@ -2,13 +2,13 @@ package net.gtamps;
 
 import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.ManualTypeSerializer;
 import net.gtamps.server.ServerChainFactory;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
-import net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler;
+import net.gtamps.server.xsocket.LineBasedTCPSocketHandler;
 import net.gtamps.shared.serializer.communication.ISerializer;
-import net.gtamps.shared.serializer.communication.ObjectSerializer;
 
 public class GTAMultiplayerServer {
 	
@@ -16,12 +16,12 @@ public class GTAMultiplayerServer {
     public static final String DEFAULT_PATH = "../assets/kompilat/";
     public static final String DEFAULT_MAP = "tinycity.xml";
 
-    public static final ISerializer SERIALIZER = new ObjectSerializer();
-    public static final ISocketHandler SOCK_HANDLER =
-    	new LengthEncodedTCPSocketHandler<ISerializer>(SERIALIZER);
+//    public static final ISerializer SERIALIZER = new ObjectSerializer();
+//    public static final ISocketHandler SOCK_HANDLER =
+//    	new LengthEncodedTCPSocketHandler<ISerializer>(SERIALIZER);
     
-//    public static final ISerializer SERIALIZER = new ManualTypeSerializer();
-//    public static final ISocketHandler SOCK_HANDLER = new LineBasedTCPSocketHandler<ISerializer>(SERIALIZER);
+    public static final ISerializer SERIALIZER = new ManualTypeSerializer();
+    public static final ISocketHandler SOCK_HANDLER = new LineBasedTCPSocketHandler<ISerializer>(SERIALIZER);
 
     private static int uid = 0;
 	
