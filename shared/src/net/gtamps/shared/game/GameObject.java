@@ -1,15 +1,16 @@
 package net.gtamps.shared.game;
 
-import net.gtamps.shared.Utils.UIDGenerator;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
+
+import net.gtamps.shared.SharedObject;
+import net.gtamps.shared.Utils.UIDGenerator;
+import net.gtamps.shared.serializer.communication.data.SharedMap;
+
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -24,7 +25,7 @@ import java.util.NoSuchElementException;
  *
  * @author til, tom, jan
  */
-public abstract class GameObject implements Serializable {
+public abstract class GameObject extends SharedObject implements Serializable {
 
     public static final int INVALID_UID = UIDGenerator.INVALID_UID;
 
@@ -37,7 +38,7 @@ public abstract class GameObject implements Serializable {
     protected long revision = START_REVISION;
     protected boolean hasChanged = true;
     private boolean silent = false;
-    private Map<String, IProperty<?>> properties = null;
+    private SharedMap<String, IProperty<?>> properties = null;
 
     /**
      * @param name default is {@value #DEFAULT_NAME}
@@ -273,7 +274,7 @@ public abstract class GameObject implements Serializable {
             throw new IllegalArgumentException("'p' must not be null");
         }
         if (this.properties == null) {
-            this.properties = new HashMap<String, IProperty<?>>();
+            this.properties = new SharedMap<String, IProperty<?>>();
         }
         if (this.properties.containsKey(p.name)) {
             throw new IllegalArgumentException("Property exists already: " + p);

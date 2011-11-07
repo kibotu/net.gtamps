@@ -1,6 +1,8 @@
 package net.gtamps.shared.serializer.communication.data;
 
-public class RevisionData implements ISendableData {
+import net.gtamps.shared.SharedObject;
+
+public class RevisionData extends SharedObject implements ISendableData {
 
     public final long revisionId;
 
