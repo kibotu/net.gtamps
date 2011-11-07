@@ -34,9 +34,6 @@ public class GTA extends BasicRenderActivity {
         view.setFocusableInTouchMode(true);
         view.setKeepScreenOn(true);
 
-        // !!!!!!! took me ages to find, but there are smooth images available now ^_^
-        view.getHolder().setFormat(PixelFormat.RGBA_8888);
-
         view.setOnTouchListener(InputEngine.getInstance());
     }
 
