@@ -3,11 +3,12 @@ package client;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.gtamps.shared.serializer.ConnectionManager;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.MessageFactory;
+import net.gtamps.shared.serializer.communication.Sendable;
 
-import net.gtamps.shared.client.ConnectionManager;
-import net.gtamps.shared.communication.Message;
-import net.gtamps.shared.communication.MessageFactory;
-import net.gtamps.shared.communication.Sendable;
+
 
 public class DebugClient {
 	
