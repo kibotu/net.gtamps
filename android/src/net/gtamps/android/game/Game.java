@@ -2,9 +2,9 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
+import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
@@ -26,6 +26,7 @@ import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game implements BasicRenderActivity.IRenderActivity {
 
@@ -87,8 +88,8 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         // handle inbox messages
         while (!connection.isEmpty()) {
             Message message = connection.poll();
-            for (int i = 0; i < message.sendables.size(); i++) {
-                handleMessage(message.sendables.get(i), message);
+            for (int i = 0; i < message.sendables.list.size(); i++) {
+                handleMessage(message.sendables.list.get(i), message);
             }
         }
 
@@ -221,7 +222,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 ConnectionManager.currentRevId = updateData.revId;
 
                 // parse all transmitted entities
-                ArrayList<GameObject> gameObjects = updateData.gameObjects;
+                List<GameObject> gameObjects = updateData.gameObjects.list;
                 Logger.d(this, "GameObject amount: " + gameObjects.size());
                 int keepTrackOfOrder = 0;
                 for (int i = 0; i < gameObjects.size(); i++) {
