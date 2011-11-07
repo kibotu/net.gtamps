@@ -1,6 +1,7 @@
 package net.gtamps.android.core.renderer;
 
 import android.app.Activity;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -46,6 +47,12 @@ public abstract class BasicRenderActivity extends Activity {
         // transparent: scene.background = color4.transparent
         // manifest theme:translucent
 //        view.setEGLConfigChooser(8,8,8,8, 16, 0);
+
+        view.setEGLConfigChooser(new BasicEGLConfigChooser());
+
+        // !!!!!!! took me ages to find, but there are smooth images available now ^_^
+        view.getHolder().setFormat(PixelFormat.RGBA_8888);
+
 //	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0)
             view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);

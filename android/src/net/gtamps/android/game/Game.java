@@ -93,6 +93,11 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             }
         }
 
+        onDrawFrame2();
+    }
+
+    private void onDrawFrame2() {
+
         // zoom
         if (inputEngine.getZoomState()) {
             setZoomByDistance(inputEngine.getZoomDistance());
