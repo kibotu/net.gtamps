@@ -1,5 +1,6 @@
 package net.gtamps.shared;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,9 @@ public class SharedObjectTest extends Assert {
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionPackageListTest() {
 			WrongExtensionPackageList o = new WrongExtensionPackageList();
+			o.listField = new ArrayList<Object>();
+			o.listField.add(new Object());
+			assert o.isShareable();
 	}
 
 	@Test(expected = ClassCastException.class)

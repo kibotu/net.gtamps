@@ -1,13 +1,14 @@
 package net.gtamps.shared;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -47,14 +48,17 @@ public class SharedObject implements Serializable {
 	 *  
 	 */
 	public static transient final Class<?>[] OTHER_INTRANSIENT_MEMBER_CLASSES = {
-		boolean.class, byte.class, char.class, short.class, int.class, long.class,
-		float.class, double.class, Boolean.class, Byte.class, Character.class, Short.class,
+	// Arrays and primitives should be taken care of
+//		boolean.class, byte.class, char.class, short.class, int.class, long.class,
+//		float.class, double.class, 
+		Boolean.class, Byte.class, Character.class, Short.class,
 		Integer.class, Long.class, Float.class, Double.class, String.class,
 		Class.class,
-		boolean[].class, byte[].class, char[].class, short[].class, int[].class, long[].class,
-		float[].class, double[].class, Boolean[].class, Byte[].class, Character[].class, Short[].class,
-		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
-		SharedObject[].class,
+//		boolean[].class, byte[].class, char[].class, short[].class, int[].class, long[].class,
+//		float[].class, double[].class, 
+//		Boolean[].class, Byte[].class, Character[].class, Short[].class,
+//		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
+//		SharedObject[].class,
 	}; 
 	
 	public static transient final Class<?>[] ALLOWED_IF_FINAL_MEMBER = {
@@ -66,17 +70,19 @@ public class SharedObject implements Serializable {
 	 * the name of the package SharedObject is part of 
 	 */
 	public static transient final String SHARED_PACKAGE_NAME;
-	static {
-		String fullName = SharedObject.class.getCanonicalName();
-		SHARED_PACKAGE_NAME = fullName.substring(0, fullName.lastIndexOf('.')+1);
-		checked = new HashSet<Class<?>>();
-		selfTest();
-	}
-	
 	/**
 	 * if a class was already checked and found to be okay, it can be added here
 	 */
 	private static transient final Set<Class<?>> checked;
+
+	static {
+		String fullName = SharedObject.class.getCanonicalName();
+		SHARED_PACKAGE_NAME = fullName.substring(0, fullName.lastIndexOf('.')+1);
+		checked = new HashSet<Class<?>>();
+		checked.add(java.lang.String.class);
+		selfTest();
+	}
+	
 	
 	/**
 	 * checks all classes in {@link OTHER_INTRANSIENT_MEMBER_CLASSES}
@@ -106,7 +112,7 @@ public class SharedObject implements Serializable {
 		}
 	}
 	
-	
+
 	//////
 	//
 	// INSTANCE
@@ -125,134 +131,258 @@ public class SharedObject implements Serializable {
 	}
 	
 	public final boolean isShareable() throws ClassCastException {
-		StringBuilder failMessage = new StringBuilder();
-		if (!isShareable(this.getClass(), failMessage)) {
-			String msg = "class extends SharedObject but is not shared:\n" + failMessage.toString();
-			throw new ClassCastException(msg);
+		Stack<CheckedItem> checkStack = new Stack<CheckedItem>(new CheckedItem(this.getClass(), this));
+		if (!isShareable(checkStack)) {
+			//TODO stack is not correct at this point
+			StringBuilder msg =  new StringBuilder();
+			catMsgFromStack(checkStack, msg);
+			msg.insert(0, ", but is not shared: ");
+			msg.insert(0, SharedObject.class.getCanonicalName());
+			msg.insert(0, "class extends ");
+			throw new ClassCastException(msg.toString());
 		}
 		return true;
 	}
 	
-	private boolean isShareable(Class<?> classToCheck, StringBuilder failMessage) {
-		if (java.lang.String.class.equals(classToCheck)) {
-			return true;				// no harm, let it slide. ^^
+	private void catMsgFromStack(Stack<CheckedItem> stack, StringBuilder msg) {
+		int indentSize = 2;
+		char[] fullIndentChars = new char[indentSize * stack.size()];
+		Arrays.fill(fullIndentChars, ' ');
+		String fullIndent = new String(fullIndentChars);
+		while (!stack.empty()) {
+			CheckedItem chk = stack.pop();
+			msg.insert(0, chk.msg);
+			msg.insert(0, fullIndent.substring(0, indentSize * stack.size()));
+			msg.insert(0, "\n");
 		}
-		if (checked.contains(classToCheck)) {
-			return true;
-		}
-		String simpleClassName = classToCheck.getSimpleName();
-		if (!satisfiesClassRequirements(classToCheck)) {
-			failMessage.append(classToCheck.getCanonicalName() + " is not shared");
-			return false;
-		}
-		for (Field field : classToCheck.getDeclaredFields() ) {
-			String fieldName = field.getName();
-			int fieldModifiers = field.getModifiers();
-			if ( Modifier.isTransient(fieldModifiers) ) {
-				continue;
-			}
-			Class<?> fieldType = field.getType();
-			if (SharedObject.class.isAssignableFrom(fieldType) || classToCheck.isEnum()) {
-				continue;	// prevent mad recursion (SharedObjects take care of themselves)
-			}
-			if (isAllowedForFinalMembers(fieldType)) {
-				if ( !(Modifier.isFinal(fieldModifiers) && Modifier.isPublic(fieldModifiers)) ) {
-					String msg = String.format("%s.%s: type (%s) is allowed, but field must be public final",
-							simpleClassName, fieldName, fieldType.getSimpleName());
-					failMessage.append(msg);
+	}
+	
+	private boolean isShareable(Stack<CheckedItem> toCheck) {
+		Stack<Class<?>> checking = new Stack<Class<?>>();
+		while (!toCheck.empty()) {
+			CheckedItem item = toCheck.pop();
+			Class<?> type = item.type;
+			if (!(checked.contains(type) || checking.contains(type))) {
+				checking.push(type);
+				if (!(isAllowed(item) || isShared(item.type))) {
+					toCheck.push(item);
 					return false;
 				}
-//				Type type = field.getGenericType();
-//				if (type instanceof ParameterizedType) {
-//					System.out.println(type);
-//					if (genericsAreOkay((ParameterizedType) type)) {
-//						continue;
-//					}
-//					return false;
-//				}
-				Object value = null;
-				try {
-					value = field.get(this); 
-				} catch (IllegalAccessException e) {
-					assert false : String.format("SharedObject.isShared(class): Illegal Access on %s %s.%s",
-							fieldType.getSimpleName(), simpleClassName, fieldName);
-					continue;
+				List<Field> fields = Arrays.asList(type.getDeclaredFields());
+				fields = filter(fields, isNotTransient);
+				fields = filter(fields, isNotShared);
+				fields = filter(fields, isNotEnumSelfReference);
+				fields = filter(fields, isNotPrimitive);
+				for (Field field : fields) {
+					type = field.getType();
+					//TODO do this where? getValue()...?
+					//type = type.isArray() ? type.getComponentType() : type;
+					toCheck.push(new CheckedItem(field, null));
+					if (!isPublicFinal(type.getModifiers())) {
+						if (!isPublicFinal(field.getModifiers())) {
+							return false;
+						} else {
+							CheckedItem chk = toCheck.pop();
+							Object value = getValue(field, item.instance);
+							// getValueType()
+							// if ValueType != null: continue
+							if (value == null) {
+								continue;
+							}
+							toCheck.push(chk.changeType(value.getClass(), value));
+						}
+					}
 				}
-				if (value == null) {
-					continue;
-				}
-				fieldType = value.getClass(); 
-			}
-			if (isGeneric(field)) {
-				continue;
-			}
-			if (!isShareable(fieldType, failMessage)) {
-				String msg = simpleClassName + "." + fieldName + ":\n";
-				failMessage.insert(0, msg);
-				return false;
 			}
 		}
-		checked.add(classToCheck);
+		checked.addAll(checking);
 		return true;
 	}
 	
-	private boolean isGeneric(Field field) {
-			String[] generics = null;
-			try {
-				Field genericField = field.getDeclaringClass().getDeclaredField("generics");
-				generics = (String[]) genericField.get(this);
-			} catch (SecurityException e) {
-				return false;
-			} catch (NoSuchFieldException e) {
-				return false;
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				return false;
+//	private boolean fieldsAreShareable(Stack<CheckedItem> toCheck) {
+//		return false;
+//	}
+	
+	
+	// courtesy of 
+	// http://www.java2s.com/Code/Java/Collections-Data-Structure/extendsArrayListTtocreateStack.htm
+	@SuppressWarnings("serial")
+	private class Stack<T> extends ArrayList<T> {
+		public Stack() {
+			this(20);
+		}
+		
+		public Stack(int initialCap) {
+			super(initialCap);
+		}
+		
+		public Stack(T firstElement) {
+			super();
+			this.push(firstElement);
+		}
+		
+	    public void push(T value) {
+	        add(value);
+	    }
+
+	    public T pop() {
+	        return remove(size() - 1);
+	    }
+
+	    public boolean empty() {
+	        return size() == 0;
+	    }
+
+	    public T peek() {
+	        return get(size() - 1);
+	    }
+	    
+	    @Override
+	    public String toString() {
+	    	StringBuilder str = new StringBuilder();
+	    	for (int i = size() - 1; i >= 0; i--) {
+	    		str.append(get(i).toString() + " ");
+	    	}
+	    	str.insert(0, "stk: ");
+	    	return str.toString();
+	    }
+		
+	}
+	
+	
+	
+	////////
+	//
+	// STATIC PRIVATE
+	//
+	////////
+
+	/**
+	 * utility method to quickly filter a list by applying a predicate
+	 */
+	private static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
+		List<T> result = new ArrayList<T>(list.size());
+		for (T e : list) {
+			if (predicate.eval(e)) {
+				result.add(e);
 			}
-			System.out.println("generics: " + generics);
-			for (String name : generics) {
-				if (name.equals(field.getName())) {
+		}
+		return result;
+	}
+	
+	private static transient final Predicate<Field> isNotTransient = new Predicate<Field>() {
+		@Override
+		public boolean eval(Field x) { 
+			return !Modifier.isTransient(x.getModifiers());
+		}
+	};
+	
+	private static transient final Predicate<Field> isNotShared = new Predicate<Field>() {
+		@Override
+		public boolean eval(Field x) {
+//			return !SharedObject.class.isAssignableFrom(x.getType());
+			return !isShared(x.getType());
+		}
+	};
+	
+	private static transient final Predicate<Field> isNotEnumSelfReference = new Predicate<Field>() {
+		@Override
+		public boolean eval(Field x) {
+			Class<?> type = x.getType();
+			return !(type.isEnum() && type.equals(x.getDeclaringClass()));
+		}
+	};
+	
+	private static transient final Predicate<Field> isNotPrimitive = new Predicate<Field>() {
+		@Override
+		public boolean eval(Field x) {
+			Class<?> type = x.getType();
+			return !(type.isPrimitive());
+		}
+	};
+	
+	
+	private static boolean isAllowed(CheckedItem chk) {
+		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+			if (c.isAssignableFrom(chk.type)) {
+				return true;
+			}
+		}
+		if (isPublicFinal(chk.modifiers)) {
+			for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
+				if (c.isAssignableFrom(chk.type)) {
 					return true;
 				}
 			}
-		return false;
-	}
-	
-	private boolean genericsAreOkay(ParameterizedType ptype) {
-			for (Type type : ptype.getActualTypeArguments()) {
-				System.out.println(type);
-			}
-		return true;
-	}
-	
-	private boolean satisfiesClassRequirements(Class<?> c) {
-		if (! ((SharedObject.class.isAssignableFrom(c) || c.isInterface() || c.isEnum())
-				&& c.getCanonicalName().startsWith(SHARED_PACKAGE_NAME)
-			 	)
-			&& !isAllowedClass(c)) {
-			return false;
-		}
-		return true;
-	}
-	
-	private boolean isAllowedClass(Class<?> checkMe) {
-		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
-			if (c.equals(checkMe)) {
-				return true;
-			}
 		}
 		return false;
 	}
 	
-	private boolean isAllowedForFinalMembers(Class<?> checkMe) {
-		for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
-			if (c.equals(checkMe)) {
-				return true;
-			}
+	private static boolean isShared(Class<?> type) {
+		boolean result =  (SharedObject.class.isAssignableFrom(type)
+							|| type.isInterface() || type.isEnum())
+			&& type.getCanonicalName().startsWith(SHARED_PACKAGE_NAME);
+		return result;
+	}
+	
+	private static boolean isPublicFinal(int modifiers) {
+		return Modifier.isPublic(modifiers) && Modifier.isFinal(modifiers);
+	}
+	
+	private static Object getValue(Field field, Object instance) {
+		try {
+			//return field.get(this);
+			return field.get(instance);
+		} catch (NullPointerException e) {
+			// nyahaha
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
-		return false;
+		return null;
+	}
+	
+	// http://stackoverflow.com/questions/122105/java-what-is-the-best-way-to-filter-a-collection
+	private interface Predicate<T> {
+		boolean eval(T x);
+	}
+	
+	private class CheckedItem {
+		public final Class<?> type;
+		public final Object instance;
+		public final int modifiers;
+		public final String msg;
+		
+		public CheckedItem(Class<?> clazz, Object instance) {
+			this(clazz, instance, clazz.getModifiers(), clazz.getSimpleName());
+		}
+		
+		public CheckedItem(Field field, Object value) {
+			this(field.getType(), value, field.getType().getModifiers(), 
+					field.getType().getSimpleName() + ' ' + field.getName() + ':');
+		}
+		
+		public CheckedItem(Class<?> type, Object instance, int modifier, String msg) {
+			assert type != null;
+			assert msg != null;
+			this.type = type;
+			this.instance = instance;
+			this.modifiers = modifier;
+			this.msg = msg;
+		}
+		
+		public CheckedItem changeType(Class<?> newType, Object newInstance) {
+			assert newType != null;
+			return new CheckedItem(newType, newInstance, this.modifiers, this.msg);
+		}
+		
+		@Override
+		public String toString() {
+//			return String.format("chk[%s (%s), %d] -> %s", type.getSimpleName(), instance.toString(), modifiers, msg); 
+			return String.format("[%s]", type.getSimpleName()); 
+		}
+		
 	}
 	
 }
