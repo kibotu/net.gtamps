@@ -1,7 +1,6 @@
 package net.gtamps.shared;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -11,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -40,12 +41,14 @@ public class SharedObject implements Serializable {
 	
 	private static final long serialVersionUID = -6150947536448498287L;
 
+	/** the name of the package SharedObject is part of */
+	public static transient final String SHARED_PACKAGE_NAME;
+
 	/**
 	 * classes that do not extend SharedObject but are known to be shared.
 	 * <p/>
 	 * They must be <tt>final</tt>, as well as the declared types of all 
 	 * declared fields not marked <tt>transient</tt>.
-	 *  
 	 */
 	public static transient final Class<?>[] OTHER_INTRANSIENT_MEMBER_CLASSES = {
 	// Arrays and primitives should be taken care of
@@ -61,18 +64,13 @@ public class SharedObject implements Serializable {
 //		SharedObject[].class,
 	}; 
 	
+	/** types allowed for public final members */
 	public static transient final Class<?>[] ALLOWED_IF_FINAL_MEMBER = {
 		java.util.List.class, java.util.Map.class, java.util.ArrayList.class,
 		java.util.HashMap.class
 	};
 
-	/**
-	 * the name of the package SharedObject is part of 
-	 */
-	public static transient final String SHARED_PACKAGE_NAME;
-	/**
-	 * if a class was already checked and found to be okay, it can be added here
-	 */
+	/** class that were checked and found to be okay */
 	private static transient final Set<Class<?>> checked;
 
 	static {
@@ -83,7 +81,7 @@ public class SharedObject implements Serializable {
 		selfTest();
 	}
 	
-	
+	// TODO reconsider
 	/**
 	 * checks all classes in {@link OTHER_INTRANSIENT_MEMBER_CLASSES}
 	 * if they're <tt>final</tt>. this may pre-populate
@@ -120,8 +118,9 @@ public class SharedObject implements Serializable {
 	//////
 	
 	/**
-	 * This constructor makes sure that every class extending SharedObject
-	 * follows the sharing rules. See rules in {@link SharedObject}.
+	 * If assertions are enabled, this constructor makes sure that every 
+	 * class extending SharedObject follows the sharing rules. 
+	 * See rules in {@link SharedObject}.
 	 * 
 	 * @throws ClassCastException	if sharing rules are broken
 	 * 
@@ -130,6 +129,12 @@ public class SharedObject implements Serializable {
 		assert isShareable();
 	}
 	
+	/**
+	 * You can use this method for runtime checks.
+	 * 
+	 * @return
+	 * @throws ClassCastException
+	 */
 	public final boolean isShareable() throws ClassCastException {
 		Stack<CheckedItem> checkStack = new Stack<CheckedItem>(new CheckedItem(this.getClass(), this));
 		if (!isShareable(checkStack)) {
@@ -144,19 +149,7 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
-	private void catMsgFromStack(Stack<CheckedItem> stack, StringBuilder msg) {
-		int indentSize = 2;
-		char[] fullIndentChars = new char[indentSize * stack.size()];
-		Arrays.fill(fullIndentChars, ' ');
-		String fullIndent = new String(fullIndentChars);
-		while (!stack.empty()) {
-			CheckedItem chk = stack.pop();
-			msg.insert(0, chk.msg);
-			msg.insert(0, fullIndent.substring(0, indentSize * stack.size()));
-			msg.insert(0, "\n");
-		}
-	}
-	
+	// TODO swap toCheck (make local) and checking (make argument)
 	private boolean isShareable(Stack<CheckedItem> toCheck) {
 		Stack<Class<?>> checking = new Stack<Class<?>>();
 		while (!toCheck.empty()) {
@@ -164,7 +157,8 @@ public class SharedObject implements Serializable {
 			Class<?> type = item.type;
 			if (!(checked.contains(type) || checking.contains(type))) {
 				checking.push(type);
-				if (!(isAllowed(item) || isShared(item.type))) {
+				// TODO swap
+				if (!(isAllowed(item) || isShared(type))) {
 					toCheck.push(item);
 					return false;
 				}
@@ -195,7 +189,7 @@ public class SharedObject implements Serializable {
 				}
 			}
 		}
-		checked.addAll(checking);
+		checked.addAll(checking); //use filter
 		return true;
 	}
 	
@@ -203,9 +197,30 @@ public class SharedObject implements Serializable {
 //		return false;
 //	}
 	
+	/**
+	 * builds an error message from the checking stack
+	 * @param stack		the checking stack, after {@link #isShareable(Stack)} failed
+	 * @param msg		the error message will be inserted at index <tt>0</tt>
+	 */
+	private void catMsgFromStack(Stack<CheckedItem> stack, StringBuilder msg) {
+		int indentSize = 2;
+		char[] fullIndentChars = new char[indentSize * stack.size()];
+		Arrays.fill(fullIndentChars, ' ');
+		String fullIndent = new String(fullIndentChars);
+		while (!stack.empty()) {
+			CheckedItem chk = stack.pop();
+			msg.insert(0, chk.msg);
+			msg.insert(0, fullIndent.substring(0, indentSize * stack.size()));
+			msg.insert(0, "\n");
+		}
+	}
 	
-	// courtesy of 
-	// http://www.java2s.com/Code/Java/Collections-Data-Structure/extendsArrayListTtocreateStack.htm
+	
+	/**
+	 * a quick stack implementation, courtesy of www.java2s.com
+	 * @see <a href="http://www.java2s.com/Code/Java/Collections-Data-Structure/extendsArrayListTtocreateStack.htm">www.java2s.com</a>
+	 * @param <T>
+	 */
 	@SuppressWarnings("serial")
 	private class Stack<T> extends ArrayList<T> {
 		public Stack() {
@@ -233,7 +248,8 @@ public class SharedObject implements Serializable {
 	        return size() == 0;
 	    }
 
-	    public T peek() {
+	    @SuppressWarnings("unused")
+		public T peek() {
 	        return get(size() - 1);
 	    }
 	    
@@ -348,8 +364,14 @@ public class SharedObject implements Serializable {
 		boolean eval(T x);
 	}
 	
+	/**
+	 * groups relevant data for a shareability check
+	 * 
+	 * @author til, tom, jan
+	 */
 	private class CheckedItem {
 		public final Class<?> type;
+		@Nullable 
 		public final Object instance;
 		public final int modifiers;
 		public final String msg;
@@ -379,7 +401,7 @@ public class SharedObject implements Serializable {
 		
 		@Override
 		public String toString() {
-//			return String.format("chk[%s (%s), %d] -> %s", type.getSimpleName(), instance.toString(), modifiers, msg); 
+			//return String.format("chk[%s (%s), %d] -> %s", type.getSimpleName(), instance.toString(), modifiers, msg); 
 			return String.format("[%s]", type.getSimpleName()); 
 		}
 		
