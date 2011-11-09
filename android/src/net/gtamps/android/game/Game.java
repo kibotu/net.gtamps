@@ -99,6 +99,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         //onDrawFrame2();
     }
 
+    @Deprecated
     private void onDrawFrame2() {
 
         // zoom
@@ -168,6 +169,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
     private long impulse = 0;
 
+    @Deprecated
     private void fireImpulse(float angle, Vector3 force) {
         if (!connection.isConnected()) return;
 
