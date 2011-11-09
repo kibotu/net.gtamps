@@ -203,6 +203,7 @@ public class SharedObject implements Serializable {
 	//
 	////////
 	
+	/** one last method to pass the check: @see {@link CheckItem#checkedGeneric} */
 	private static transient final Predicate<CheckItem> finalAppeal = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -215,6 +216,7 @@ public class SharedObject implements Serializable {
 	};
 	
 
+	/** @see #isShared(Class) */
 	private static transient final Predicate<CheckItem> isShareableItem = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -226,6 +228,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** see if CheckItem is in {@link #OTHER_INTRANSIENT_MEMBER_CLASSES} */
 	private static transient final Predicate<CheckItem> isExplicitlyAllowed = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -242,6 +245,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** if CheckItem derives from a field, see if its type or itself have 'public final' modifiers */
 	private static transient final Predicate<CheckItem> isOKPublicFinal = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -253,6 +257,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** is the type (class) represented by CheckItem public final? */
 	private static transient final Predicate<CheckItem> isPublicFinalClass = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -267,10 +272,11 @@ public class SharedObject implements Serializable {
 		}
 	};
 
+	/** if CheckItem derives from a field, is the field declared as 'public final'? */
 	private static transient final Predicate<CheckItem> isPublicFinalField = new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
-			if (Modifier.isPublic(x.fieldModifiers) && Modifier.isFinal(x.fieldModifiers)) {
+			if (x.fromField && Modifier.isPublic(x.fieldModifiers) && Modifier.isFinal(x.fieldModifiers)) {
 				return true;
 			}
 			return false;
@@ -281,9 +287,11 @@ public class SharedObject implements Serializable {
 		}
 	};
 
+	/** {@link #isPublicFinalClass} || {@link #isPublicFinalField} */
 	private static transient final Predicate<CheckItem> isPublicFinal = 
 		PredicateModifier.or(isPublicFinalClass, isPublicFinalField);
 
+	/** {@link Class#isPrimitive() CheckItem.type.isPrimitive}? */
 	private static transient final Predicate<CheckItem> isPrimitive= new Predicate<CheckItem>() {
 		@Override
 		public boolean isTrueFor(final CheckItem x) {
@@ -294,9 +302,9 @@ public class SharedObject implements Serializable {
 			return "p(x) := isPrimitive(CheckItem)";
 		}
 	};
-	
 
-	private static transient final Predicate<Field> isCheckedGeneric = new Predicate<Field>() {
+	/**	is a field annotated with {@linkplain CheckedShareable}? */
+	private static transient final Predicate<Field> isCheckedShareable = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(final Field x) { 
 			return x.getAnnotation(CheckedShareable.class) != null; 
@@ -318,6 +326,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** {@link #isShared(Class) isShared(Field.getType())}? */
 	private static transient final Predicate<Field> isSharedField = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(final Field x) {
@@ -329,6 +338,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** is the field a member of an Enum and referencing this enum? */
 	private static transient final Predicate<Field> isEnumSelfReference = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(final Field x) {
@@ -341,6 +351,7 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
+	/** does the field represent a primitive value? */
 	private static transient final Predicate<Field> isPrimitiveField = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(final Field x) {
@@ -423,7 +434,7 @@ public class SharedObject implements Serializable {
 					this.instance = null;
 					
 				}
-				this.checkedGeneric = isCheckedGeneric.isTrueFor(field);
+				this.checkedGeneric = isCheckedShareable.isTrueFor(field);
 				final String tmpName = field.getName();
 				this.fieldName = tmpName.substring(tmpName.lastIndexOf('.') + 1);
 				this.fieldModifiers = field.getModifiers();
