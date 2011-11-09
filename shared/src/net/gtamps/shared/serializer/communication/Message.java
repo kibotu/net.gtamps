@@ -2,6 +2,7 @@ package net.gtamps.shared.serializer.communication;
 
 import java.util.ArrayList;
 
+import net.gtamps.shared.CheckedShareable;
 import net.gtamps.shared.SharedObject;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +14,10 @@ public class Message extends SharedObject {
 	@NotNull
     private volatile String sessionId;
 
+	@CheckedShareable
     public final ArrayList<Sendable> sendables;
 
-    public Message(@NotNull Sendable sendable) {
+    public Message(@NotNull final Sendable sendable) {
         this();
         sendables.add(sendable);
     }
@@ -24,7 +26,7 @@ public class Message extends SharedObject {
         sendables = new ArrayList<Sendable>();
     }
 
-    public void addSendable(Sendable sendable) {
+    public void addSendable(final Sendable sendable) {
         sendables.add(sendable);
     }
 
@@ -34,9 +36,9 @@ public class Message extends SharedObject {
         return sessionId;
     }
 
-    public void setSessionId(@NotNull String sessionId) {
+    public void setSessionId(@NotNull final String sessionId) {
         this.sessionId = sessionId;
-        for (Sendable s : sendables) {
+        for (final Sendable s : sendables) {
             s.sessionId = sessionId;
         }
     }

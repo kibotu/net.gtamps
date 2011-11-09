@@ -3,14 +3,15 @@ package net.gtamps.shared;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
 import java.util.Set;
+
+import net.gtamps.shared.Utils.Stack;
+import net.gtamps.shared.Utils.predicate.FilteringArrayList;
+import net.gtamps.shared.Utils.predicate.FilteringCollection;
+import net.gtamps.shared.Utils.predicate.Predicate;
+import net.gtamps.shared.Utils.predicate.PredicateModifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +48,6 @@ public class SharedObject implements Serializable {
 	//
 	//////
 	
-	private static final long serialVersionUID = -6150947536448498287L;
 
 	/** the name of the package SharedObject is part of */
 	public static transient final String SHARED_PACKAGE_NAME;
@@ -64,56 +64,25 @@ public class SharedObject implements Serializable {
 		Class.class,
 	}; 
 	
-	/** types allowed for public final members */
-	public static transient final Class<?>[] ALLOWED_IF_FINAL_MEMBER = {
-		java.util.List.class, java.util.Map.class, java.util.ArrayList.class,
-		java.util.HashMap.class
-	};
-
 	/** class that were checked and found to be okay */
 	private static transient final Set<Class<?>> checked;
 
 	static {
-		String fullName = SharedObject.class.getCanonicalName();
+		final String fullName = SharedObject.class.getCanonicalName();
 		SHARED_PACKAGE_NAME = fullName.substring(0, fullName.lastIndexOf('.')+1);
 		checked = new HashSet<Class<?>>();
 		checked.add(java.lang.String.class);
 		selfTest();
 	}
 	
-	public static boolean isShareable(Object o) {
-		return isShared(o.getClass());
-	}
 	
-	// TODO reconsider
 	/**
-	 * checks all classes in {@link OTHER_INTRANSIENT_MEMBER_CLASSES}
-	 * if they're <tt>final</tt>. this may pre-populate
-	 * {@link #checked}.
-	 * </p>
-	 * if a non-final class is encountered, an IllegalArgumentException 
-	 * is thrown.
-	 * <p/>
-	 * Note: this should reasonably also check every class' fields, but
-	 * Java wrapper classes contain Comparators... 
+	 * checks if all {@link OTHER_INTRANSIENT_MEMBER_CLASSES} are final
 	 *  
 	 * @throws IllegalArgumentException		if a non-final class is encountered
 	 */
 	private static void selfTest() throws IllegalArgumentException {
-		Queue<Class<?>> q = new LinkedList<Class<?>>();
-		q.addAll(Arrays.asList(OTHER_INTRANSIENT_MEMBER_CLASSES));
-		while (!q.isEmpty()) {
-			Class<?> c = q.poll();
-			if (checked.contains(c)) {
-				continue;
-			}
-			if (!Modifier.isFinal(c.getModifiers())) {
-				throw new IllegalArgumentException("class in OTHER_"
-						+ "INTRANSIENT_MEMBER_CLASSES must be final: " 
-						+ c.getSimpleName());
-			}
-			checked.add(c);
-		}
+		System.err.println("SharedObject.selfTest() is not implemented and does nothing useful.");
 	}
 	
 
@@ -136,16 +105,17 @@ public class SharedObject implements Serializable {
 	}
 	
 	/**
-	 * You can use this method for runtime checks.
+	 * You can use this method for runtime checks. It uses the same
+	 * checking logic as the constructor.
 	 * 
 	 * @return
 	 * @throws ClassCastException
 	 */
 	public final boolean isShareable() throws ClassCastException {
-		Stack<CheckItem> checkStack = new Stack<CheckItem>(
+		final Stack<CheckItem> checkStack = new Stack<CheckItem>(
 				new CheckItem(this.getClass(), this));
 		if (!isShareable(checkStack, true)) {
-			StringBuilder msg =  new StringBuilder();
+			final StringBuilder msg =  new StringBuilder();
 			catMsgFromStack(checkStack, msg);
 			msg.insert(0, ", but is not shared: ");
 			msg.insert(0, SharedObject.class.getCanonicalName());
@@ -155,29 +125,51 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
-	private boolean isShareable(Stack<CheckItem> checkStack, boolean considerFinalAppeal) {
+	/**
+	 * wraps all shareable criteria in one check
+	 * 
+	 * @param considerFinalAppeal	let items pass the test for whom {@link #finalAppeal} returns true	
+	 */
+	private boolean itemIsShareable(final CheckItem item, final boolean considerFinalAppeal) {
+		if ((isShareableItem.isTrueFor(item)	
+				|| isExplicitlyAllowed.isTrueFor(item)) 
+			&& isOKPublicFinal.isTrueFor(item)) {
+			return true;
+		}
+		if (considerFinalAppeal && finalAppeal.isTrueFor(item)) {
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param checkStack			the {@link CheckItem} for the root testee is expected to be the sole occupant of the stack
+	 * @param considerFinalAppeal	let items pass the test for whom {@link #finalAppeal} returns true
+	 */
+	private boolean isShareable(final Stack<CheckItem> checkStack, final boolean considerFinalAppeal) {
 		assert checkStack.size() == 1;
-		Stack<CheckItem> todo = new Stack<CheckItem>();
+		final Stack<CheckItem> todo = new Stack<CheckItem>();
 		todo.push(checkStack.pop());
 		while (!todo.empty()) {
-			CheckItem item = todo.peek();
+			final CheckItem item = todo.peek();
 			if (!(checked.contains(item.type) || checkStack.contains(item))) {
 				checkStack.push(item);
-				if (!(isShareableItem.isTrueFor(item) 
-						|| isExplicitlyAllowed.isTrueFor(item) 
-						|| isOKPublicFinal.isTrueFor(item))) {
-					if (!(considerFinalAppeal && finalAppeal.isTrueFor(item))) {
-						return false;
-					}
+				if (!itemIsShareable(item, true)) {
+					return false;
 				}
-				FilterableCollection<Field> fields = FilterableList.fromArray(item.type.getDeclaredFields());
-				fields = fields.removeAll(or.applyTo(isTransient, isSharedField, isEnumSelfReference, isPrimitive));
-				for (Field field : fields) {
+				FilteringCollection<Field> fields = FilteringArrayList.fromArray(item.type.getDeclaredFields());
+				fields = fields.removeAll(isTransientField)
+							.removeAll(isPrimitiveField)
+							.removeAll(isSharedField)
+							.removeAll(isEnumSelfReference);
+				for (final Field field : fields) {
 					todo.push(new CheckItem(field, item.instance));
 				}
 			}
 			if (item == todo.peek()) {
-				checked.add(item.type);
+				if (itemIsShareable(item, false)) {
+					checked.add(item.type);
+				}
 				todo.pop();
 				if (checkStack.size() != 0 && item == checkStack.peek()) {
 					checkStack.pop();
@@ -192,75 +184,18 @@ public class SharedObject implements Serializable {
 	 * @param stack		the checking stack, after {@link #isShareable(Stack)} failed
 	 * @param msg		the error message will be inserted at index <tt>0</tt>
 	 */
-	private void catMsgFromStack(Stack<CheckItem> stack, StringBuilder msg) {
-		int indentSize = 2;
-		char[] fullIndentChars = new char[indentSize * stack.size()];
+	private void catMsgFromStack(final Stack<CheckItem> stack, final StringBuilder msg) {
+		final int indentSize = 2;
+		final char[] fullIndentChars = new char[indentSize * stack.size()];
 		Arrays.fill(fullIndentChars, ' ');
-		String fullIndent = new String(fullIndentChars);
+		final String fullIndent = new String(fullIndentChars);
 		while (!stack.empty()) {
-			CheckItem chk = stack.pop();
+			final CheckItem chk = stack.pop();
 			msg.insert(0, chk.toString());
 			msg.insert(0, fullIndent.substring(0, indentSize * stack.size()));
 			msg.insert(0, "\n");
 		}
 	}
-	
-	
-	/**
-	 * a quick stack implementation, courtesy of www.java2s.com
-	 * @see <a href="http://www.java2s.com/Code/Java/Collections-Data-Structure/extendsArrayListTtocreateStack.htm">www.java2s.com</a>
-	 * @param <T>
-	 */
-	@SuppressWarnings("serial")
-	private class Stack<T> extends ArrayList<T> {
-		public Stack() {
-			this(20);
-		}
-		
-		public Stack(int initialCap) {
-			super(initialCap);
-		}
-		
-		public Stack(T firstElement) {
-			super(20);
-			this.push(firstElement);
-		}
-		
-	    public void push(T value) {
-	        add(value);
-	    }
-
-	    public T pop() throws NoSuchElementException {
-			if (size() < 1) {
-				throw new NoSuchElementException("stack is empty");
-			}
-	        return remove(size() - 1);
-	    }
-
-	    public boolean empty() {
-	        return size() == 0;
-	    }
-
-		public T peek() throws NoSuchElementException {
-			if (size() < 1) {
-				throw new NoSuchElementException("stack is empty");
-			}
-	        return get(size() - 1);
-	    }
-	    
-	    @Override
-	    public String toString() {
-	    	StringBuilder str = new StringBuilder();
-	    	for (int i = size() - 1; i >= 0; i--) {
-	    		str.append(get(i).toString() + " ");
-	    	}
-	    	str.insert(0, "stk: ");
-	    	return str.toString();
-	    }
-		
-	}
-	
-	
 	
 	////////
 	//
@@ -270,9 +205,10 @@ public class SharedObject implements Serializable {
 	
 	private static transient final Predicate<CheckItem> finalAppeal = new Predicate<CheckItem>() {
 		@Override
-		public boolean isTrueFor(CheckItem x) {
+		public boolean isTrueFor(final CheckItem x) {
 			return x.checkedGeneric;
 		}
+		@Override
 		public String toString() {
 			return "p(x) := finalAppeal(CheckItem)";
 		}
@@ -281,9 +217,10 @@ public class SharedObject implements Serializable {
 
 	private static transient final Predicate<CheckItem> isShareableItem = new Predicate<CheckItem>() {
 		@Override
-		public boolean isTrueFor(CheckItem x) {
+		public boolean isTrueFor(final CheckItem x) {
 			return isShared(x.type);
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isShared(CheckItem)";
 		}
@@ -291,14 +228,15 @@ public class SharedObject implements Serializable {
 	
 	private static transient final Predicate<CheckItem> isExplicitlyAllowed = new Predicate<CheckItem>() {
 		@Override
-		public boolean isTrueFor(CheckItem x) {
-			for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+		public boolean isTrueFor(final CheckItem x) {
+			for (final Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
 				if (c.isAssignableFrom(x.type)) {
 					return true;
 				}
 			}
 			return false; 
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isExplicitlyAllowed(CheckItem)";
 		}
@@ -306,53 +244,75 @@ public class SharedObject implements Serializable {
 	
 	private static transient final Predicate<CheckItem> isOKPublicFinal = new Predicate<CheckItem>() {
 		@Override
-		public boolean isTrueFor(CheckItem x) {
-			if (!isPublicFinal.isTrueFor(x)) {
-				return false;
-			}
-			for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
-				if (c.isAssignableFrom(x.type)) {
-					return true;
-				}
-			}
-			return false; 
+		public boolean isTrueFor(final CheckItem x) {
+			return (!x.fromField || isPublicFinal.isTrueFor(x)); 
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isOKPublicFinal(CheckItem)";
 		}
 	};
 	
-	private static transient final Predicate<CheckItem> isPublicFinal = new Predicate<CheckItem>() {
+	private static transient final Predicate<CheckItem> isPublicFinalClass = new Predicate<CheckItem>() {
 		@Override
-		public boolean isTrueFor(CheckItem x) {
+		public boolean isTrueFor(final CheckItem x) {
 			if (Modifier.isPublic(x.classModifiers) && Modifier.isFinal(x.classModifiers)) {
-				return true;
-			}
-			if (Modifier.isPublic(x.fieldModifiers) && Modifier.isFinal(x.fieldModifiers)) {
 				return true;
 			}
 			return false;
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isPublicFinal(CheckItem)";
 		}
 	};
 
+	private static transient final Predicate<CheckItem> isPublicFinalField = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(final CheckItem x) {
+			if (Modifier.isPublic(x.fieldModifiers) && Modifier.isFinal(x.fieldModifiers)) {
+				return true;
+			}
+			return false;
+		}
+		@Override
+		public String toString() {
+			return "p(x) := isPublicFinal(CheckItem)";
+		}
+	};
+
+	private static transient final Predicate<CheckItem> isPublicFinal = 
+		PredicateModifier.or(isPublicFinalClass, isPublicFinalField);
+
+	private static transient final Predicate<CheckItem> isPrimitive= new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(final CheckItem x) {
+			return x.type.isPrimitive();
+		}
+		@Override
+		public String toString() {
+			return "p(x) := isPrimitive(CheckItem)";
+		}
+	};
+	
+
 	private static transient final Predicate<Field> isCheckedGeneric = new Predicate<Field>() {
 		@Override
-		public boolean isTrueFor(Field x) { 
+		public boolean isTrueFor(final Field x) { 
 			return x.getAnnotation(CheckedShareable.class) != null; 
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isCheckedGeneric(Field)";
 		}
 	}; 
 
-	private static transient final Predicate<Field> isTransient = new Predicate<Field>() {
+	private static transient final Predicate<Field> isTransientField = new Predicate<Field>() {
 		@Override
-		public boolean isTrueFor(Field x) { 
+		public boolean isTrueFor(final Field x) { 
 			return Modifier.isTransient(x.getModifiers());
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isTransient(Field)";
 		}
@@ -360,9 +320,10 @@ public class SharedObject implements Serializable {
 	
 	private static transient final Predicate<Field> isSharedField = new Predicate<Field>() {
 		@Override
-		public boolean isTrueFor(Field x) {
+		public boolean isTrueFor(final Field x) {
 			return isShared(x.getType());
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isShared(Field)";
 		}
@@ -370,134 +331,44 @@ public class SharedObject implements Serializable {
 	
 	private static transient final Predicate<Field> isEnumSelfReference = new Predicate<Field>() {
 		@Override
-		public boolean isTrueFor(Field x) {
-			Class<?> type = x.getType();
+		public boolean isTrueFor(final Field x) {
+			final Class<?> type = x.getType();
 			return (type.isEnum() && type.equals(x.getDeclaringClass()));
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isEnumSelfReference(Field)";
 		}
 	};
 	
-	private static transient final Predicate<Field> isPrimitive = new Predicate<Field>() {
+	private static transient final Predicate<Field> isPrimitiveField = new Predicate<Field>() {
 		@Override
-		public boolean isTrueFor(Field x) {
-			Class<?> type = x.getType();
+		public boolean isTrueFor(final Field x) {
+			final Class<?> type = x.getType();
 			return type.isPrimitive();
 		}
+		@Override
 		public String toString() {
 			return "p(x) := isPrimitive(Field)";
 		}
 	};
 	
-	@SuppressWarnings("rawtypes")
-	private static transient final MightyMorphinPredicate not = new MightyMorphinPredicate() {
-		@Override
-		public Predicate applyTo(final Predicate... subjects) {
-			assert subjects.length == 1 : "expects exactly one argument";
-			return new Predicate() {
-				public boolean isTrueFor(Object x) {
-					return !subjects[0].isTrueFor(x);
-				}
-			};
-		}
-	};
-	
-	@SuppressWarnings("rawtypes")
-	private static transient final MightyMorphinPredicate or = new MightyMorphinPredicate() {
-		@Override
-		public Predicate applyTo(final Predicate... subjects) {
-			if (subjects.length < 1) {
-				throw new IllegalArgumentException("must give at least one argument");
-			}
-			return new Predicate() {
-				public boolean isTrueFor(Object x) {
-					for (Predicate p : subjects) {
-						if (p.isTrueFor(x)) {
-							return true;
-						}
-					}
-					return false;
-				}
-			};
-		}
-	};
-
 	/**
 	 * @return	<tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
 	 * 			or enum in SharedObject's package tree
 	 */
-	private static boolean isShared(Class<?> type) {
-		boolean result =  (SharedObject.class.isAssignableFrom(type)
+	private static boolean isShared(final Class<?> type) {
+		Class<?>tmpType = type;
+		while(tmpType.isAnonymousClass() || tmpType.isLocalClass()) {
+			tmpType = tmpType.getEnclosingClass();
+		}
+		final String fullName = tmpType.getCanonicalName();
+		final boolean result =  (SharedObject.class.isAssignableFrom(type)
 							|| type.isInterface() || type.isEnum())
-			&& type.getCanonicalName().startsWith(SHARED_PACKAGE_NAME);
+			&& fullName.startsWith(SHARED_PACKAGE_NAME);
 		return result;
 	}
 	
-	// http://stackoverflow.com/questions/122105/java-what-is-the-best-way-to-filter-a-collection
-	private interface Predicate<T> {
-		boolean isTrueFor(T x);
-	}
-	
-	
-	private interface MightyMorphinPredicate<T> {
-		Predicate<T> applyTo(Predicate<T>... subjects);
-	}
-	
-	private interface FilterableCollection<T> extends Collection<T> {
-		public FilterableCollection<T> retainAll(Predicate<T> p);
-		public FilterableCollection<T> removeAll(Predicate<T> p);
-		public boolean trueForAll(Predicate<T> p);
-		public boolean trueForOne(Predicate<T> p);
-	}
-	
-	private static class FilterableList<T> extends ArrayList<T> implements FilterableCollection<T> {
-		
-		private static final long serialVersionUID = -9187173114053497973L;
-
-		public static <A> FilterableList<A> fromArray(A[] a) {
-			FilterableList<A> list = new FilterableList<A>();
-			list.ensureCapacity(a.length);
-			list.addAll(Arrays.asList(a));
-			return list;
-		}
-
-		@Override
-		public FilterableList<T> retainAll(Predicate<T> p) {
-			removeAll(not.applyTo(p));
-			return this;
-		}
-
-		@Override
-		public FilterableList<T> removeAll(Predicate<T> p) {
-			int i = 0;
-			while (i < size()) {
-				if (p.isTrueFor(get(i))) {
-					remove(i);
-				} else {
-					i++;
-				}
-			}
-			return this;
-		}
-
-		@Override
-		public boolean trueForAll(Predicate<T> p) {
-			return !trueForOne(not.applyTo(p));
-		}
-
-		@Override
-		public boolean trueForOne(Predicate<T> p) {
-			int size = size();
-			for (int i = 0; i < size; i++) {
-				if (p.isTrueFor(get(i))) {
-					return true;
-				}
-			}
-			return false;
-		}
-		
-	}
 	
 	/**
 	 * groups relevant data for a shareability check
@@ -508,21 +379,22 @@ public class SharedObject implements Serializable {
 		public final Class<?> type;
 		@Nullable 
 		public final boolean checkedGeneric;
+		public final boolean fromField;
 		public final Object instance;
 		public final int classModifiers;
 		public final int fieldModifiers;
 		public final String simpleTypeName;
 		public final String fieldName;
 		
-		private Object getFieldValue(Field field, Object owner) {
+		private Object getFieldValue(final Field field, final Object owner) {
 			assert field == null || owner != null : "if field != null, owner must also be != null";
 			Object o = null;
 			if (field != null) {
 				try {
 					o = field.get(owner);
-				} catch (IllegalArgumentException e) {
+				} catch (final IllegalArgumentException e) {
 					e.printStackTrace();
-				} catch (IllegalAccessException e) {
+				} catch (final IllegalAccessException e) {
 					System.err.println("illegal access on " + field);
 //					e.printStackTrace();
 				}
@@ -530,18 +402,19 @@ public class SharedObject implements Serializable {
 			return o;
 		}
 		
-		public CheckItem(Class<?> clazz, Object instance) {
+		public CheckItem(final Class<?> clazz, final Object instance) {
 			this(clazz, null, instance, null);
 		}
 		
-		public CheckItem(Field field, Object owner) {
+		public CheckItem(final Field field, final Object owner) {
 			this(null, field, null, owner);
 		}
 		
-		private CheckItem(Class<?> type, Field field, Object instance, Object fieldOwner) {
+		private CheckItem(final Class<?> type, final Field field, final Object instance, final Object fieldOwner) {
 			assert !(type == null && field == null) : "either type or field must be != null";
-			Object fieldValue = getFieldValue(field, fieldOwner);
+			final Object fieldValue = getFieldValue(field, fieldOwner);
 			if (field != null) {
+				this.fromField = true;
 				if (fieldValue != null) {
 					this.type = clarifyType(fieldValue.getClass());
 					this.instance = fieldValue;
@@ -551,10 +424,11 @@ public class SharedObject implements Serializable {
 					
 				}
 				this.checkedGeneric = isCheckedGeneric.isTrueFor(field);
-				String tmpName = field.getName();
+				final String tmpName = field.getName();
 				this.fieldName = tmpName.substring(tmpName.lastIndexOf('.') + 1);
 				this.fieldModifiers = field.getModifiers();
 			} else {
+				this.fromField = false;
 				this.type = clarifyType(type);
 				this.instance = instance;
 				this.checkedGeneric = false;
@@ -566,22 +440,34 @@ public class SharedObject implements Serializable {
 			this.simpleTypeName = this.type.getSimpleName();
 		}
 		
-		private Class<?> clarifyType(Class<?> type) {
+		/**
+		 * perform any final changes so that 
+		 * 
+		 * @param type
+		 * @return
+		 */
+		private Class<?> clarifyType(final Class<?> type) {
+			Class<?> properType = type;
+			// convert Arrays
 			if (type.isArray()) {
-				return type.getComponentType();
+				properType = type.getComponentType();
 			}
-			return type;
+			// exchange enclosing class for local and anonynous classes
+			// this might produce a type already on the checkstack (which is ok as long as they don't get added again)
+			while (properType.getEnclosingClass() != null) {
+				properType = properType.getEnclosingClass();
+			}
+			return properType;
 			
 		}
 		
 		@Override
 		public String toString() {
-			String string;
-			if ("".equals(fieldName)) {
-				string = String.format("%s %s", Modifier.toString(classModifiers), simpleTypeName);
-			} else {
-				string = String.format("%s %s %s", Modifier.toString(fieldModifiers), simpleTypeName, fieldName);
+			String string = "";
+			if (fromField) {
+				string += String.format("%s %s:", Modifier.toString(fieldModifiers), fieldName);
 			}
+			string += String.format("%s (%s)", simpleTypeName, Modifier.toString(classModifiers));
 			return string;
 		}
 	}

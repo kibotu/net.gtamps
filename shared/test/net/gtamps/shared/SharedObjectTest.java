@@ -17,60 +17,59 @@ public class SharedObjectTest extends Assert {
 
 	@Test
 	public void OKSelfTest() {
-		SharedObject o = new SharedObject();
-		o.isShareable();
+		final SharedObject o = new SharedObject();
 	}
 
 	@Test
 	public void OKExtensionSelfTest() {
-		OKExtensionSelf o = new OKExtensionSelf();
+		final OKExtensionSelf o = new OKExtensionSelf();
 		o.isShareable();
 	}
 
 	@Test
 	public void OKExtensionSamePackageTest() {
-		OKExtensionSamePackage o = new OKExtensionSamePackage();
+		final OKExtensionSamePackage o = new OKExtensionSamePackage();
 		o.isShareable();
 	}
 
 	@Test
 	public void OKExtensionSubPackageTest() {
-		OKExtensionSubPackage o = new OKExtensionSubPackage();
+		final OKExtensionSubPackage o = new OKExtensionSubPackage();
 		o.isShareable();
 	}
 
 	@Test
 	public void OKExtensionStringTest() {
-		OKExtensionString o = new OKExtensionString();
+		final OKExtensionString o = new OKExtensionString();
 		o.isShareable();
 	}
 
 	@Test
 	public void OKExtensionAnnotationTest() {
-		OKExtensionAnnotation o = new OKExtensionAnnotation();
+		final OKExtensionAnnotation o = new OKExtensionAnnotation();
 		o.isShareable();
 	}
 	
 	@Test
 	public void OKMutualReferenceTest() {
-		OKMutualReferenceA o = new OKMutualReferenceA();
+		final OKMutualReferenceA o = new OKMutualReferenceA();
 		o.isShareable();
 	}
 	
 	@Test
-	public void OKPublicFinalMemberTest() {
-		OKPublicFinalMember o = new OKPublicFinalMember();
+	public void OKByAnnotationTest() {
+		final OKByAnnotation o = new OKByAnnotation();
 		o.isShareable();
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionPackageTest() {
-			WrongExtensionPackage o = new WrongExtensionPackage();
+			final WrongExtensionPackage o = new WrongExtensionPackage();
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionPackageListTest() {
-			WrongExtensionPackageList o = new WrongExtensionPackageList();
+			final WrongExtensionPackageList o = new WrongExtensionPackageList();
 			o.listField = new ArrayList<Object>();
 			o.listField.add(new Object());
 			assert o.isShareable();
@@ -78,17 +77,17 @@ public class SharedObjectTest extends Assert {
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionInSubclassTest() {
-			WrongExtensionInSubclass o = new WrongExtensionInSubclass();
+			final WrongExtensionInSubclass o = new WrongExtensionInSubclass();
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionWrongMemberButIsNullTest() {
-			WrongExtensionWrongMemberButIsNull o = new WrongExtensionWrongMemberButIsNull();
+			final WrongExtensionWrongMemberButIsNull o = new WrongExtensionWrongMemberButIsNull();
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionWrongMemberDeclaresOKTypeTest() {
-			WrongExtensionWrongMemberDeclaresOKType o = new WrongExtensionWrongMemberDeclaresOKType();
+			final WrongExtensionWrongMemberDeclaresOKType o = new WrongExtensionWrongMemberDeclaresOKType();
 	}
 	
 	@Test(expected = ClassCastException.class)
@@ -153,7 +152,8 @@ class OKMutualReferenceB extends SharedObject {
 	OKMutualReferenceA a; 
 }
 
-class OKPublicFinalMember extends SharedObject {
+class OKByAnnotation extends SharedObject {
+	@CheckedShareable
 	public final Map<Object,Object> immutableReferenceToOKClass = new HashMap<Object,Object>();
 }
 

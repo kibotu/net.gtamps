@@ -249,7 +249,7 @@ public class ManualTypeSerializer implements ISerializer {
     		s = new Sendable(SendableType.BAD_SENDABLE, id, null);
     		s.data = new StringData(e.getMessage());
     		Logger.getInstance().log(TAG, e.getCause().toString());
-    		e.getCause().printStackTrace();
+    		System.err.println(e.getCause().toString());
     		proceedToNext(scanner, SENDABLE);
     	}
     	return s;
