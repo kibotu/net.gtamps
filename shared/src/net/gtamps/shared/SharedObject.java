@@ -3,7 +3,6 @@ package net.gtamps.shared;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,8 +10,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-
-import javax.lang.model.type.TypeVariable;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -145,10 +142,9 @@ public class SharedObject implements Serializable {
 	 * @throws ClassCastException
 	 */
 	public final boolean isShareable() throws ClassCastException {
-		Stack<CheckedItem> checkStack = new Stack<CheckedItem>(
-				new CheckedItem(this.getClass(), this));
+		Stack<CheckItem> checkStack = new Stack<CheckItem>(
+				new CheckItem(this.getClass(), this));
 		if (!isShareable(checkStack)) {
-			//TODO stack is not correct at this point
 			StringBuilder msg =  new StringBuilder();
 			catMsgFromStack(checkStack, msg);
 			msg.insert(0, ", but is not shared: ");
@@ -159,64 +155,50 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
-	// TODO swap toCheck (make local) and checking (make argument)
-	private boolean isShareable(Stack<CheckedItem> toCheck) {
-		Stack<Class<?>> checking = new Stack<Class<?>>();
-		while (!toCheck.empty()) {
-			CheckedItem item = toCheck.pop();
-			Class<?> type = item.type;
-			if (!(checked.contains(type) || checking.contains(type))) {
-				checking.push(type);
-				// TODO swap
-				if (!(isAllowed(item) || isShared(type))) {
-					toCheck.push(item);
+	private boolean isShareable(Stack<CheckItem> checkStack) {
+		assert checkStack.size() == 1;
+		Stack<CheckItem> todo = new Stack<CheckItem>();
+		todo.push(checkStack.pop());
+		while (!todo.empty()) {
+			CheckItem item = todo.peek();
+			if (!(checked.contains(item.type) || checkStack.contains(item))) {
+				checkStack.push(item);
+				if (!(isShareableItem.isTrueFor(item) 
+						|| isExplicitlyAllowed.isTrueFor(item) 
+						|| isOKPublicFinal.isTrueFor(item) 
+						|| finalAppeal.isTrueFor(item))) {
 					return false;
 				}
-				FilterableCollection<Field> fields = FilterableList.fromArray(type.getDeclaredFields());
-				fields = fields.removeAll(or.applyTo(isTransient, isShared, isEnumSelfReference, isPrimitive));
+				FilterableCollection<Field> fields = FilterableList.fromArray(item.type.getDeclaredFields());
+				fields = fields.removeAll(or.applyTo(isTransient, isSharedField, isEnumSelfReference, isPrimitive));
 				for (Field field : fields) {
-					type = field.getType();
-					//TODO do this where? getValue()...?
-					//type = type.isArray() ? type.getComponentType() : type;
-					toCheck.push(new CheckedItem(field, null));
-					if (!isPublicFinal(type.getModifiers())) {
-						if (!isPublicFinal(field.getModifiers())) {
-							return false;
-						} else {
-							CheckedItem chk = toCheck.pop();
-							Object value = getValue(field, item.instance);
-							// getValueType()
-							// if ValueType != null: continue
-							if (value == null) {
-								continue;
-							}
-							toCheck.push(chk.changeType(value.getClass(), value));
-						}
-					}
+					todo.push(new CheckItem(field, item.instance));
+				}
+			}
+			if (item == todo.peek()) {
+				checked.add(item.type);
+				todo.pop();
+				if (checkStack.size() != 0 && item == checkStack.peek()) {
+					checkStack.pop();
 				}
 			}
 		}
-		checked.addAll(checking); //use filter
 		return true;
 	}
-	
-//	private boolean fieldsAreShareable(Stack<CheckedItem> toCheck) {
-//		return false;
-//	}
 	
 	/**
 	 * builds an error message from the checking stack
 	 * @param stack		the checking stack, after {@link #isShareable(Stack)} failed
 	 * @param msg		the error message will be inserted at index <tt>0</tt>
 	 */
-	private void catMsgFromStack(Stack<CheckedItem> stack, StringBuilder msg) {
+	private void catMsgFromStack(Stack<CheckItem> stack, StringBuilder msg) {
 		int indentSize = 2;
 		char[] fullIndentChars = new char[indentSize * stack.size()];
 		Arrays.fill(fullIndentChars, ' ');
 		String fullIndent = new String(fullIndentChars);
 		while (!stack.empty()) {
-			CheckedItem chk = stack.pop();
-			msg.insert(0, chk.msg);
+			CheckItem chk = stack.pop();
+			msg.insert(0, chk.toString());
 			msg.insert(0, fullIndent.substring(0, indentSize * stack.size()));
 			msg.insert(0, "\n");
 		}
@@ -278,6 +260,76 @@ public class SharedObject implements Serializable {
 	// STATIC PRIVATE
 	//
 	////////
+	
+	private static transient final Predicate<CheckItem> finalAppeal = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(CheckItem x) {
+			return x.checkedGeneric;
+		}
+		public String toString() {
+			return "p(x) := finalAppeal(CheckItem)";
+		}
+	};
+	
+
+	private static transient final Predicate<CheckItem> isShareableItem = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(CheckItem x) {
+			return isShared(x.type);
+		}
+		public String toString() {
+			return "p(x) := isShared(CheckItem)";
+		}
+	};
+	
+	private static transient final Predicate<CheckItem> isExplicitlyAllowed = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(CheckItem x) {
+			for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+				if (c.isAssignableFrom(x.type)) {
+					return true;
+				}
+			}
+			return false; 
+		}
+		public String toString() {
+			return "p(x) := isExplicitlyAllowed(CheckItem)";
+		}
+	};
+	
+	private static transient final Predicate<CheckItem> isOKPublicFinal = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(CheckItem x) {
+			if (!isPublicFinal.isTrueFor(x)) {
+				return false;
+			}
+			for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+				if (c.isAssignableFrom(x.type)) {
+					return true;
+				}
+			}
+			return false; 
+		}
+		public String toString() {
+			return "p(x) := isOKPublicFinal(CheckItem)";
+		}
+	};
+	
+	private static transient final Predicate<CheckItem> isPublicFinal = new Predicate<CheckItem>() {
+		@Override
+		public boolean isTrueFor(CheckItem x) {
+			if (Modifier.isPublic(x.classModifiers) && Modifier.isFinal(x.classModifiers)) {
+				return true;
+			}
+			if (Modifier.isPublic(x.fieldModifiers) && Modifier.isFinal(x.fieldModifiers)) {
+				return true;
+			}
+			return false;
+		}
+		public String toString() {
+			return "p(x) := isPublicFinal(CheckItem)";
+		}
+	};
 
 	private static transient final Predicate<Field> isCheckedGeneric = new Predicate<Field>() {
 		@Override
@@ -299,10 +351,9 @@ public class SharedObject implements Serializable {
 		}
 	};
 	
-	private static transient final Predicate<Field> isShared = new Predicate<Field>() {
+	private static transient final Predicate<Field> isSharedField = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(Field x) {
-//			return !SharedObject.class.isAssignableFrom(x.getType());
 			return isShared(x.getType());
 		}
 		public String toString() {
@@ -365,45 +416,11 @@ public class SharedObject implements Serializable {
 		}
 	};
 
-	private static boolean isAllowed(CheckedItem chk) {
-		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
-			if (c.isAssignableFrom(chk.type)) {
-				return true;
-			}
-		}
-		if (isPublicFinal(chk.modifiers)) {
-			for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
-				if (c.isAssignableFrom(chk.type)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	private static boolean isShared(Class<?> type) {
 		boolean result =  (SharedObject.class.isAssignableFrom(type)
 							|| type.isInterface() || type.isEnum())
 			&& type.getCanonicalName().startsWith(SHARED_PACKAGE_NAME);
 		return result;
-	}
-	
-	private static boolean isPublicFinal(int modifiers) {
-		return Modifier.isPublic(modifiers) && Modifier.isFinal(modifiers);
-	}
-	
-	private static Object getValue(Field field, Object instance) {
-		try {
-			//return field.get(this);
-			return field.get(instance);
-		} catch (NullPointerException e) {
-			// nyahaha
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	// http://stackoverflow.com/questions/122105/java-what-is-the-best-way-to-filter-a-collection
@@ -425,6 +442,8 @@ public class SharedObject implements Serializable {
 	
 	private static class FilterableList<T> extends ArrayList<T> implements FilterableCollection<T> {
 		
+		private static final long serialVersionUID = -9187173114053497973L;
+
 		public static <A> FilterableList<A> fromArray(A[] a) {
 			FilterableList<A> list = new FilterableList<A>();
 			list.ensureCapacity(a.length);
@@ -474,42 +493,86 @@ public class SharedObject implements Serializable {
 	 * 
 	 * @author til, tom, jan
 	 */
-	private class CheckedItem {
+	private class CheckItem {
 		public final Class<?> type;
 		@Nullable 
+		public final boolean checkedGeneric;
 		public final Object instance;
-		public final int modifiers;
-		public final String msg;
+		public final int classModifiers;
+		public final int fieldModifiers;
+		public final String simpleTypeName;
+		public final String fieldName;
 		
-		public CheckedItem(Class<?> clazz, Object instance) {
-			this(clazz, instance, clazz.getModifiers(), clazz.getSimpleName());
+		private Object getFieldValue(Field field, Object owner) {
+			assert field == null || owner != null : "if field != null, owner must also be != null";
+			Object o = null;
+			if (field != null) {
+				try {
+					o = field.get(owner);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					System.err.println("illegal access on " + field);
+//					e.printStackTrace();
+				}
+			}
+			return o;
 		}
 		
-		public CheckedItem(Field field, Object value) {
-			this(field.getType(), value, field.getType().getModifiers(), 
-					field.getType().getSimpleName() + ' ' + field.getName() + ':');
+		public CheckItem(Class<?> clazz, Object instance) {
+			this(clazz, null, instance, null);
 		}
 		
-		public CheckedItem(Class<?> type, Object instance, int modifier, String msg) {
-			assert type != null;
-			assert msg != null;
-			this.type = type;
-			this.instance = instance;
-			this.modifiers = modifier;
-			this.msg = msg;
+		public CheckItem(Field field, Object owner) {
+			this(null, field, null, owner);
 		}
 		
-		public CheckedItem changeType(Class<?> newType, Object newInstance) {
-			assert newType != null;
-			return new CheckedItem(newType, newInstance, this.modifiers, this.msg);
+		private CheckItem(Class<?> type, Field field, Object instance, Object fieldOwner) {
+			assert !(type == null && field == null) : "either type or field must be != null";
+			Object fieldValue = getFieldValue(field, fieldOwner);
+			if (field != null) {
+				if (fieldValue != null) {
+					this.type = clarifyType(fieldValue.getClass());
+					this.instance = fieldValue;
+				} else {
+					this.type = clarifyType(field.getType());
+					this.instance = null;
+					
+				}
+				this.checkedGeneric = isCheckedGeneric.isTrueFor(field);
+				String tmpName = field.getName();
+				this.fieldName = tmpName.substring(tmpName.lastIndexOf('.') + 1);
+				this.fieldModifiers = field.getModifiers();
+			} else {
+				this.type = clarifyType(type);
+				this.instance = instance;
+				this.checkedGeneric = false;
+				this.fieldName = "";
+				this.fieldModifiers = 0;
+			}
+			assert this.type != null;
+			this.classModifiers = this.type.getModifiers();
+			this.simpleTypeName = this.type.getSimpleName();
+		}
+		
+		private Class<?> clarifyType(Class<?> type) {
+			if (type.isArray()) {
+				return type.getComponentType();
+			}
+			return type;
+			
 		}
 		
 		@Override
 		public String toString() {
-			//return String.format("chk[%s (%s), %d] -> %s", type.getSimpleName(), instance.toString(), modifiers, msg); 
-			return String.format("[%s]", type.getSimpleName()); 
+			String string;
+			if ("".equals(fieldName)) {
+				string = String.format("%s %s", Modifier.toString(classModifiers), simpleTypeName);
+			} else {
+				string = String.format("%s %s %s", Modifier.toString(fieldModifiers), simpleTypeName, fieldName);
+			}
+			return string;
 		}
-		
 	}
 	
 }
