@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
@@ -18,24 +19,22 @@ import org.jetbrains.annotations.Nullable;
  * Represents an object to be shared between server and client.
  * <p/>
  * On construction, it will assert that it is indeed shareable. To be
- * shareable, the object must meet the following conditions: 
+ * shareable, the object and, by recursion, all its declared fields
+ *  must meet the following conditions: 
  * 
  * <ul>
- * <li>it is a SharedObject</li>
- * <li>it is declared in the same package as SharedObject or one of its sub-packages,</li>
- * <li>all declared non-transient fields must meet the same conditions, and:
- * 		<ul>
- * 			<li>it's type can also be primitive, Interface, Enum, SharedObject or
- * 				one of the {@link #OTHER_INTRANSIENT_MEMBER_CLASSES};</li>
- * 			<li>the declaration of its type, or the field itself, must be
- * 				<tt>public final</tt>. </li>
- * 		</ul>
- * </li>
+ * <li>it is in a package with or below SharedObject,</li>
+ * <li>it is a SharedObject, a String, a primitive, primitive wrapper, or a Class,</li>
+ * <li>Enums and Interfaces are okay, too, BUT:</li>
+ * <li>if the type itself is not <tt>public</tt> and <tt>final</tt>, 
+ *     the field declaring it as its type must be <tt>public final</tt> itself.</li> 
  * </ul>
+ * 
  * If a field does not meet these conditions, you can annotate it as
  * {@link CheckedShareable @CheckedShareable}. This constitutes a promise
  * that the shareability of the field's value will be checked and ensured 
- * by <em>you</em>, and SharedObject will waive all tests.
+ * by <em>you</em>; SharedObject will waive all tests, and if something
+ * goes wrong, the fault is yours.
  * 
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
@@ -231,7 +230,10 @@ public class SharedObject implements Serializable {
 	        add(value);
 	    }
 
-	    public T pop() {
+	    public T pop() throws NoSuchElementException {
+			if (size() < 1) {
+				throw new NoSuchElementException("stack is empty");
+			}
 	        return remove(size() - 1);
 	    }
 
@@ -239,7 +241,10 @@ public class SharedObject implements Serializable {
 	        return size() == 0;
 	    }
 
-		public T peek() {
+		public T peek() throws NoSuchElementException {
+			if (size() < 1) {
+				throw new NoSuchElementException("stack is empty");
+			}
 	        return get(size() - 1);
 	    }
 	    
