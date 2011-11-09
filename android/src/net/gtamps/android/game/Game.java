@@ -52,7 +52,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         hud = new Hud();
         world = new World();
         menu = new Menu();
-        connection = new ConnectionManager();
+        connection = ConnectionManager.INSTANCE;
     }
 
     public void onCreate() {
@@ -99,6 +99,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         //onDrawFrame2();
     }
 
+    @Deprecated
     private void onDrawFrame2() {
 
         // zoom
@@ -168,6 +169,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
     private long impulse = 0;
 
+    @Deprecated
     private void fireImpulse(float angle, Vector3 force) {
         if (!connection.isConnected()) return;
 
@@ -175,7 +177,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         if (impulse <= Config.IMPULS_FREQUENCY) return;
         impulse = 0;
 
-        Message message = MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId);
+        Message message = MessageFactory.createGetUpdateRequest(connection.currentRevId);
 
         // up° 22.5 to -22.5°
         if (inRange(angle, 22.5f, -22.5f)) {
@@ -227,7 +229,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
                 // update revision id
                 UpdateData updateData = ((UpdateData) sendable.data);
-                ConnectionManager.currentRevId = updateData.revId;
+                connection.currentRevId = updateData.revId;
 
                 // parse all transmitted entities
                 List<GameObject> gameObjects = updateData.gameObjects.list;
@@ -292,7 +294,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 Logger.D(this, "GETPLAYER_OK " + world.playerManager.getActivePlayer());
 
                 // get update
-                connection.add(MessageFactory.createGetUpdateRequest(ConnectionManager.currentRevId));
+                connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
                 break;
 
             case GETPLAYER_NEED:
@@ -303,7 +305,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 break;
 
             case SESSION_OK:
-                ConnectionManager.currentSessionId = message.getSessionId();
+                connection.currentSessionId = message.getSessionId();
                 connection.add(MessageFactory.createRegisterRequest("username", "password"));
                 break;
             case SESSION_NEED:

@@ -39,6 +39,7 @@ public class RenderState {
     public enum Shader {
         FLAT(GL_FLAT),
         SMOOTH(GL_SMOOTH);
+
         private final int value;
         private Shader (int value) {
             this.value = value;

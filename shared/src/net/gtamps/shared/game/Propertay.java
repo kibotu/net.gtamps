@@ -1,7 +1,6 @@
 package net.gtamps.shared.game;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.gtamps.shared.CheckedGeneric;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +20,7 @@ public class Propertay<T> extends GameObject implements IProperty<T> {
     public static transient final String[] generics = {"value"};
 
     private final GameObject parent;
+    @CheckedGeneric
     private T value;
 
     public Propertay(@NotNull GameObject parent, @NotNull String name, @NotNull T value) {
