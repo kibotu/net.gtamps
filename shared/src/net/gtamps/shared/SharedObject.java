@@ -3,13 +3,16 @@ package net.gtamps.shared;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+
+import javax.lang.model.type.TypeVariable;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -57,8 +60,8 @@ public class SharedObject implements Serializable {
 		Boolean.class, Byte.class, Character.class, Short.class,
 		Integer.class, Long.class, Float.class, Double.class, String.class,
 		Class.class,
-//		boolean[].class, byte[].class, char[].class, short[].class, int[].class, long[].class,
-//		float[].class, double[].class, 
+//		boolean[].class, byte[].class, char[].class, short[].class, int[].class, 
+//		long[].class, float[].class, double[].class, 
 //		Boolean[].class, Byte[].class, Character[].class, Short[].class,
 //		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
 //		SharedObject[].class,
@@ -79,6 +82,10 @@ public class SharedObject implements Serializable {
 		checked = new HashSet<Class<?>>();
 		checked.add(java.lang.String.class);
 		selfTest();
+	}
+	
+	public static boolean isShareable(Object o) {
+		return isShared(o.getClass());
 	}
 	
 	// TODO reconsider
@@ -104,7 +111,9 @@ public class SharedObject implements Serializable {
 				continue;
 			}
 			if (!Modifier.isFinal(c.getModifiers())) {
-				throw new IllegalArgumentException("class in OTHER_INTRANSIENT_MEMBER_CLASSES must be final: " + c.getSimpleName());
+				throw new IllegalArgumentException("class in OTHER_"
+						+ "INTRANSIENT_MEMBER_CLASSES must be final: " 
+						+ c.getSimpleName());
 			}
 			checked.add(c);
 		}
@@ -136,7 +145,8 @@ public class SharedObject implements Serializable {
 	 * @throws ClassCastException
 	 */
 	public final boolean isShareable() throws ClassCastException {
-		Stack<CheckedItem> checkStack = new Stack<CheckedItem>(new CheckedItem(this.getClass(), this));
+		Stack<CheckedItem> checkStack = new Stack<CheckedItem>(
+				new CheckedItem(this.getClass(), this));
 		if (!isShareable(checkStack)) {
 			//TODO stack is not correct at this point
 			StringBuilder msg =  new StringBuilder();
@@ -162,11 +172,8 @@ public class SharedObject implements Serializable {
 					toCheck.push(item);
 					return false;
 				}
-				List<Field> fields = Arrays.asList(type.getDeclaredFields());
-				fields = filter(fields, isNotTransient);
-				fields = filter(fields, isNotShared);
-				fields = filter(fields, isNotEnumSelfReference);
-				fields = filter(fields, isNotPrimitive);
+				FilterableCollection<Field> fields = FilterableList.fromArray(type.getDeclaredFields());
+				fields = fields.removeAll(or.applyTo(isTransient, isShared, isEnumSelfReference, isPrimitive));
 				for (Field field : fields) {
 					type = field.getType();
 					//TODO do this where? getValue()...?
@@ -232,7 +239,7 @@ public class SharedObject implements Serializable {
 		}
 		
 		public Stack(T firstElement) {
-			super();
+			super(20);
 			this.push(firstElement);
 		}
 		
@@ -248,7 +255,6 @@ public class SharedObject implements Serializable {
 	        return size() == 0;
 	    }
 
-	    @SuppressWarnings("unused")
 		public T peek() {
 	        return get(size() - 1);
 	    }
@@ -273,51 +279,92 @@ public class SharedObject implements Serializable {
 	//
 	////////
 
-	/**
-	 * utility method to quickly filter a list by applying a predicate
-	 */
-	private static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
-		List<T> result = new ArrayList<T>(list.size());
-		for (T e : list) {
-			if (predicate.eval(e)) {
-				result.add(e);
-			}
-		}
-		return result;
-	}
-	
-	private static transient final Predicate<Field> isNotTransient = new Predicate<Field>() {
+	private static transient final Predicate<Field> isCheckedGeneric = new Predicate<Field>() {
 		@Override
-		public boolean eval(Field x) { 
-			return !Modifier.isTransient(x.getModifiers());
+		public boolean isTrueFor(Field x) { 
+			return x.getAnnotation(CheckedGeneric.class) != null; 
+		}
+		public String toString() {
+			return "p(x) := isCheckedGeneric(Field)";
+		}
+	}; 
+
+	private static transient final Predicate<Field> isTransient = new Predicate<Field>() {
+		@Override
+		public boolean isTrueFor(Field x) { 
+			return Modifier.isTransient(x.getModifiers());
+		}
+		public String toString() {
+			return "p(x) := isTransient(Field)";
 		}
 	};
 	
-	private static transient final Predicate<Field> isNotShared = new Predicate<Field>() {
+	private static transient final Predicate<Field> isShared = new Predicate<Field>() {
 		@Override
-		public boolean eval(Field x) {
+		public boolean isTrueFor(Field x) {
 //			return !SharedObject.class.isAssignableFrom(x.getType());
-			return !isShared(x.getType());
+			return isShared(x.getType());
+		}
+		public String toString() {
+			return "p(x) := isShared(Field)";
 		}
 	};
 	
-	private static transient final Predicate<Field> isNotEnumSelfReference = new Predicate<Field>() {
+	private static transient final Predicate<Field> isEnumSelfReference = new Predicate<Field>() {
 		@Override
-		public boolean eval(Field x) {
+		public boolean isTrueFor(Field x) {
 			Class<?> type = x.getType();
-			return !(type.isEnum() && type.equals(x.getDeclaringClass()));
+			return (type.isEnum() && type.equals(x.getDeclaringClass()));
+		}
+		public String toString() {
+			return "p(x) := isEnumSelfReference(Field)";
 		}
 	};
 	
-	private static transient final Predicate<Field> isNotPrimitive = new Predicate<Field>() {
+	private static transient final Predicate<Field> isPrimitive = new Predicate<Field>() {
 		@Override
-		public boolean eval(Field x) {
+		public boolean isTrueFor(Field x) {
 			Class<?> type = x.getType();
-			return !(type.isPrimitive());
+			return type.isPrimitive();
+		}
+		public String toString() {
+			return "p(x) := isPrimitive(Field)";
 		}
 	};
 	
+	@SuppressWarnings("rawtypes")
+	private static transient final MightyMorphinPredicate not = new MightyMorphinPredicate() {
+		@Override
+		public Predicate applyTo(final Predicate... subjects) {
+			assert subjects.length == 1 : "expects exactly one argument";
+			return new Predicate() {
+				public boolean isTrueFor(Object x) {
+					return !subjects[0].isTrueFor(x);
+				}
+			};
+		}
+	};
 	
+	@SuppressWarnings("rawtypes")
+	private static transient final MightyMorphinPredicate or = new MightyMorphinPredicate() {
+		@Override
+		public Predicate applyTo(final Predicate... subjects) {
+			if (subjects.length < 1) {
+				throw new IllegalArgumentException("must give at least one argument");
+			}
+			return new Predicate() {
+				public boolean isTrueFor(Object x) {
+					for (Predicate p : subjects) {
+						if (p.isTrueFor(x)) {
+							return true;
+						}
+					}
+					return false;
+				}
+			};
+		}
+	};
+
 	private static boolean isAllowed(CheckedItem chk) {
 		for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
 			if (c.isAssignableFrom(chk.type)) {
@@ -361,7 +408,65 @@ public class SharedObject implements Serializable {
 	
 	// http://stackoverflow.com/questions/122105/java-what-is-the-best-way-to-filter-a-collection
 	private interface Predicate<T> {
-		boolean eval(T x);
+		boolean isTrueFor(T x);
+	}
+	
+	
+	private interface MightyMorphinPredicate<T> {
+		Predicate<T> applyTo(Predicate<T>... subjects);
+	}
+	
+	private interface FilterableCollection<T> extends Collection<T> {
+		public FilterableCollection<T> retainAll(Predicate<T> p);
+		public FilterableCollection<T> removeAll(Predicate<T> p);
+		public boolean trueForAll(Predicate<T> p);
+		public boolean trueForOne(Predicate<T> p);
+	}
+	
+	private static class FilterableList<T> extends ArrayList<T> implements FilterableCollection<T> {
+		
+		public static <A> FilterableList<A> fromArray(A[] a) {
+			FilterableList<A> list = new FilterableList<A>();
+			list.ensureCapacity(a.length);
+			list.addAll(Arrays.asList(a));
+			return list;
+		}
+
+		@Override
+		public FilterableList<T> retainAll(Predicate<T> p) {
+			removeAll(not.applyTo(p));
+			return this;
+		}
+
+		@Override
+		public FilterableList<T> removeAll(Predicate<T> p) {
+			int i = 0;
+			while (i < size()) {
+				if (p.isTrueFor(get(i))) {
+					remove(i);
+				} else {
+					i++;
+				}
+			}
+			return this;
+		}
+
+		@Override
+		public boolean trueForAll(Predicate<T> p) {
+			return !trueForOne(not.applyTo(p));
+		}
+
+		@Override
+		public boolean trueForOne(Predicate<T> p) {
+			int size = size();
+			for (int i = 0; i < size; i++) {
+				if (p.isTrueFor(get(i))) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 	}
 	
 	/**
