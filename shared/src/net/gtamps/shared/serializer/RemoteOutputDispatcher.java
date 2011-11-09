@@ -46,7 +46,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
                 Logger.i(this, e.getMessage());
             }
             if (outbox.isEmpty()) continue;
-            tcpStream.send(ConnectionManager.serialize(outbox.poll()));
+            tcpStream.send(ConnectionManager.INSTANCE.serialize(outbox.poll()));
         }
         Logger.i(this, "Stops socket-listening loop.");
     }

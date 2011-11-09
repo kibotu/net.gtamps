@@ -9,24 +9,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ConnectionManager implements IMessageManager {
+public enum ConnectionManager implements IMessageManager {
+
+    INSTANCE;
 
     private final ConcurrentLinkedQueue<Message> inbox;
     private final ConcurrentLinkedQueue<Message> outbox;
     private IStream stream;
     private RemoteInputDispatcher remoteInputDispatcher;
     private RemoteOutputDispatcher remoteOutputDispatcher;
-    public static volatile String currentSessionId;
-    public static volatile long currentRevId;
+    public volatile String currentSessionId;
+    public volatile long currentRevId;
     private int currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
     private static ISerializer serializer = new ObjectSerializer();
 
-    public ConnectionManager() {
+    private ConnectionManager() {
         stream = new TcpStream();
         inbox = new ConcurrentLinkedQueue<Message>();
         outbox = new ConcurrentLinkedQueue<Message>();
-        currentSessionId = "0";
+        this.currentSessionId = "0";
         currentRevId = 0;
     }
 
@@ -84,12 +86,12 @@ public class ConnectionManager implements IMessageManager {
         remoteOutputDispatcher.stop();
     }
 
-    public static byte[] serialize(@NotNull Message message) {
+    public byte[] serialize(@NotNull Message message) {
         message.setSessionId(currentSessionId);
         return serializer.serializeMessage(message);
     }
 
-    public static Message deserialize(@NotNull byte[] message) {
+    public Message deserialize(@NotNull byte[] message) {
         return serializer.deserializeMessage(message);
     }
 
