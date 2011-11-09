@@ -6,7 +6,7 @@ import android.os.Bundle;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
-import net.gtamps.android.core.input.listener.CameraListener;
+import net.gtamps.android.core.input.listener.PlayerMovementListener;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.Renderer;
