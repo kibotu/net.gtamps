@@ -95,6 +95,8 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 handleMessage(message.sendables.list.get(i), message);
             }
         }
+
+        //onDrawFrame2();
     }
 
     private void onDrawFrame2() {
