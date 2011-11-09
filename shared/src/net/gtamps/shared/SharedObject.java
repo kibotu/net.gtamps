@@ -21,12 +21,21 @@ import org.jetbrains.annotations.Nullable;
  * shareable, the object must meet the following conditions: 
  * 
  * <ul>
- * <li>it can be cast as SharedObject,</li>
+ * <li>it is a SharedObject</li>
  * <li>it is declared in the same package as SharedObject or one of its sub-packages,</li>
- * <li>all intransient fields meet the same conditions or are objects of one of the
- * {@link #OTHER_INTRANSIENT_MEMBER_CLASSES}.</li>
+ * <li>all declared non-transient fields must meet the same conditions, and:
+ * 		<ul>
+ * 			<li>it's type can also be primitive, Interface, Enum, SharedObject or
+ * 				one of the {@link #OTHER_INTRANSIENT_MEMBER_CLASSES};</li>
+ * 			<li>the declaration of its type, or the field itself, must be
+ * 				<tt>public final</tt>. </li>
+ * 		</ul>
+ * </li>
  * </ul>
- * 
+ * If a field does not meet these conditions, you can annotate it as
+ * {@link CheckedShareable @CheckedShareable}. This constitutes a promise
+ * that the shareability of the field's value will be checked and ensured 
+ * by <em>you</em>, and SharedObject will waive all tests.
  * 
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *
@@ -51,17 +60,9 @@ public class SharedObject implements Serializable {
 	 * declared fields not marked <tt>transient</tt>.
 	 */
 	public static transient final Class<?>[] OTHER_INTRANSIENT_MEMBER_CLASSES = {
-	// Arrays and primitives should be taken care of
-//		boolean.class, byte.class, char.class, short.class, int.class, long.class,
-//		float.class, double.class, 
 		Boolean.class, Byte.class, Character.class, Short.class,
 		Integer.class, Long.class, Float.class, Double.class, String.class,
 		Class.class,
-//		boolean[].class, byte[].class, char[].class, short[].class, int[].class, 
-//		long[].class, float[].class, double[].class, 
-//		Boolean[].class, Byte[].class, Character[].class, Short[].class,
-//		Integer[].class, Long[].class, Float[].class, Double[].class, String[].class,
-//		SharedObject[].class,
 	}; 
 	
 	/** types allowed for public final members */
@@ -144,7 +145,7 @@ public class SharedObject implements Serializable {
 	public final boolean isShareable() throws ClassCastException {
 		Stack<CheckItem> checkStack = new Stack<CheckItem>(
 				new CheckItem(this.getClass(), this));
-		if (!isShareable(checkStack)) {
+		if (!isShareable(checkStack, true)) {
 			StringBuilder msg =  new StringBuilder();
 			catMsgFromStack(checkStack, msg);
 			msg.insert(0, ", but is not shared: ");
@@ -155,7 +156,7 @@ public class SharedObject implements Serializable {
 		return true;
 	}
 	
-	private boolean isShareable(Stack<CheckItem> checkStack) {
+	private boolean isShareable(Stack<CheckItem> checkStack, boolean considerFinalAppeal) {
 		assert checkStack.size() == 1;
 		Stack<CheckItem> todo = new Stack<CheckItem>();
 		todo.push(checkStack.pop());
@@ -165,9 +166,10 @@ public class SharedObject implements Serializable {
 				checkStack.push(item);
 				if (!(isShareableItem.isTrueFor(item) 
 						|| isExplicitlyAllowed.isTrueFor(item) 
-						|| isOKPublicFinal.isTrueFor(item) 
-						|| finalAppeal.isTrueFor(item))) {
-					return false;
+						|| isOKPublicFinal.isTrueFor(item))) {
+					if (!(considerFinalAppeal && finalAppeal.isTrueFor(item))) {
+						return false;
+					}
 				}
 				FilterableCollection<Field> fields = FilterableList.fromArray(item.type.getDeclaredFields());
 				fields = fields.removeAll(or.applyTo(isTransient, isSharedField, isEnumSelfReference, isPrimitive));
@@ -303,7 +305,7 @@ public class SharedObject implements Serializable {
 			if (!isPublicFinal.isTrueFor(x)) {
 				return false;
 			}
-			for (Class<?> c : OTHER_INTRANSIENT_MEMBER_CLASSES) {
+			for (Class<?> c : ALLOWED_IF_FINAL_MEMBER) {
 				if (c.isAssignableFrom(x.type)) {
 					return true;
 				}
@@ -334,7 +336,7 @@ public class SharedObject implements Serializable {
 	private static transient final Predicate<Field> isCheckedGeneric = new Predicate<Field>() {
 		@Override
 		public boolean isTrueFor(Field x) { 
-			return x.getAnnotation(CheckedGeneric.class) != null; 
+			return x.getAnnotation(CheckedShareable.class) != null; 
 		}
 		public String toString() {
 			return "p(x) := isCheckedGeneric(Field)";
@@ -416,6 +418,10 @@ public class SharedObject implements Serializable {
 		}
 	};
 
+	/**
+	 * @return	<tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
+	 * 			or enum in SharedObject's package tree
+	 */
 	private static boolean isShared(Class<?> type) {
 		boolean result =  (SharedObject.class.isAssignableFrom(type)
 							|| type.isInterface() || type.isEnum())

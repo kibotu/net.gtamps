@@ -1,6 +1,6 @@
 package net.gtamps.shared.game;
 
-import net.gtamps.shared.CheckedGeneric;
+import net.gtamps.shared.CheckedShareable;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class Propertay<T> extends GameObject implements IProperty<T> {
     public static transient final String[] generics = {"value"};
 
     private final GameObject parent;
-    @CheckedGeneric
+    @CheckedShareable
     private T value;
 
     public Propertay(@NotNull GameObject parent, @NotNull String name, @NotNull T value) {
