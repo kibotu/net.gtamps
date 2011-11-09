@@ -3,12 +3,13 @@ package net.gtamps.shared.game;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.Utils.UIDGenerator;
-import net.gtamps.shared.serializer.communication.data.SharedMap;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +39,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
     protected long revision = START_REVISION;
     protected boolean hasChanged = true;
     private boolean silent = false;
-    private SharedMap<String, IProperty<?>> properties = null;
+    private Map<String, IProperty<?>> properties = null;
 
     /**
      * @param name default is {@value #DEFAULT_NAME}
@@ -205,7 +206,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
                 }
             };
         }
-        return this.properties.map.values();
+        return this.properties.values();
     }
 
     @Override
@@ -274,16 +275,16 @@ public abstract class GameObject extends SharedObject implements Serializable {
             throw new IllegalArgumentException("'p' must not be null");
         }
         if (this.properties == null) {
-            this.properties = new SharedMap<String, IProperty<?>>();
+            this.properties = new HashMap<String, IProperty<?>>();
         }
-        if (this.properties.map.containsKey(p.name)) {
+        if (this.properties.containsKey(p.name)) {
             throw new IllegalArgumentException("Property exists already: " + p);
         }
-        this.properties.map.put(p.name, p);
+        this.properties.put(p.name, p);
     }
 
     private void removeProperty(String name) {
-        this.properties.map.remove(name);
+        this.properties.remove(name);
     }
 
     @SuppressWarnings("unchecked")
@@ -291,7 +292,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
         if (this.properties == null) {
             return null;
         }
-        Propertay<?> p = (Propertay<?>) this.properties.map.get(name);
+        Propertay<?> p = (Propertay<?>) this.properties.get(name);
         return (Propertay<T>) p;
     }
 

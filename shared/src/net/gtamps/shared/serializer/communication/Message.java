@@ -1,7 +1,8 @@
 package net.gtamps.shared.serializer.communication;
 
+import java.util.ArrayList;
+
 import net.gtamps.shared.SharedObject;
-import net.gtamps.shared.serializer.communication.data.SharedList;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,19 +13,19 @@ public class Message extends SharedObject {
 	@NotNull
     private volatile String sessionId;
 
-    public final SharedList<Sendable> sendables;
+    public final ArrayList<Sendable> sendables;
 
     public Message(@NotNull Sendable sendable) {
         this();
-        sendables.list.add(sendable);
+        sendables.add(sendable);
     }
 
     public Message() {
-        sendables = new SharedList<Sendable>();
+        sendables = new ArrayList<Sendable>();
     }
 
     public void addSendable(Sendable sendable) {
-        sendables.list.add(sendable);
+        sendables.add(sendable);
     }
 
     public
@@ -35,7 +36,7 @@ public class Message extends SharedObject {
 
     public void setSessionId(@NotNull String sessionId) {
         this.sessionId = sessionId;
-        for (Sendable s : sendables.list) {
+        for (Sendable s : sendables) {
             s.sessionId = sessionId;
         }
     }

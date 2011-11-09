@@ -1,5 +1,6 @@
 package net.gtamps.server;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -21,7 +22,6 @@ import net.gtamps.shared.serializer.communication.data.AuthentificationData;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.RevisionData;
-import net.gtamps.shared.serializer.communication.data.SharedList;
 import net.gtamps.shared.serializer.communication.data.StringData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
 
@@ -72,7 +72,7 @@ public class ManualTypeSerializer implements ISerializer {
     	addToken(bld, MESSAGE);
     	final String sessId = message.getSessionId();
     	addToken(bld, (sessId==null || sessId.length()==0) ? "" : sessId);
-    	for (final Sendable s : message.sendables.list) {
+    	for (final Sendable s : message.sendables) {
     		serializeSendable(bld, s);
     	}
     	return bld.toString().getBytes();
@@ -127,7 +127,7 @@ public class ManualTypeSerializer implements ISerializer {
     }
     
     private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
-    	for (final GameObject e : udata.gameObjects.list) {
+    	for (final GameObject e : udata.gameObjects) {
     		//TODO other cases
     		addToken(bld, ">>>");
     		if (e instanceof Entity) {
@@ -284,9 +284,9 @@ public class ManualTypeSerializer implements ISerializer {
 		final UpdateData data = new UpdateData(0, revId);
 		Entity entity = getEntity(scanner);
 		//TODO
-		final SharedList<GameObject> entities = new SharedList<GameObject>();
+		final ArrayList<GameObject> entities = new ArrayList<GameObject>();
 		while (entity != null) {
-			entities.list.add(entity);
+			entities.add(entity);
 			entity = getEntity(scanner);
 		}
 		data.gameObjects = entities;
