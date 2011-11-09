@@ -25,9 +25,10 @@ public class TouchInputWindow implements OnTouchListener{
 		float normY = event.getY()/resolutionY;
 		for(TouchInputButton tib : buttons.keySet()){
 			if(tib.isHit(normX, normY)){
-				((InputInterpreter)buttons.get(tib)).interpretTouch(normX-tib.getX(),normY-tib.getY());
+				((InputInterpreter)buttons.get(tib)).interpretTouch((normX-tib.getX())/tib.getSizeX(),(normY -tib.getY())/tib.getSizeY(),event);
 			}
 		}
+		//touch event was handled:
 		return true;
 	}
 	public void setResolution(int x, int y){

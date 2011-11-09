@@ -96,11 +96,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             }
         }
 
-<<<<<<< HEAD
         //onDrawFrame2();
-=======
-//        onDrawFrame2();
->>>>>>> afafe75154ed9b3d54fe6151c6329c33dcd8c8e3
     }
 
     private void onDrawFrame2() {
