@@ -378,14 +378,9 @@ public class SharedObject implements Serializable {
 	 * 			or enum in SharedObject's package tree
 	 */
 	private static boolean isShared(final Class<?> type) {
-		Class<?>tmpType = type;
-		while(tmpType.isAnonymousClass() || tmpType.isLocalClass()) {
-			tmpType = tmpType.getEnclosingClass();
-		}
-		final String fullName = tmpType.getCanonicalName();
 		final boolean result =  (SharedObject.class.isAssignableFrom(type)
 							|| type.isInterface() || type.isEnum())
-			&& fullName.startsWith(SHARED_PACKAGE_NAME);
+			&& type.getCanonicalName().startsWith(SHARED_PACKAGE_NAME);
 		return result;
 	}
 	
