@@ -91,8 +91,8 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         // handle inbox messages
         while (!connection.isEmpty()) {
             Message message = connection.poll();
-            for (int i = 0; i < message.sendables.list.size(); i++) {
-                handleMessage(message.sendables.list.get(i), message);
+            for (int i = 0; i < message.sendables.size(); i++) {
+                handleMessage(message.sendables.get(i), message);
             }
         }
 
@@ -232,7 +232,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 connection.currentRevId = updateData.revId;
 
                 // parse all transmitted entities
-                List<GameObject> gameObjects = updateData.gameObjects.list;
+                List<GameObject> gameObjects = updateData.gameObjects;
                 Logger.d(this, "GameObject amount: " + gameObjects.size());
                 int keepTrackOfOrder = 0;
                 for (int i = 0; i < gameObjects.size(); i++) {
