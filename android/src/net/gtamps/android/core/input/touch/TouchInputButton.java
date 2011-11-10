@@ -1,10 +1,10 @@
 package net.gtamps.android.core.input.touch;
 
 public class TouchInputButton{
-	float x;
-	float y;
-	float sizeX;
-	float sizeY;
+	private float x;
+	private float y;
+	private float sizeX;
+	private float sizeY;
 	public TouchInputButton(float x, float y, float sizeX, float sizeY) {
 		this.x = x;
 		this.y = y;

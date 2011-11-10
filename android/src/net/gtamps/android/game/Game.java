@@ -3,7 +3,7 @@ package net.gtamps.android.game;
 import android.os.SystemClock;
 import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.input.InputEngineController;
-import net.gtamps.android.core.input.listener.CameraListener;
+import net.gtamps.android.core.input.listener.PlayerMovementListener;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -60,7 +60,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         // create world
         scenes.add(world);
 //        world.getScene().setVisible(false);
-        CameraListener cl = new CameraListener(world);
+        PlayerMovementListener cl = new PlayerMovementListener();
         InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
         // hud
         scenes.add(hud);
@@ -95,8 +95,11 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 handleMessage(message.sendables.list.get(i), message);
             }
         }
+
+        //onDrawFrame2();
     }
 
+    @Deprecated
     private void onDrawFrame2() {
 
         // zoom
@@ -166,6 +169,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
     private long impulse = 0;
 
+    @Deprecated
     private void fireImpulse(float angle, Vector3 force) {
         if (!connection.isConnected()) return;
 
