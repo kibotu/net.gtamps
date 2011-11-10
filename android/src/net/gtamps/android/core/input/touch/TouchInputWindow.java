@@ -1,12 +1,11 @@
 package net.gtamps.android.core.input.touch;
 
-import java.util.HashMap;
-
-import net.gtamps.android.core.input.event.InputInterpreter;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import net.gtamps.android.core.input.event.InputInterpreter;
+
+import java.util.HashMap;
 
 public class TouchInputWindow implements OnTouchListener{
 	HashMap<TouchInputButton, InputInterpreter> buttons = new HashMap<TouchInputButton, InputInterpreter>();
@@ -31,8 +30,8 @@ public class TouchInputWindow implements OnTouchListener{
 		//touch event was handled:
 		return true;
 	}
-	public void setResolution(int x, int y){
-		this.resolutionX = x;
-		this.resolutionY = y;
+	public void setResolution(int width, int height){
+		this.resolutionX = width;
+		this.resolutionY = height;
 	}
 }

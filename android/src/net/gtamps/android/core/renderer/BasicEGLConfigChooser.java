@@ -11,6 +11,7 @@ public class BasicEGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
     @Override
     public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+
         //Querying number of configurations
         int[] num_conf = new int[1];
         egl.eglGetConfigs(display, null, 0, num_conf);  //if configuration array is null it still returns the number of configurations
@@ -24,7 +25,7 @@ public class BasicEGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
         int i = 0;
         for (i = 0; i < configurations; i++) {
-            Logger.v(this, "Configuration #" + i);
+//            Logger.v(this, "Configuration #" + i);
 //            print(egl, display, conf[i]);
             result = better(result, conf[i], egl, display);
         }

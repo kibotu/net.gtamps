@@ -50,6 +50,7 @@ public class Sprite extends RenderableNode {
         setTextureBufferOffsetId(spriteTetxure.offsetId);
         dimension.set(spriteTetxure.width, spriteTetxure.height, 0);
         scaling.set(1, 1, 0);
+        useSharedTextureCoordBuffer(true);
     }
 
     public void loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {

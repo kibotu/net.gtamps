@@ -1,12 +1,9 @@
 package net.gtamps.android;
 
-import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
-import net.gtamps.android.core.input.listener.PlayerMovementListener;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.Renderer;
@@ -39,7 +36,7 @@ public class GTA extends BasicRenderActivity {
 
         view.setOnTouchListener(InputEngineController.getInstance());
         InputEngineController.getInstance().setLayout(new InputLayoutIngame());
-        //view.setOnTouchListener(InputEngine.getInstance());
+//        view.setOnTouchListener(InputEngine.getInstance());
     }
 
     @Override

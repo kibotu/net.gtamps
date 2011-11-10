@@ -2,8 +2,6 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.input.InputEngine;
-import net.gtamps.android.core.input.InputEngineController;
-import net.gtamps.android.core.input.listener.PlayerMovementListener;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -60,14 +58,14 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         // create world
         scenes.add(world);
 //        world.getScene().setVisible(false);
-        PlayerMovementListener cl = new PlayerMovementListener();
-        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
+//        PlayerMovementListener cl = new PlayerMovementListener();
+//        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
         // hud
-        scenes.add(hud);
+//        scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
-        scenes.add(menu);
-        menu.getScene().setVisible(false);
+//        scenes.add(menu);
+//        menu.getScene().setVisible(false);
 
         // connect
 //        connection.checkConnection();
@@ -95,8 +93,6 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 handleMessage(message.sendables.get(i), message);
             }
         }
-
-        //onDrawFrame2();
     }
 
     @Deprecated
