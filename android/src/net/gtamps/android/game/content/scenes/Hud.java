@@ -1,17 +1,24 @@
 package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
-import net.gtamps.android.core.input.InputEngine;
+import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.android.core.input.layout.AbstractInputLayout;
+import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.graph.scene.primitives.AnimatedSprite;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Sprite;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.state.State;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
 
-public class Hud extends BasicScene {
+public class Hud extends BasicScene implements InputEventListener {
 
     private AnimatedSprite ring;
     private AnimatedSprite cursor;
+    private AbstractInputLayout layout;
 
     public Hud() {
         super();
@@ -19,22 +26,39 @@ public class Hud extends BasicScene {
 
     @Override
     public void onCreate() {
+
+        // setup camera
         Camera camera = new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
         setActiveCamera(camera);
         camera.enableDepthTest(false);
 
+        // add ring
         ring = new AnimatedSprite();
         ring.setVisible(true);
         add(ring);
+
+        // add cursor
         cursor = new AnimatedSprite();
         cursor.setVisible(true);
         add(cursor);
 
+        // add textures
         ring.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);
         cursor.loadBufferedTexture(R.drawable.hud, R.raw.hud, true);
         cursor.animate(0.51f, State.Type.IDLE);
 
-        InputEngine.getInstance().setCamera(camera);
+        // setup layout
+        layout = new InputLayoutIngame();
+        InputEngineController.getInstance().setLayout(layout);
+        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
+
+        // set dirty flag, since something has changed (input engine needs correct resolution
+        setDirtyFlag();
+    }
+
+    @Override
+    public void onSendableRetrieve(SendableType sendableType, ISendableData sendableData) {
+        Logger.D(this, sendableType);
     }
 
     public Sprite getCursor() {
@@ -47,5 +71,9 @@ public class Hud extends BasicScene {
 
     @Override
     public void onDirty() {
+
+        // set resolution
+        layout.getTouchWindow().setResolution((int)getScene().getActiveCamera().getDimension().x,(int)getScene().getActiveCamera().getDimension().y);
+        clearDirtyFlag();
     }
 }

@@ -126,7 +126,9 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         // draw
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).getScene().render(gl10);
+            BasicScene scene = renderActivity.getScenes().get(i);
+            if(scene.isDirty()) scene.onDirty();
+            scene.getScene().render(gl10);
         }
 
         // setup

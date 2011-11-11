@@ -23,7 +23,8 @@ public class World extends EntityScene {
 
     @Override
     public void onCreate() {
-        Camera camera = new Camera(0, 0, 40, 0, 0, 0, 0, 0, 1);
+
+        Camera camera = new Camera(0, 0, 30, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 
