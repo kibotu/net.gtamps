@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerData extends SharedObject implements ISendableData {
 
-    private static final long serialVersionUID = 550206152646014214L;
+    private static final long serialVersionUID = -9000251941870190642L;
 
     @NotNull
     public final Player player;
@@ -20,6 +20,4 @@ public class PlayerData extends SharedObject implements ISendableData {
     public String toString() {
         return "{" + player.toString() + "}";
     }
-
-
 }
