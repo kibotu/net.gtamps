@@ -1,21 +1,11 @@
 package net.gtamps.shared;
 
-<<<<<<< HEAD
-=======
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
->>>>>>> origin/master
 import net.gtamps.shared.Utils.Stack;
 import net.gtamps.shared.Utils.predicate.FilteringArrayList;
 import net.gtamps.shared.Utils.predicate.FilteringCollection;
 import net.gtamps.shared.Utils.predicate.Predicate;
 import net.gtamps.shared.Utils.predicate.PredicateModifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -48,7 +38,6 @@ import java.util.Set;
  * goes wrong, the fault is yours.
  *
  * @author Jan Rabe, Tom Wallroth, Til Boerner
- *
  */
 public class SharedObject implements Serializable {
 
@@ -421,8 +410,8 @@ public class SharedObject implements Serializable {
     };
 
     /**
-     * @return    <tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
-     * or enum in SharedObject's package tree
+     * @return <tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
+     *         or enum in SharedObject's package tree
      */
     private static boolean isShared(final Class<?> type) {
         final boolean result = (SharedObject.class.isAssignableFrom(type)
