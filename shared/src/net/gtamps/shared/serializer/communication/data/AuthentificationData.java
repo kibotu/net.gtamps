@@ -4,7 +4,8 @@ import net.gtamps.shared.SharedObject;
 
 public class AuthentificationData extends SharedObject implements ISendableData {
 
-    private static final long serialVersionUID = -2582506868524601136L;
+    private static final long serialVersionUID = -9150339215596519380L;
+
     public final String username;
     public final String password;
 

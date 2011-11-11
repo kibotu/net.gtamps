@@ -1,20 +1,19 @@
 package net.gtamps.shared.serializer.communication;
 
-import java.util.ArrayList;
-
 import net.gtamps.shared.CheckedShareable;
 import net.gtamps.shared.SharedObject;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class Message extends SharedObject {
 
-	private static final long serialVersionUID = 608050744473650094L;
+    private static final long serialVersionUID = 608050744473650094L;
 
-	@NotNull
+    @NotNull
     private volatile String sessionId;
 
-	@CheckedShareable
+    @CheckedShareable
     public final ArrayList<Sendable> sendables;
 
     public Message(@NotNull final Sendable sendable) {

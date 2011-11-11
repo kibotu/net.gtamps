@@ -13,35 +13,34 @@ import java.nio.channels.ClosedChannelException;
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
  * connection manager.
- * 
+ *
  * @author til
- * 
  */
 public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnectHandler {
 
-	@Override
-	public boolean onDisconnect(INonBlockingConnection connection)
-			throws IOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean onDisconnect(INonBlockingConnection connection)
+            throws IOException {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean onConnect(INonBlockingConnection connection)
-			throws IOException, BufferUnderflowException,
-			MaxReadSizeExceededException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean onConnect(INonBlockingConnection connection)
+            throws IOException, BufferUnderflowException,
+            MaxReadSizeExceededException {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean onData(INonBlockingConnection connection)
-			throws IOException, BufferUnderflowException,
-			ClosedChannelException, MaxReadSizeExceededException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
+    @Override
+    public boolean onData(INonBlockingConnection connection)
+            throws IOException, BufferUnderflowException,
+            ClosedChannelException, MaxReadSizeExceededException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }
 /*public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnectHandler {
 	private static final LogType TAG = LogType.SERVER;
@@ -211,13 +210,13 @@ public class XSocketHandler implements IDataHandler, IConnectHandler, IDisconnec
 	}
 
 	*//**
-	 * Wraps <code>message</code> element in an xml document, and writes it in
-	 * String form to the connection with <code>connectionId</code>.
-	 * 
-	 * @param connectionId
-	 * @param message
-	 * @throws ClosedChannelException
-	 *//*
+ * Wraps <code>message</code> element in an xml document, and writes it in
+ * String form to the connection with <code>connectionId</code>.
+ *
+ * @param connectionId
+ * @param message
+ * @throws ClosedChannelException
+ *//*
 	public void send(String connectionID, Element message) throws ClosedChannelException {
 		if (message == null) {
 			return;

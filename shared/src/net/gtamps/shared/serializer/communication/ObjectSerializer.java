@@ -1,11 +1,6 @@
 package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.game.GameObject;
-import net.gtamps.shared.game.IProperty;
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -23,7 +18,7 @@ public class ObjectSerializer implements ISerializer {
     }
 
     @Override
-	public byte[] serializeMessage(@NotNull Message message) {
+    public byte[] serializeMessage(@NotNull Message message) {
         try {
             byteOutputStream = new ByteArrayOutputStream();
             objectOutputStream = new ObjectOutputStream(byteOutputStream);
@@ -48,5 +43,5 @@ public class ObjectSerializer implements ISerializer {
         }
         return message;
     }
-    
+
 }

@@ -1,29 +1,25 @@
 package net.gtamps.server.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.GridLayout;
+import net.gtamps.server.ControlCenter;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
-import net.gtamps.server.ControlCenter;
-
 /**
  * ugly-ass hacked class to easily control some server stuff...
- * @author tom
  *
+ * @author tom
  */
 public class ServerGUI {
-	private JFrame frame;
-	private NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
-	private NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
-	
-	public ServerGUI(){
-		frame = new JFrame("GTA MultiServer");
-		
+    private JFrame frame;
+    private NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
+    private NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
+
+    public ServerGUI() {
+        frame = new JFrame("GTA MultiServer");
+
 //		JButton startServer = new JButton("start Server");
 //		startServer.addActionListener(new ActionListener() {
 //			@Override
@@ -53,37 +49,35 @@ public class ServerGUI {
 ////				connectionManager.stopHttpServer();
 //			}
 //		});
-		
-		JButton restartGameButton = new JButton("Restart Game");		
-		restartGameButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ControlCenter.instance.restart();
-			}
-		});
-		
-		
-		
 
-		GridLayout buttonPanel = new GridLayout(1, 0);
-		Container buttonContainer = new Container();
-		buttonContainer.setLayout(buttonPanel);
-		buttonContainer.add(networkSendActivity);
-		buttonContainer.add(networkReceiveActivity);
-		buttonContainer.add(restartGameButton);
-		
-		Container container = new Container();
-		container.setLayout(new BorderLayout());
-		/*container.add(startServer);
-		container.add(stopServer);
-		container.add(startHttpServer);
-		container.add(stopHttpServer);*/
-		container.add(BorderLayout.CENTER ,new TabbedPane());
-		container.add(BorderLayout.SOUTH, buttonContainer);
-		
-		frame.setContentPane(container);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 500);
-		frame.setVisible(true);
-	}
+        JButton restartGameButton = new JButton("Restart Game");
+        restartGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ControlCenter.instance.restart();
+            }
+        });
+
+
+        GridLayout buttonPanel = new GridLayout(1, 0);
+        Container buttonContainer = new Container();
+        buttonContainer.setLayout(buttonPanel);
+        buttonContainer.add(networkSendActivity);
+        buttonContainer.add(networkReceiveActivity);
+        buttonContainer.add(restartGameButton);
+
+        Container container = new Container();
+        container.setLayout(new BorderLayout());
+        /*container.add(startServer);
+          container.add(stopServer);
+          container.add(startHttpServer);
+          container.add(stopHttpServer);*/
+        container.add(BorderLayout.CENTER, new TabbedPane());
+        container.add(BorderLayout.SOUTH, buttonContainer);
+
+        frame.setContentPane(container);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+        frame.setVisible(true);
+    }
 }

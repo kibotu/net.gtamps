@@ -9,7 +9,6 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
-
 import org.jbox2d.common.Vec2;
 
 /**
@@ -30,118 +29,118 @@ import org.jbox2d.common.Vec2;
  * There is an enforced delay between succeeding enter/exit activities
  * with the same handler, which is controlled by {@link #COOLDOWN_MILLIS}.
  * </p>
+ *
  * @author jan, tom, til
  * @see Entity
  * @see Player
- *
  */
 public class DriverHandler extends Handler {
-	private static final LogType TAG = LogType.GAMEWORLD;
-	private static final int COOLDOWN_MILLIS = 500;
+    private static final LogType TAG = LogType.GAMEWORLD;
+    private static final int COOLDOWN_MILLIS = 500;
 
-	private static final Vec2 exitOffset = new Vec2(30f, 0);
-	private static final int exitRotation = 90;
-	
-	private Player driver = null;
-	private Entity driversHumanBody = null;
-	private long lastActivationMillis = 0;
-	private final EventType[] sendsUp = { EventType.PLAYER_ENTERSCAR,
-			EventType.PLAYER_EXITSCAR };
-	private final EventType[] receivesDown = { EventType.ENTITY_DESTROYED,
-			EventType.ACTION_ENTEREXIT };
+    private static final Vec2 exitOffset = new Vec2(30f, 0);
+    private static final int exitRotation = 90;
 
-	public DriverHandler(final Entity parent) {
-		super(Handler.Type.DRIVER, parent);
-		setSendsUp(sendsUp);
-		setReceivesDown(receivesDown);
-		connectUpwardsActor(parent);
-	}
+    private Player driver = null;
+    private Entity driversHumanBody = null;
+    private long lastActivationMillis = 0;
+    private final EventType[] sendsUp = {EventType.PLAYER_ENTERSCAR,
+            EventType.PLAYER_EXITSCAR};
+    private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
+            EventType.ACTION_ENTEREXIT};
 
-	public boolean isAvailable() {
-		return driver == null || driver == PlayerManager.WORLD_PSEUDOPLAYER;
-	}
+    public DriverHandler(final Entity parent) {
+        super(Handler.Type.DRIVER, parent);
+        setSendsUp(sendsUp);
+        setReceivesDown(receivesDown);
+        connectUpwardsActor(parent);
+    }
 
-	public void enter(final Player player) {
-		if (!isAvailable()) {
-			return;
-		}
-		if (!canActivate()) {
-			return;
-		}
-		if (driver != null) {
-			chuckOutCurrentDriver();
-		}
-		driversHumanBody = player.getEntity();
-		driversHumanBody.disable();
-		
-		setDriver(player);
-		Logger.i().log(TAG, player + " enters car " + getParent());
-	}
+    public boolean isAvailable() {
+        return driver == null || driver == PlayerManager.WORLD_PSEUDOPLAYER;
+    }
 
-	public void exit() {
-		if (!canActivate()) {
-			return;
-		}
-		final Player exDriver = driver;
-		removeDriver();
-		if (driversHumanBody != null) {
-			final int carRota = parent.rota.value();
-			final float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
-			final float carX = parent.x.value();
-			final float carY = parent.y.value();
-			final Vec2 carPos = new Vec2(carX, carY);
-			final Vec2 exitLocalVec = new Vec2((float)Math.cos(carRotaRad)*exitOffset.x, (float) Math.sin(carRotaRad)*exitOffset.y);
-			final Vec2 newPos = carPos.add(exitLocalVec);
-			driversHumanBody.x.set((int) newPos.x);
-			driversHumanBody.y.set((int) newPos.y);
-			driversHumanBody.rota.set(carRota + exitRotation);
-			driversHumanBody.enable();
-			exDriver.setEntity(driversHumanBody);
-		}
-		{ // LOGGING
-			final String logMsg = String.format("%s exits car %s", exDriver, getParent());
-			final String logMsg2 = String.format("is now %s", driversHumanBody);
-			Logger.i().log(TAG, logMsg);
-			Logger.i().log(TAG, logMsg2);
-		}
-		driversHumanBody = null;
-	}
+    public void enter(final Player player) {
+        if (!isAvailable()) {
+            return;
+        }
+        if (!canActivate()) {
+            return;
+        }
+        if (driver != null) {
+            chuckOutCurrentDriver();
+        }
+        driversHumanBody = player.getEntity();
+        driversHumanBody.disable();
 
-	public void chuckOutCurrentDriver() {
-		exit();
-	}
+        setDriver(player);
+        Logger.i().log(TAG, player + " enters car " + getParent());
+    }
 
-	public void setDriver(final Player player) {
-		if (driver != null) {
-			removeDriver();
-		}
-		driver = player;
-		player.setEntity(getParent());
+    public void exit() {
+        if (!canActivate()) {
+            return;
+        }
+        final Player exDriver = driver;
+        removeDriver();
+        if (driversHumanBody != null) {
+            final int carRota = parent.rota.value();
+            final float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
+            final float carX = parent.x.value();
+            final float carY = parent.y.value();
+            final Vec2 carPos = new Vec2(carX, carY);
+            final Vec2 exitLocalVec = new Vec2((float) Math.cos(carRotaRad) * exitOffset.x, (float) Math.sin(carRotaRad) * exitOffset.y);
+            final Vec2 newPos = carPos.add(exitLocalVec);
+            driversHumanBody.x.set((int) newPos.x);
+            driversHumanBody.y.set((int) newPos.y);
+            driversHumanBody.rota.set(carRota + exitRotation);
+            driversHumanBody.enable();
+            exDriver.setEntity(driversHumanBody);
+        }
+        { // LOGGING
+            final String logMsg = String.format("%s exits car %s", exDriver, getParent());
+            final String logMsg2 = String.format("is now %s", driversHumanBody);
+            Logger.i().log(TAG, logMsg);
+            Logger.i().log(TAG, logMsg2);
+        }
+        driversHumanBody = null;
+    }
+
+    public void chuckOutCurrentDriver() {
+        exit();
+    }
+
+    public void setDriver(final Player player) {
+        if (driver != null) {
+            removeDriver();
+        }
+        driver = player;
+        player.setEntity(getParent());
 //		hasChanged = true;
-		getParent().setChanged();
-	}
+        getParent().setChanged();
+    }
 
-	public void removeDriver() {
-		driver.removeEntity();
-		driver = null;
+    public void removeDriver() {
+        driver.removeEntity();
+        driver = null;
 //		hasChanged = true;
-		getParent().setChanged();
-	}
+        getParent().setChanged();
+    }
 
-	@Override
-	public void receiveEvent(final GameEvent event) {
-		final EventType type = event.getType();
-		switch (type) {
-		case ACTION_ENTEREXIT:
-			exit();
-			break;
-		case ENTITY_DESTROYED:
-			getParent().removeHandler(this.type);
-			break;
-		}
-	}
+    @Override
+    public void receiveEvent(final GameEvent event) {
+        final EventType type = event.getType();
+        switch (type) {
+            case ACTION_ENTEREXIT:
+                exit();
+                break;
+            case ENTITY_DESTROYED:
+                getParent().removeHandler(this.type);
+                break;
+        }
+    }
 
-	//TODO driver property
+    //TODO driver property
 //	@Override
 //	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
 //		Element e = super.toXMLElement(baseRevision, keeper);
@@ -153,14 +152,14 @@ public class DriverHandler extends Handler {
 //		}
 //		return e;
 //	}
-	
-	private boolean canActivate() {
-		final long now = System.currentTimeMillis();
-		if (now - lastActivationMillis > COOLDOWN_MILLIS) {
-			lastActivationMillis = now;
-			return true;
-		}
-		return false;
-	}
+
+    private boolean canActivate() {
+        final long now = System.currentTimeMillis();
+        if (now - lastActivationMillis > COOLDOWN_MILLIS) {
+            lastActivationMillis = now;
+            return true;
+        }
+        return false;
+    }
 
 }

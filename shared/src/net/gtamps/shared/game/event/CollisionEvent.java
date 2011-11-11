@@ -5,6 +5,8 @@ import net.gtamps.shared.game.GameObject;
 public class CollisionEvent extends GameEvent {
 
 
+    private static final long serialVersionUID = -2768243016816037656L;
+
     public CollisionEvent(GameObject source, GameObject target, float impulse) {
         super(EventType.ENTITY_COLLIDE, source, target, Float.toString(impulse));
     }

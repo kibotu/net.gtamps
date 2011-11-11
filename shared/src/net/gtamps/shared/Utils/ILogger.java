@@ -5,24 +5,38 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ILogger {
 
-     /** TOAST MESSAGE **/
+    /**
+     * TOAST MESSAGE *
+     */
     public void toast(@NotNull String id, String message);
 
-    /** DEBUG **/
+    /**
+     * DEBUG *
+     */
     public void d(@NotNull String id, @Nullable String message);
 
-    /** VERBOSE **/
+    /**
+     * VERBOSE *
+     */
     public void v(@NotNull String id, @Nullable String message);
 
-    /** INFO **/
+    /**
+     * INFO *
+     */
     public void i(@NotNull String id, @Nullable String message);
 
-    /** WARN **/
+    /**
+     * WARN *
+     */
     public void w(@NotNull String id, @Nullable String message);
 
-    /** ERROR **/
+    /**
+     * ERROR *
+     */
     public void e(@NotNull String id, @Nullable String message);
 
-    /** SAVE TO FILE **/
+    /**
+     * SAVE TO FILE *
+     */
     public void save(String filename);
 }
