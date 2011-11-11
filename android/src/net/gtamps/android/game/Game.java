@@ -57,6 +57,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //        world.getScene().setVisible(false);
 //        PlayerMovementListener cl = new PlayerMovementListener();
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
+
         // hud
         scenes.add(hud);
 //        hud.getScene().setVisible(false);
@@ -64,12 +65,12 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //        scenes.add(menu);
 //        menu.getScene().setVisible(false);
 
-        // connect
-//        connection.checkConnection();
+//        connect
+        connection.checkConnection();
 //
-//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-//        connection.start();
-//        connection.add(MessageFactory.createSessionRequest());
+        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+        connection.start();
+        connection.add(MessageFactory.createSessionRequest());
     }
 
 //    int menuloop = 0;
@@ -81,7 +82,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         }
 
         // check connection
-//        connection.checkConnection();
+        connection.checkConnection();
 
         // handle inbox messages
         while (!connection.isEmpty()) {

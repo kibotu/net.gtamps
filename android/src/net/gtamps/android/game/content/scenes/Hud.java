@@ -11,6 +11,10 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Sprite;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.state.State;
+import net.gtamps.shared.serializer.ConnectionManager;
+import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.MessageFactory;
+import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 
@@ -56,9 +60,23 @@ public class Hud extends BasicScene implements InputEventListener {
         setDirtyFlag();
     }
 
+    private Message message;
+
     @Override
-    public void onSendableRetrieve(SendableType sendableType, ISendableData sendableData) {
+    public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
         Logger.D(this, sendableType);
+        if (
+			sendableType.equals(SendableType.ACTION_ACCELERATE) ||
+			sendableType.equals(SendableType.ACTION_DECELERATE) ||
+			sendableType.equals(SendableType.ACTION_LEFT) ||
+			sendableType.equals(SendableType.ACTION_RIGHT) ||
+			sendableType.equals(SendableType.ACTION_SHOOT)
+
+		) {
+			message = MessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+			message.addSendable(new Sendable(sendableType, data));
+			ConnectionManager.INSTANCE.add(message);
+		}
     }
 
     public Sprite getCursor() {
