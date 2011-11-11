@@ -1,11 +1,21 @@
 package net.gtamps.shared;
 
+<<<<<<< HEAD
+=======
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+>>>>>>> origin/master
 import net.gtamps.shared.Utils.Stack;
 import net.gtamps.shared.Utils.predicate.FilteringArrayList;
 import net.gtamps.shared.Utils.predicate.FilteringCollection;
 import net.gtamps.shared.Utils.predicate.Predicate;
 import net.gtamps.shared.Utils.predicate.PredicateModifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -38,6 +48,7 @@ import java.util.Set;
  * goes wrong, the fault is yours.
  *
  * @author Jan Rabe, Tom Wallroth, Til Boerner
+ *
  */
 public class SharedObject implements Serializable {
 
