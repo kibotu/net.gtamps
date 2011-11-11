@@ -58,7 +58,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //        PlayerMovementListener cl = new PlayerMovementListener();
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
         // hud
-//        scenes.add(hud);
+        scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
