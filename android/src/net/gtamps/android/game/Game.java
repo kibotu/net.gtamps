@@ -57,15 +57,15 @@ public class Game implements IGame{
         scenes.add(hud.getScene());
 
         // connect
-        connection.connect();
-        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-        connection.start();
-
-        connection.add(MessageFactory.createSessionRequest());
-
-        connection.add(MessageFactory.createRegisterRequest("username", "password"));
-        connection.add(MessageFactory.createLoginRequest("username", "password"));
-        connection.add(MessageFactory.createJoinRequest());
+//        connection.connect();
+//        Logger.I(this, "Connecting to " + Config.SERVER_HOST_ADDRESS + ":" + Config.SERVER_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+//        connection.start();
+//
+//        connection.add(MessageFactory.createSessionRequest());
+//
+//        connection.add(MessageFactory.createRegisterRequest("username", "password"));
+//        connection.add(MessageFactory.createLoginRequest("username", "password"));
+//        connection.add(MessageFactory.createJoinRequest());
 //        connection.add(MessageFactory.createGetPlayerRequest());
     }
 
@@ -108,11 +108,11 @@ public class Game implements IGame{
             Vector3 pos = inputEngine.getPointerPosition();
             Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
             hud.getCursor().setPosition(temp);
-//            world.getActiveObject().getNode().getPosition().addInPlace(temp);
-//            scenes.get(0).getActiveCamera().move(temp);
+            world.getActiveObject().getNode().getPosition().addInPlace(temp);
+            scenes.get(0).getActiveCamera().move(temp);
 
             float angle = Vector3.XAXIS.angleInBetween(pos)-90;
-//            world.getActiveObject().getNode().setRotation(0, 0, angle);
+            world.getActiveObject().getNode().setRotation(0, 0, angle);
             hud.getRing().setRotation(0, 0, angle);
 
             Vector3 temp2 = Vector3.createNew(temp);

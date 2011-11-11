@@ -70,8 +70,8 @@ public class World {
         sun.setAttenuation(0.5f,0,0);
 		scene.add(sun);
 
-        addPlane();
-//        addCity();
+//        addPlane();
+        addCity();
 //        addLevel();
     }
 
