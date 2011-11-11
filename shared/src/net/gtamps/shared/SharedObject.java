@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -126,13 +127,48 @@ public class SharedObject implements Serializable {
         return true;
     }
 
+
+    /**
+     * @param checking            the {@link CheckItem} for the root testee is expected to be the sole occupant of the stack
+     * @param considerFinalAppeal let items pass the test for whom {@link #finalAppeal} returns true
+     */
+    private boolean isShareable(final Stack<CheckItem> checking, final boolean considerFinalAppeal) {
+        assert checking.size() == 1;
+        final Stack<CheckItem> todo = new Stack<CheckItem>();
+        todo.push(checking.pop());
+        while (!todo.empty()) {
+            final CheckItem item = todo.peek();
+            if (!(checked.contains(item.type) || checking.contains(item))) {
+                checking.push(item);
+                if (!itemIsShareable(item, true)) {
+                    return false;
+                }
+                final Collection<Field> fields = getCheckableFields(item);
+                for (final Field field : fields) {
+                    todo.push(new CheckItem(field, item.instance));
+                }
+            }
+            if (todo.topIs(item)) {            // no additional checks pushed: we're done here
+                todo.pop();
+                if (checking.topIs(item)) {    // did we push item on the checkStack?
+                    checking.pop();
+                }
+                if (!item.requestsFinalAppeal) {    // don't add suspicious items to the clean list
+                    checked.add(item.type);
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * wraps all shareable criteria in one check
      *
      * @param considerFinalAppeal let items pass the test for whom {@link #finalAppeal} returns true
      */
     private boolean itemIsShareable(final CheckItem item, final boolean considerFinalAppeal) {
-        if ((isShareableItem.isTrueFor(item)
+        if ((isPrimitive.isTrueFor(item)
+                || isShareableItem.isTrueFor(item)
                 || isExplicitlyAllowed.isTrueFor(item))
                 && isOKPublicFinal.isTrueFor(item)) {
             return true;
@@ -143,41 +179,15 @@ public class SharedObject implements Serializable {
         return false;
     }
 
-    /**
-     * @param checkStack          the {@link CheckItem} for the root testee is expected to be the sole occupant of the stack
-     * @param considerFinalAppeal let items pass the test for whom {@link #finalAppeal} returns true
-     */
-    private boolean isShareable(final Stack<CheckItem> checkStack, final boolean considerFinalAppeal) {
-        assert checkStack.size() == 1;
-        final Stack<CheckItem> todo = new Stack<CheckItem>();
-        todo.push(checkStack.pop());
-        while (!todo.empty()) {
-            final CheckItem item = todo.peek();
-            if (!(checked.contains(item.type) || checkStack.contains(item))) {
-                checkStack.push(item);
-                if (!itemIsShareable(item, true)) {
-                    return false;
-                }
-                FilteringCollection<Field> fields = FilteringArrayList.fromArray(item.type.getDeclaredFields());
-                fields = fields.removeAll(isTransientField)
-                        .removeAll(isPrimitiveField)
-                        .removeAll(isSharedField)
-                        .removeAll(isEnumSelfReference);
-                for (final Field field : fields) {
-                    todo.push(new CheckItem(field, item.instance));
-                }
-            }
-            if (item == todo.peek()) {
-                if (itemIsShareable(item, false)) {
-                    checked.add(item.type);
-                }
-                todo.pop();
-                if (checkStack.size() != 0 && item == checkStack.peek()) {
-                    checkStack.pop();
-                }
-            }
-        }
-        return true;
+
+    private Collection<Field> getCheckableFields(final CheckItem item) {
+        final FilteringCollection<Field> fields;
+        fields = FilteringArrayList.fromArray(item.type.getDeclaredFields());
+        fields.removeAll(isTransientField)
+                .removeAll(isPrimitiveField)
+                .removeAll(isSharedField)
+                .removeAll(isEnumSelfReference);
+        return fields;
     }
 
     /**
@@ -201,17 +211,17 @@ public class SharedObject implements Serializable {
 
     ////////
     //
-    // STATIC PRIVATE
+    // UTILITY STUFF
     //
     ////////
 
     /**
-     * one last method to pass the check: @see {@link CheckItem#checkedGeneric}
+     * one last method to pass the check: @see {@link CheckItem#requestsFinalAppeal}
      */
     private static transient final Predicate<CheckItem> finalAppeal = new Predicate<CheckItem>() {
         @Override
         public boolean isTrueFor(final CheckItem x) {
-            return x.checkedGeneric;
+            return x.requestsFinalAppeal;
         }
 
         @Override
@@ -310,6 +320,7 @@ public class SharedObject implements Serializable {
     /**
      * {@link #isPublicFinalClass} || {@link #isPublicFinalField}
      */
+    @SuppressWarnings("unchecked") // as of java 7, this warning will move to method declaration
     private static transient final Predicate<CheckItem> isPublicFinal =
             PredicateModifier.or(isPublicFinalClass, isPublicFinalField);
 
@@ -355,6 +366,18 @@ public class SharedObject implements Serializable {
         }
     };
 
+    private static transient final Predicate<Field> isPrimitiveField = new Predicate<Field>() {
+        @Override
+        public boolean isTrueFor(final Field x) {
+            return x.getType().isPrimitive();
+        }
+
+        @Override
+        public String toString() {
+            return "p(x) := isPrimitive(Field)";
+        }
+    };
+
     /**
      * {@link #isShared(Class) isShared(Field.getType())}?
      */
@@ -387,37 +410,15 @@ public class SharedObject implements Serializable {
     };
 
     /**
-     * does the field represent a primitive value?
-     */
-    private static transient final Predicate<Field> isPrimitiveField = new Predicate<Field>() {
-        @Override
-        public boolean isTrueFor(final Field x) {
-            final Class<?> type = x.getType();
-            return type.isPrimitive();
-        }
-
-        @Override
-        public String toString() {
-            return "p(x) := isPrimitive(Field)";
-        }
-    };
-
-    /**
-     * @return    <tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
-     * or enum in SharedObject's package tree
+     * @return <tt>true</tt> if <tt>type</tt> is a SharedObject, Interface
+     *         or enum in SharedObject's package tree
      */
     private static boolean isShared(final Class<?> type) {
-        Class<?> tmpType = type;
-        while (tmpType.isAnonymousClass() || tmpType.isLocalClass()) {
-            tmpType = tmpType.getEnclosingClass();
-        }
-        final String fullName = tmpType.getCanonicalName();
         final boolean result = (SharedObject.class.isAssignableFrom(type)
                 || type.isInterface() || type.isEnum())
-                && fullName.startsWith(SHARED_PACKAGE_NAME);
+                && type.getCanonicalName().startsWith(SHARED_PACKAGE_NAME);
         return result;
     }
-
 
     /**
      * groups relevant data for a shareability check
@@ -425,27 +426,40 @@ public class SharedObject implements Serializable {
      * @author til, tom, jan
      */
     private class CheckItem {
-        public final Class<?> type;
-        @Nullable
-        public final boolean checkedGeneric;
+        /**
+         * does this item request waiving of compliance tests? (via annotation)
+         */
+        public final boolean requestsFinalAppeal;
+        /**
+         * does this item derive from the field of another item?
+         */
         public final boolean fromField;
+        /**
+         * the type represented by this item
+         */
+        public final Class<?> type;
+        /**
+         * an instance of this item, useful for Field.get(instance)
+         */
+        @Nullable
         public final Object instance;
         public final int classModifiers;
         public final int fieldModifiers;
         public final String simpleTypeName;
         public final String fieldName;
 
+        /**
+         * try to get the value of a field, or return null
+         */
         private Object getFieldValue(final Field field, final Object owner) {
             assert field == null || owner != null : "if field != null, owner must also be != null";
             Object o = null;
             if (field != null) {
                 try {
                     o = field.get(owner);
-                } catch (final IllegalArgumentException e) {
-                    e.printStackTrace();
                 } catch (final IllegalAccessException e) {
-                    System.err.println("illegal access on " + field);
-//					e.printStackTrace();
+                    // sshhh! non-public fields will be caught by iShared()
+                    //System.err.println("illegal access on " + field);
                 }
             }
             return o;
@@ -472,7 +486,7 @@ public class SharedObject implements Serializable {
                     this.instance = null;
 
                 }
-                this.checkedGeneric = isCheckedShareable.isTrueFor(field);
+                this.requestsFinalAppeal = isCheckedShareable.isTrueFor(field);
                 final String tmpName = field.getName();
                 this.fieldName = tmpName.substring(tmpName.lastIndexOf('.') + 1);
                 this.fieldModifiers = field.getModifiers();
@@ -480,7 +494,7 @@ public class SharedObject implements Serializable {
                 this.fromField = false;
                 this.type = clarifyType(type);
                 this.instance = instance;
-                this.checkedGeneric = false;
+                this.requestsFinalAppeal = false;
                 this.fieldName = "";
                 this.fieldModifiers = 0;
             }

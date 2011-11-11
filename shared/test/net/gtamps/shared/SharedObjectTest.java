@@ -17,7 +17,7 @@ public class SharedObjectTest extends Assert {
 
 	@Test
 	public void OKSelfTest() {
-		final SharedObject o = new SharedObject();
+		new SharedObject();
 	}
 
 	@Test
