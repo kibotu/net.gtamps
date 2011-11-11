@@ -1,7 +1,6 @@
 package net.gtamps.android.game;
 
 import android.os.SystemClock;
-import net.gtamps.android.core.input.InputEngine;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -34,7 +33,6 @@ public class Game implements BasicRenderActivity.IRenderActivity {
     private boolean isPaused;
     private long startTime;
     private long finalDelta;
-    private final InputEngine inputEngine;
     private final ArrayList<BasicScene> scenes;
     private boolean isDragging = false;
     private final Hud hud;
@@ -45,7 +43,6 @@ public class Game implements BasicRenderActivity.IRenderActivity {
     public Game() {
         isRunning = true;
         isPaused = false;
-        inputEngine = InputEngine.getInstance();
         scenes = new ArrayList<BasicScene>();
         hud = new Hud();
         world = new World();
@@ -93,74 +90,6 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 handleMessage(message.sendables.get(i), message);
             }
         }
-    }
-
-    @Deprecated
-    private void onDrawFrame2() {
-
-        // zoom
-        if (inputEngine.getZoomState()) {
-            setZoomByDistance(inputEngine.getZoomDistance());
-        }
-
-        // on touch
-        if (inputEngine.getDownState()) {
-//            Utils.log(TAG, "finger down");
-            isDragging = true;
-
-//            if(menuloop % 3 == 0) menu.showStartScreen();
-//            if(menuloop % 3 == 1) menu.showOptionsScreen();
-//            if(menuloop % 3 == 2) menu.showServerListScreen();
-//            menuloop++;
-
-//            EntityView view = world.getScene().getEntityView((int) (Math.random() * world.getScene().getObjects3dCount()));
-//            if(view != null) world.setActiveObject(view);
-        }
-
-        // on release
-        if (inputEngine.getUpState()) {
-//            Utils.log(TAG, "finger up");
-            isDragging = false;
-            hud.getCursor().setPosition(inputEngine.getPointerPosition());
-        }
-
-        Vector3 temp3 = Vector3.createNew();
-        if (isDragging) {
-//            Utils.log(TAG, "is dragging");
-            Vector3 viewportSize = scenes.get(1).getActiveCamera().getViewportSize();
-            Vector3 pos = inputEngine.getPointerPosition();
-            Vector3 temp = pos.sub(viewportSize).mulInPlace(1).addInPlace(viewportSize);
-            hud.getCursor().setPosition(temp);
-            world.getActiveView().getObject3d().getPosition().addInPlace(temp);
-            scenes.get(0).getActiveCamera().move(temp);
-
-            float angle = Vector3.XAXIS.angleInBetween(pos) - 90;
-            world.getActiveView().getObject3d().setRotation(0, 0, angle);
-            hud.getRing().setRotation(0, 0, angle);
-
-            Vector3 temp2 = Vector3.createNew(temp);
-            temp2.normalize();
-            temp2.invert();
-            temp2.mulInPlace(40);
-
-            Vector3 camPos = scenes.get(0).getActiveCamera().getPosition();
-            temp3.set(temp2.x, temp2.y, camPos.z).addInPlace(world.getActiveView().getObject3d().getPosition());
-
-            // send driving impulses
-            fireImpulse(angle, temp);
-
-//            temp.recycle();
-            scenes.get(0).getActiveCamera().setPosition(temp3);
-        }
-        scenes.get(0).getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
-
-        // Compute elapsed time
-        finalDelta = SystemClock.elapsedRealtime() - startTime;
-
-        // new start time
-        startTime = SystemClock.elapsedRealtime();
-
-        // animate
     }
 
     private long impulse = 0;
@@ -389,7 +318,6 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 break;
             case ACTION_TURNLEFT:
                 break;
-
             case ENTITY_ACTIVATE:
                 break;
             case ENTITY_BULLET_HIT:
