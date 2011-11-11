@@ -27,7 +27,7 @@ public class World extends EntityScene {
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 
-        activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
+        activeView = new EntityView(new Entity(Entity.Type.CAR_SCHOOLBUS));
         activeView.getObject3d().add(getSpotLight());
         add(activeView);
         EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
@@ -37,6 +37,10 @@ public class World extends EntityScene {
         EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_CHEVROLET_CORVETTE));
         riviera.getObject3d().setPosition(3, 0, 0);
         add(riviera);
+
+        EntityView schoolbus = new EntityView(new Entity(Entity.Type.CAR_SCHOOLBUS));
+        schoolbus.getObject3d().setPosition(6, 0, 0);
+        add(schoolbus);
 
         add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));

@@ -49,6 +49,7 @@ public class Sprite extends RenderableNode {
         SpriteTetxure spriteTetxure = bufferedTexture.getAnimation(State.Type.IDLE)[0];
         setTextureBufferOffsetId(spriteTetxure.offsetId);
         dimension.set(spriteTetxure.width, spriteTetxure.height, 0);
+        useSharedTextureCoordBuffer(true);
         scaling.set(1, 1, 0);
     }
 

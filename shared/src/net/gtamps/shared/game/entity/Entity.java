@@ -18,7 +18,7 @@ public class Entity extends GameActor implements Serializable {
     private static final long serialVersionUID = -5466989016443709708L;
 
     static public enum Type {
-        CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, SPHERE;
+        CAR_CAMARO, CAR_RIVIERA, CAR_SCHOOLBUS, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, SPHERE;
     }
 
     //TODO: use!

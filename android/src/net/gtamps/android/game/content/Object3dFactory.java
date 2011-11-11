@@ -5,6 +5,7 @@ import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -27,6 +28,8 @@ final public class Object3dFactory {
                 return createCarRiveria();
             case CAR_CHEVROLET_CORVETTE:
                 return createCarChevroletCorvette();
+            case CAR_SCHOOLBUS:
+                return createCarSchoolBus();
             case HUMAN:
                 return createHuman();
             case HOUSE:
@@ -48,8 +51,25 @@ final public class Object3dFactory {
         }
     }
 
+    private static RenderableNode createCarSchoolBus() {
+        Logger.v(TAG, "Create schoolbus.");
+        RenderableNode parsedObject = ParsedObject.parseObject("schoolbus_obj", R.drawable.placeholder, true);
+        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(false);
+        parsedChild.setMaterial(Material.YELLOW);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(false);
+        parsedChild.enableDoubleSided(true);
+        parsedChild.enableLighting(true);
+        parsedChild.enableAlpha(false);
+        parsedChild.enableMipMap(true);
+        parsedChild.setScaling(0.01f, 0.01f, 0.01f);
+        return parsedObject;
+    }
+
     private static RenderableNode createCarChevroletCorvette() {
-        Logger.v(TAG, "Create chevrolet corvette_mtl.");
+        Logger.v(TAG, "Create chevrolet corvette.");
         RenderableNode parsedObject = ParsedObject.parseObject("corvette_obj", R.drawable.placeholder, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
