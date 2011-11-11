@@ -1,15 +1,10 @@
 package net.gtamps.shared.game;
 
+import net.gtamps.shared.game.event.*;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import net.gtamps.shared.game.IGameActor;
-import net.gtamps.shared.game.event.EventType;
-import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.GameEventDispatcher;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
-import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
  * <p>
@@ -59,14 +54,14 @@ public class SharedGameActor extends GameObject implements IGameActor {
     private boolean enabled = true;
 
     public SharedGameActor(final String name) {
-    	super(name);
+        super(name);
     }
 
     /* (non-Javadoc)
 	 * @see net.gtamps.shared.game.IGameActor#isEnabled()
 	 */
     @Override
-	public boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -74,7 +69,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	 * @see net.gtamps.shared.game.IGameActor#enable()
 	 */
     @Override
-	public void enable() {
+    public void enable() {
         //Logger.i().log(LogType.GAMEWORLD, "Enabling Game Actor "+this);
         enabled = true;
         //Logger.i().log(LogType.GAMEWORLD, this+" was enabled "+this.enabled);
@@ -84,7 +79,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	 * @see net.gtamps.shared.game.IGameActor#disable()
 	 */
     @Override
-	public void disable() {
+    public void disable() {
         enabled = false;
     }
 
@@ -183,7 +178,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
      * EventTypes form a hierarchy and types can be transitive.
      *
      * @return the intersection between the types of events this actor sends
-     * upwards and receives from there
+     *         upwards and receives from there
      */
     private Set<EventType> upAndDownIntersection() {
         final Set<EventType> intersection = new HashSet<EventType>();
@@ -204,7 +199,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
     /* (non-Javadoc)
 	 * @see net.gtamps.shared.game.IGameActor#receiveEvent(net.gtamps.shared.game.event.GameEvent)
 	 */
-	@Override
+    @Override
     public void receiveEvent(final GameEvent event) {
         //Logger.i().log(LogType.GAMEWORLD, this+" "+event);
         dispatchEvent(event);
@@ -213,7 +208,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
     /* (non-Javadoc)
 	 * @see net.gtamps.shared.game.IGameActor#addEventListener(net.gtamps.shared.game.event.EventType, net.gtamps.shared.game.event.IGameEventListener)
 	 */
-	@Override
+    @Override
     public void addEventListener(final EventType type, final IGameEventListener listener) {
         eventDispatcher.addEventListener(type, listener);
     }
@@ -221,7 +216,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
     /* (non-Javadoc)
 	 * @see net.gtamps.shared.game.IGameActor#removeEventListener(net.gtamps.shared.game.event.EventType, net.gtamps.shared.game.event.IGameEventListener)
 	 */
-	@Override
+    @Override
     public void removeEventListener(final EventType type, final IGameEventListener listener) {
         eventDispatcher.removeEventListener(type, listener);
     }

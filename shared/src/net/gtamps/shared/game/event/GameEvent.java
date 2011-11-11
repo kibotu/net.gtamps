@@ -36,6 +36,7 @@ public class GameEvent extends GameObject {
      * signals that an ongoing event has finished
      */
     public static final String END_VALUE = "END";
+    private static final long serialVersionUID = 4026988656700611249L;
 
     protected final EventType type;
     protected final GameObject source;
@@ -88,7 +89,7 @@ public class GameEvent extends GameObject {
 
     /**
      * @return if this gameEvent has no source, this will return the
-     * same uid as {@link #getTargetUid()}
+     *         same uid as {@link #getTargetUid()}
      */
     public int getSourceUid() {
         return this.source.getUid();

@@ -1,5 +1,9 @@
 package net.gtamps.shared.game;
 
+import net.gtamps.shared.SharedObject;
+import net.gtamps.shared.Utils.UIDGenerator;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,11 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import net.gtamps.shared.SharedObject;
-import net.gtamps.shared.Utils.UIDGenerator;
-
-import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -130,11 +129,11 @@ public abstract class GameObject extends SharedObject implements Serializable {
      * @param <T>   the type of the property
      * @param name  the name of the property; not <code>null</code>
      * @param value the property's initial value; not <code>null</code>
+     * @return a property of the specified type, linked to this gameObject
      * @throws NoSuchElementException if a property with a different type
      *                                already exists under the same <code>name</code>,
      *                                or if the property couldn't be initialized for
      *                                any reason
-     * @return a property of the specified type, linked to this gameObject
      */
     public final <T> IProperty<T> useProperty(@NotNull String name, @NotNull T value) throws NoSuchElementException {
         String properName = name.toLowerCase();
@@ -179,7 +178,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
      * gameObject
      *
      * @return an iterator over all Properties currently in use for this
-     * gameObject
+     *         gameObject
      */
     public Iterable<IProperty<?>> getAllProperties() {
         if (this.properties == null) {
