@@ -82,7 +82,7 @@ public class Color4 implements Comparable<Color4> {
     }
 
     public void setAll(Color4 color) {
-        setAll(color.r,color.g,color.b,color.a);
+        setAll(color.r, color.g, color.b, color.a);
     }
 
     /**
@@ -211,18 +211,18 @@ public class Color4 implements Comparable<Color4> {
     }
 
     public short getRedAsShort() {
-        return (short) (r/255);
+        return (short) (r / 255);
     }
 
     public short getGreenAsShort() {
-        return (short) (g/255);
+        return (short) (g / 255);
     }
 
     public short getBlueAsShort() {
-        return (short) (b/255);
+        return (short) (b / 255);
     }
 
     public short getAlphaAsShort() {
-        return (short) (a/255);
+        return (short) (a / 255);
     }
 }

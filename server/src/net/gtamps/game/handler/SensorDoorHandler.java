@@ -35,50 +35,48 @@ import net.gtamps.shared.game.player.Player;
  * </tr>
  * </table>
  * </p>
- * 
- * @see Entity
- * 
+ *
  * @author jan, tom, til
- * 
+ * @see Entity
  */
 public class SensorDoorHandler extends SensorHandler {
 
-	public SensorDoorHandler(final Entity parent) {
-		super(EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
-		final EventType[] receives = { EventType.ENTITY_SENSE_DOOR,
-				EventType.ACTION_ENTEREXIT };
-		setReceivesDown(receives);
-		connectUpwardsActor(parent);
-	}
+    public SensorDoorHandler(final Entity parent) {
+        super(EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
+        final EventType[] receives = {EventType.ENTITY_SENSE_DOOR,
+                EventType.ACTION_ENTEREXIT};
+        setReceivesDown(receives);
+        connectUpwardsActor(parent);
+    }
 
-	@Override
-	public void act(final GameEvent event) {
-		// Logger.i().log(TAG, getParent() + " looking for things to enter");
-		final Player player = (Player) event.getSource();
-		float minDistance = Float.POSITIVE_INFINITY;
-		Entity closest = null;
-		for (final Entity e : sensed) {
-			if (e.getHandler(Handler.Type.DRIVER) == null) {
-				continue;
-			}
-			final float dx = parent.x.value() - e.x.value();
-			final float dy = parent.y.value() - e.y.value();
-			final float dist = dx * dx + dy * dy;
-			if (dist < minDistance) {
-				minDistance = dist;
-				closest = e;
-			}
-		}
-		if (closest != null) {
-			// Logger.i().log(TAG, getParent() + " trying to enter " + closest);
-			final DriverHandler driver = (DriverHandler) closest
-					.getHandler(Handler.Type.DRIVER);
-			if (driver != null) {
-				driver.enter(player);
-			} else {
-			}
-		}
+    @Override
+    public void act(final GameEvent event) {
+        // Logger.i().log(TAG, getParent() + " looking for things to enter");
+        final Player player = (Player) event.getSource();
+        float minDistance = Float.POSITIVE_INFINITY;
+        Entity closest = null;
+        for (final Entity e : sensed) {
+            if (e.getHandler(Handler.Type.DRIVER) == null) {
+                continue;
+            }
+            final float dx = parent.x.value() - e.x.value();
+            final float dy = parent.y.value() - e.y.value();
+            final float dist = dx * dx + dy * dy;
+            if (dist < minDistance) {
+                minDistance = dist;
+                closest = e;
+            }
+        }
+        if (closest != null) {
+            // Logger.i().log(TAG, getParent() + " trying to enter " + closest);
+            final DriverHandler driver = (DriverHandler) closest
+                    .getHandler(Handler.Type.DRIVER);
+            if (driver != null) {
+                driver.enter(player);
+            } else {
+            }
+        }
 
-	}
+    }
 
 }

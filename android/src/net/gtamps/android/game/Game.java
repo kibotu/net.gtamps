@@ -184,7 +184,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
                             // new entity
                             entityView = new EntityView(serverEntity);
-                            world.add(entityView.getObject3d());
+                            world.add(entityView);
 
                             // add to setup
                             Registry.getRenderer().addToSetupQueue(entityView.getObject3d());

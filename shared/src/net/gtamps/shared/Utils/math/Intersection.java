@@ -5,19 +5,19 @@ package net.gtamps.shared.Utils.math;
  */
 public enum Intersection {
 
-	/**
-	 * Element ist außerhalb der Referenz
-	 */
-	OUTSIDE,
+    /**
+     * Element ist außerhalb der Referenz
+     */
+    OUTSIDE,
 
-	/**
-	 * Element ist innerhalb der Referenz
-	 */
-	INSIDE,
+    /**
+     * Element ist innerhalb der Referenz
+     */
+    INSIDE,
 
-	/**
-	 * Element schneidet sich mit / ist exakt auf der Referenz
-	 */
-	INTERSECTS
-	
+    /**
+     * Element schneidet sich mit / ist exakt auf der Referenz
+     */
+    INTERSECTS
+
 }

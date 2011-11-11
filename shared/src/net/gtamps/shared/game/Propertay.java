@@ -1,7 +1,6 @@
 package net.gtamps.shared.game;
 
 import net.gtamps.shared.CheckedShareable;
-
 import org.jetbrains.annotations.NotNull;
 
 

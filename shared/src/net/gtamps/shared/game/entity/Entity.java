@@ -1,13 +1,13 @@
 package net.gtamps.shared.game.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Entity extends SharedGameActor {
 

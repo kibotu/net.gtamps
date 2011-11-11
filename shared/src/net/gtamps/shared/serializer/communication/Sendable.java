@@ -2,7 +2,6 @@ package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

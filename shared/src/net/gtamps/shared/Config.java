@@ -14,9 +14,9 @@ final public class Config {
      */
     public static boolean renderContinuously = true;
     public static boolean ENABLE_FRAME_LIMITER = true;
-    public static final long FPS = 1000/30;
+    public static final long FPS = 1000 / 30;
     public static final boolean DISPLAY_FRAME_RATE = false;
-    public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE =  0.3f;
+    public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE = 0.3f;
 
     /**
      * FONT
@@ -44,7 +44,7 @@ final public class Config {
     public static final String TIL_IP_INI = "141.64.23.78";
     public static final String JAN_IP_HOME = "192.168.2.101";
     public static final String JAN_IP_INI = "141.64.23.98";
-	public static final String LOCALHOST = "localhost";
+    public static final String LOCALHOST = "localhost";
 
     public static final String SERVER_DEFAULT_HOST_ADDRESS = JAN_IP_INI;
     public static final int SERVER_DEFAULT_PORT = 8095;
@@ -59,5 +59,6 @@ final public class Config {
     public static final long IMPULS_FREQUENCY = 0;
     public static final int MAX_SOCKET_TIMEOUT = 14000;
 
-    private Config() { }
+    private Config() {
+    }
 }

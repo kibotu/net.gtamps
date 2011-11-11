@@ -2,7 +2,6 @@ package net.gtamps.shared.serializer.communication.data;
 
 import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.game.player.Player;
-
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerData extends SharedObject implements ISendableData {

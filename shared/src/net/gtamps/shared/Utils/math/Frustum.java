@@ -7,80 +7,83 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Frustum {
 
-	/**
-	 * Entfernung der nahen Plane
-	 */
-	private float nearDistance;
-	
-	/**
-	 * Entfernung der fernen Plane
-	 */
-	private float farDistance;
-	
-	/**
-	 * Sichtwinkel in Grad
-	 */
-	private float fieldOfView;
+    /**
+     * Entfernung der nahen Plane
+     */
+    private float nearDistance;
+
+    /**
+     * Entfernung der fernen Plane
+     */
+    private float farDistance;
+
+    /**
+     * Sichtwinkel in Grad
+     */
+    private float fieldOfView;
 
     /**
      * Der inverse Zoomfaktor (1/Zoomfaktor)
+     *
      * @see #zoomFactor
      */
     private float inverseZoomFactor = 1.0f;
 
     /**
      * Der Zoomfaktor
+     *
      * @see #inverseZoomFactor
      */
     private float zoomFactor = 1.0f;
 
-	/**
-	 * Aspektverhältnis
-	 */
-	private float aspectRatio;
-	
-	/**
-	 * Der Tangens des Blickwinkels
-	 */
-	private float tangens;
-	
-	/**
-	 * Höhe der near plane
-	 */
-	private float height;
-	
-	/**
-	 * Breite der near plane
-	 */
-	private float width;
-	
-	/**
-	 * Kameraposition, ...
-	 */
-	@NotNull
-	private Vector3 position, target, up;
+    /**
+     * Aspektverhältnis
+     */
+    private float aspectRatio;
 
-	/**
-	 * Kamerareferenzvektoren
-	 */
+    /**
+     * Der Tangens des Blickwinkels
+     */
+    private float tangens;
+
+    /**
+     * Höhe der near plane
+     */
+    private float height;
+
+    /**
+     * Breite der near plane
+     */
+    private float width;
+
+    /**
+     * Kameraposition, ...
+     */
+    @NotNull
+    private Vector3 position, target, up;
+
+    /**
+     * Kamerareferenzvektoren
+     */
     @NotNull
     private Vector3 xAxis, yAxis, zAxis;
-	
-	/**
-	 * Kugel-Faktoren
-	 */
-	private float sphereFactorY, sphereFactorX;
 
-	/**
-	 * Erzeugt einen neuen Sichtkegel
-	 * @param aspectRatio Das Apsektverh�ltnis
-	 * @param fov Das Blickfeld in Radians
-	 * @param nearDistance Die Entfernung zur nahen Ebene
-	 * @param farDistance Die Entfernung zur fernen Ebene
-	 */
-	public Frustum(float aspectRatio, float fov, float nearDistance, float farDistance) {
-		this(aspectRatio, fov, 1.0f, nearDistance, farDistance);
-	}
+    /**
+     * Kugel-Faktoren
+     */
+    private float sphereFactorY, sphereFactorX;
+
+    /**
+     * Erzeugt einen neuen Sichtkegel
+     *
+     * @param aspectRatio  Das Apsektverh�ltnis
+     * @param fov          Das Blickfeld in Radians
+     * @param nearDistance Die Entfernung zur nahen Ebene
+     * @param farDistance  Die Entfernung zur fernen Ebene
+     */
+    public Frustum(float aspectRatio, float fov, float nearDistance, float farDistance) {
+        this(aspectRatio, fov, 1.0f, nearDistance, farDistance);
+    }
 
     /**
      * Erzeugt einen neuen Sichtkegel
@@ -107,33 +110,34 @@ public final class Frustum {
         set(aspectRatio, fov, 1.0f, nearDistance, farDistance);
     }
 
-	/**
-	 * Setzt die Parameter des Sichtkegels
+    /**
+     * Setzt die Parameter des Sichtkegels
      *
-	 * @param aspectRatio Das Apsektverhältnis
-	 * @param fov Das Blickfeld in Radians
-     * @param zoomFactor Der Zoomfaktor
-	 * @param nearDistance Die Entfernung zur nahen Ebene
-	 * @param farDistance Die Entfernung zur fernen Ebene
-	 */
-	public void set(float aspectRatio, float fov, float zoomFactor, float nearDistance, float farDistance) {
+     * @param aspectRatio  Das Apsektverhältnis
+     * @param fov          Das Blickfeld in Radians
+     * @param zoomFactor   Der Zoomfaktor
+     * @param nearDistance Die Entfernung zur nahen Ebene
+     * @param farDistance  Die Entfernung zur fernen Ebene
+     */
+    public void set(float aspectRatio, float fov, float zoomFactor, float nearDistance, float farDistance) {
         assert aspectRatio > 0;
         assert fov > 0;
         assert zoomFactor > 0;
         assert nearDistance > 0;
         assert farDistance > nearDistance;
 
-		this.aspectRatio = aspectRatio;
-		this.nearDistance = nearDistance;
-		this.farDistance = farDistance;
-		fieldOfView = fov;
+        this.aspectRatio = aspectRatio;
+        this.nearDistance = nearDistance;
+        this.farDistance = farDistance;
+        fieldOfView = fov;
         setZoomFactorWithoutUpdatingPlanes(zoomFactor);
 
-		calculatePlaneSizes();
-	}
+        calculatePlaneSizes();
+    }
 
     /**
      * Setzt den Zoomfaktor, ohne die Planes zu aktualisieren
+     *
      * @param zoomFactor Der Zoomfaktor
      * @see #calculatePlaneSizes()
      */
@@ -147,9 +151,9 @@ public final class Frustum {
     /**
      * Setzt das horizontale Blickfeld und berechnet den Sichtkegel neu
      *
-     * @param fov        Das Sichtfeld in Radians
-     * @param resetZoom  Gibt an, ob der Zoomfaktor zurückgesetzt werden soll
-     * @see #setHorizontalFieldOfView(float, float) 
+     * @param fov       Das Sichtfeld in Radians
+     * @param resetZoom Gibt an, ob der Zoomfaktor zurückgesetzt werden soll
+     * @see #setHorizontalFieldOfView(float, float)
      */
     public void setHorizontalFieldOfView(float fov, boolean resetZoom) {
         assert fov > 0;
@@ -163,7 +167,7 @@ public final class Frustum {
     /**
      * Setzt das horizontale Blickfeld und berechnet den Sichtkegel neu
      *
-     * @param fov Das Sichtfeld in Radians
+     * @param fov        Das Sichtfeld in Radians
      * @param zoomFactor Der Zoomfaktor
      */
     public void setHorizontalFieldOfView(float fov, float zoomFactor) {
@@ -172,7 +176,7 @@ public final class Frustum {
 
         fieldOfView = fov;
         setZoomFactorWithoutUpdatingPlanes(zoomFactor);
-        
+
         calculatePlaneSizes();
     }
 
@@ -181,7 +185,7 @@ public final class Frustum {
      *
      * @return Winkel in Radians
      * @see #getZoomFactor()
-     * @see #getHorizontalFieldOfViewEffective() 
+     * @see #getHorizontalFieldOfViewEffective()
      */
     public float getHorizontalFieldOfView() {
         return fieldOfView;
@@ -217,131 +221,134 @@ public final class Frustum {
         return getHorizontalFieldOfView() * getInverseZoomFactor();
     }
 
-	/**
-	 * Liefert das Aspektverhältnis
-	 *
-	 * @return Das Aspektverhältnis
-	 */
-	public float getAspectRatio() {
-		return aspectRatio;
-	}
+    /**
+     * Liefert das Aspektverhältnis
+     *
+     * @return Das Aspektverhältnis
+     */
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
 
-	/**
-	 * Berechnet die Größen der nahen und fernen Plane
-	 */
-	private void calculatePlaneSizes() {
-		tangens = (float)Math.tan(fieldOfView * inverseZoomFactor); // TODO: Noch weiter vorberechnen?
-		height = nearDistance * tangens;
-		width = height * aspectRatio;
-		
-		sphereFactorY = 1.0f/(float)Math.cos(fieldOfView);
+    /**
+     * Berechnet die Größen der nahen und fernen Plane
+     */
+    private void calculatePlaneSizes() {
+        tangens = (float) Math.tan(fieldOfView * inverseZoomFactor); // TODO: Noch weiter vorberechnen?
+        height = nearDistance * tangens;
+        width = height * aspectRatio;
 
-		// compute half of the the horizontal field of view and sphereFactorX 
-		float anglex = (float)Math.atan(tangens * aspectRatio);
-		sphereFactorX = 1.0f/(float)Math.cos(anglex);
-	}
+        sphereFactorY = 1.0f / (float) Math.cos(fieldOfView);
 
-	/**
-	 * Setzt die Kameraparameter
-	 * @param position Die Position der Kamera
-	 * @param lookAt Der Punkt, auf den die Kamera blickt
-	 * @param up Der Hoch-Vektor der Kamera
-	 */
-	public void setCamera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
-		// http://www.lighthouse3d.com/opengl/viewfrustum/index.php?gimp
+        // compute half of the the horizontal field of view and sphereFactorX
+        float anglex = (float) Math.atan(tangens * aspectRatio);
+        sphereFactorX = 1.0f / (float) Math.cos(anglex);
+    }
+
+    /**
+     * Setzt die Kameraparameter
+     *
+     * @param position Die Position der Kamera
+     * @param lookAt   Der Punkt, auf den die Kamera blickt
+     * @param up       Der Hoch-Vektor der Kamera
+     */
+    public void setCamera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
+        // http://www.lighthouse3d.com/opengl/viewfrustum/index.php?gimp
 
         // TODO: cc.set, wenn nicht null
-		this.position = position.clone();
-		target = lookAt.clone();
-		this.up = up.clone();
-		
-		// compute the Z axis of the camera referential
-		// this axis points in the same direction from 
-		// the looking direction
-		zAxis = lookAt.sub(position);
-		zAxis.normalize();
+        this.position = position.clone();
+        target = lookAt.clone();
+        this.up = up.clone();
 
-		// X axis of camera with given "up" vector and Z axis
-		xAxis = zAxis.cross(up);
-		xAxis.normalize();
+        // compute the Z axis of the camera referential
+        // this axis points in the same direction from
+        // the looking direction
+        zAxis = lookAt.sub(position);
+        zAxis.normalize();
 
-		// the real "up" vector is the dot product of X and Z
-		yAxis = xAxis.cross(zAxis);
-	}
+        // X axis of camera with given "up" vector and Z axis
+        xAxis = zAxis.cross(up);
+        xAxis.normalize();
 
-	/**
-	 * Ermittelt, ob ein Punkt im Sichtfeld liegt
-	 * @param point Der Punkt
-	 * @return Testergebnis
-	 */
-	public Intersection contains(@NotNull Vector3 point) {
+        // the real "up" vector is the dot product of X and Z
+        yAxis = xAxis.cross(zAxis);
+    }
 
-		float pcz,pcx,pcy,aux;
+    /**
+     * Ermittelt, ob ein Punkt im Sichtfeld liegt
+     *
+     * @param point Der Punkt
+     * @return Testergebnis
+     */
+    public Intersection contains(@NotNull Vector3 point) {
 
-		// compute vector from camera position to p
-		Vector3 v = point.sub(position);
+        float pcz, pcx, pcy, aux;
 
-		// compute and test the Z coordinate
-		pcz = v.dot(zAxis);
-		if (pcz > farDistance || pcz < nearDistance)
-			return Intersection.OUTSIDE;
+        // compute vector from camera position to p
+        Vector3 v = point.sub(position);
 
-		// compute and test the Y coordinate
-		pcy = v.dot(yAxis);
-		aux = pcz * tangens;
-		if (pcy > aux || pcy < -aux)
-			return Intersection.OUTSIDE;
-			
-		// compute and test the X coordinate
-		pcx = v.dot(xAxis);
-		aux = aux * aspectRatio;
-		if (pcx > aux || pcx < -aux)
-			return Intersection.OUTSIDE;
+        // compute and test the Z coordinate
+        pcz = v.dot(zAxis);
+        if (pcz > farDistance || pcz < nearDistance)
+            return Intersection.OUTSIDE;
 
-		return Intersection.INSIDE;
-	}
+        // compute and test the Y coordinate
+        pcy = v.dot(yAxis);
+        aux = pcz * tangens;
+        if (pcy > aux || pcy < -aux)
+            return Intersection.OUTSIDE;
 
-	/**
-	 * Ermittelt, ob eine Kugel vom Sichtfeld eingeschlossen ist
-	 * @param sphere Die Kugel
-	 * @return Testergebnis
-	 */
-	public Intersection contains(@NotNull Sphere sphere) {
+        // compute and test the X coordinate
+        pcx = v.dot(xAxis);
+        aux = aux * aspectRatio;
+        if (pcx > aux || pcx < -aux)
+            return Intersection.OUTSIDE;
 
-		Intersection result = Intersection.INSIDE;
+        return Intersection.INSIDE;
+    }
 
-		Vector3 position = sphere.getPosition();
-		float radius = sphere.getRadius();
-		
-		float d;
-		float az,ax,ay;
+    /**
+     * Ermittelt, ob eine Kugel vom Sichtfeld eingeschlossen ist
+     *
+     * @param sphere Die Kugel
+     * @return Testergebnis
+     */
+    public Intersection contains(@NotNull Sphere sphere) {
 
-		Vector3 v = position.sub(this.position);
+        Intersection result = Intersection.INSIDE;
 
-		az = v.dot(zAxis);
-		if (az > farDistance + radius || az < nearDistance -radius)
-			return(Intersection.OUTSIDE);
-		if (az > farDistance - radius || az < nearDistance +radius)
-			result = Intersection.INTERSECTS;
+        Vector3 position = sphere.getPosition();
+        float radius = sphere.getRadius();
 
-		ay = v.dot(yAxis);
-		d = sphereFactorY * radius;
-		az *= tangens;
-		if (ay > az+d || ay < -az-d)
-			return(Intersection.OUTSIDE);
-		if (ay > az-d || ay < -az+d)
-			result = Intersection.INTERSECTS;
+        float d;
+        float az, ax, ay;
 
-		ax = v.dot(xAxis);
-		az *= aspectRatio;
-		d = sphereFactorX * radius;
-		if (ax > az+d || ax < -az-d)
-			return(Intersection.OUTSIDE);
-		if (ax > az-d || ax < -az+d)
-			result = Intersection.INTERSECTS;
+        Vector3 v = position.sub(this.position);
 
-		return(result);
-	}
+        az = v.dot(zAxis);
+        if (az > farDistance + radius || az < nearDistance - radius)
+            return (Intersection.OUTSIDE);
+        if (az > farDistance - radius || az < nearDistance + radius)
+            result = Intersection.INTERSECTS;
+
+        ay = v.dot(yAxis);
+        d = sphereFactorY * radius;
+        az *= tangens;
+        if (ay > az + d || ay < -az - d)
+            return (Intersection.OUTSIDE);
+        if (ay > az - d || ay < -az + d)
+            result = Intersection.INTERSECTS;
+
+        ax = v.dot(xAxis);
+        az *= aspectRatio;
+        d = sphereFactorX * radius;
+        if (ax > az + d || ax < -az - d)
+            return (Intersection.OUTSIDE);
+        if (ax > az - d || ax < -az + d)
+            result = Intersection.INTERSECTS;
+
+        return (result);
+    }
 
     public void setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
@@ -373,7 +380,7 @@ public final class Frustum {
     }
 
     public void setPosition(float x, float y, float z) {
-        position.set(x,y,z);
+        position.set(x, y, z);
     }
 
     public void setPosition(Vector3 position) {
@@ -381,8 +388,8 @@ public final class Frustum {
     }
 
     public void move(float offsetX, float offsetY, float offsetZ, boolean moveTarget) {
-		position.addInPlace(offsetX, offsetY, offsetZ);
-		if (moveTarget) target.addInPlace(offsetX, offsetY, offsetZ);
+        position.addInPlace(offsetX, offsetY, offsetZ);
+        if (moveTarget) target.addInPlace(offsetX, offsetY, offsetZ);
     }
 
     public float getNearDistance() {
