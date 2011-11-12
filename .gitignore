@@ -22,3 +22,5 @@ default.properties
 *.exe
 *.prefs
 *.ttf
+*.autosave
+*~
