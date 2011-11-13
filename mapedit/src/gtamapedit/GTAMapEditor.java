@@ -9,6 +9,7 @@ import gtamapedit.view.map.MapModel;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.io.File;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -33,6 +34,7 @@ public class GTAMapEditor {
 		
 		frame.setVisible(true);
 
+		
 	}
 
 }

@@ -170,7 +170,7 @@ public class MapEditorComponent extends JComponent implements ChangeListener, Ac
 		}
 		if (ae.getActionCommand().equals(ControlType.EXPORT_MAP_FILE)) {
 			MapFile mapFile = new MapFile(mapModel.getMap(),mapModel.getEntityList());
-			String report_string = mapFile.exportMap(Configuration.getSavePath()+".lvl");
+			String report_string = mapFile.exportMap(Configuration.getLevelSavePath());
 			JDialog report = new JDialog();
 			report.setSize(300, 300);
 			report.setLocationRelativeTo(this);

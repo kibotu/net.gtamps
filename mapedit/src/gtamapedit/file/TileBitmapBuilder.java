@@ -61,7 +61,7 @@ public class TileBitmapBuilder {
 		JLabel bild = new JLabel();
 		bild.setIcon(new ImageIcon(tileMap));
 		dialog.add(bild);
-		dialog.setSize(tileMapSize+30,tileMapSize+30);
+		dialog.setSize(tileMapSize*64,tileMapSize*64);
 		dialog.setVisible(true);
 		return tileMap;
 	}
