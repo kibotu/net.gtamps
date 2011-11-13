@@ -33,7 +33,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener{
 			
 		}
 		
-		JButton saveButton = new JButton("save");
+		JButton saveButton = new JButton("ok!");
 		saveButton.setActionCommand("save");
 		saveButton.addActionListener(this);
 		confPanel.add(saveButton);
