@@ -15,17 +15,10 @@ implements Configuration {
 	private final Class<?> type = Map.class;
 	private final Map<String, Configuration> entries = new HashMap<String, Configuration>();
 
-	private final boolean isRoot;
 	private final ConfigSource source;
 
 	ConfigMap(final ConfigSource source) {
-		this(source, false);
-	}
-
-
-	ConfigMap(final ConfigSource source, final boolean isRoot) {
 		this.source = source;
-		this.isRoot = isRoot;
 	}
 
 	@Override
@@ -93,21 +86,21 @@ implements Configuration {
 
 	@Override
 	public Integer getInt() {
-		// TODO warn
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 
 
 	@Override
 	public Float getFloat() {
-		// TODO warn
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 
 
 	@Override
 	public Boolean getBoolean() {
-		// TODO warn
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 

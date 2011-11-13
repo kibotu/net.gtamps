@@ -11,13 +11,9 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 	private final Map<String, ConfigurationBuilder> elements = new HashMap<String, ConfigurationBuilder>();
 
 	public ConfigMapBuilder(final ConfigSource source) {
-		this(source, false);
-	}
-
-	ConfigMapBuilder(final ConfigSource source, final boolean isRoot) {
 		super(source);
-		this.configMap = new ConfigMap(source, isRoot);
-		this.selectElement("");
+		this.configMap = new ConfigMap(source);
+		this.select("");
 	}
 
 	@Override
@@ -27,8 +23,20 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		return this;
 	}		
 
+
 	@Override
-	public ConfigurationBuilder selectElement(final String which) {
+	public ConfigMapBuilder addSubConfiguration() {
+		final ConfigurationBuilder existing = getSelected();
+		if (existing != null && existing.getBuild() != null) {
+			throw new IllegalStateException(this.selected + " has already been initialized to " + existing);
+		}
+		final ConfigurationBuilder newb = new ConfigMapBuilder(this.source);
+		updateSelected(newb);
+		return this;
+	}		
+
+	@Override
+	public ConfigurationBuilder select(final String which) {
 		final ConfigKey ckey = new ConfigKey(which);
 		excludeDeepKeys(ckey);
 
@@ -62,12 +70,20 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 				this.configMap.putConfiguration(e.getKey(), cfg);
 			}
 		}
-		return null;
+		return this;
 	}
 
 	@Override
 	public Configuration getBuild() {
 		return (this.configMap.elementCount() > 0) ? this.configMap : null;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("ConfigMap (")
+		.append(this.fixed ? "fixed): " : "building): ")
+		.append(this.fixed ? this.configMap.toString() : this.elements.toString());
+		return sb.toString();
 	}
 
 }

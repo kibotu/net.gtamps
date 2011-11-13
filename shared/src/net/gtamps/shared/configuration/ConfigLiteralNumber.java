@@ -42,5 +42,9 @@ public final class ConfigLiteralNumber extends AbstractConfigElement {
 		return this.n != null;
 	}
 
+	@Override
+	public String toString() {
+		return this.n.toString();
+	}
 
 }

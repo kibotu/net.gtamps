@@ -29,7 +29,7 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 
 
 	@Override
-	public ConfigurationBuilder selectElement(final String which) {
+	public ConfigurationBuilder select(final String which) {
 		int index;
 		try {
 			index = Integer.parseInt(which);
@@ -71,10 +71,17 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		return this;
 	}
 
-
 	@Override
 	public Configuration getBuild() {
 		return (this.configList.elementCount() > 0) ? this.configList : null;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("ConfigList (")
+		.append(this.fixed ? "fixed): " : "building): ")
+		.append(this.fixed ? this.configList.toString() : this.elements.toString());
+		return sb.toString();
 	}
 
 	private void updateSelected(final ConfigurationBuilder cb) {

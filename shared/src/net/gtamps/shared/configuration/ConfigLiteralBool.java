@@ -31,4 +31,9 @@ public final class ConfigLiteralBool extends AbstractConfigElement {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return Boolean.toString(this.value);
+	}
+
 }

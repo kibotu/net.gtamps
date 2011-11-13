@@ -23,14 +23,18 @@ final class SingletonConfigBuilder extends ConfigurationBuilder {
 	}
 
 	@Override
-	public ConfigurationBuilder selectElement(final String which) {
-		//TODO warn
+	public ConfigurationBuilder select(final String which) {
+		if (this.element != null) {
+			throw new IllegalStateException("this element is already defined as something different from a Map");
+		}
+
+		warnIneffectiveMethod();
 		return this;
 	}
 
 	@Override
 	public ConfigurationBuilder getSelected() {
-		//TODO warn
+		warnIneffectiveMethod();
 		return this;
 	}
 
@@ -44,6 +48,15 @@ final class SingletonConfigBuilder extends ConfigurationBuilder {
 	public Configuration getBuild() {
 		return this.element;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("Literal (")
+		.append(this.fixed ? "fixed) " : "building): ")
+		.append(this.element);
+		return sb.toString();
+	}
+
 
 	protected boolean validates() {
 		if (this.element != null) {

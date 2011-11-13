@@ -59,7 +59,7 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Configuration get(final int index) {
-		return null;
+		return this.entries.get(index);
 	}
 
 	@Override
@@ -99,19 +99,19 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Integer getInt() {
-		// TODO warn
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 
 	@Override
 	public Float getFloat() {
-		// TODO warn
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 
 	@Override
 	public Boolean getBoolean() {
-		// TODO warns
+		AbstractConfigElement.warnIneffectiveMethod();
 		return null;
 	}
 }

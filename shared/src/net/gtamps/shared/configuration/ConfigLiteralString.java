@@ -26,4 +26,9 @@ public final class ConfigLiteralString extends AbstractConfigElement {
 		return this.value != null;
 	}
 
+	@Override
+	public String toString() {
+		return this.value;
+	}
+
 }
