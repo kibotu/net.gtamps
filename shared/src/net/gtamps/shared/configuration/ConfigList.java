@@ -57,7 +57,6 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Integer getInt() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
