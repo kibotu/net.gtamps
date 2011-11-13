@@ -36,11 +36,11 @@ public final class ConfigMap extends AbstractMap<String, Configuration>
 
 	@Override
 	public Configuration get(String key) {
-		String[] keyPair = ConfigurationBuilder.splitAndNormalizeKey(key);
-		if ("".equals(keyPair[1])) {
-			return entries.get(keyPair[0]);
+		ConfigKey configKey = new ConfigKey(key);
+		if (configKey.isIntermediate()) {
+			return entries.get(configKey.head).get(configKey.tail);
 		} else {
-			return entries.get(keyPair[0]).get(keyPair[1]);
+			return entries.get(configKey.head);
 		}
 	}
 
@@ -58,6 +58,11 @@ public final class ConfigMap extends AbstractMap<String, Configuration>
 			iter.next();
 		}
 		return entries.get(iter.next());
+	}
+	
+	@Override
+	public Configuration get(Object key) {
+		throw new IllegalArgumentException("class mismatch: ConfigMap.get(...) takes only String oder int arguments, not " + key.getClass().getSimpleName());
 	}
 
 	@Override
