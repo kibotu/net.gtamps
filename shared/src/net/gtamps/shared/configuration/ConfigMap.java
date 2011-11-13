@@ -1,7 +1,6 @@
 package net.gtamps.shared.configuration;
 
 import java.util.AbstractMap;
-import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,43 +8,43 @@ import java.util.Map;
 import java.util.Set;
 
 public final class ConfigMap extends AbstractMap<String, Configuration>
-		implements Configuration {
+implements Configuration {
 
 	private static final long serialVersionUID = 7466530368525139233L;
-	
+
 	private final Class<?> type = Map.class;
 	private final Map<String, Configuration> entries = new HashMap<String, Configuration>();
-	
-	private boolean isRoot;
-	private ConfigSource source;
 
-	ConfigMap(ConfigSource source) {
+	private final boolean isRoot;
+	private final ConfigSource source;
+
+	ConfigMap(final ConfigSource source) {
 		this(source, false);
 	}
 
-	
-	ConfigMap(ConfigSource source, boolean isRoot) {
+
+	ConfigMap(final ConfigSource source, final boolean isRoot) {
 		this.source = source;
 		this.isRoot = isRoot;
 	}
 
 	@Override
 	public int elementCount() {
-		return entries.size();
+		return this.entries.size();
 	}
 
 	@Override
-	public Configuration get(String key) {
-		ConfigKey configKey = new ConfigKey(key);
+	public Configuration get(final String key) {
+		final ConfigKey configKey = new ConfigKey(key);
 		if (configKey.isIntermediate()) {
-			return entries.get(configKey.head).get(configKey.tail);
+			return this.entries.get(configKey.head).get(configKey.tail);
 		} else {
-			return entries.get(configKey.head);
+			return this.entries.get(configKey.head);
 		}
 	}
 
 	@Override
-	public Configuration get(int index) {
+	public Configuration get(final int index) {
 		if (index < 0) {
 			throw new IllegalArgumentException("index must be >= 0");
 		}
@@ -53,93 +52,77 @@ public final class ConfigMap extends AbstractMap<String, Configuration>
 			throw new IndexOutOfBoundsException(String.format(
 					"index out of bounds (%d): %d", elementCount(), index));
 		}
-		Iterator<String> iter = entries.keySet().iterator();
+		final Iterator<String> iter = this.entries.keySet().iterator();
 		for (int i = 0; i < index; i++) {
 			iter.next();
 		}
-		return entries.get(iter.next());
+		return this.entries.get(iter.next());
 	}
-	
+
 	@Override
-	public Configuration get(Object key) {
+	public Configuration get(final Object key) {
 		throw new IllegalArgumentException("class mismatch: ConfigMap.get(...) takes only String oder int arguments, not " + key.getClass().getSimpleName());
 	}
 
 	@Override
 	public String getString() {
-		return entries.toString();
-	}
-
-	@Override
-	public Integer getInt() {
-		return null;
-	}
-
-	@Override
-	public Float getFloat() {
-		return null;
-	}
-
-	@Override
-	public Boolean getBoolean() {
-		return null;
+		return this.entries.toString();
 	}
 
 	@Override
 	public Class<?> getType() {
-		return type;
+		return this.type;
 	}
 
 	@Override
 	public ConfigSource getSource() {
-		return source;
+		return this.source;
 	}
 
 	@Override
 	public Set<Entry<String, Configuration>> entrySet() {
-		return Collections.unmodifiableSet(entries.entrySet());
+		return Collections.unmodifiableSet(this.entries.entrySet());
 	}
 
 	@Override
-	public Configuration remove(Object key) {
-		throw new UnsupportedOperationException(
-				"this map does not support element removal by the public");
-	}
-	
-	Configuration putConfiguration(String normKey, Configuration value) {
-		return entries.put(normKey, value);
-	}
-	
-	Configuration removeConfiguration(String normKey) {
-		return entries.remove(normKey);
-	}
-	
-	Configuration getConfiguration(String normKey) {
-		return entries.get(normKey);
-	}
-	
-
-	boolean validates() {
-		return Map.class.equals(type) && source != null && elementCount() > 0;
-		// TODO immutablity
+	public boolean validates() {
+		return Map.class.equals(this.type) && this.source != null && elementCount() > 0;
 		// TODO direct keys conform to "letter/underscore" rule for 1st
 		// character
 	}
-	
-	private class ArraySet<T> extends AbstractSet<T> {
 
-		@Override
-		public Iterator<T> iterator() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int size() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		
+	@Override
+	public Integer getInt() {
+		// TODO warn
+		return null;
 	}
+
+
+	@Override
+	public Float getFloat() {
+		// TODO warn
+		return null;
+	}
+
+
+	@Override
+	public Boolean getBoolean() {
+		// TODO warn
+		return null;
+	}
+
+
+	Configuration putConfiguration(final String normKey, final Configuration value) {
+		return this.entries.put(normKey, value);
+	}
+
+	Configuration removeConfiguration(final String normKey) {
+		return this.entries.remove(normKey);
+	}
+
+	Configuration getConfiguration(final String normKey) {
+		return this.entries.get(normKey);
+	}
+
 
 }

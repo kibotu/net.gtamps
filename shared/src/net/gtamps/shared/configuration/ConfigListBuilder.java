@@ -8,7 +8,7 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 	private final ConfigList configList;
 	private final List<ConfigurationBuilder> elements = new ArrayList<ConfigurationBuilder>();
 	private int selected = 0;
-
+	private Class<? extends Configuration> listType = null;
 
 	protected ConfigListBuilder(final ConfigSource source) {
 		super(source);
@@ -16,9 +16,9 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		this.selectElement(0);
 	}
 
-
 	@Override
 	public ConfigurationBuilder addConfiguration(final Configuration value) {
+		typeCheck(value);
 		final int oldSelection = this.selected;
 		selectElement(this.elements.size());
 		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
@@ -60,15 +60,34 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		return this.elements.get(this.selected);
 	}
 
+	@Override
+	public ConfigurationBuilder fixBuild() {
+		for (final ConfigurationBuilder b : this.elements) {
+			final Configuration cfg = b.fixBuild().getBuild();
+			if (cfg != null) {
+				this.configList.addConfiguration(cfg);
+			}
+		}
+		return this;
+	}
+
 
 	@Override
-	protected Configuration getConfigurationElement() {
-		// TODO Auto-generated method stub
-		return null;
+	public Configuration getBuild() {
+		return (this.configList.elementCount() > 0) ? this.configList : null;
 	}
 
 	private void updateSelected(final ConfigurationBuilder cb) {
 		this.elements.set(this.selected, cb);
 	}
 
+	private void typeCheck(final Configuration value) throws IllegalArgumentException {
+		if (this.listType == null) {
+			this.listType = value.getClass();
+		} else {
+			if (value.getClass() != this.listType) {
+				throw new IllegalArgumentException("wrong type: "+ value.getClass().getCanonicalName() + "this list is initialized for " + this.listType.getCanonicalName());
+			}
+		}
+	}
 }

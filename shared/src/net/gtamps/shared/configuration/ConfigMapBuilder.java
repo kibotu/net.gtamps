@@ -2,6 +2,7 @@ package net.gtamps.shared.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 final class ConfigMapBuilder extends ConfigurationBuilder {
 
@@ -19,19 +20,12 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		this.selectElement("");
 	}
 
-
 	@Override
 	public ConfigMapBuilder addConfiguration(final Configuration value) {
 		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
 		updateSelected(possiblyNewb);
 		return this;
 	}		
-
-
-	@Override
-	protected Configuration getConfigurationElement() {
-		return this.configMap.elementCount() > 0 ? this.configMap : null;
-	}
 
 	@Override
 	public ConfigurationBuilder selectElement(final String which) {
@@ -60,5 +54,20 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		}
 	}
 
+	@Override
+	public ConfigurationBuilder fixBuild() {
+		for (final Entry<String, ConfigurationBuilder> e : this.elements.entrySet()) {
+			final Configuration cfg = e.getValue().fixBuild().getBuild();
+			if (cfg != null) {
+				this.configMap.putConfiguration(e.getKey(), cfg);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Configuration getBuild() {
+		return (this.configMap.elementCount() > 0) ? this.configMap : null;
+	}
 
 }

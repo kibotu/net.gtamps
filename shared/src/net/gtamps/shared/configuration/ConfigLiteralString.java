@@ -3,10 +3,10 @@ package net.gtamps.shared.configuration;
 public final class ConfigLiteralString extends AbstractConfigElement {
 
 	private static final long serialVersionUID = 6917569881343326134L;
-	
+
 	private final String value;
 
-	ConfigLiteralString(String string, ConfigSource source) {
+	ConfigLiteralString(final String string, final ConfigSource source) {
 		super(java.lang.String.class, source);
 		this.value = (string == null) ? "" : string;
 	}
@@ -17,33 +17,13 @@ public final class ConfigLiteralString extends AbstractConfigElement {
 	}
 
 	@Override
-	public Configuration get(String key) {
-		return null;
-	}
-
-	@Override
-	public Configuration get(int index) {
-		return null;
-	}
-
-	@Override
 	public String getString() {
-		return value;
+		return this.value;
 	}
 
 	@Override
-	public Integer getInt() {
-		return null;
-	}
-
-	@Override
-	public Float getFloat() {
-		return null;
-	}
-
-	@Override
-	public Boolean getBoolean() {
-		return null;
+	public boolean validates() {
+		return this.value != null;
 	}
 
 }
