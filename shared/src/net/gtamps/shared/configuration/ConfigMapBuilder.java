@@ -17,21 +17,22 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 	}
 
 	@Override
-	public ConfigMapBuilder addConfiguration(final Configuration value) {
-		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
-		updateSelected(possiblyNewb);
-		return this;
-	}		
-
-
-	@Override
 	public ConfigMapBuilder addSubConfiguration() {
 		final ConfigurationBuilder existing = getSelected();
-		if (existing != null && existing.getBuild() != null) {
-			throw new IllegalStateException(this.selected + " has already been initialized to " + existing);
+		final ConfigMapBuilder newb = new ConfigMapBuilder(this.source); 
+		if (SingletonConfigBuilder.class == existing.getClass() && existing.getBuild() == null) {
+			this.updateSelected(newb);
+		} else {
+			ConfigListBuilder listb;
+			if (ConfigListBuilder.class.isAssignableFrom(existing.getClass())) {
+				listb = (ConfigListBuilder) existing;
+			} else {
+				listb = new ConfigListBuilder(existing);
+			}
+			listb.updateSelected(newb);
+			listb.select(2);
+			this.updateSelected(listb);
 		}
-		final ConfigurationBuilder newb = new ConfigMapBuilder(this.source);
-		updateSelected(newb);
 		return this;
 	}		
 
@@ -52,18 +53,23 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		return this.elements.get(this.selected.head);
 	}
 
-	private void updateSelected(final ConfigurationBuilder cb) {
-		this.elements.put(this.selected.head, cb);
-	}
-
-	private void excludeDeepKeys(final ConfigKey ckey) {
-		if ("".equals(ckey.tail)) {
-			throw new IllegalArgumentException("key level exceeds 1. deep key selection not implemented (yet): " + ckey);
-		}
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("ConfigMap (")
+		.append(this.fixed ? "fixed): " : "building): ")
+		.append(this.fixed ? this.configMap.toString() : this.elements.toString());
+		return sb.toString();
 	}
 
 	@Override
-	public ConfigurationBuilder fixBuild() {
+	protected ConfigMapBuilder addConfiguration(final Configuration value) {
+		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
+		updateSelected(possiblyNewb);
+		return this;
+	}		
+
+	@Override
+	protected ConfigurationBuilder fixBuild() {
 		for (final Entry<String, ConfigurationBuilder> e : this.elements.entrySet()) {
 			final Configuration cfg = e.getValue().fixBuild().getBuild();
 			if (cfg != null) {
@@ -74,16 +80,29 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 	}
 
 	@Override
-	public Configuration getBuild() {
+	protected ConfigurationBuilder unfix() {
+		for (final ConfigurationBuilder b : this.elements.values()) { 
+			b.unfix();
+		}
+		this.configMap.clearMap();
+		this.fixed = false;
+		return this;
+	}
+
+
+	@Override
+	protected Configuration getBuild() {
 		return (this.configMap.elementCount() > 0) ? this.configMap : null;
 	}
 
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("ConfigMap (")
-		.append(this.fixed ? "fixed): " : "building): ")
-		.append(this.fixed ? this.configMap.toString() : this.elements.toString());
-		return sb.toString();
+	void updateSelected(final ConfigurationBuilder cb) {
+		this.elements.put(this.selected.head, cb);
+	}
+
+	private void excludeDeepKeys(final ConfigKey ckey) {
+		if ("".equals(ckey.tail)) {
+			throw new IllegalArgumentException("key level exceeds 1. deep key selection not implemented (yet): " + ckey);
+		}
 	}
 
 }

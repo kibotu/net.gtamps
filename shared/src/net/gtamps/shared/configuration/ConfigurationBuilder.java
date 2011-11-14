@@ -39,22 +39,22 @@ public abstract class ConfigurationBuilder {
 		this.source = source;
 	}
 
-	public ConfigurationBuilder addInt(final int value) {
+	public ConfigurationBuilder addValue(final int value) {
 		this.add(new ConfigLiteralNumber(value, this.source));
 		return this;
 	}
 
-	public ConfigurationBuilder addFloat(final float value) {
+	public ConfigurationBuilder addValue(final float value) {
 		this.add(new ConfigLiteralNumber(value, this.source));
 		return this;
 	}
 
-	public ConfigurationBuilder addBool(final boolean value) {
+	public ConfigurationBuilder addValue(final boolean value) {
 		this.add(new ConfigLiteralBool(value, this.source));
 		return this;
 	}
 
-	public ConfigurationBuilder addString(final String value) {
+	public ConfigurationBuilder addValue(final String value) {
 		this.add(new ConfigLiteralString(value, this.source));
 		return this;
 	}
@@ -122,6 +122,7 @@ public abstract class ConfigurationBuilder {
 
 	protected abstract ConfigurationBuilder addConfiguration(Configuration value);
 	protected abstract ConfigurationBuilder fixBuild();
+	protected abstract ConfigurationBuilder unfix();
 	protected abstract Configuration getBuild();
 
 }

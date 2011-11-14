@@ -117,5 +117,8 @@ implements Configuration {
 		return this.entries.get(normKey);
 	}
 
+	void clearMap() {
+		this.entries.clear();
+	}
 
 }

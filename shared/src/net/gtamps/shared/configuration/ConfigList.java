@@ -87,6 +87,10 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		return this.entries.get(index);
 	}
 
+	void clearList() {
+		this.entries.clear();
+	}
+
 	private void checkIndex(final int index) {
 		if (index < 0) {
 			throw new IllegalArgumentException("'index' must be >= 0");
