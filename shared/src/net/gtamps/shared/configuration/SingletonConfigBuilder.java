@@ -2,26 +2,27 @@ package net.gtamps.shared.configuration;
 
 final class SingletonConfigBuilder extends ConfigurationBuilder {
 
-	private Configuration element = null;
+	private final Configuration element;
 
-	protected SingletonConfigBuilder(final ConfigSource source) {
+	SingletonConfigBuilder(final ConfigSource source, final String string) {
 		super(source);
+		this.element = (string == null) ? null : new ConfigLiteralString(string, source);
+		this.fixed = true;
 	}
 
-	@Override
-	public ConfigurationBuilder select(final String which) {
-		if (this.element != null) {
-			throw new IllegalStateException("this element is already defined as something different from a Map");
-		}
-
-		warnIneffectiveMethod();
-		return this;
+	SingletonConfigBuilder(final ConfigSource source, final int i) {
+		super(source);
+		this.element = new ConfigLiteralNumber(i, source);
 	}
 
-	@Override
-	public ConfigurationBuilder getSelected() {
-		warnIneffectiveMethod();
-		return this;
+	SingletonConfigBuilder(final ConfigSource source, final float f) {
+		super(source);
+		this.element = new ConfigLiteralNumber(f, source);
+	}
+
+	SingletonConfigBuilder(final ConfigSource source, final boolean b) {
+		super(source);
+		this.element = new ConfigLiteralBool(b, source);
 	}
 
 	@Override
@@ -32,18 +33,10 @@ final class SingletonConfigBuilder extends ConfigurationBuilder {
 		return sb.toString();
 	}
 
-	@Override
-	protected ConfigurationBuilder addConfiguration(final Configuration value) {
-		ConfigurationBuilder possiblyNewb = this;
-		if (this.element == null) {
-			this.element = value;
-		} else { 
-			final ConfigListBuilder list = new ConfigListBuilder(this);
-			list.addConfiguration(value);
-			possiblyNewb = list;
-		}
-		return possiblyNewb;
-	}
+	//	@Override
+	//	protected ConfigurationBuilder addConfigurationBuilder(final ConfigurationBuilder cb) {
+	// 		// override to prevent UnsupportedOperationException and throw a warning or something
+	//	}
 
 	@Override
 	protected ConfigurationBuilder fixBuild() {
@@ -53,13 +46,18 @@ final class SingletonConfigBuilder extends ConfigurationBuilder {
 
 	@Override
 	protected ConfigurationBuilder unfix() {
-		this.fixed = false;
+		this.fixed = true;	// don't unfix
 		return this;
 	}
 
 	@Override
 	protected Configuration getBuild() {
 		return this.element;
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return (this.element == null) ? null : this.element.getType();
 	}
 
 	protected boolean validates() {

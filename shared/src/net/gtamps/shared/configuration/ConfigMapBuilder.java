@@ -7,8 +7,9 @@ import java.util.Map.Entry;
 final class ConfigMapBuilder extends ConfigurationBuilder {
 
 	private final ConfigMap configMap;
-	private ConfigKey selected = null;
+	private final Class<?> type = Map.class;
 	private final Map<String, ConfigurationBuilder> elements = new HashMap<String, ConfigurationBuilder>();
+	private ConfigKey selected = null;
 
 	public ConfigMapBuilder(final ConfigSource source) {
 		super(source);
@@ -18,9 +19,9 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 
 	@Override
 	public ConfigMapBuilder addSubConfiguration() {
-		final ConfigurationBuilder existing = getSelected();
+		final ConfigurationBuilder existing = get();
 		final ConfigMapBuilder newb = new ConfigMapBuilder(this.source); 
-		if (SingletonConfigBuilder.class == existing.getClass() && existing.getBuild() == null) {
+		if (existing == null) {
 			this.updateSelected(newb);
 		} else {
 			ConfigListBuilder listb;
@@ -42,14 +43,14 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		excludeDeepKeys(ckey);
 
 		this.selected = ckey;
-		if (getSelected() == null) {
-			updateSelected(new SingletonConfigBuilder(this.source));
-		}
+		//		if (getSelected() == null) {
+		//			updateSelected(new SingletonConfigBuilder(this.source));
+		//		}
 		return this;
 	}
 
 	@Override
-	public ConfigurationBuilder getSelected() {
+	public ConfigurationBuilder get() {
 		return this.elements.get(this.selected.head);
 	}
 
@@ -60,13 +61,6 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		.append(this.fixed ? this.configMap.toString() : this.elements.toString());
 		return sb.toString();
 	}
-
-	@Override
-	protected ConfigMapBuilder addConfiguration(final Configuration value) {
-		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
-		updateSelected(possiblyNewb);
-		return this;
-	}		
 
 	@Override
 	protected ConfigurationBuilder fixBuild() {
@@ -95,7 +89,8 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		return (this.configMap.elementCount() > 0) ? this.configMap : null;
 	}
 
-	void updateSelected(final ConfigurationBuilder cb) {
+	@Override
+	protected void updateSelected(final ConfigurationBuilder cb) {
 		this.elements.put(this.selected.head, cb);
 	}
 
@@ -103,6 +98,11 @@ final class ConfigMapBuilder extends ConfigurationBuilder {
 		if ("".equals(ckey.tail)) {
 			throw new IllegalArgumentException("key level exceeds 1. deep key selection not implemented (yet): " + ckey);
 		}
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return this.type;
 	}
 
 }

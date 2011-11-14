@@ -1,6 +1,7 @@
 package net.gtamps.shared.configuration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 final class ConfigListBuilder extends ConfigurationBuilder {
@@ -8,7 +9,7 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 	private final ConfigList configList;
 	private final List<ConfigurationBuilder> elements = new ArrayList<ConfigurationBuilder>();
 	private int selected = 0;
-	private Class<? extends Configuration> listType = null;
+	private final Class<?> type = List.class;
 
 	ConfigListBuilder(final ConfigSource source) {
 		super(source);
@@ -22,7 +23,6 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 	 */
 	ConfigListBuilder(final ConfigurationBuilder firstElement) {
 		this(firstElement.source);
-		this.listType = firstElement.getBuild().getClass();
 		updateSelected(firstElement);
 		this.select(1);
 	}
@@ -33,7 +33,8 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		try {
 			index = Integer.parseInt(which);
 		} catch (final NumberFormatException e) {
-			throw new IllegalArgumentException("'which' must be parseable as integer", e);
+			final String msg = String.format("'which' must be parseable as integer, but is \"%s\"", which);
+			throw new IllegalArgumentException(msg, e);
 		}
 		return select(index);
 	}
@@ -49,13 +50,13 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		}
 		this.selected = index;
 		if (index == this.elements.size()) {
-			this.elements.add(new SingletonConfigBuilder(this.source));
+			this.elements.add(null);
 		}
 		return this;
 	}
 
 	@Override
-	public ConfigurationBuilder getSelected() {
+	public ConfigurationBuilder get() {
 		return this.elements.get(this.selected);
 	}
 
@@ -66,24 +67,16 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 		.append(this.fixed ? this.configList.toString() : this.elements.toString());
 		return sb.toString();
 	}
-	@Override
-	protected ConfigurationBuilder addConfiguration(final Configuration value) {
-		if (value == null) {
-			//TODO warn
-			return this;
-		}
-		typeCheck(value);
-		final int oldSelection = this.selected;
-		select(this.elements.size());
-		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
-		updateSelected(possiblyNewb);
-		select(oldSelection);
-		return this;
-	}
 
 	@Override
 	protected ConfigurationBuilder fixBuild() {
-		for (final ConfigurationBuilder b : this.elements) {
+		final Iterator<ConfigurationBuilder> iter = this.elements.iterator();
+		while (iter.hasNext()) {
+			final ConfigurationBuilder b = iter.next();
+			if (b==null) {
+				iter.remove();
+				continue;
+			}
 			final Configuration cfg = b.fixBuild().getBuild();
 			if (cfg != null) {
 				this.configList.addConfiguration(cfg);
@@ -104,26 +97,22 @@ final class ConfigListBuilder extends ConfigurationBuilder {
 
 	@Override
 	protected Configuration getBuild() {
-		for (final ConfigurationBuilder b : this.elements) {
-			final Configuration cfg = b.getBuild();
-			if (cfg != null) {
-				this.configList.addConfiguration(cfg);
-			}
+		if (this.configList.elementCount() == 0) {
+			return null;
+		} else if (this.configList.elementCount() == 1) {
+			return this.configList.get(0);
+		} else {
+			return this.configList;
 		}
-		return (this.configList.elementCount() > 0) ? this.configList : null;
 	}
 
-	void updateSelected(final ConfigurationBuilder cb) {
+	@Override
+	protected void updateSelected(final ConfigurationBuilder cb) {
 		this.elements.set(this.selected, cb);
 	}
 
-	private void typeCheck(final Configuration value) throws IllegalArgumentException {
-		if (this.listType == null) {
-			this.listType = value.getClass();
-		} else {
-			if (value.getClass() != this.listType) {
-				throw new IllegalArgumentException("wrong type: "+ value.getClass().getCanonicalName() + "this list is initialized for " + this.listType.getCanonicalName());
-			}
-		}
+	@Override
+	protected Class<?> getType() {
+		return this.type;
 	}
 }

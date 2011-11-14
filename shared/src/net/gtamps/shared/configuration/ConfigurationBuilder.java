@@ -40,22 +40,27 @@ public abstract class ConfigurationBuilder {
 	}
 
 	public ConfigurationBuilder addValue(final int value) {
-		this.add(new ConfigLiteralNumber(value, this.source));
+		//		this.add(new ConfigLiteralNumber(value, this.source));
+		addConfigurationBuilder(new SingletonConfigBuilder(this.source, value));
 		return this;
 	}
 
 	public ConfigurationBuilder addValue(final float value) {
-		this.add(new ConfigLiteralNumber(value, this.source));
+		//		this.add(new ConfigLiteralNumber(value, this.source));
+		addConfigurationBuilder(new SingletonConfigBuilder(this.source, value));
 		return this;
 	}
 
 	public ConfigurationBuilder addValue(final boolean value) {
-		this.add(new ConfigLiteralBool(value, this.source));
+		//		this.add(new ConfigLiteralBool(value, this.source));
+		addConfigurationBuilder(new SingletonConfigBuilder(this.source, value));
 		return this;
 	}
 
 	public ConfigurationBuilder addValue(final String value) {
-		this.add(new ConfigLiteralString(value, this.source));
+		//		this.add(new ConfigLiteralString(value, this.source));
+		//TODO null
+		addConfigurationBuilder(new SingletonConfigBuilder(this.source, value));
 		return this;
 	}
 
@@ -63,19 +68,20 @@ public abstract class ConfigurationBuilder {
 		throw new UnsupportedOperationException("a configuration cannot be added at this point");
 	}
 
-	/**
-	 * Adds a sub-configuration to the configuration being built; for multi-element builders
-	 * (maps, lists), use the sub-element previously {@link #select(String) selected}.
-	 * 
-	 * If this builder is single-element, and an element is already set, this builder will be wrapped
-	 * in a newly created list builder, and the list builder will be returned instead of this.
-	 * 
-	 * @return	this configurationBuilder or a new multi-element builder that wraps this one
-	 */
-	public final ConfigurationBuilder add(final Configuration value) {
-		checkNotFixed();
-		return addConfiguration(value);
-	}
+	//	/**
+	//	 * Adds a sub-configuration to the configuration being built; for multi-element builders
+	//	 * (maps, lists), use the sub-element previously {@link #select(String) selected}.
+	//	 * 
+	//	 * If this builder is single-element, and an element is already set, this builder will be wrapped
+	//	 * in a newly created list builder, and the list builder will be returned instead of this.
+	//	 * 
+	//	 * @return	this configurationBuilder or a new multi-element builder that wraps this one
+	//	 */
+	//	@Deprecated
+	//	private final ConfigurationBuilder add(final Configuration value) {
+	//		checkNotFixed();
+	//		return addConfiguration(value);
+	//	}
 
 	public final ConfigurationBuilder fix() {
 		this.fixed = true;
@@ -95,12 +101,21 @@ public abstract class ConfigurationBuilder {
 	 * @param which		for maps: the sub-element's key; for lists: its index
 	 * @return this configurationBuilder
 	 */
-	public abstract ConfigurationBuilder select(String which);
+	public ConfigurationBuilder select(final String which) {
+		throw new UnsupportedOperationException(getUnsupportedOperationMsg());
+	}
 
 	/**
 	 * @return	the configurationBuilder previously {@link #select(String) selected}
 	 */
-	public abstract ConfigurationBuilder getSelected();
+	public ConfigurationBuilder get() {
+		throw new UnsupportedOperationException(getUnsupportedOperationMsg());
+	}
+
+	protected void updateSelected(final ConfigurationBuilder cb) {
+		throw new UnsupportedOperationException(getUnsupportedOperationMsg());
+	}
+
 
 	@Override
 	public String toString() {
@@ -110,19 +125,41 @@ public abstract class ConfigurationBuilder {
 
 	protected void checkFixed() throws IllegalStateException {
 		if (!this.fixed) {
-			throw new IllegalStateException("build has already been fixed and is not editable anymore");
+			throw new IllegalStateException("value has not been fixed and cannot be returned. fix() builder first.");
 		}
 	}
 
 	protected void checkNotFixed() throws IllegalStateException {
 		if (this.fixed) {
-			throw new IllegalStateException("build has already been fixed and is not editable anymore");
+			throw new IllegalStateException("value has already been fixed and is not editable anymore (single values are always fixed)");
 		}
 	}
 
-	protected abstract ConfigurationBuilder addConfiguration(Configuration value);
+	protected ConfigurationBuilder addConfigurationBuilder(ConfigurationBuilder cb) {
+		if (cb == null) {
+			throw new IllegalArgumentException("'cb' must not be 'null'");
+		}
+		checkNotFixed();
+		final ConfigurationBuilder existing = get();
+		if (existing != null) {
+			final ConfigurationBuilder listb = new ConfigListBuilder(existing);
+			listb.addConfigurationBuilder(cb);
+			cb = listb;
+		}
+		updateSelected(cb);
+		return this;
+	}
+
 	protected abstract ConfigurationBuilder fixBuild();
 	protected abstract ConfigurationBuilder unfix();
 	protected abstract Configuration getBuild();
+	protected abstract Class<?> getType();
+
+	private String getUnsupportedOperationMsg() {
+		return new StringBuilder(SingletonConfigBuilder.class.getSimpleName())
+		.append(" does not support multiple elements")
+		.toString();
+	}
+
 
 }
