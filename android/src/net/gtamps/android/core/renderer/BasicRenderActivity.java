@@ -18,13 +18,33 @@ public abstract class BasicRenderActivity extends Activity {
 
     protected GLSurfaceView view;
 
+    /**
+     * Defines an life cycle for an activity.
+     */
     public interface IRenderActivity {
+
+        /**
+         * Called when renderer is created.
+         */
         public void onCreate();
 
+        /**
+         * Called every frame.
+         */
         public void onDrawFrame();
 
+        /**
+         * Method returns if the game is running.
+         *
+         * @return <code>true</code> if is running.
+         */
         public boolean isRunning();
 
+        /**
+         * Method returns if the game is paused.
+         *
+         * @return <code>true</code> if is paused.
+         */
         public boolean isPaused();
 
         public ArrayList<BasicScene> getScenes();
@@ -52,6 +72,11 @@ public abstract class BasicRenderActivity extends Activity {
 
         // !!!!!!! took me ages to find, but there are smooth images available now ^_^
         view.getHolder().setFormat(PixelFormat.RGBA_8888);
+
+        // OpenGLES2 support?
+		if (RenderCapabilities.detectOpenGLES20(this)) {
+//			view.setEGLContextClientVersion(2);
+        }
 
 //	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0)

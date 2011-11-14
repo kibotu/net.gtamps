@@ -1,6 +1,5 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.IDirty;
@@ -161,9 +160,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // shading
         gl.glShadeModel(renderState.shader.getValue());
-
-//        Registry.getRenderer().createProgram();
-
 
         // enable color materials
         if (colorMaterialEnabled) {
