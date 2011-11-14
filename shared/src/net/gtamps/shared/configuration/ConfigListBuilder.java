@@ -1,114 +1,71 @@
 package net.gtamps.shared.configuration;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-final class ConfigListBuilder extends ConfigurationBuilder {
+final class ConfigListBuilder extends ConfigBuilder {
 
-	private final ConfigList configList;
-	private final List<ConfigurationBuilder> elements = new ArrayList<ConfigurationBuilder>();
-	private int selected = 0;
 	private final Class<?> type = List.class;
+	private final List<ConfigBuilder> elements = new ArrayList<ConfigBuilder>();
 
-	ConfigListBuilder(final ConfigSource source) {
-		super(source);
-		this.configList = new ConfigList(source);
-		this.select(0);
-	}
-
-	/**
-	 * Creates a new configListBuilder and adds {@code firstElement} to it. After this method
-	 * completed, index 1 (spot for next element) will be selected. 
-	 */
-	ConfigListBuilder(final ConfigurationBuilder firstElement) {
-		this(firstElement.source);
-		updateSelected(firstElement);
-		this.select(1);
+	ConfigListBuilder(final ConfigSource source, final ConfigBuilder parent) {
+		super(source, parent);
 	}
 
 	@Override
-	public ConfigurationBuilder select(final String which) {
+	public ConfigBuilder addBuilder(final ConfigBuilder cb) {
+		this.elements.add(cb);
+		return this;
+	}
+
+	@Override
+	protected ConfigBuilder select(final ConfigKey ckey) {
 		int index;
 		try {
-			index = Integer.parseInt(which);
+			index = Integer.parseInt(ckey.head);
 		} catch (final NumberFormatException e) {
-			final String msg = String.format("'which' must be parseable as integer, but is \"%s\"", which);
+			final String msg = String.format("'key' must be parseable as integer, but is \"%s\"", ckey.head);
 			throw new IllegalArgumentException(msg, e);
 		}
 		return select(index);
 	}
 
-	public ConfigurationBuilder select(int index) {
+	protected ConfigBuilder select(int index) {
 		if (index < 0) {
 			//TODO warn
 			index = 0;
 		}
-		if (index > this.elements.size()) {
+		if (index >= this.elements.size()) {
 			//TODO warn
-			index = this.elements.size();
+			index = this.elements.size() - 1;
 		}
-		this.selected = index;
-		if (index == this.elements.size()) {
-			this.elements.add(null);
-		}
-		return this;
-	}
-
-	@Override
-	public ConfigurationBuilder get() {
-		return this.elements.get(this.selected);
+		return this.elements.get(index);
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("ConfigList")
-		.append(this.fixed ? " (fixed): " : " (building): ")
-		.append(this.fixed ? this.configList.toString() : this.elements.toString());
-		return sb.toString();
-	}
-
-	@Override
-	protected ConfigurationBuilder fixBuild() {
-		final Iterator<ConfigurationBuilder> iter = this.elements.iterator();
-		while (iter.hasNext()) {
-			final ConfigurationBuilder b = iter.next();
-			if (b==null) {
-				iter.remove();
-				continue;
-			}
-			final Configuration cfg = b.fixBuild().getBuild();
-			if (cfg != null) {
-				this.configList.addConfiguration(cfg);
-			}
-		}
-		return this;
-	}
-
-	@Override
-	protected ConfigurationBuilder unfix() {
-		for (final ConfigurationBuilder b : this.elements) {
-			b.unfix();
-		}
-		this.configList.clearList();
-		this.fixed = false;
-		return this;
+		return new StringBuilder("ConfigList")
+		.append(this.elements.toString())
+		.append(")")
+		.toString();
 	}
 
 	@Override
 	protected Configuration getBuild() {
-		if (this.configList.elementCount() == 0) {
-			return null;
-		} else if (this.configList.elementCount() == 1) {
-			return this.configList.get(0);
-		} else {
-			return this.configList;
+		final ConfigList configList = new ConfigList(this.source);
+		for (final ConfigBuilder e : this.elements) {
+			final Configuration cfg = e.getBuild();
+			if (cfg!= null) {
+				configList.addConfiguration(cfg);
+			}
 		}
-	}
-
-	@Override
-	protected void updateSelected(final ConfigurationBuilder cb) {
-		this.elements.set(this.selected, cb);
+		if (configList.elementCount() == 0) {
+			return null;
+		} else if (configList.elementCount() == 1) {
+			return configList.get(0);
+		} else {
+			return configList;
+		}
 	}
 
 	@Override

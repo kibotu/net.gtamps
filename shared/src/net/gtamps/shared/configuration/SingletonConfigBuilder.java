@@ -1,53 +1,40 @@
 package net.gtamps.shared.configuration;
 
-final class SingletonConfigBuilder extends ConfigurationBuilder {
+final class SingletonConfigBuilder extends ConfigBuilder {
 
 	private final Configuration element;
 
-	SingletonConfigBuilder(final ConfigSource source, final String string) {
-		super(source);
+	SingletonConfigBuilder(final ConfigSource source, final String string, final ConfigBuilder parent) {
+		super(source, parent);
 		this.element = (string == null) ? null : new ConfigLiteralString(string, source);
-		this.fixed = true;
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final int i) {
-		super(source);
+	SingletonConfigBuilder(final ConfigSource source, final int i, final ConfigBuilder parent) {
+		super(source, parent);
 		this.element = new ConfigLiteralNumber(i, source);
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final float f) {
-		super(source);
+	SingletonConfigBuilder(final ConfigSource source, final float f, final ConfigBuilder parent) {
+		super(source, parent);
 		this.element = new ConfigLiteralNumber(f, source);
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final boolean b) {
-		super(source);
+	SingletonConfigBuilder(final ConfigSource source, final boolean b, final ConfigBuilder parent) {
+		super(source, parent);
 		this.element = new ConfigLiteralBool(b, source);
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("Literal (")
-		.append(this.fixed ? "fixed) " : "building): ")
-		.append(this.element);
-		return sb.toString();
-	}
-
-	//	@Override
-	//	protected ConfigurationBuilder addConfigurationBuilder(final ConfigurationBuilder cb) {
-	// 		// override to prevent UnsupportedOperationException and throw a warning or something
-	//	}
-
-	@Override
-	protected ConfigurationBuilder fixBuild() {
-		assert this.validates() : "validation error in element: " + this.element.toString();
-		return this;
+		return new StringBuilder("Literal (")
+		.append(this.element)
+		.append(")")
+		.toString();
 	}
 
 	@Override
-	protected ConfigurationBuilder unfix() {
-		this.fixed = true;	// don't unfix
-		return this;
+	protected ConfigBuilder select(final ConfigKey ckey) {
+		throw new UnsupportedOperationException("a single value cannot select from multiple elements");
 	}
 
 	@Override
@@ -57,14 +44,18 @@ final class SingletonConfigBuilder extends ConfigurationBuilder {
 
 	@Override
 	protected Class<?> getType() {
-		return (this.element == null) ? null : this.element.getType();
+		return (this.element == null) ? Object.class : this.element.getType();
 	}
 
-	protected boolean validates() {
-		if (this.element != null) {
-			return this.element.validates();
-		}
-		return true;
+	@Override
+	protected ConfigBuilder addBuilder(final ConfigBuilder cb)
+	throws UnsupportedOperationException {
+		final StringBuilder msgBuilder = new StringBuilder("this is a single element. ")
+		.append("cannot add additional element ")
+		.append(cb.getType().getSimpleName())
+		.append(" ")
+		.append(cb.toString());
+		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
 
 }
