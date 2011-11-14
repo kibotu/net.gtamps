@@ -4,15 +4,15 @@ package net.gtamps.shared.configuration;
 public final class ConfigLiteralNumber extends AbstractConfigElement {
 
 	private static final long serialVersionUID = 1162946319680822921L;
-	
+
 	private final Number n;
-	
-	ConfigLiteralNumber(int i, ConfigSource source) {
+
+	ConfigLiteralNumber(final int i, final ConfigSource source) {
 		super(Integer.class, source);
 		this.n = i;
 	}
-	
-	ConfigLiteralNumber(float f, ConfigSource source) {
+
+	ConfigLiteralNumber(final float f, final ConfigSource source) {
 		super(Float.class, source);
 		this.n = f;
 	}
@@ -23,34 +23,28 @@ public final class ConfigLiteralNumber extends AbstractConfigElement {
 	}
 
 	@Override
-	public Configuration get(String key) {
-		return null;
-	}
-
-	@Override
-	public Configuration get(int index) {
-		return null;
-	}
-
-	@Override
 	public String getString() {
-		return n.toString();
+		return this.n.toString();
 	}
 
 	@Override
 	public Integer getInt() {
-		return n.intValue();
+		return this.n.intValue();
 	}
 
 	@Override
 	public Float getFloat() {
-		return n.floatValue();
+		return this.n.floatValue();
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return null;
+	public boolean validates() {
+		return this.n != null;
 	}
 
+	@Override
+	public String toString() {
+		return this.n.toString();
+	}
 
 }
