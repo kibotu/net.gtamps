@@ -43,7 +43,7 @@ final public class Config {
     public static final String TIL_IP_JAN_HOME = "192.168.2.102";
     public static final String TIL_IP_INI = "141.64.23.78";
     public static final String JAN_IP_HOME = "192.168.2.101";
-    public static final String JAN_IP_INI = "141.64.23.98";
+    public static final String JAN_IP_INI = "192.168.178.23";
     public static final String LOCALHOST = "localhost";
 
     public static final String SERVER_DEFAULT_HOST_ADDRESS = JAN_IP_INI;
