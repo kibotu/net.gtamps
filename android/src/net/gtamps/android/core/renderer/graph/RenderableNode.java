@@ -112,12 +112,11 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     private boolean lineSmoothing = true;
 
-    public RenderableNode(@Nullable Mesh mesh) {
-        this.mesh = mesh;
+    public RenderableNode(@NotNull RenderableNode clone) {
+        this.mesh = new Mesh(clone.getMesh());
     }
 
     public RenderableNode() {
-        this(null);
     }
 
     @Override
