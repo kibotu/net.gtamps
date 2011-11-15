@@ -47,7 +47,7 @@ final class ConfigMapBuilder extends ConfigBuilder {
 	}
 
 	@Override
-	protected Class<?> getType() {
+	public Class<?> getType() {
 		return this.type;
 	}
 

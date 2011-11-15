@@ -43,7 +43,7 @@ final class SingletonConfigBuilder extends ConfigBuilder {
 	}
 
 	@Override
-	protected Class<?> getType() {
+	public Class<?> getType() {
 		return (this.element == null) ? Object.class : this.element.getType();
 	}
 
