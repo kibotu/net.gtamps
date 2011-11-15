@@ -14,7 +14,7 @@ abstract class AbstractConfigElement implements Configuration {
 		.append(", but method will always return 'null' for this configuration")
 		.toString();
 		System.err.println(msg);
-		Logger.W(ConfigurationBuilder.class.getSimpleName(), msg);
+		Logger.W(ConfigBuilder.class.getSimpleName(), msg);
 	}
 
 	private final static String getCallerInfo(final int backtrack, final boolean inclLineNo) {

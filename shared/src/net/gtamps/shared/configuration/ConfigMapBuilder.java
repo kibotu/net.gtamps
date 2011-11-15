@@ -4,86 +4,60 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-final class ConfigMapBuilder extends ConfigurationBuilder {
+final class ConfigMapBuilder extends ConfigBuilder {
 
-	private final ConfigMap configMap;
-	private ConfigKey selected = null;
-	private final Map<String, ConfigurationBuilder> elements = new HashMap<String, ConfigurationBuilder>();
+	private final Class<?> type = Map.class;
+	private final Map<String, ConfigBuilder> elements = new HashMap<String, ConfigBuilder>();
 
-	public ConfigMapBuilder(final ConfigSource source) {
-		super(source);
-		this.configMap = new ConfigMap(source);
-		this.select("");
+	protected ConfigMapBuilder(final ConfigSource source) {
+		super(source, null);
 	}
-
-	@Override
-	public ConfigMapBuilder addConfiguration(final Configuration value) {
-		final ConfigurationBuilder possiblyNewb = getSelected().addConfiguration(value);
-		updateSelected(possiblyNewb);
-		return this;
-	}		
-
-
-	@Override
-	public ConfigMapBuilder addSubConfiguration() {
-		final ConfigurationBuilder existing = getSelected();
-		if (existing != null && existing.getBuild() != null) {
-			throw new IllegalStateException(this.selected + " has already been initialized to " + existing);
-		}
-		final ConfigurationBuilder newb = new ConfigMapBuilder(this.source);
-		updateSelected(newb);
-		return this;
-	}		
-
-	@Override
-	public ConfigurationBuilder select(final String which) {
-		final ConfigKey ckey = new ConfigKey(which);
-		excludeDeepKeys(ckey);
-
-		this.selected = ckey;
-		if (getSelected() == null) {
-			updateSelected(new SingletonConfigBuilder(this.source));
-		}
-		return this;
-	}
-
-	@Override
-	public ConfigurationBuilder getSelected() {
-		return this.elements.get(this.selected.head);
-	}
-
-	private void updateSelected(final ConfigurationBuilder cb) {
-		this.elements.put(this.selected.head, cb);
-	}
-
-	private void excludeDeepKeys(final ConfigKey ckey) {
-		if ("".equals(ckey.tail)) {
-			throw new IllegalArgumentException("key level exceeds 1. deep key selection not implemented (yet): " + ckey);
-		}
-	}
-
-	@Override
-	public ConfigurationBuilder fixBuild() {
-		for (final Entry<String, ConfigurationBuilder> e : this.elements.entrySet()) {
-			final Configuration cfg = e.getValue().fixBuild().getBuild();
-			if (cfg != null) {
-				this.configMap.putConfiguration(e.getKey(), cfg);
-			}
-		}
-		return this;
-	}
-
-	@Override
-	public Configuration getBuild() {
-		return (this.configMap.elementCount() > 0) ? this.configMap : null;
+	protected ConfigMapBuilder(final ConfigSource source, final ConfigBuilder parent) {
+		super(source, parent);
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("ConfigMap (")
-		.append(this.fixed ? "fixed): " : "building): ")
-		.append(this.fixed ? this.configMap.toString() : this.elements.toString());
-		return sb.toString();
+		return new StringBuilder("ConfigMap (")
+		.append(this.elements.toString())
+		.append(")")
+		.toString();
+	}
+
+	@Override
+	protected ConfigBuilder select(final ConfigKey ckey) {
+		ConfigBuilder selected = this.elements.get(ckey.head);
+		if (selected == null) {
+			selected = new ConfigListBuilder(this.source, this);
+			this.elements.put(ckey.head, selected);
+		}
+		return selected;
+	}
+
+	@Override
+	protected Configuration getBuild() {
+		final ConfigMap configMap = new ConfigMap(this.source);
+		for (final Entry<String, ConfigBuilder> e : this.elements.entrySet()) {
+			final Configuration cfg = e.getValue().getBuild();
+			if (cfg!= null) {
+				configMap.putConfiguration(e.getKey(), cfg);
+			}
+		}
+		return (configMap.elementCount() > 0) ? configMap : null;
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return this.type;
+	}
+
+	@Override
+	protected ConfigBuilder addBuilder(
+			final ConfigBuilder cb) throws UnsupportedOperationException {
+		final StringBuilder msgBuilder = new StringBuilder("cannot add ")
+		.append(cb.getType().getSimpleName())
+		.append(" here: select() an element first.");
+		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
 
 }

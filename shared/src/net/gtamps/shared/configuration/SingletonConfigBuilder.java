@@ -1,68 +1,61 @@
 package net.gtamps.shared.configuration;
 
-final class SingletonConfigBuilder extends ConfigurationBuilder {
+final class SingletonConfigBuilder extends ConfigBuilder {
 
-	private Configuration element = null;
+	private final Configuration element;
 
-	protected SingletonConfigBuilder(final ConfigSource source) {
-		super(source);
+	SingletonConfigBuilder(final ConfigSource source, final String string, final ConfigBuilder parent) {
+		super(source, parent);
+		this.element = (string == null) ? null : new ConfigLiteralString(string, source);
 	}
 
-	@Override
-	public ConfigurationBuilder addConfiguration(final Configuration value) {
-		ConfigurationBuilder possiblyNewb = this;
-		if (this.element == null) {
-			this.element = value;
-		} else { 
-			final ConfigListBuilder list = new ConfigListBuilder(this.source);
-			list.addConfiguration(this.element);
-			list.addConfiguration(value);
-			possiblyNewb = list;
-		}
-		return possiblyNewb;
+	SingletonConfigBuilder(final ConfigSource source, final int i, final ConfigBuilder parent) {
+		super(source, parent);
+		this.element = new ConfigLiteralNumber(i, source);
 	}
 
-	@Override
-	public ConfigurationBuilder select(final String which) {
-		if (this.element != null) {
-			throw new IllegalStateException("this element is already defined as something different from a Map");
-		}
-
-		warnIneffectiveMethod();
-		return this;
+	SingletonConfigBuilder(final ConfigSource source, final float f, final ConfigBuilder parent) {
+		super(source, parent);
+		this.element = new ConfigLiteralNumber(f, source);
 	}
 
-	@Override
-	public ConfigurationBuilder getSelected() {
-		warnIneffectiveMethod();
-		return this;
-	}
-
-	@Override
-	public ConfigurationBuilder fixBuild() {
-		assert this.validates() : "validation error in element: " + this.element.toString();
-		return this;
-	}
-
-	@Override
-	public Configuration getBuild() {
-		return this.element;
+	SingletonConfigBuilder(final ConfigSource source, final boolean b, final ConfigBuilder parent) {
+		super(source, parent);
+		this.element = new ConfigLiteralBool(b, source);
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("Literal (")
-		.append(this.fixed ? "fixed) " : "building): ")
-		.append(this.element);
-		return sb.toString();
+		return new StringBuilder("Literal (")
+		.append(this.element)
+		.append(")")
+		.toString();
 	}
 
+	@Override
+	protected ConfigBuilder select(final ConfigKey ckey) {
+		throw new UnsupportedOperationException("a single value cannot select from multiple elements");
+	}
 
-	protected boolean validates() {
-		if (this.element != null) {
-			return this.element.validates();
-		}
-		return true;
+	@Override
+	protected Configuration getBuild() {
+		return this.element;
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return (this.element == null) ? Object.class : this.element.getType();
+	}
+
+	@Override
+	protected ConfigBuilder addBuilder(final ConfigBuilder cb)
+	throws UnsupportedOperationException {
+		final StringBuilder msgBuilder = new StringBuilder("this is a single element. ")
+		.append("cannot add additional element ")
+		.append(cb.getType().getSimpleName())
+		.append(" ")
+		.append(cb.toString());
+		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
 
 }
