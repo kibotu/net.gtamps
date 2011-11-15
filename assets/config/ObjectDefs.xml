@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+
+<GAME>
+<OBJECTS>
+	<DEF>
+		<TYPE>Entity</TYPE>
+		<TYPE>Property</TYPE>
+		<TYPE>GameEvent</TYPE>
+		<TYPE>Handler</TYPE>
+		
+		<ENTITY>
+			<FACTORY><CLASS>net.gtamps.game.entity.EntityFactory</CLASS></FACTORY>
+			<TYPE>default</TYPE>
+			<TYPE>car</TYPE>
+			<TYPE>human</TYPE>
+			<TYPE>projectile</TYPE>
+			<TYPE>obstacle</TYPE>
+			<TYPE>immaterial</TYPE>
+				<PROPERTIES>
+				<TYPE>posx</TYPE>
+				<TYPE>posy</TYPE>
+				<TYPE>posz</TYPE>
+				<TYPE>rota</TYPE>
+				<TYPE>speedx</TYPE>
+				<TYPE>speedy</TYPE>
+				<TYPE>health</TYPE>
+				<TYPE>healthratio</TYPE>
+				<TYPE>alive</TYPE>
+				<POSX type="int" default="0" lazy="false" comment="in pix"/>
+				<POSY type="int" default="0" lazy="false" comment="in pix"/>
+				<POSZ type="int" default="0" lazy="false" comment="in pix"/>
+				<ROTA type="int" default="0" lazy="false" comment="degrees"/>
+				<SPEEDX type="int" default="0" comment="degrees"/>
+				<SPEEDY type="int" default="0" comment="degrees"/>
+				<HEALTH type="int" default="0" comment="absolute"/>
+				<HEALTHRATIO type="float" default="0" comment="health / maxhealth"/>
+				<ALIVE type="bool" default="true" comment="is considered opeational"/>
+			</PROPERTIES>
+		</ENTITY>
+		
+		<PROPERTY>
+			<CLASS>net.gtamps.shared.game.Property</CLASS>
+			<TYPE>int</TYPE>
+			<TYPE>bool</TYPE>
+			<TYPE>float</TYPE>
+			<TYPE>string</TYPE>
+			<INT><CLASS>java.lang.Integer</CLASS></INT>
+			<BOOL><CLASS>java.lang.Boolean</CLASS></BOOL>
+			<FLOAT><CLASS>java.lang.Float</CLASS></FLOAT>
+			<STRING><CLASS>java.lang.String</CLASS></STRING>
+		</PROPERTY>
+		
+		<GAMEVENT>
+			<PACKAGE>net.gtamps.shared.game.event</PACKAGE>
+			<CLASS>GameEvent</CLASS>
+		 </GAMEVENT>
+		 
+		<HANDLER>
+			<PACKAGE>net.gtamps.game.handler</PACKAGE>
+			<TYPE>none</TYPE>
+			<TYPE>physics</TYPE>
+			<TYPE>mobility</TYPE>
+			<TYPE>driver</TYPE>
+			<TYPE>health</TYPE>
+			<TYPE>sensor</TYPE>
+		</HANDLER>
+		 
+	</DEF>
+</OBJECTS>	
+</GAME>	
+</CONFIG>
