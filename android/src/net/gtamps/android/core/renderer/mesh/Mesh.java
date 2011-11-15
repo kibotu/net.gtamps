@@ -6,6 +6,7 @@ import net.gtamps.android.core.renderer.mesh.buffermanager.VertexManager;
 import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -23,6 +24,13 @@ public class Mesh {
         vertices = new VertexManager(maxAmountVertex);
         textures = new TextureManager();
         faces = new FaceManager(maxAmountFaces);
+    }
+
+    public Mesh(@NotNull Mesh mesh) {
+        this.vbo = mesh.vbo;
+        vertices = null;
+        textures = null;
+        faces = null;
     }
 
     /**
