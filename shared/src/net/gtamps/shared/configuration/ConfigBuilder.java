@@ -82,12 +82,12 @@ public abstract class ConfigBuilder {
 	//		this.parent.update(context, listb);
 	//		return back();	// return new list context
 	//	}
+	public abstract Class<?> getType();
 
 	protected abstract ConfigBuilder addBuilder(final ConfigBuilder cb) throws UnsupportedOperationException;
 	protected abstract ConfigBuilder select(ConfigKey ckey);
 	//	protected abstract ConfigBuilder update(ConfigKey ckey, ConfigBuilder newBuilder);
 	protected abstract Configuration getBuild();
-	protected abstract Class<?> getType();
 
 	private void excludeDeepKeys(final ConfigKey ckey) {
 		if ("".equals(ckey.tail)) {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+
+<GAME>
+<OBJECTS>
+<ENTITIES>
+	<ENTITY name="spawnpoint">
+		<PHYSICS dynamic="false">
+			<SENSORSHAPE 
+				type="circle" radius = "3.5" 
+				event="EventType.ENTITY_SENSE_SPAWN"
+			/>
+		</PHYSICS>
+	</ENTITY>
+	
+	<ENTITY name="house" type="SOLID">
+		<PHYSICS dynamic="false">
+			<SHAPE 
+				type="polygon" 
+				density="0" 
+				friction="0.0" 
+				restitution="0.0" 
+			/>
+		</PHYSICS>
+	</ENTITY>
+</ENTITIES>
+</OBJECTS>	
+</GAME>	
+</CONFIG>

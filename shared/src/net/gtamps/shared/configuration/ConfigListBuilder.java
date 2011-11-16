@@ -69,7 +69,7 @@ final class ConfigListBuilder extends ConfigBuilder {
 	}
 
 	@Override
-	protected Class<?> getType() {
+	public Class<?> getType() {
 		return this.type;
 	}
 }

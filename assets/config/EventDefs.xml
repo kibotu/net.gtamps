@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+
+<GAME>
+<OBJECTS>
+	<DEF>
+		<TYPE>Entity</TYPE>
+		<TYPE>Property</TYPE>
+		<TYPE>GameEvent</TYPE>
+		<TYPE>Handler</TYPE>
+		
+		<GAMEVENT>
+			<PACKAGE>net.gtamps.shared.game.event</PACKAGE>
+			<CLASS>GameEvent</CLASS>
+		 </GAMEVENT>
+		 
+	</DEF>
+
+
+</OBJECTS>	
+</GAME>	
+</CONFIG>
