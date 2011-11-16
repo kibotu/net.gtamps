@@ -112,8 +112,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     private boolean lineSmoothing = true;
 
-    public RenderableNode(@NotNull RenderableNode clone) {
-        this.mesh = new Mesh(clone.getMesh());
+    public RenderableNode(@NotNull RenderableNode other) {
+        this.mesh = new Mesh(other.getMesh());
+        this.dimension.set(other.dimension);
+        this.scaling.set(other.scaling);
     }
 
     public RenderableNode() {
@@ -582,4 +584,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     public void setRenderState(RenderState renderState) {
         this.renderState = renderState;
     }
+
+    public abstract RenderableNode getStatic();
 }

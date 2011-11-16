@@ -14,11 +14,22 @@ public class Cube extends RenderableNode {
         dimension.set(width, height, depth);
     }
 
+    public Cube(Cube other) {
+        this.mesh = new Mesh(other.getMesh());
+        this.dimension.set(other.dimension);
+        this.scaling.set(other.scaling);
+    }
+
     public Cube() {
     }
 
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    public RenderableNode getStatic() {
+        return new Cube(this);
     }
 
     @Override

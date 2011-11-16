@@ -8,9 +8,13 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 
+import java.util.HashMap;
+
 final public class Object3dFactory {
 
     public final static String TAG = Object3dFactory.class.getSimpleName();
+
+    private static final HashMap<Entity.Type, RenderableNode> cache = new HashMap<Entity.Type, RenderableNode>(10);
 
     private Object3dFactory() {
     }
@@ -20,32 +24,43 @@ final public class Object3dFactory {
     }
 
     public static RenderableNode create(Entity.Type type) {
+
+        if(cache.containsKey(type)) {
+            return cache.get(type).getStatic();
+        }
+
+        RenderableNode node;
+
         switch (type) {
             case CAR_CAMARO:
-                return createCarCamaro();
+                node = createCarCamaro();
             case CAR_RIVIERA:
-                return createCarRiveria();
+                node = createCarRiveria();
             case CAR_CHEVROLET_CORVETTE:
-                return createCarChevroletCorvette();
+                node = createCarChevroletCorvette();
             case HUMAN:
-                return createHuman();
+                node = createHuman();
             case HOUSE:
-                return createHouse();
+                node = createHouse();
             case BULLET:
-                return createBullet();
+                node = createBullet();
             case SPAWNPOINT:
-                return createSpawnPoint();
+                node = createSpawnPoint();
             case WAYPOINT:
-                return createWayPoint();
+                node = createWayPoint();
             case CUBE:
-                return createCube();
+                node = createCube();
             case SPHERE:
-                return createSphere();
+                node = createSphere();
             case PLACEHOLDER:
-                return createCube();
+                node = createCube();
             default:
-                return createCube();
+                node = createCube();
         }
+
+        cache.put(type,node);
+
+        return node;
     }
 
     private static RenderableNode createCarChevroletCorvette() {
@@ -62,6 +77,8 @@ final public class Object3dFactory {
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
         parsedChild.setScaling(0.3f, 0.3f, 0.3f);
+
+
         return parsedObject;
     }
 
