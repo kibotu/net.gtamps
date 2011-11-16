@@ -87,4 +87,5 @@ abstract class AbstractConfigElement implements Configuration {
 		warnIneffectiveMethod();
 		return null;
 	}
+
 }

@@ -28,9 +28,9 @@ public class ConfigBuilderTest {
 		testee.select("MULTISTRING").addValue("second");
 
 		// make a list of maps
-		testee.select("CATEGORY_LIST").addMap().back().addMap();
-		testee.select("CATEGORY_LIST").select("0").select("KEY_IN_FIRST_SUBCONF").addValue(0xFF);
-		testee.select("CATEGORY_LIST").select("1").select("KEY_IN_SECOND_SUBCONF").addValue(0xFF & 0x10);
+		testee.select("CATEGORY").addMap().back().addMap();
+		testee.select("CATEGORY").select("0").select("KEY_IN_FIRST_SUBCONF").addValue(0xFF);
+		testee.select("CATEGORY").select("1").select("KEY_IN_SECOND_SUBCONF").addValue(0xFF & 0x10);
 
 		final Configuration cfg = testee.getConfig();
 		System.out.println(cfg);
