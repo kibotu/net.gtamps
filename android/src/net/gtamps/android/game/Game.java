@@ -60,17 +60,17 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
         // hud
         scenes.add(hud);
-//        hud.getScene().setVisible(false);
+        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
 //        menu.getScene().setVisible(false);
 
 //        connect
-//        connection.checkConnection();
-////
-//        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
-//        connection.start();
-//        connection.add(MessageFactory.createSessionRequest());
+        connection.checkConnection();
+//
+        Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
+        connection.start();
+        connection.add(MessageFactory.createSessionRequest());
     }
 
 //    int menuloop = 0;
@@ -82,7 +82,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         }
 
         // check connection
-//        connection.checkConnection();
+        connection.checkConnection();
 
         // handle inbox messages
         while (!connection.isEmpty()) {
@@ -91,6 +91,8 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 handleMessage(message.sendables.get(i), message);
             }
         }
+
+        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
     }
 
     private long impulse = 0;

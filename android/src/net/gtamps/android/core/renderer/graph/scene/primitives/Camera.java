@@ -237,6 +237,11 @@ public class Camera extends RenderableNode {
     }
 
     @Override
+    public RenderableNode getStatic() {
+        return this;
+    }
+
+    @Override
     protected void setOptions() {
     }
 

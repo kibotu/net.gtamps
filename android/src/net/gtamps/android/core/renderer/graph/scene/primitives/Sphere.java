@@ -26,6 +26,10 @@ public class Sphere extends RenderableNode {
         this.slices = slices;
     }
 
+    public Sphere(Sphere sphere) {
+        super(sphere);
+    }
+
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
         if (mesh != null) return;
@@ -85,6 +89,11 @@ public class Sphere extends RenderableNode {
 
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    public RenderableNode getStatic() {
+        return new Sphere(this);
     }
 
     @Override
