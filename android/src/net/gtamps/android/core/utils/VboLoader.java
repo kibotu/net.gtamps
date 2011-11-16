@@ -60,7 +60,7 @@ public class VboLoader {
         FloatBuffer colorBuffer = (colors.length > 1) ? OpenGLUtils.toFloatBufferPositionZero(colors) : null;
         FloatBuffer textureBuffer = (textureCoords.length > 1) ? OpenGLUtils.toFloatBufferPositionZero(textureCoords) : null;
 
-        Vbo vbo = new Vbo(vertexBuffer, indexBuffer, normalBuffer, colorBuffer, textureBuffer);
+        Vbo vbo = new Vbo().set(vertexBuffer, indexBuffer, normalBuffer, colorBuffer, textureBuffer);
         vboCache.put(resourceId, vbo);
         return vbo;
     }

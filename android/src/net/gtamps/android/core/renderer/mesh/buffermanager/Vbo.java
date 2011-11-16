@@ -25,13 +25,7 @@ public class Vbo {
 
     private boolean isAllocated;
 
-    public Vbo(FloatBuffer vertexBuffer, ShortBuffer indexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer textureCoordinateBuffer) {
-        this.vertexBuffer = vertexBuffer;
-        this.indexBuffer = indexBuffer;
-        this.normalBuffer = normalBuffer;
-        this.colorBuffer = colorBuffer;
-        this.textureCoordinateBuffer = textureCoordinateBuffer;
-        isAllocated = false;
+    public Vbo() {
     }
 
     private void positionZero() {
@@ -147,5 +141,25 @@ public class Vbo {
                 "|colorBId=" + colorBufferId +
                 "|textureCoordId=" + textureCoordinateBufferId +
                 ']';
+    }
+
+    public Vbo set(FloatBuffer vertexBuffer, ShortBuffer indexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer textureCoordinateBuffer) {
+        this.vertexBuffer = vertexBuffer;
+        this.indexBuffer = indexBuffer;
+        this.normalBuffer = normalBuffer;
+        this.colorBuffer = colorBuffer;
+        this.textureCoordinateBuffer = textureCoordinateBuffer;
+        isAllocated = false;
+        return this;
+    }
+
+    public Vbo set(Vbo vbo) {
+        vertexBufferId = vbo.vertexBufferId;
+        indexBufferId = vbo.indexBufferId;
+        normalBufferId = vbo.normalBufferId;
+        colorBufferId = vbo.colorBufferId;
+        textureCoordinateBufferId = vbo.textureCoordinateBufferId;
+        isAllocated = true;
+        return this;
     }
 }

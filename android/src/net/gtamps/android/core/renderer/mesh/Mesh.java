@@ -18,7 +18,7 @@ public class Mesh {
     public final FaceManager faces;
 
     // gpu-server-side
-    protected Vbo vbo;
+    protected Vbo vbo = new Vbo();
 
     public Mesh(int maxAmountVertex, int maxAmountFaces) {
         vertices = new VertexManager(maxAmountVertex);
@@ -27,7 +27,7 @@ public class Mesh {
     }
 
     public Mesh(@NotNull Mesh mesh) {
-        this.vbo = mesh.vbo;
+        this.vbo.set(mesh.vbo);
         vertices = null;
         textures = null;
         faces = null;
@@ -58,7 +58,8 @@ public class Mesh {
     }
 
     public void setup(GL10 gl) {
-        vbo = new Vbo(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
+        if(vbo.isAllocated()) return;
+        vbo.set(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
         vbo.allocBuffers(gl);
     }
 

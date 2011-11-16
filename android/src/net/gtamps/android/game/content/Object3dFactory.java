@@ -26,7 +26,7 @@ final public class Object3dFactory {
     public static RenderableNode create(Entity.Type type) {
 
         if(cache.containsKey(type)) {
-            return cache.get(type).getStatic();
+//            return cache.get(type).getStatic();
         }
 
         RenderableNode node;
@@ -34,28 +34,40 @@ final public class Object3dFactory {
         switch (type) {
             case CAR_CAMARO:
                 node = createCarCamaro();
+                break;
             case CAR_RIVIERA:
                 node = createCarRiveria();
+                break;
             case CAR_CHEVROLET_CORVETTE:
                 node = createCarChevroletCorvette();
+                break;
             case HUMAN:
                 node = createHuman();
+                break;
             case HOUSE:
                 node = createHouse();
+                break;
             case BULLET:
                 node = createBullet();
+                break;
             case SPAWNPOINT:
                 node = createSpawnPoint();
+                break;
             case WAYPOINT:
                 node = createWayPoint();
+                break;
             case CUBE:
                 node = createCube();
+                break;
             case SPHERE:
                 node = createSphere();
+                break;
             case PLACEHOLDER:
                 node = createCube();
+                break;
             default:
                 node = createCube();
+                break;
         }
 
         cache.put(type,node);

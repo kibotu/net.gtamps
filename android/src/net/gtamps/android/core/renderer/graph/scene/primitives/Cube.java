@@ -12,15 +12,17 @@ public class Cube extends RenderableNode {
 
     public Cube(int width, int height, int depth) {
         dimension.set(width, height, depth);
+        this.mesh = new Mesh(24, 12);
     }
 
     public Cube(Cube other) {
-        this.mesh = new Mesh(other.getMesh());
+        this.mesh = new Mesh(other.mesh);
         this.dimension.set(other.dimension);
         this.scaling.set(other.scaling);
     }
 
     public Cube() {
+        this(1,1,1);
     }
 
     @Override
@@ -60,9 +62,6 @@ public class Cube extends RenderableNode {
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
         if (mesh != null) return;
-
-        // new mesh
-        this.mesh = new Mesh(24, 12);
 
         final float c = 0.5f;
         Color4 emissive = material.getEmissive();
