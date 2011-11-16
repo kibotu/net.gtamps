@@ -23,4 +23,15 @@ public final class ConfigLiteralNumber extends AbstractConfigLiteral {
 		return (Float) value;
 	}
 
+	@Override
+	public AbstractConfigLiteral clone() {
+		if (value.getClass() == Integer.class) {
+			return new ConfigLiteralNumber(getInt(), source);
+		} else if (value.getClass() == Float.class) {
+			return new ConfigLiteralNumber(getFloat(), source);
+		} else {
+			throw new IllegalStateException("unknown Number type in value");
+		}
+	}
+
 }

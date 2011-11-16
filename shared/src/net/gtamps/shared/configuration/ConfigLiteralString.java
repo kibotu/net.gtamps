@@ -8,4 +8,9 @@ public final class ConfigLiteralString extends AbstractConfigLiteral {
 		super(string, source);
 	}
 
+	@Override
+	public AbstractConfigLiteral clone() {
+		return new ConfigLiteralString(getString(), source);
+	}
+
 }
