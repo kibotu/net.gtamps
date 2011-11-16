@@ -8,12 +8,15 @@ final class ConfigMapBuilder extends ConfigBuilder {
 
 	private final Class<?> type = Map.class;
 	private final Map<String, ConfigBuilder> elements = new HashMap<String, ConfigBuilder>();
+	private final ConfigMap configMap ;
+
 
 	protected ConfigMapBuilder(final ConfigSource source) {
-		super(source, null);
+		this(source, null);
 	}
 	protected ConfigMapBuilder(final ConfigSource source, final ConfigBuilder parent) {
 		super(source, parent);
+		configMap = new ConfigMap(source);
 	}
 
 	@Override
@@ -36,14 +39,13 @@ final class ConfigMapBuilder extends ConfigBuilder {
 
 	@Override
 	protected Configuration getBuild() {
-		final ConfigMap configMap = new ConfigMap(this.source);
 		for (final Entry<String, ConfigBuilder> e : this.elements.entrySet()) {
 			final Configuration cfg = e.getValue().getBuild();
 			if (cfg!= null) {
 				configMap.putConfiguration(e.getKey(), cfg);
 			}
 		}
-		return (configMap.elementCount() > 0) ? configMap : null;
+		return (configMap.getCount() > 0) ? configMap : null;
 	}
 
 	@Override
@@ -56,6 +58,13 @@ final class ConfigMapBuilder extends ConfigBuilder {
 			final ConfigBuilder cb) throws UnsupportedOperationException {
 		final StringBuilder msgBuilder = new StringBuilder("cannot add ")
 		.append(cb.getType().getSimpleName())
+		.append(" here: select() an element first.");
+		throw new UnsupportedOperationException(msgBuilder.toString());
+	}
+
+	@Override
+	public ConfigBuilder addConfig(final Configuration config) {
+		final StringBuilder msgBuilder = new StringBuilder("cannot add a configuration")
 		.append(" here: select() an element first.");
 		throw new UnsupportedOperationException(msgBuilder.toString());
 	}

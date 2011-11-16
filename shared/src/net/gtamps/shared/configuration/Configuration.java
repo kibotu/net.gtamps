@@ -1,10 +1,13 @@
 package net.gtamps.shared.configuration;
 
 import java.io.Serializable;
+import java.util.Collection;
 
-public interface Configuration extends Serializable {
+public interface Configuration extends Cloneable, Serializable, Iterable<Configuration> {
 
-	public static final String KEY_DELIMITER = "."; 
+	/** the character used to delimit different layers of a configuration key, and
+	 * thus allows to bridge several layers of hierarchy */
+	public static final char KEY_DELIMITER = '.'; 
 
 	/**
 	 * @return	one of Map.class, List.class, Integer.class, Float.class, Boolean.class, String.class
@@ -13,21 +16,21 @@ public interface Configuration extends Serializable {
 	public Class<?> getType();
 
 	/** @return the number of child-configurations */
-	public int elementCount();
+	public int getCount();
 
 	/**
 	 * @param key	either a name (starts with letter or underscore, case-insensitive),
 	 * 				or a numerical string used as index
 	 * @return		the configuration fitting <tt>key</tt>, or <code>null</code>
 	 */
-	public Configuration get(String key);
+	public Configuration select(String key);
 
 	/**
 	 * @param index	for a list config element, 
 	 * @return	the sub-configuration with the given <tt>index</tt>; for a list, this
 	 * 			is consistent, for a map, exact behavior is not defined
 	 */
-	public Configuration get(int index);
+	public Configuration select(int index);
 
 	/** @return get a string representation of the stored value; for maps and lists, this is purely informative */
 	public String getString();
@@ -47,5 +50,12 @@ public interface Configuration extends Serializable {
 	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists */
 	public ConfigSource getSource();
 
-	boolean validates();
+	/**
+	 * @return 	a collection of the valid keys to this configuration. Does not include magic keys that
+	 * 			make use of {@linkplain #KEY_DELIMITER} to bridge several layers of mapping.
+	 */
+	public Collection<String> getKeys() ;
+
+	public Configuration clone();
+
 }

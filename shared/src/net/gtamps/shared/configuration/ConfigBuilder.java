@@ -21,23 +21,23 @@ public abstract class ConfigBuilder {
 	}
 
 	public ConfigBuilder addValue(final int value) {
-		addBuilder(new SingletonConfigBuilder(this.source, value, this));
+		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
 	public ConfigBuilder addValue(final float value) {
-		addBuilder(new SingletonConfigBuilder(this.source, value, this));
+		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
 	public ConfigBuilder addValue(final boolean value) {
-		addBuilder(new SingletonConfigBuilder(this.source, value, this));
+		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
 	public ConfigBuilder addValue(final String value) {
 		//TODO null
-		addBuilder(new SingletonConfigBuilder(this.source, value, this));
+		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
@@ -46,6 +46,7 @@ public abstract class ConfigBuilder {
 		addBuilder(mapBuilder);
 		return mapBuilder;
 	}
+
 
 	/**
 	 * When building a configuration that has sub-elements, select one of the sub-builder by name or index.
@@ -83,6 +84,8 @@ public abstract class ConfigBuilder {
 	//		return back();	// return new list context
 	//	}
 	public abstract Class<?> getType();
+
+	public abstract ConfigBuilder addConfig(Configuration config);
 
 	protected abstract ConfigBuilder addBuilder(final ConfigBuilder cb) throws UnsupportedOperationException;
 	protected abstract ConfigBuilder select(ConfigKey ckey);
