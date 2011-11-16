@@ -1,6 +1,7 @@
 package net.gtamps.shared.configuration;
 
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +13,7 @@ implements Configuration {
 
 	private static final long serialVersionUID = 7466530368525139233L;
 
-	private final Class<?> type = Map.class;
+	private final Class<?> type = java.util.Map.class;
 	private final Map<String, Configuration> entries = new HashMap<String, Configuration>();
 
 	private final ConfigSource source;
@@ -22,28 +23,28 @@ implements Configuration {
 	}
 
 	@Override
-	public int elementCount() {
+	public int getCount() {
 		return this.entries.size();
 	}
 
 	@Override
-	public Configuration get(final String key) {
+	public Configuration select(final String key) {
 		final ConfigKey configKey = new ConfigKey(key);
 		if (configKey.isIntermediate()) {
-			return this.entries.get(configKey.head).get(configKey.tail);
+			return this.entries.get(configKey.head).select(configKey.tail);
 		} else {
 			return this.entries.get(configKey.head);
 		}
 	}
 
 	@Override
-	public Configuration get(final int index) {
+	public Configuration select(final int index) {
 		if (index < 0) {
 			throw new IllegalArgumentException("index must be >= 0");
 		}
-		if (index >= elementCount()) {
+		if (index >= getCount()) {
 			throw new IndexOutOfBoundsException(String.format(
-					"index out of bounds (%d): %d", elementCount(), index));
+					"index out of bounds (%d): %d", getCount(), index));
 		}
 		final Iterator<String> iter = this.entries.keySet().iterator();
 		for (int i = 0; i < index; i++) {
@@ -78,29 +79,22 @@ implements Configuration {
 	}
 
 	@Override
-	public boolean validates() {
-		return Map.class.equals(this.type) && this.source != null && elementCount() > 0;
-		// TODO direct keys conform to "letter/underscore" rule for 1st
-		// character
-	}
-
-	@Override
 	public Integer getInt() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
 
 	@Override
 	public Float getFloat() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
 
 	@Override
 	public Boolean getBoolean() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
@@ -120,5 +114,25 @@ implements Configuration {
 	void clearMap() {
 		this.entries.clear();
 	}
+
+	@Override
+	public Collection<String> getKeys() {
+		return entries.keySet();
+	}
+
+	@Override
+	public Iterator<Configuration> iterator() {
+		return Collections.unmodifiableCollection(entries.values()).iterator();
+	}
+
+	@Override
+	public ConfigMap clone() {
+		final ConfigMap cloneMap = new ConfigMap(source);
+		for (final Entry<String, Configuration> entry : entries.entrySet()) {
+			cloneMap.entries.put(entry.getKey(), entry.getValue().clone());
+		}
+		return cloneMap;
+	}
+
 
 }
