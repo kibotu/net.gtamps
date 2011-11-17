@@ -1,6 +1,6 @@
 package net.gtamps.game.entity;
 
-import net.gtamps.game.world.World;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -30,11 +30,11 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 
     };
 
-    private final World world;
+    private final Universe world;
     private final Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
     private final SortedSet<Entity> updated = new TreeSet<Entity>(reverseRevisionComparator);
 
-    public EntityManager(final World world) {
+    public EntityManager(final Universe world) {
         this.world = world;
     }
 
@@ -67,7 +67,7 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
     }
 
 
-    public Entity createEntitySpawnPoint(final World world2, final int pixX, final int pixY, final Integer rotation) {
+    public Entity createEntitySpawnPoint(final Universe world2, final int pixX, final int pixY, final Integer rotation) {
         final Entity e = EntityFactory.createEntitySpawnPoint(world.getPhysics().getWorld(), pixX, pixY, rotation);
         addEventListener(EventType.SESSION_EVENT, e);
         assert e != null;

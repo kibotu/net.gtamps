@@ -2,8 +2,8 @@ package net.gtamps.game;
 
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
-import net.gtamps.game.world.World;
-import net.gtamps.game.world.WorldFactory;
+import net.gtamps.game.universe.Universe;
+import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
@@ -47,7 +47,7 @@ public class Game implements IGame, Runnable {
     private volatile boolean run;
     private volatile boolean isActive;
 
-    private final World world;
+    private final Universe world;
     private final PlayerManagerFacade playerStorage;
     private final TimeKeeper gameTime;
 
@@ -55,7 +55,7 @@ public class Game implements IGame, Runnable {
         id = ++Game.instanceCounter;
         final String name = "Game " + id;
         thread = new Thread(this, name);
-        world = WorldFactory.loadMap(mapPath);
+        world = UniverseFactory.loadMap(mapPath);
         if (world != null) {
             Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + world.getName());
             run = true;

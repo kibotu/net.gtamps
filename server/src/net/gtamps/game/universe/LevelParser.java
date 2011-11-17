@@ -1,10 +1,10 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
 
 import net.gtamps.shared.game.level.Level;
 
 public class LevelParser {
 
-	public static World buildWorldFromLevel(final Level level) {
+	public static Universe buildWorldFromLevel(final Level level) {
 		// determine world size
 		// create entities from entity positions
 		// create buildings from physical shapes

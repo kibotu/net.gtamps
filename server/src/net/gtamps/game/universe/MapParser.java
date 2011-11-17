@@ -1,4 +1,4 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
 
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.entity.EntityManager;
@@ -17,7 +17,7 @@ public class MapParser {
     private final Element mapXml;
 
     private String mapName = "world";
-    private World world;
+    private Universe world;
     private Box2DEngine physics;
     private Map<Point, Integer> spawnPoints = new HashMap<Point, Integer>();
     private Map<Point, Integer> carPoints = new HashMap<Point, Integer>();
@@ -35,7 +35,7 @@ public class MapParser {
         return this.physics;
     }
 
-    public World getWorld() {
+    public Universe getWorld() {
         return this.world;
     }
 
@@ -58,7 +58,7 @@ public class MapParser {
 
 
         physics = PhysicsFactory.createPhysics(mapWidth, mapHeight);
-        world = new World(mapName, mapWidth, mapHeight, physics);
+        world = new Universe(mapName, mapWidth, mapHeight, physics);
 
         for (int row = 0; row < tileHeight; row++) {
             tiles = rows.get(row).getChildren("tile");

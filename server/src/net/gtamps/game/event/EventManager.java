@@ -1,6 +1,6 @@
 package net.gtamps.game.event;
 
-import net.gtamps.game.world.World;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -17,10 +17,10 @@ public class EventManager extends GameEventDispatcher implements IGameEventListe
     public static final long EVENT_TIMEOUT_MILLIS = 30000000;
 
     @NotNull
-    private final World world;
+    private final Universe world;
     private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
 
-    public EventManager(final World world) {
+    public EventManager(final Universe world) {
 
         this.world = world;
 

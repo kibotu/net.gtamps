@@ -1,4 +1,4 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
 
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
@@ -11,7 +11,7 @@ import net.gtamps.shared.game.event.*;
 
 import java.util.LinkedList;
 
-public class World implements IGameEventListener, IGameEventDispatcher {
+public class Universe implements IGameEventListener, IGameEventDispatcher {
 
     /**
      * generated value
@@ -34,7 +34,7 @@ public class World implements IGameEventListener, IGameEventDispatcher {
     private long revision;
 
 
-    public World(final String name, final int width, final int height, final Box2DEngine physics) {
+    public Universe(final String name, final int width, final int height, final Box2DEngine physics) {
         Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: " + width + "x" + height);
         this.name = name;
         this.physics = physics;
