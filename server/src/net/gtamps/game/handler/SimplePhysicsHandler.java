@@ -8,6 +8,7 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
@@ -38,8 +39,7 @@ public class SimplePhysicsHandler extends Handler {
         body = physicalRepresentation;
         world = body.getWorld();
 //		this.physicalProperties = physicalProperties;
-        setSendsUp(up);
-        setReceivesDown(down);
+        setReceives(down);
         connectUpwardsActor(parent);
 
         speedxProperty = parent.useProperty("speedx", 0);

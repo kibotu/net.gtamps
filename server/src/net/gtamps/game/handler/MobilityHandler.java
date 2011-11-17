@@ -1,6 +1,8 @@
 package net.gtamps.game.handler;
 
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
@@ -9,11 +11,10 @@ import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MobilityHandler extends Handler {
 
@@ -42,8 +43,7 @@ public class MobilityHandler extends Handler {
         physics = physicsHandler;
         world = physics.getWorld();
         body = physicsHandler.getBody();
-        setSendsUp(up);
-        setReceivesDown(down);
+        setReceives(down);
         connectUpwardsActor(parent);
 
     }

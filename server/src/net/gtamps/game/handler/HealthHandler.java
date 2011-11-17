@@ -27,8 +27,7 @@ public class HealthHandler extends Handler {
 
     public HealthHandler(final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
         super(Handler.Type.HEALTH, parent);
-        setSendsUp(new EventType[]{EventType.ENTITY_DAMAGE, EventType.ENTITY_DESTROYED});
-        setReceivesDown(new EventType[]{EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
+        setReceives(new EventType[]{EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
         connectUpwardsActor(parent);
         if (maxHealth < 0) {
             throw new IllegalArgumentException("'maxHealth' must be >= 0");

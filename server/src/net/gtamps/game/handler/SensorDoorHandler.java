@@ -45,7 +45,7 @@ public class SensorDoorHandler extends SensorHandler {
         super(EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
         final EventType[] receives = {EventType.ENTITY_SENSE_DOOR,
                 EventType.ACTION_ENTEREXIT};
-        setReceivesDown(receives);
+        setReceives(receives);
         connectUpwardsActor(parent);
     }
 

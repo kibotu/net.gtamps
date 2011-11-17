@@ -9,6 +9,7 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
+
 import org.jbox2d.common.Vec2;
 
 /**
@@ -51,8 +52,7 @@ public class DriverHandler extends Handler {
 
     public DriverHandler(final Entity parent) {
         super(Handler.Type.DRIVER, parent);
-        setSendsUp(sendsUp);
-        setReceivesDown(receivesDown);
+        setReceives(receivesDown);
         connectUpwardsActor(parent);
     }
 

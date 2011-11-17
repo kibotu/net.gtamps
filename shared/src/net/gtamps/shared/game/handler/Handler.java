@@ -18,104 +18,95 @@ import net.gtamps.shared.game.event.IGameEventListener;
  */
 public class Handler implements IGameActor {
 
-    public enum Type {
-        DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
-    }
+	public enum Type {
+		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
+	}
 
-    protected final Type type;
-    protected final Entity parent;
-    protected final IGameActor actor;
-
-
-    public Handler(Type type, Entity parent) {
-        if (parent == null) {
-            throw new IllegalArgumentException("'parent' must not be null");
-        }
-        this.actor = new SharedGameActor(type.name().toLowerCase());
-        this.parent = parent;
-        this.type = type;
-    }
-
-    @Override
-    public String getName() {
-        return actor.getName();
-    }
-
-    public void addEventListener(EventType type, IGameEventListener listener) {
-        actor.addEventListener(type, listener);
-    }
+	protected final Type type;
+	protected final Entity parent;
+	protected final IGameActor actor;
 
 
-    public void receiveEvent(GameEvent event) {
-        actor.receiveEvent(event);
-    }
+	public Handler(final Type type, final Entity parent) {
+		if (parent == null) {
+			throw new IllegalArgumentException("'parent' must not be null");
+		}
+		this.actor = new SharedGameActor(type.name().toLowerCase());
+		this.parent = parent;
+		this.type = type;
+	}
+
+	@Override
+	public String getName() {
+		return actor.getName();
+	}
+
+	@Override
+	public void addEventListener(final EventType type, final IGameEventListener listener) {
+		actor.addEventListener(type, listener);
+	}
 
 
-    public boolean isEnabled() {
-        return actor.isEnabled();
-    }
+	@Override
+	public void receiveEvent(final GameEvent event) {
+		actor.receiveEvent(event);
+	}
 
 
-    public void enable() {
-        actor.enable();
-    }
+	@Override
+	public boolean isEnabled() {
+		return actor.isEnabled();
+	}
 
 
-    public void disable() {
-        actor.disable();
-    }
+	@Override
+	public void enable() {
+		actor.enable();
+	}
 
 
-    public void removeEventListener(EventType type, IGameEventListener listener) {
-        actor.removeEventListener(type, listener);
-    }
+	@Override
+	public void disable() {
+		actor.disable();
+	}
 
 
-    public void connectUpwardsActor(SharedGameActor other) {
-        actor.connectUpwardsActor(other);
-    }
+	@Override
+	public void removeEventListener(final EventType type, final IGameEventListener listener) {
+		actor.removeEventListener(type, listener);
+	}
 
 
-    public void dispatchEvent(GameEvent event) {
-        actor.dispatchEvent(event);
-    }
+	@Override
+	public void connectUpwardsActor(final SharedGameActor other) {
+		actor.connectUpwardsActor(other);
+	}
 
 
-    public void connectDownwardsActor(SharedGameActor actor) {
-        actor.connectDownwardsActor(actor);
-    }
+	@Override
+	public void dispatchEvent(final GameEvent event) {
+		actor.dispatchEvent(event);
+	}
 
+	@Override
+	public void disconnectUpwardsActor(final SharedGameActor other) {
+		actor.disconnectUpwardsActor(other);
+	}
 
-    public void disconnectUpwardsActor(SharedGameActor other) {
-        actor.disconnectUpwardsActor(other);
-    }
+	@Override
+	public void setReceives(final EventType[] receivesDown) {
+		actor.setReceives(receivesDown);
+	}
 
+	public Entity getParent() {
+		return this.parent;
+	}
 
-    public void disconnectDownwardsActor(SharedGameActor actor) {
-        actor.disconnectDownwardsActor(actor);
-    }
-
-
-    public void setSendsUp(EventType[] sendsUp) {
-        actor.setSendsUp(sendsUp);
-    }
-
-
-    public void setReceivesDown(EventType[] receivesDown) {
-        actor.setReceivesDown(receivesDown);
-    }
-
-
-    public Entity getParent() {
-        return this.parent;
-    }
-
-
-    @Override
-    public String toString() {
-        String s = "";
-        s = String.format("%s (%s)", this.getName(), this.isEnabled() ? "on" : "off");
-        return s;
-    }
+	@Override
+	public String toString() {
+		String s = "";
+		s = String.format("%s (%s)", this.getName(), this.isEnabled() ? "on" : "off");
+		return s;
+	}
 
 }

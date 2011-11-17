@@ -1,5 +1,8 @@
 package net.gtamps.game.handler;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.GameObject;
@@ -7,9 +10,6 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A bare-bones sensor handler than can be easily extended to provide
@@ -28,19 +28,18 @@ public class SensorHandler extends Handler {
     protected final EventType sensorType;
     protected final EventType triggerEvent;
 
-    public SensorHandler(EventType sensorType, EventType triggerEvent, Entity parent) {
+    public SensorHandler(final EventType sensorType, final EventType triggerEvent, final Entity parent) {
         super(Handler.Type.SENSOR, parent);
         this.sensorType = sensorType;
         this.triggerEvent = triggerEvent;
-        this.setSendsUp(sendsUp);
-        this.setReceivesDown(receivesDown);
-        this.connectUpwardsActor(parent);
+        setReceives(receivesDown);
+        connectUpwardsActor(parent);
     }
 
     @Override
-    public void receiveEvent(GameEvent event) {
-        EventType type = event.getType();
-        if (type.isType(this.sensorType)) {
+    public void receiveEvent(final GameEvent event) {
+        final EventType type = event.getType();
+        if (type.isType(sensorType)) {
             sense(event);
         } else if (type.isType(triggerEvent)) {
             act(event);
@@ -65,21 +64,21 @@ public class SensorHandler extends Handler {
 */
     }
 
-    protected void act(GameEvent event) {
+    protected void act(final GameEvent event) {
         // override this! method will be triggered by TriggerEvent events
     }
 
-    protected void sense(GameEvent event) {
-        assert event.getType().isType(this.sensorType);
-        GameObject source = event.getSource();
-        GameObject target = event.getTarget();
-        GameObject subject = (source == this.getParent()) ? target : source;
+    protected void sense(final GameEvent event) {
+        assert event.getType().isType(sensorType);
+        final GameObject source = event.getSource();
+        final GameObject target = event.getTarget();
+        final GameObject subject = (source == getParent()) ? target : source;
         if (event.isBegin()) {
-            this.sensed.add((Entity) subject);
+            sensed.add((Entity) subject);
         } else if (event.isEnd()) {
-            this.sensed.remove((Entity) subject);
+            sensed.remove(subject);
         }
-        if (this.sensorType.isType(EventType.ENTITY_SENSE_DOOR)) {
+        if (sensorType.isType(EventType.ENTITY_SENSE_DOOR)) {
             Logger.i().log(TAG, target + " detected door of " + source);
         }
 

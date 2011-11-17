@@ -17,8 +17,7 @@ public class ShootingHandler extends Handler {
     public ShootingHandler(final Entity parent, final EntityManager em) {
         super(Handler.Type.SHOOTING, parent);
         entityManager = em;
-        setSendsUp(sendsUp);
-        setReceivesDown(receivesDown);
+        setReceives(receivesDown);
         connectUpwardsActor(parent);
     }
 
