@@ -1,5 +1,7 @@
 package net.gtamps.shared.game;
 
+import java.util.Set;
+
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
@@ -31,9 +33,9 @@ public interface IGameActor extends IGameEventListener, IGameEventDispatcher {
 	 *                                  both ways between this actor and the other one
 	 * @see EventType
 	 */
-	public void connectUpwardsActor(final SharedGameActor other);
+	public void connectUpwardsActor(final IGameActor other);
 
-	public void disconnectUpwardsActor(final SharedGameActor other);
+	public void disconnectUpwardsActor(final IGameActor other);
 
 	/**
 	 * Declare the types of gameEvents this actor is interested in receiving
@@ -43,5 +45,6 @@ public interface IGameActor extends IGameEventListener, IGameEventDispatcher {
 	 */
 	public void setReceives(final EventType[] receivesDown);
 
+	public void registerListeningActor(final IGameActor listener, final Set<EventType> types);
 
 }

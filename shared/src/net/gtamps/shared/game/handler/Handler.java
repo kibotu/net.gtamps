@@ -1,6 +1,8 @@
 package net.gtamps.shared.game.handler;
 
 
+import java.util.Set;
+
 import net.gtamps.shared.game.IGameActor;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.SharedGameActor;
@@ -78,7 +80,7 @@ public class Handler implements IGameActor {
 
 
 	@Override
-	public void connectUpwardsActor(final SharedGameActor other) {
+	public void connectUpwardsActor(final IGameActor other) {
 		actor.connectUpwardsActor(other);
 	}
 
@@ -89,7 +91,7 @@ public class Handler implements IGameActor {
 	}
 
 	@Override
-	public void disconnectUpwardsActor(final SharedGameActor other) {
+	public void disconnectUpwardsActor(final IGameActor other) {
 		actor.disconnectUpwardsActor(other);
 	}
 
@@ -107,6 +109,12 @@ public class Handler implements IGameActor {
 		String s = "";
 		s = String.format("%s (%s)", this.getName(), this.isEnabled() ? "on" : "off");
 		return s;
+	}
+
+	@Override
+	public void registerListeningActor(final IGameActor listener, final Set<EventType> types) {
+		actor.registerListeningActor(listener, types);
+
 	}
 
 }

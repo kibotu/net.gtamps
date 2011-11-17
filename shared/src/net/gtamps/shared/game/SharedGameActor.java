@@ -101,7 +101,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	 * @see EventType
 	 */
 	@Override
-	public void connectUpwardsActor(final SharedGameActor other) {
+	public void connectUpwardsActor(final IGameActor other) {
 		{
 			if (other == this) {
 				final String msg = "Trying to connect a gameActor to itself. " +
@@ -115,16 +115,16 @@ public class SharedGameActor extends GameObject implements IGameActor {
 				throw new IllegalStateException(msg);
 			}
 		}
-		if (sendsUp != null) {
-			registerListenigActor(other, sendsUp);
-		}
+		//		if (sendsUp != null) {
+		//			registerListeningActor(other, sendsUp);
+		//		}
 		if (receivesDown != null) {
-			other.registerListenigActor(this, receivesDown);
+			other.registerListeningActor(this, receivesDown);
 		}
 	}
 
 	@Override
-	public void disconnectUpwardsActor(final SharedGameActor other) {
+	public void disconnectUpwardsActor(final IGameActor other) {
 		removeEventListener(EventType.GAME_EVENT, other);
 		other.removeEventListener(EventType.GAME_EVENT, this);
 	}
@@ -141,7 +141,8 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	}
 
 
-	private void registerListenigActor(final SharedGameActor listener, final Set<EventType> types) {
+	@Override
+	public void registerListeningActor(final IGameActor listener, final Set<EventType> types) {
 		for (final EventType type : types) {
 			addEventListener(type, listener);
 		}
