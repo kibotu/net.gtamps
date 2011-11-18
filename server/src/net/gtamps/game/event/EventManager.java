@@ -1,30 +1,33 @@
 package net.gtamps.game.event;
 
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import org.jetbrains.annotations.NotNull;
 
 public class EventManager extends GameEventDispatcher implements IGameEventListener {
 
     public static final long EVENT_TIMEOUT_MILLIS = 30000000;
 
     @NotNull
-    private final Universe world;
+    private final Universe universe;
     private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
 
-    public EventManager(final Universe world) {
-
-        this.world = world;
-
+    public EventManager(final Universe universe) {
+        this.universe = universe;
+        final IGameEventDispatcher eventRoot = universe.getEventRoot();
+        
         // all received events will be communicated via getUpdate()
+        eventRoot.addEventListener(EventType.GAME_EVENT, this);
         addEventListener(EventType.GAME_EVENT, this);
         removeEventListener(EventType.SESSION_UPDATE, this);
         removeEventListener(EventType.ACTION_ACCELERATE, this);
@@ -40,7 +43,7 @@ public class EventManager extends GameEventDispatcher implements IGameEventListe
 
     public ArrayList<GameObject> getUpdate(final long baseRevision) {
         final ArrayList<GameObject> updates = new ArrayList<GameObject>(archive.size());
-        final long currentRevision = world.getRevision();
+        final long currentRevision = universe.getRevision();
         for (final GameEvent e : archive.keySet()) {
             final long eventRevision = e.getRevision();
             if (eventRevision + EVENT_TIMEOUT_MILLIS < currentRevision) {
@@ -55,7 +58,7 @@ public class EventManager extends GameEventDispatcher implements IGameEventListe
     }
 
     private void add(final GameEvent event) {
-        event.updateRevision(world.getRevision());
+        event.updateRevision(universe.getRevision());
         archive.put(event, event);
 //		super.setChanged();
     }

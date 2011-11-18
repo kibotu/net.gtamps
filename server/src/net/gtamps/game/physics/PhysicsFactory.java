@@ -1,15 +1,20 @@
 package net.gtamps.game.physics;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.gtamps.game.conf.PhysicalConstants;
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.handler.blueprints.MobilityBlueprint;
 import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.level.PhysicalShape;
+
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.MassData;
 import org.jbox2d.collision.shapes.CircleDef;
@@ -19,9 +24,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class PhysicsFactory {
 
@@ -38,8 +40,8 @@ public class PhysicsFactory {
         return new Box2DEngine(minX, minY, maxX, maxY);
     }
 
-    public static PhysicsBlueprint createHouseBlueprintFromLevelPhysicalShape(final World world, final PhysicalShape levelshape) {
-        final PhysicsBlueprint blup = createPhysicsBlueprint(world, PhysicalProperties.Empty);
+    public static PhysicsBlueprint createHouseBlueprintFromLevelPhysicalShape(final Universe universe, final PhysicalShape levelshape) {
+        final PhysicsBlueprint blup = createPhysicsBlueprint(universe, PhysicalProperties.Empty);
         final PolygonDef polyDef = new PolygonDef();
         for (final Vector3 vertex : levelshape) {
             polyDef.addVertex(new Vec2(vertex.x, vertex.y));
@@ -48,9 +50,9 @@ public class PhysicsFactory {
         return blup;
     }
 
-    public static PhysicsBlueprint createPhysicsBlueprint(final World world, final PhysicalProperties physprop) {
+    public static PhysicsBlueprint createPhysicsBlueprint(final Universe universe, final PhysicalProperties physprop) {
         final PhysicsBlueprint blup = new PhysicsBlueprint(
-                world,
+                universe.getPhysics().getWorld(),
                 physpropToBodyDef(physprop),
                 isDynamic(physprop)
         );
@@ -58,7 +60,7 @@ public class PhysicsFactory {
         return blup;
     }
 
-    public static MobilityBlueprint createMobilityBlueprint(final World world, final PhysicalProperties physprop) {
+    public static MobilityBlueprint createMobilityBlueprint(final Universe universe, final PhysicalProperties physprop) {
         if (!isDynamic(physprop)) {
             return null;
         }
@@ -429,6 +431,4 @@ public class PhysicsFactory {
     public static int lengthToWorld(final float lengthUnits) {
         return (int) (lengthUnits * WorldConstants.PIX_TO_PHYSICS_RATIO);
     }
-
-
 }

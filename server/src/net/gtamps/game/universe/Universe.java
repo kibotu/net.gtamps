@@ -1,5 +1,7 @@
 package net.gtamps.game.universe;
 
+import java.util.LinkedList;
+
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
 import net.gtamps.game.physics.Box2DEngine;
@@ -7,18 +9,17 @@ import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.*;
-
-import java.util.LinkedList;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 public class Universe implements IGameEventListener, IGameEventDispatcher {
 
-    /**
-     * generated value
-     */
     private static final long serialVersionUID = 1821222727619509975L;
 
-    private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
+    private transient GameEventDispatcher eventRoot = new GameEventDispatcher();
 
     private final String name;
     private final int width;
@@ -75,6 +76,10 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     public Box2DEngine getPhysics() {
         return physics;
     }
+    
+    public IGameEventDispatcher getEventRoot() {
+    	return eventRoot;
+    }
 
     public void addSpawnPoint(final Entity sp) {
         if (sp == null) {
@@ -89,17 +94,17 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 
     @Override
     public void addEventListener(final EventType type, final IGameEventListener listener) {
-        eventDispatcher.addEventListener(type, listener);
+        eventRoot.addEventListener(type, listener);
     }
 
     @Override
     public void removeEventListener(final EventType type, final IGameEventListener listener) {
-        eventDispatcher.removeEventListener(type, listener);
+        eventRoot.removeEventListener(type, listener);
     }
 
     @Override
     public void dispatchEvent(final GameEvent event) {
-        eventDispatcher.dispatchEvent(event);
+        eventRoot.dispatchEvent(event);
 
     }
 
