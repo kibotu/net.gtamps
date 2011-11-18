@@ -77,7 +77,6 @@ public abstract class Handler implements IGameActor {
 		actor.connectUpwardsActor(other);
 	}
 
-
 	@Override
 	public void dispatchEvent(final GameEvent event) {
 		actor.dispatchEvent(event);

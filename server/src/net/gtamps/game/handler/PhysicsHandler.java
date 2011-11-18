@@ -57,7 +57,7 @@ public class PhysicsHandler extends SimplePhysicsHandler {
             final EventType pa = actionQueue.poll().getType();
 
             if (pa == EventType.ACTION_SUICIDE) {
-                dispatchEvent(new CollisionEvent(parent, parent, 100f));
+                eventRoot.dispatchEvent(new CollisionEvent(parent, parent, 100f));
             }
 
             if (physicalProperties.TYPE == PhysicalProperties.Type.CAR) {

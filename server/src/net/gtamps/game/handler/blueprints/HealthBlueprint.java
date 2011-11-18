@@ -41,8 +41,8 @@ public class HealthBlueprint extends HandlerBlueprint {
         Handler instance = null;
         try {
             final Class<?> handlerClass = Class.forName(handlerName);
-            final Constructor<?> constructor = handlerClass.getConstructor(Entity.class, int.class, float.class, int.class);
-            final Object hobject = constructor.newInstance(parent, maxHealth, dmgMultiplier, dmgThreshold);
+            final Constructor<?> constructor = handlerClass.getConstructor(IGameEventDispatcher.class, Entity.class, int.class, float.class, int.class);
+            final Object hobject = constructor.newInstance(eventRoot, parent, maxHealth, dmgMultiplier, dmgThreshold);
             instance = (Handler) hobject;
         } catch (final ClassNotFoundException e) {
             e.printStackTrace();

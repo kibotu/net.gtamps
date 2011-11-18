@@ -1,5 +1,12 @@
 package net.gtamps.game;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.universe.Universe;
@@ -9,6 +16,7 @@ import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
@@ -17,13 +25,6 @@ import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.RevisionData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -113,7 +114,7 @@ public class Game implements IGame, Runnable {
         world.updateRevision(gameTime.getTotalDurationMillis());
         world.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
         //TODO
-//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, world));
+		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
 
         //for fps debugging
 //		lastUpdate += timeElapsedInSeceonds;

@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameEventDispatcher implements IGameEventDispatcher {
 
+	private static final String LOGTAG = "GAMEWORLD";
+
 	Map<EventType, Set<IGameEventListener>> listeners = new ConcurrentHashMap<EventType, Set<IGameEventListener>>();
 
 	@Override

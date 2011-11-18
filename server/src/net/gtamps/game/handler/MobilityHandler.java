@@ -7,7 +7,6 @@ import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
@@ -33,6 +32,8 @@ public class MobilityHandler extends Handler {
     protected Body body;
     protected World world;
 
+    
+    //TODO getRidOfThese
     protected float velocityForce;
     protected float steeringForce;
     protected float steeringRadius;
@@ -41,6 +42,10 @@ public class MobilityHandler extends Handler {
     public MobilityHandler(final IGameEventDispatcher eventRoot, final Entity parent, final MobilityProperties mobilityProperties, final SimplePhysicsHandler physicsHandler) {
         super(eventRoot, Handler.Type.MOBILITY, parent);
         this.mobilityProperties = mobilityProperties;
+        velocityForce = mobilityProperties.VELOCITY_FORCE;
+        steeringForce = mobilityProperties.STEERING_FORCE;
+        steeringRadius= mobilityProperties.STEERING_RADIUS;
+        slidyness = mobilityProperties.SLIDYNESS;
         physics = physicsHandler;
         world = physics.getWorld();
         body = physicsHandler.getBody();
@@ -93,9 +98,9 @@ public class MobilityHandler extends Handler {
         while (!actionQueue.isEmpty()) {
             final EventType pa = actionQueue.poll().getType();
 
-            if (pa == EventType.ACTION_SUICIDE) {
-                dispatchEvent(new CollisionEvent(parent, parent, 100f));
-            }
+//            if (pa == EventType.ACTION_SUICIDE) {
+//                eventRoot.dispatchEvent(new CollisionEvent(parent, parent, 100f));
+//            }
 
             if (mobilityProperties.TYPE == MobilityProperties.Type.CAR) {
                 if (pa == EventType.ACTION_ACCELERATE) {
