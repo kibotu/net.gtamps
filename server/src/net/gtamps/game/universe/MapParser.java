@@ -1,29 +1,30 @@
 package net.gtamps.game.universe;
 
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.shared.game.entity.Entity;
-import org.jdom.Element;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.jdom.Element;
 
 public class MapParser {
 
     private final Element mapXml;
 
-    private String mapName = "world";
-    private Universe world;
+    private final String mapName = "world";
+    private Universe universe;
     private Box2DEngine physics;
-    private Map<Point, Integer> spawnPoints = new HashMap<Point, Integer>();
-    private Map<Point, Integer> carPoints = new HashMap<Point, Integer>();
-    private Map<Point, Integer> buildingPoints = new HashMap<Point, Integer>();
+    private final Map<Point, Integer> spawnPoints = new HashMap<Point, Integer>();
+    private final Map<Point, Integer> carPoints = new HashMap<Point, Integer>();
+    private final Map<Point, Integer> buildingPoints = new HashMap<Point, Integer>();
 
-    public MapParser(Element mapXml) {
+    public MapParser(final Element mapXml) {
         if (mapXml == null) {
             throw new IllegalArgumentException("'mapXml' must not be null");
         }
@@ -32,41 +33,42 @@ public class MapParser {
     }
 
     public Box2DEngine getPhysics() {
-        return this.physics;
+        return physics;
     }
 
     public Universe getWorld() {
-        return this.world;
+        return universe;
     }
 
-    public void populateWorld(EntityManager em) {
+    public void populateWorld(final EntityManager em) {
         createSpawnPoints(em);
         //createCars(em);
 //		createBuildings(em);
     }
 
     private void parseXmlMap() {
-        List<Element> rows = mapXml.getChildren("row");
+        final List<Element> rows = mapXml.getChildren("row");
         assert rows != null && rows.size() > 0;
         List<Element> tiles = rows.get(0).getChildren("tile");
         assert tiles != null && tiles.size() > 0;
 
-        int tileHeight = rows.size();
-        int tileWidth = tiles.size();
-        int mapWidth = tileWidth * WorldConstants.TILE_SIZE_PIX;
-        int mapHeight = tileHeight * WorldConstants.TILE_SIZE_PIX;
+        final int tileHeight = rows.size();
+        final int tileWidth = tiles.size();
+        final int mapWidth = tileWidth * WorldConstants.TILE_SIZE_PIX;
+        final int mapHeight = tileHeight * WorldConstants.TILE_SIZE_PIX;
 
 
-        physics = PhysicsFactory.createPhysics(mapWidth, mapHeight);
-        world = new Universe(mapName, mapWidth, mapHeight, physics);
+        universe = new Universe(mapName, mapWidth, mapHeight);
+        physics = PhysicsFactory.createPhysics(universe, mapWidth, mapHeight);
+        universe.setPhysics(physics);
 
         for (int row = 0; row < tileHeight; row++) {
             tiles = rows.get(row).getChildren("tile");
             assert tiles.size() == tileWidth;
             for (int col = 0; col < tileWidth; col++) {
-                int posX = (int) ((col + 0.5f) * WorldConstants.TILE_SIZE_PIX);
-                int posY = (int) ((row + 0.5f) * WorldConstants.TILE_SIZE_PIX);
-                Tile t = new Tile(tiles.get(col));
+                final int posX = (int) ((col + 0.5f) * WorldConstants.TILE_SIZE_PIX);
+                final int posY = (int) ((row + 0.5f) * WorldConstants.TILE_SIZE_PIX);
+                final Tile t = new Tile(tiles.get(col));
                 if (t.isSpawn()) {
                     spawnPoints.put(new Point(posX, posY), t.getCarRot());
                 }
@@ -83,22 +85,22 @@ public class MapParser {
 
     }
 
-    private void createSpawnPoints(EntityManager em) {
-        for (Point p : spawnPoints.keySet()) {
-            Entity sp = em.createEntitySpawnPoint(world, p.x, p.y, spawnPoints.get(p));
-            world.addSpawnPoint(sp);
+    private void createSpawnPoints(final EntityManager em) {
+        for (final Point p : spawnPoints.keySet()) {
+            final Entity sp = em.createEntitySpawnPoint(universe, p.x, p.y, spawnPoints.get(p));
+            universe.addSpawnPoint(sp);
         }
     }
 
-    private void createCars(EntityManager em) {
-        for (Point p : carPoints.keySet()) {
+    private void createCars(final EntityManager em) {
+        for (final Point p : carPoints.keySet()) {
             em.createEntityCar(p.x, p.y, carPoints.get(p));
         }
 
     }
 
-    private void createBuildings(EntityManager em) {
-        for (Point p : buildingPoints.keySet()) {
+    private void createBuildings(final EntityManager em) {
+        for (final Point p : buildingPoints.keySet()) {
             em.createEntityHouse(p.x, p.y);
         }
 

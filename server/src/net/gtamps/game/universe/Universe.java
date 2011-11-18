@@ -27,18 +27,18 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 
     //private LinkedList<Entity> entityList = new LinkedList<Entity>();
     private final LinkedList<Entity> spawnPoints = new LinkedList<Entity>();
-    public final Box2DEngine physics;
+    public Box2DEngine physics;
     public final EventManager eventManager;
     public final PlayerManager playerManager;
     public final EntityManager entityManager;
 
     private long revision;
 
+    // TODO universe builder!
 
-    public Universe(final String name, final int width, final int height, final Box2DEngine physics) {
+    public Universe(final String name, final int width, final int height) {
         Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: " + width + "x" + height);
         this.name = name;
-        this.physics = physics;
         this.width = width;
         this.height = height;
         eventManager = new EventManager(this);
@@ -51,6 +51,12 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
         playerManager.addEventListener(EventType.PLAYER_EVENT, eventManager);
         entityManager.addEventListener(EventType.ENTITY_EVENT, eventManager);
 
+    }
+    public void setPhysics (final Box2DEngine physics)  {
+    	if (physics == null) {
+			throw new IllegalArgumentException("'physics' must not be 'null'");
+		}
+    	this.physics = physics;
     }
 
     public String getName() {

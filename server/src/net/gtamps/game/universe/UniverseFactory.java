@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.NoSuchElementException;
 
 import net.gtamps.ResourceLoader;
-import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.level.Level;
 
@@ -19,8 +18,8 @@ public class UniverseFactory {
 	}
 	
 	/** atm, creates an empty world with size 1024x768 */
-	public static Universe createMap(final Box2DEngine physics) {
-		return new Universe("World",1024,768,physics);
+	public static Universe createMap() {
+		return new Universe("World",1024,768);
 	}
 	
 	/** use to load a map in the old (flash-era) xml format */
