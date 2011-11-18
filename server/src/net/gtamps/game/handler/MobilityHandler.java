@@ -10,6 +10,7 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 import org.jbox2d.common.Vec2;
@@ -37,8 +38,8 @@ public class MobilityHandler extends Handler {
     protected float steeringRadius;
     protected float slidyness;
 
-    public MobilityHandler(final Entity parent, final MobilityProperties mobilityProperties, final SimplePhysicsHandler physicsHandler) {
-        super(Handler.Type.MOBILITY, parent);
+    public MobilityHandler(final IGameEventDispatcher eventRoot, final Entity parent, final MobilityProperties mobilityProperties, final SimplePhysicsHandler physicsHandler) {
+        super(eventRoot, Handler.Type.MOBILITY, parent);
         this.mobilityProperties = mobilityProperties;
         physics = physicsHandler;
         world = physics.getWorld();

@@ -9,6 +9,7 @@ import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
@@ -27,15 +28,17 @@ public abstract class Handler implements IGameActor {
 	protected final Type type;
 	protected final Entity parent;
 	protected final IGameActor actor;
+	protected final IGameEventDispatcher eventRoot;
 
 
-	public Handler(final Type type, final Entity parent) {
+	public Handler(final IGameEventDispatcher eventRoot, final Type type, final Entity parent) {
 		if (parent == null) {
 			throw new IllegalArgumentException("'parent' must not be null");
 		}
 		this.actor = new SharedGameActor(type.name().toLowerCase());
 		this.parent = parent;
 		this.type = type;
+		this.eventRoot = eventRoot;
 		actor.addEventListener(EventType.GAME_EVENT, this);
 	}
 
@@ -78,6 +81,11 @@ public abstract class Handler implements IGameActor {
 	@Override
 	public void dispatchEvent(final GameEvent event) {
 		actor.dispatchEvent(event);
+	}
+
+	@Override
+	public boolean isRegisteredListener(final IGameEventListener listener) {
+		return actor.isRegisteredListener(listener);
 	}
 
 	@Override

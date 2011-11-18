@@ -52,6 +52,7 @@ public class PhysicsFactory {
 
     public static PhysicsBlueprint createPhysicsBlueprint(final Universe universe, final PhysicalProperties physprop) {
         final PhysicsBlueprint blup = new PhysicsBlueprint(
+        		universe.getEventRoot(),
                 universe.getPhysics().getWorld(),
                 physpropToBodyDef(physprop),
                 isDynamic(physprop)
@@ -64,7 +65,7 @@ public class PhysicsFactory {
         if (!isDynamic(physprop)) {
             return null;
         }
-        return new MobilityBlueprint(physpropToMobilityProp(physprop));
+        return new MobilityBlueprint(universe.getEventRoot(), physpropToMobilityProp(physprop));
     }
 
     private static boolean isDynamic(final PhysicalProperties physprop) {

@@ -2,7 +2,6 @@ package net.gtamps.game.handler;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,7 +12,7 @@ import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventListener;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -29,6 +28,9 @@ public class MobilityHandlerTest {
 
 	@Mock
 	private ConcurrentLinkedQueue<GameEvent> actionQueue;
+	
+	@Mock
+	private IGameEventDispatcher eventRoot;
 
 	@Mock
 	private Body body;
@@ -49,24 +51,10 @@ public class MobilityHandlerTest {
 
 	@Before
 	public void createMobilityHandler() throws Exception {
-		mobilityHandler = new MobilityHandler(parent, mobilityProperties,physicsHandler);
+		mobilityHandler = new MobilityHandler(eventRoot, parent, mobilityProperties,physicsHandler);
 		mobilityHandler.actionQueue = actionQueue;
 		mobilityHandler.body = body;
 		mobilityHandler.world = world;
-	}
-
-	@Test
-	public void testMobilityHandler_constructor_shouldRegisterWithParent() {
-		
-		// setup
-		@SuppressWarnings("unused")
-		MobilityHandler mobHandler;
-		
-		// run
-		mobHandler = new MobilityHandler(parent, mobilityProperties, physicsHandler);
-		
-		// assert
-		verify(parent, atLeastOnce()).addEventListener(isA(EventType.class), isA(IGameEventListener.class));
 	}
 
 	@Test
@@ -75,7 +63,7 @@ public class MobilityHandlerTest {
 		MobilityHandler mobHandler;
 		
 		// run
-		mobHandler = new MobilityHandler(parent, mobilityProperties, physicsHandler);
+		mobHandler = new MobilityHandler(eventRoot, parent, mobilityProperties, physicsHandler);
 		
 		// assert
 		assertTrue(mobHandler.isEnabled());

@@ -37,7 +37,7 @@ public class EntityFactory {
             physprop = PhysicalProperties.Sportscar;
         } else if (normName.equals("HUMAN")) {
             physprop = PhysicalProperties.Human;
-            blup.addHandlerPrototype(new HealthBlueprint(100, 1f, 1));
+            blup.addHandlerPrototype(new HealthBlueprint(universe.getEventRoot(), 100, 1f, 1));
         } else if (normName.equals("BULLET")) {
             physprop = PhysicalProperties.Bullet;
         } else {

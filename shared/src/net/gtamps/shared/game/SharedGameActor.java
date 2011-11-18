@@ -196,4 +196,9 @@ public class SharedGameActor extends GameObject implements IGameActor {
 		eventDispatcher.dispatchEvent(event);
 	}
 
+	@Override
+	public boolean isRegisteredListener(final IGameEventListener listener) {
+		return eventDispatcher.isRegisteredListener(listener);
+	}
+
 }

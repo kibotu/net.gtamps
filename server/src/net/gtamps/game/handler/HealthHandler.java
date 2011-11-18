@@ -9,6 +9,7 @@ import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 public class HealthHandler extends Handler {
@@ -21,12 +22,12 @@ public class HealthHandler extends Handler {
     private final int dmgThreshold;
     private final float dmgMultiplier;
 
-    public HealthHandler(final Entity parent, final int maxHealth) {
-        this(parent, maxHealth, 1.0f, 0);
+    public HealthHandler(final Entity parent, final int maxHealth, final IGameEventDispatcher eventRoot) {
+        this(eventRoot, parent, maxHealth, 1.0f, 0);
     }
 
-    public HealthHandler(final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
-        super(Handler.Type.HEALTH, parent);
+    public HealthHandler(final IGameEventDispatcher eventRoot, final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
+        super(eventRoot, Handler.Type.HEALTH, parent);
         setReceives(new EventType[]{EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
         connectUpwardsActor(parent);
         if (maxHealth < 0) {

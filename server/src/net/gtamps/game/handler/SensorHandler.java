@@ -9,6 +9,7 @@ import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 /**
@@ -28,8 +29,8 @@ public class SensorHandler extends Handler {
     protected final EventType sensorType;
     protected final EventType triggerEvent;
 
-    public SensorHandler(final EventType sensorType, final EventType triggerEvent, final Entity parent) {
-        super(Handler.Type.SENSOR, parent);
+    public SensorHandler(final IGameEventDispatcher eventRoot, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
+        super(eventRoot, Handler.Type.SENSOR, parent);
         this.sensorType = sensorType;
         this.triggerEvent = triggerEvent;
         setReceives(receivesDown);

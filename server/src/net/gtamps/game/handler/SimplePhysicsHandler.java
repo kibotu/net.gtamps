@@ -7,6 +7,7 @@ import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 import org.jbox2d.common.Vec2;
@@ -33,8 +34,8 @@ public class SimplePhysicsHandler extends Handler {
     protected final IProperty<Integer> speedxProperty;
     protected final IProperty<Integer> speedyProperty;
 
-    public SimplePhysicsHandler(final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
-        super(Handler.Type.PHYSICS, parent);
+    public SimplePhysicsHandler(final IGameEventDispatcher eventRoot, final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
+        super(eventRoot, Handler.Type.PHYSICS, parent);
         this.parent = parent;
         body = physicalRepresentation;
         world = body.getWorld();

@@ -109,6 +109,11 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     }
 
     @Override
+    public boolean isRegisteredListener(final IGameEventListener listener) {
+    	return eventRoot.isRegisteredListener(listener);
+    }
+
+    @Override
     public void receiveEvent(final GameEvent event) {
         dispatchEvent(event);
 

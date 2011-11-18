@@ -7,6 +7,7 @@ import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 
@@ -50,8 +51,8 @@ public class DriverHandler extends Handler {
     private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
             EventType.ACTION_ENTEREXIT};
 
-    public DriverHandler(final Entity parent) {
-        super(Handler.Type.DRIVER, parent);
+    public DriverHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
+        super(eventRoot, Handler.Type.DRIVER, parent);
         setReceives(receivesDown);
         connectUpwardsActor(parent);
     }

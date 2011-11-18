@@ -4,7 +4,9 @@ import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
+
 import org.jbox2d.common.Vec2;
 
 /**
@@ -48,8 +50,8 @@ public class SensorExplosionHandler extends SensorHandler {
     private final float initialForce;
     private final float maxDistanceSq;
 
-    public SensorExplosionHandler(final Entity parent, final float force) {
-        super(EventType.ENTITY_SENSE_EXPLOSION, EventType.ENTITY_DESTROYED, parent);
+    public SensorExplosionHandler(final IGameEventDispatcher eventRoot, final Entity parent, final float force) {
+        super(eventRoot, EventType.ENTITY_SENSE_EXPLOSION, EventType.ENTITY_DESTROYED, parent);
         final EventType[] receives = {EventType.ENTITY_SENSE_EXPLOSION,
                 EventType.ENTITY_DESTROYED};
         setReceives(receives);

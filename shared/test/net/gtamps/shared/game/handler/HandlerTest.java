@@ -6,6 +6,7 @@ import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 import net.gtamps.shared.game.handler.Handler.Type;
 
@@ -28,6 +29,10 @@ public class HandlerTest {
 
 	@Mock
 	private IGameActor gameActor;
+
+	@Mock
+	private IGameEventDispatcher eventRoot;
+
 
 	private final Entity realEntity = new Entity("aRealTestEntity");
 
@@ -119,7 +124,7 @@ public class HandlerTest {
 	}
 
 	private Handler createHandlerThatQuerysMockEnabledOnReceiveEvent(final Entity parent, final IGameActor mock) {
-		return new Handler(type, parent) {
+		return new Handler(eventRoot, type, parent) {
 			@Override
 			public void receiveEvent(final GameEvent event) {
 				mock.isEnabled();
