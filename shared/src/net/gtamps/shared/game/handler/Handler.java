@@ -18,7 +18,7 @@ import net.gtamps.shared.game.event.IGameEventListener;
  *
  * @author jan, tom, til
  */
-public class Handler implements IGameActor {
+public abstract class Handler implements IGameActor {
 
 	public enum Type {
 		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
@@ -36,6 +36,17 @@ public class Handler implements IGameActor {
 		this.actor = new SharedGameActor(type.name().toLowerCase());
 		this.parent = parent;
 		this.type = type;
+		actor.addEventListener(EventType.GAME_EVENT, this);
+	}
+
+	@Override
+	public void enable() {
+		actor.enable();
+	}
+
+	@Override
+	public void disable() {
+		actor.disable();
 	}
 
 	@Override
@@ -48,36 +59,15 @@ public class Handler implements IGameActor {
 		actor.addEventListener(type, listener);
 	}
 
-
-	@Override
-	public void receiveEvent(final GameEvent event) {
-		actor.receiveEvent(event);
-	}
-
-
 	@Override
 	public boolean isEnabled() {
 		return actor.isEnabled();
 	}
 
-
-	@Override
-	public void enable() {
-		actor.enable();
-	}
-
-
-	@Override
-	public void disable() {
-		actor.disable();
-	}
-
-
 	@Override
 	public void removeEventListener(final EventType type, final IGameEventListener listener) {
 		actor.removeEventListener(type, listener);
 	}
-
 
 	@Override
 	public void connectUpwardsActor(final IGameActor other) {

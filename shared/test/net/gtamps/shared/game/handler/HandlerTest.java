@@ -26,13 +26,19 @@ public class HandlerTest {
 	@Mock
 	private Entity parent;
 
+	@Mock
+	private IGameActor gameActor;
+
+	private final Entity realEntity = new Entity("aRealTestEntity");
+
 	private final Type type = Handler.Type.DRIVER;
 	private Handler handler;
 
 	@Before
 	public void createHandler() throws Exception {
-		handler = new Handler(type, parent);
+		handler = createHandlerThatQuerysMockEnabledOnReceiveEvent(parent, gameActor);
 	}
+
 
 	@Test
 	public void testaddEventListenerDispatchEvent_shouldPassEventsToEventListener() {
@@ -65,54 +71,60 @@ public class HandlerTest {
 	}
 
 	@Test
-	public void testConnectUpwardsActor_whenReceivesDownNotEmpty_shouldRegisterAsEventListenerWithActor() {
+	public void testConnectUpwardsActor_whenReceivesDownNotEmpty_shouldReceiveEventsFromActor() {
 		// setup
-		final IGameActor upwardsActor = parent;
-		handler.setReceives(new EventType[] {UNAMBIGUOUS_EVENT_TYPE});
+		final IGameActor upwardsActor = realEntity;
+		final Handler localHandler = createHandlerThatQuerysMockEnabledOnReceiveEvent(realEntity, gameActor);
+		localHandler.setReceives(new EventType[] {SAMPLE_EVENT.getType()});
 
 		// run
-		handler.connectUpwardsActor(upwardsActor);
+		localHandler.connectUpwardsActor(upwardsActor);
+		realEntity.dispatchEvent(SAMPLE_EVENT);
 
 		// assert
-		verify(upwardsActor, atLeastOnce()).addEventListener(isA(EventType.class), same(handler));
+		verify(gameActor, atLeastOnce()).isEnabled();
 	}
 
 
 	@Test
-	public void testDisconnectUpwardsActor_shouldRemoveSelfAsListenerFromActor() {
+	public void testDisconnectUpwardsActor_shouldReceiveNoEventsFromActor() {
 		// setup
-		final IGameActor upwardsActor = parent;
-		handler.setReceives(new EventType[] {UNAMBIGUOUS_EVENT_TYPE});
-		handler.connectUpwardsActor(upwardsActor);
+		final IGameActor upwardsActor = realEntity;
+		final Handler localHandler = createHandlerThatQuerysMockEnabledOnReceiveEvent(realEntity, gameActor);
+		localHandler.setReceives(new EventType[] {SAMPLE_EVENT.getType()});
+		localHandler.connectUpwardsActor(upwardsActor);
 
 		// run
-		handler.disconnectUpwardsActor(upwardsActor);
+		localHandler.disconnectUpwardsActor(upwardsActor);
+		realEntity.dispatchEvent(SAMPLE_EVENT);
 
 		// assert
-		verify(upwardsActor, atLeastOnce()).removeEventListener(isA(EventType.class), same(handler));
+		verify(gameActor, never()).isEnabled();
 	}
 
 	@Test
 	public void testSetReceives_shouldChangeWhichEventTypesListenedFor() {
 		// setup
-		final IGameActor upwardsActor = parent;
+		final IGameActor upwardsActor = realEntity;
+		final Handler localHandler = createHandlerThatQuerysMockEnabledOnReceiveEvent(realEntity, gameActor);
+		localHandler.setReceives(new EventType[] {SAMPLE_EVENT.getType()});
+		localHandler.connectUpwardsActor(upwardsActor);
+		localHandler.setReceives(new EventType[] {DIFFERENT_EVENT.getType()});
 
 		// run
-		handler.setReceives(new EventType[] {UNAMBIGUOUS_EVENT_TYPE});
-		handler.connectUpwardsActor(upwardsActor);
+		realEntity.dispatchEvent(DIFFERENT_EVENT);
 
 		// assert
-		verify(upwardsActor, atLeastOnce()).addEventListener(same(UNAMBIGUOUS_EVENT_TYPE), same(handler));
+		verify(gameActor, atLeastOnce()).isEnabled();
+	}
 
-		//setup again
-		handler.disconnectUpwardsActor(upwardsActor);
-
-		// run again
-		handler.setReceives(new EventType[] {DIFFERENT_UNAMBIGUOUS_EVENT_TYPE});
-		handler.connectUpwardsActor(upwardsActor);
-
-		// new assertions
-		verify(upwardsActor, atLeastOnce()).addEventListener(same(DIFFERENT_UNAMBIGUOUS_EVENT_TYPE), same(handler));
+	private Handler createHandlerThatQuerysMockEnabledOnReceiveEvent(final Entity parent, final IGameActor mock) {
+		return new Handler(type, parent) {
+			@Override
+			public void receiveEvent(final GameEvent event) {
+				mock.isEnabled();
+			}
+		};
 	}
 
 }

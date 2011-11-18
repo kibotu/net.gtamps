@@ -108,16 +108,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 				"This is not allowed.";
 				throw new IllegalArgumentException(msg);
 			}
-			final Set<EventType> intersection = upAndDownIntersection();
-			if (intersection.size() != 0) {
-				final String msg = "'sendsUp' and 'receivesDown' have common EventTypes: "
-					+ intersection;
-				throw new IllegalStateException(msg);
-			}
 		}
-		//		if (sendsUp != null) {
-		//			registerListeningActor(other, sendsUp);
-		//		}
 		if (receivesDown != null) {
 			other.registerListeningActor(this, receivesDown);
 		}
