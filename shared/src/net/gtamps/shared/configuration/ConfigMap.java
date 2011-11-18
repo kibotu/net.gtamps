@@ -12,8 +12,8 @@ public final class ConfigMap extends AbstractMap<String, Configuration>
 implements Configuration {
 
 	private static final long serialVersionUID = 7466530368525139233L;
+	final static Class<?> TYPE = java.util.Map.class;
 
-	private final Class<?> type = java.util.Map.class;
 	Map<String, Configuration> entries = new HashMap<String, Configuration>();
 
 	private final ConfigSource source;
@@ -68,7 +68,7 @@ implements Configuration {
 
 	@Override
 	public Class<?> getType() {
-		return this.type;
+		return this.TYPE;
 	}
 
 	@Override

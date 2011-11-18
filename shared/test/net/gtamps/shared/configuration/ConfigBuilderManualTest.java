@@ -3,7 +3,7 @@ package net.gtamps.shared.configuration;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ConfigBuilderTest {
+public class ConfigBuilderManualTest {
 
 	@Before
 	public void setUp() throws Exception {

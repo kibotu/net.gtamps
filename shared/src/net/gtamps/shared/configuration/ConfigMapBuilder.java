@@ -29,6 +29,9 @@ final class ConfigMapBuilder extends ConfigBuilder {
 
 	@Override
 	protected ConfigBuilder select(final ConfigKey ckey) {
+		if (ckey == null) {
+			throw new IllegalArgumentException("'ckey' must not be 'null'");
+		}
 		ConfigBuilder selected = this.elements.get(ckey.head);
 		if (selected == null) {
 			selected = new ConfigListBuilder(this.source, this);
@@ -57,7 +60,7 @@ final class ConfigMapBuilder extends ConfigBuilder {
 	protected ConfigBuilder addBuilder(
 			final ConfigBuilder cb) throws UnsupportedOperationException {
 		final StringBuilder msgBuilder = new StringBuilder("cannot add ")
-		.append(cb.getType().getSimpleName())
+		.append(cb == null ? "null" : cb.getType().getSimpleName())
 		.append(" here: select() an element first.");
 		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
