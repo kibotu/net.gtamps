@@ -8,7 +8,9 @@ import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
+
 import org.jbox2d.dynamics.ContactListener;
 import org.jbox2d.dynamics.contacts.ContactPoint;
 import org.jbox2d.dynamics.contacts.ContactResult;
@@ -21,20 +23,20 @@ import org.jbox2d.dynamics.contacts.ContactResult;
  */
 public final class RawContactHandler implements ContactListener {
     private static final LogType TAG = LogType.PHYSICS;
-    private static final RawContactHandler INSTANCE = new RawContactHandler();
 
-    public static RawContactHandler getInstance() {
-        return INSTANCE;
-    }
-
-    private RawContactHandler() {
-        // singleton constructor
+    private final IGameEventDispatcher eventRoot;
+    
+    public RawContactHandler(final IGameEventDispatcher eventRoot) {
+    	if (eventRoot == null) {
+			throw new IllegalArgumentException("'eventRoot' must not be 'null'");
+		}
+        this.eventRoot = eventRoot;
     }
 
     @Override
-    public void add(ContactPoint point) {
-        Entity one = (Entity) point.shape1.getBody().getUserData();
-        Entity two = (Entity) point.shape2.getBody().getUserData();
+    public void add(final ContactPoint point) {
+        final Entity one = (Entity) point.shape1.getBody().getUserData();
+        final Entity two = (Entity) point.shape2.getBody().getUserData();
         EventType sensorType;
         if (point.shape1.isSensor() && point.shape2.isSensor()) {
             Logger.i().log(TAG, "sensor/sensor contact: SHOULD BE FILTERED!");
@@ -49,7 +51,7 @@ public final class RawContactHandler implements ContactListener {
     }
 
     @Override
-    public void persist(ContactPoint point) {
+    public void persist(final ContactPoint point) {
         // Entity one = (Entity) point.shape1.getBody().getUserData();
         // Entity two = (Entity) point.shape2.getBody().getUserData();
         // Logger.i().log(TAG, String.format("persist contact: %s, %s", one,
@@ -57,9 +59,9 @@ public final class RawContactHandler implements ContactListener {
     }
 
     @Override
-    public void remove(ContactPoint point) {
-        Entity one = (Entity) point.shape1.getBody().getUserData();
-        Entity two = (Entity) point.shape2.getBody().getUserData();
+    public void remove(final ContactPoint point) {
+        final Entity one = (Entity) point.shape1.getBody().getUserData();
+        final Entity two = (Entity) point.shape2.getBody().getUserData();
         EventType sensorType;
         if (point.shape1.isSensor() && point.shape2.isSensor()) {
             return;
@@ -73,9 +75,9 @@ public final class RawContactHandler implements ContactListener {
     }
 
     @Override
-    public void result(ContactResult point) {
-        Object one = point.shape1.getBody().getUserData();
-        Object two = point.shape2.getBody().getUserData();
+    public void result(final ContactResult point) {
+        final Object one = point.shape1.getBody().getUserData();
+        final Object two = point.shape2.getBody().getUserData();
         if (point.shape1.isSensor() || point.shape2.isSensor()) {
 //			throw new RuntimeException("sensor events shouldn't pass through here!");
             Logger.i().log(TAG, "SENSOR events in contact result callback!");
@@ -84,19 +86,19 @@ public final class RawContactHandler implements ContactListener {
         }
     }
 
-    private void sensorContact(Object sensor, Object sensed, EventType sensorType) {
+    private void sensorContact(final Object sensor, final Object sensed, final EventType sensorType) {
         sensorContact(sensor, sensed, sensorType, false);
     }
 
-    private void sensorContact(Object sensor, Object sensed, EventType sensorType, boolean remove) {
+    private void sensorContact(final Object sensor, final Object sensed, final EventType sensorType, final boolean remove) {
         //Logger.i().log(TAG,	String.format("sensor contact: %s, %s, %s", sensor, sensed, remove ? "END" : "BEGIN"));
         if (sensor == null || sensed == null || !(sensor instanceof Entity)
                 || !(sensed instanceof Entity)) {
             return;
         }
-        Entity sensorEntity = (Entity) sensor;
-        Entity sensedEntity = (Entity) sensed;
-        GameEvent event = new GameEvent(sensorType, sensorEntity, sensedEntity,
+        final Entity sensorEntity = (Entity) sensor;
+        final Entity sensedEntity = (Entity) sensed;
+        final GameEvent event = new GameEvent(sensorType, sensorEntity, sensedEntity,
                 remove ? GameEvent.END_VALUE : GameEvent.BEGIN_VALUE);
         sensorEntity.dispatchEvent(event);
         sensedEntity.dispatchEvent(event);
@@ -112,19 +114,19 @@ public final class RawContactHandler implements ContactListener {
 
     }
 
-    private void hardContact(Object one, Object two, float impulse) {
+    private void hardContact(final Object one, final Object two, final float impulse) {
         if (one == null || two == null || !(one instanceof Entity)
                 || !(two instanceof Entity)) {
             return;
         }
-        Entity oneEntity = (Entity) one;
-        Entity twoEntity = (Entity) two;
+        final Entity oneEntity = (Entity) one;
+        final Entity twoEntity = (Entity) two;
         Logger.i().log(
                 TAG,
                 String.format("collision: %s, %s [%d]", oneEntity, twoEntity,
                         (int) impulse));
-        SimplePhysicsHandler handler1 = (SimplePhysicsHandler) oneEntity.getHandler(Handler.Type.PHYSICS);
-        SimplePhysicsHandler handler2 = (SimplePhysicsHandler) twoEntity.getHandler(Handler.Type.PHYSICS);
+        final SimplePhysicsHandler handler1 = (SimplePhysicsHandler) oneEntity.getHandler(Handler.Type.PHYSICS);
+        final SimplePhysicsHandler handler2 = (SimplePhysicsHandler) twoEntity.getHandler(Handler.Type.PHYSICS);
         GameEvent event = null;
         if (oneEntity.getName().equals("bullet") || twoEntity.getName().equals("bullet")) {
             event = new BulletHitEvent(oneEntity, twoEntity, impulse);

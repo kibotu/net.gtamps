@@ -32,12 +32,12 @@ public class PhysicsFactory {
     private PhysicsFactory() {
     }
 
-    public static Box2DEngine createPhysics(final int pixWidth, final int pixHeight) {
+    public static Box2DEngine createPhysics(final Universe universe, final int pixWidth, final int pixHeight) {
         final float minX = 0;
         final float minY = 0;
         final float maxX = lengthToPhysics(pixWidth);
         final float maxY = lengthToPhysics(pixHeight);
-        return new Box2DEngine(minX, minY, maxX, maxY);
+        return new Box2DEngine(universe, minX, minY, maxX, maxY);
     }
 
     public static PhysicsBlueprint createHouseBlueprintFromLevelPhysicalShape(final Universe universe, final PhysicalShape levelshape) {
