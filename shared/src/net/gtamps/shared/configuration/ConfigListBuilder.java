@@ -84,4 +84,9 @@ final class ConfigListBuilder extends ConfigBuilder {
 		additionalConfigs.addConfiguration(config);
 		return this;
 	}
+
+	@Override
+	public int getCount() {
+		return additionalConfigs.size() + elements.size();
+	}
 }

@@ -12,39 +12,35 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class ConfigBuilderTest {
 
 	private static class MockConfigBuilderImplementation extends ConfigBuilder {
-
 		protected MockConfigBuilderImplementation(final ConfigSource source) {
 			super(source);
 		}
-
-
 		protected MockConfigBuilderImplementation(final ConfigSource source, final ConfigBuilder parent) {
 			super(source, parent);
 		}
-
 		@Override
 		public Class<?> getType() {
 			return null;
 		}
-
 		@Override
 		public ConfigBuilder addConfig(final Configuration config) {
 			return null;
 		}
-
 		@Override
 		protected ConfigBuilder addBuilder(final ConfigBuilder cb) throws UnsupportedOperationException {
 			return null;
 		}
-
 		@Override
 		protected ConfigBuilder select(final ConfigKey ckey) {
 			return null;
 		}
-
 		@Override
 		protected Configuration getBuild() {
 			return null;
+		}
+		@Override
+		public int getCount() {
+			return 0;
 		}
 	}
 

@@ -91,6 +91,11 @@ public abstract class ConfigBuilder {
 		return this.getBuild();
 	}
 
+	/**
+	 * @return	the number of child builders in this builder
+	 */
+	public abstract int getCount();
+
 	@Override
 	public String toString() {
 		return "ConfigurationBuilder: abstract. A subtype has not overridden toString()";

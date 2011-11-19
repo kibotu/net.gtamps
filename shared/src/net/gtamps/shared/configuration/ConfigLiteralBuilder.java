@@ -66,5 +66,10 @@ final class ConfigLiteralBuilder extends ConfigBuilder {
 		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
 
+	@Override
+	public int getCount() {
+		return 0;
+	}
+
 
 }
