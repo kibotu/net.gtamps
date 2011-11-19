@@ -107,6 +107,11 @@ public class ConfigBuilderTest {
 	}
 
 	@Test
+	public void testAddMap_shouldReturnMapBuilderContext() {
+		assertEquals(java.util.Map.class, configBuilder.addMap().getType());
+	}
+
+	@Test
 	public void testSelectString_whenSimpleKey_shouldWorkOK() {
 		configBuilder.select("SIMPLE_KEY_STRING");
 	}

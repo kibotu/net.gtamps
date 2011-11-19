@@ -15,7 +15,7 @@ final class ConfigListBuilder extends ConfigBuilder {
 	}
 
 	@Override
-	public ConfigBuilder addBuilder(final ConfigBuilder cb) {
+	protected ConfigBuilder addBuilder(final ConfigBuilder cb) {
 		if (parent != null && cb == parent) {
 			throw new IllegalArgumentException("trying to add this builder's parent as child builder. no circles allowed in this list builder!");
 		}

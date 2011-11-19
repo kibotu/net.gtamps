@@ -7,7 +7,7 @@ public abstract class ConfigBuilder {
 	protected final ConfigSource source;
 	protected ConfigBuilder parent;
 
-	public static ConfigMapBuilder buildConfig(final ConfigSource source) {
+	public static ConfigBuilder buildConfig(final ConfigSource source) {
 		return new ConfigMapBuilder(source);
 	}
 
@@ -23,27 +23,42 @@ public abstract class ConfigBuilder {
 		this.parent = parent;
 	}
 
+	/**
+	 * @return this builder
+	 */
 	public ConfigBuilder addValue(final int value) {
 		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
+	/**
+	 * @return this builder
+	 */
 	public ConfigBuilder addValue(final float value) {
 		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
+	/**
+	 * @return this builder
+	 */
 	public ConfigBuilder addValue(final boolean value) {
 		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
+	/**
+	 * @return this builder
+	 */
 	public ConfigBuilder addValue(final String value) {
 		//TODO null
 		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
 		return this;
 	}
 
+	/**
+	 * @return map builder
+	 */
 	public ConfigBuilder addMap() {
 		final ConfigBuilder mapBuilder = new ConfigMapBuilder(this.source, this); 
 		addBuilder(mapBuilder);
@@ -65,6 +80,9 @@ public abstract class ConfigBuilder {
 		return select(ckey);
 	}
 
+	/**
+	 * @return parent builder; if {@code parent == null}: this builder
+	 */
 	public ConfigBuilder back() {
 		return (this.parent == null) ? this : this.parent;
 	}
@@ -88,6 +106,16 @@ public abstract class ConfigBuilder {
 	//	}
 	public abstract Class<?> getType();
 
+	/**
+	 * directly add a configuration to this builder. unless {@code config} is 
+	 * {@code null}, this should increase its {@link #getCount() count}.
+	 * 
+	 * @param config
+	 * 
+	 * @return this builder
+	 * 
+	 * @see Configuration
+	 */
 	public abstract ConfigBuilder addConfig(Configuration config);
 
 	protected abstract ConfigBuilder addBuilder(final ConfigBuilder cb) throws UnsupportedOperationException;
