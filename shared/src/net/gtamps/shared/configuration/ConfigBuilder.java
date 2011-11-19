@@ -16,6 +16,9 @@ public abstract class ConfigBuilder {
 	}
 
 	protected ConfigBuilder(final ConfigSource source, final ConfigBuilder parent) {
+		if (source == null) {
+			throw new IllegalArgumentException("'source' must not be 'null'");
+		}
 		this.source = source;
 		this.parent = parent;
 	}

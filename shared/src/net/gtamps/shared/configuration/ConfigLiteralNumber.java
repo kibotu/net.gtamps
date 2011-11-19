@@ -10,7 +10,7 @@ public final class ConfigLiteralNumber extends AbstractConfigLiteral {
 	}
 
 	ConfigLiteralNumber(final float f, final ConfigSource source) {
-		super(Float.class, source);
+		super(f, source);
 	}
 
 	@Override

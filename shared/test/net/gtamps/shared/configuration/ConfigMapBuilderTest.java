@@ -30,8 +30,13 @@ public class ConfigMapBuilderTest {
 		configMapBuilder = new ConfigMapBuilder(source, parent);
 	}
 
+	@Test
+	public void testConfigMapBuilderSource_ValidSource_shouldNotSetAParent() {
+		assertSame(null, (new ConfigMapBuilder(source)).parent);
+	}
+
 	@Test(expected=IllegalArgumentException.class)
-	public void configMapBuilder_NullSource_shouldThrowIllegalArgumentException() {
+	public void testConfigMapBuilder_NullSource_shouldThrowIllegalArgumentException() {
 		new ConfigMapBuilder(null, parent);
 	}
 
@@ -138,6 +143,12 @@ public class ConfigMapBuilderTest {
 	public void test_whenParentIsNull_shouldReturnSelf() {
 		final ConfigMapBuilder localBuilder = new ConfigMapBuilder(source, null);
 		assertSame(localBuilder, localBuilder.back());
+	}
+
+	@Test
+	public void testConfigMapBuilder()
+	{
+
 	}
 
 }

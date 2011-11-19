@@ -13,7 +13,8 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	private static final long serialVersionUID = -2683152299650610400L;
 
-	private final Class<?> type = List.class;
+	static final Class<?> TYPE = java.util.List.class;
+
 	private final List<Configuration> entries = new ArrayList<Configuration>();
 	private final ConfigSource source;
 
@@ -33,7 +34,7 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Class<?> getType() {
-		return this.type;
+		return TYPE;
 	}
 
 	@Override
