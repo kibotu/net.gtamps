@@ -56,6 +56,6 @@ public interface Configuration extends Cloneable, Serializable, Iterable<Configu
 	 */
 	public Collection<String> getKeys() ;
 
-	public Configuration clone();
+	public Object clone();
 
 }

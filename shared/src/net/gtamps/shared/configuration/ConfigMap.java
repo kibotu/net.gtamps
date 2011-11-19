@@ -118,9 +118,14 @@ implements Configuration {
 	public ConfigMap clone() {
 		final ConfigMap cloneMap = new ConfigMap(source);
 		for (final Entry<String, Configuration> entry : entries.entrySet()) {
-			cloneMap.entries.put(entry.getKey(), entry.getValue().clone());
+			cloneMap.entries.put(entry.getKey(), (Configuration) entry.getValue().clone());
 		}
 		return cloneMap;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return entries.equals(o);
 	}
 
 	Configuration putConfiguration(final String key, final Configuration value) {

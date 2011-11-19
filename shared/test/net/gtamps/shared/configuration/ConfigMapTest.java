@@ -1,10 +1,7 @@
 package net.gtamps.shared.configuration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
-
 import java.util.Iterator;
 
 import org.junit.Before;
@@ -24,11 +21,8 @@ public class ConfigMapTest {
 	private ConfigSource source;
 
 	@Mock
-	private Configuration config, configOther;
+	private Configuration config,  otherConfig;
 
-
-	//	@Mock
-	//	private Collection<V> values;
 	private ConfigMap configMap;
 
 	@Before
@@ -185,12 +179,30 @@ public class ConfigMapTest {
 	}
 
 	@Test
+	public void testClone_shouldReturnADifferentObject() {
+		assertFalse(configMap == configMap.clone());
+	}
+
+	@Test
 	public void testClone_shouldReturnADeepCopy() {
 		getOneElementConfigMap(SIMPLE_SAMPLE_KEY, config).clone();
 
 		verify(config).clone();
 	}
 
+	@Test
+	public void testEquals_shouldReturnTrueForEqualButDifferentMaps() {
+		// setup
+		final Configuration a = new ConfigLiteralBool(true, source);
+		final Configuration b = new ConfigLiteralBool(true, source);
+		assertTrue("precondition violated: this test relies on ConfigLiteralBool.equals working correctly",
+				a.equals(b));
+		configMap = getOneElementConfigMap(SIMPLE_SAMPLE_KEY, a);
+		final ConfigMap otherConfigMap = getOneElementConfigMap(SIMPLE_SAMPLE_KEY, b);
+
+		// assert
+		assertTrue(configMap.equals(otherConfigMap));
+	}
 
 	private ConfigMap getDefaultOneElementConfigMap() {
 		return getOneElementConfigMap(SIMPLE_SAMPLE_KEY, config);

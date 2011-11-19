@@ -82,6 +82,10 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		return this.source;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		return entries.equals(o);
+	}
 
 	@Override
 	public int size() {
@@ -138,7 +142,7 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 	public ConfigList clone() {
 		final ConfigList cloneList = new ConfigList(source);
 		for (final Configuration element : entries) {
-			cloneList.entries.add(element.clone());
+			cloneList.entries.add((Configuration) element.clone());
 		}
 		return cloneList;
 	}
