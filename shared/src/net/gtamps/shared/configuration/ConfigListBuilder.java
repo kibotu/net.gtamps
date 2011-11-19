@@ -7,11 +7,11 @@ final class ConfigListBuilder extends ConfigBuilder {
 
 	private final Class<?> type = List.class;
 	private final List<ConfigBuilder> elements = new ArrayList<ConfigBuilder>();
-	private final ConfigList configList;
+	private final ConfigList additionalConfigs;
 
 	ConfigListBuilder(final ConfigSource source, final ConfigBuilder parent) {
 		super(source, parent);
-		configList = new ConfigList(source);
+		additionalConfigs = new ConfigList(source);
 	}
 
 	@Override
@@ -55,6 +55,7 @@ final class ConfigListBuilder extends ConfigBuilder {
 
 	@Override
 	protected Configuration getBuild() {
+		final ConfigList configList = new ConfigList(source, additionalConfigs);
 		for (final ConfigBuilder e : this.elements) {
 			final Configuration cfg = e.getBuild();
 			if (cfg!= null) {
@@ -77,7 +78,10 @@ final class ConfigListBuilder extends ConfigBuilder {
 
 	@Override
 	public ConfigBuilder addConfig(final Configuration config) {
-		configList.addConfiguration(config);
+		if (config == null) {
+			return this;
+		}
+		additionalConfigs.addConfiguration(config);
 		return this;
 	}
 }

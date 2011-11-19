@@ -22,6 +22,15 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		this(source, 10);
 	}
 
+	/**
+	 * copy entries of {@code otherList} into this list. might set a source different
+	 * from {@code source}.
+	 */
+	ConfigList(final ConfigSource source, final ConfigList otherList) {
+		this(new ConfigSource(), otherList.entries.size() + 10);
+		this.entries.addAll(otherList.entries);
+	}
+
 	ConfigList(final ConfigSource source, final int initSize) {
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be 'null'");
