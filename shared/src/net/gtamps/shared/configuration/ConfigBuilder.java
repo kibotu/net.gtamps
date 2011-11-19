@@ -51,8 +51,21 @@ public abstract class ConfigBuilder {
 	 * @return this builder
 	 */
 	public ConfigBuilder addValue(final String value) {
-		//TODO null
 		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
+		return this;
+	}
+
+	/**
+	 * try to cast value to the best possible type and add it to this builder
+	 * @return	this builder
+	 * @throws IllegalArgumentException
+	 */
+	public ConfigBuilder addValue(final Object value) throws IllegalArgumentException {
+		if (value == null) {
+			addValue((String) null);
+		} else {
+			addValueBestPossibleType(value);
+		}
 		return this;
 	}
 
@@ -64,7 +77,6 @@ public abstract class ConfigBuilder {
 		addBuilder(mapBuilder);
 		return mapBuilder;
 	}
-
 
 	/**
 	 * When building a configuration that has sub-elements, select one of the sub-builder by name or index.
@@ -87,6 +99,9 @@ public abstract class ConfigBuilder {
 		return (this.parent == null) ? this : this.parent;
 	}
 
+	/**
+	 * @return the configuration as internalized by this builder
+	 */
 	public final Configuration getConfig() {
 		return this.getBuild();
 	}
@@ -101,14 +116,11 @@ public abstract class ConfigBuilder {
 		return "ConfigurationBuilder: abstract. A subtype has not overridden toString()";
 	}
 
-	//	protected ConfigBuilder addBuilder(final ConfigBuilder cb, final ConfigKey context) {
-	//		final ConfigListBuilder listb = new ConfigListBuilder(this.source, this.parent);
-	//		this.parent = listb;
-	//		listb.addBuilder(this);
-	//		listb.addBuilder(cb);
-	//		this.parent.update(context, listb);
-	//		return back();	// return new list context
-	//	}
+
+	/**
+	 * @return	the type of this builder, which equals the {@link Configuration#getType() type} 
+	 * of the Configuration buing built.
+	 */
 	public abstract Class<?> getType();
 
 	/**
@@ -125,8 +137,25 @@ public abstract class ConfigBuilder {
 
 	protected abstract ConfigBuilder addBuilder(final ConfigBuilder cb) throws UnsupportedOperationException;
 	protected abstract ConfigBuilder select(ConfigKey ckey);
-	//	protected abstract ConfigBuilder update(ConfigKey ckey, ConfigBuilder newBuilder);
 	protected abstract Configuration getBuild();
+
+	private ConfigBuilder addValueBestPossibleType(final Object value) throws IllegalArgumentException {
+		try {
+			final Number n = (Number) value;
+			final Integer i = (Integer) n;
+			final Float f  = (Float) n;
+			return addValue(i.equals(f) ? i : f);
+		} catch (final ClassCastException e) {}
+		try {
+			final boolean b = (Boolean) value;
+			return addValue(b);
+		} catch (final ClassCastException e) {}
+		try {
+			final String s = (String) value;
+			return addValue(s);
+		} catch (final ClassCastException e) {}
+		throw new IllegalArgumentException("cannot add a value of type " + value.getClass().getCanonicalName());
+	}
 
 	private void excludeDeepKeys(final ConfigKey ckey) {
 		if ("".equals(ckey.tail)) {
