@@ -57,17 +57,17 @@ public class XMLConfigLoaderTest {
 	private static final Configuration SAMPLE_CONFIG = ConfigBuilder.buildConfig(new ConfigSource())
 	//	.select("GTACONFIG").addMap()	// loader ignores root element!
 	/**/.select("SERVER").addMap()	// each 'select(...)' or 'addMap()' moves the context one level deeper 
-	/* | */.select("SETUP").addMap()// and requires one 'back()' each to get back to original building context	
-	/* |  |   */.select("TCP").addMap().select("port").addValue("8095").back().back().back() // one back for every select or addMap
-	/* |  |   */.select("SERIALIZER").addMap().select("class").addValue("net.gtamps.shared.serializer.communication.ObjectSerializer").back().back().back()//
-	/* |  */.back().back()	//
+	/**//**/.select("SETUP").addMap()// and requires one 'back()' each to get back to original building context	
+	/**//**//**/.select("TCP").addMap().select("port").addValue("8095").back().back().back() // one back for every select or addMap
+	/**//**//**/.select("SERIALIZER").addMap().select("class").addValue("net.gtamps.shared.serializer.communication.ObjectSerializer").back().back().back()//
+	/**//**/.back().back()	//
 	/**/.back().back()		//
 	/**/.select("game").addMap()	//
-	/* |  */.select("setup").addMap().back().back()	//
-	/* |  */.select("entities").addMap()	//
-	/* |   |  */.select("entity").addMap().select("name").addValue("car").back().select("abstract").addValue("true").back().back().back()	//
-	/* |   |  */.select("entity").addMap().select("name").addValue("taxi").back().select("extends").addValue("car").back().back().back()	//
-	/* |  */.back().back()	//
+	/**//**/.select("setup").addMap().back().back()	//
+	/**//**/.select("entities").addMap()	//
+	/**//**//**/.select("entity").addMap().select("name").addValue("car").back().select("abstract").addValue("true").back().back().back()	//
+	/**//**//**/.select("entity").addMap().select("name").addValue("taxi").back().select("extends").addValue("car").back().back().back()	//
+	/**//**/.back().back()	//
 	/**/.back().back()	//
 	//	.back().back()	//
 	.getConfig();
