@@ -36,15 +36,38 @@ public class ConfigListBuilderTest {
 		configListBuilder = new ConfigListBuilder(source, parent);
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddBuilder_whenArgumentIsParent_shouldThrowIllegalArgumentException() {
+		configListBuilder.addBuilder(configListBuilder.parent);
+	}
+
 	@Test
-	public void testGetType_shouldReturnTypeOfConfigListTYPE() {
-		assertSame(ConfigList.TYPE, configListBuilder.getType());
+	public void testAddBuilder_whenNotNull_shouldQueryBuilderOnGetConfig() {
+		configListBuilder.addBuilder(otherBuilder);
+
+		configListBuilder.getConfig();
+		verify(otherBuilder).getBuild();
 	}
 
 	@Test
 	public void testAddConfig_shouldReturnSelf() {
 		assertSame(configListBuilder, configListBuilder.addConfig(null));
 	}
+
+	@Test
+	public void testAddConfig_whenNull_shouldNotIncreaseCount() {
+		final int preCount = configListBuilder.getCount();
+		configListBuilder.addConfig(null);
+		assertEquals(preCount, configListBuilder.getCount());
+	}
+
+	@Test
+	public void testAddConfig_whenNotNull_shouldIncreaseCount() {
+		final int preCount = configListBuilder.getCount();
+		configListBuilder.addConfig(sampleConfig);
+		assertEquals(preCount + 1, configListBuilder.getCount());
+	}
+
 
 	@Test
 	public void testAddConfig_whenNotNull_shouldIncludeConfigInBuiltConfiguration() {
@@ -61,58 +84,8 @@ public class ConfigListBuilderTest {
 	}
 
 	@Test
-	public void testAddBuilder_whenNotNull_shouldQueryBuilderOnGetConfig() {
-		configListBuilder.addBuilder(otherBuilder);
-
-		configListBuilder.getConfig();
-		verify(otherBuilder).getBuild();
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testAddBuilder_whenArgumentIsParent_shouldThrowIllegalArgumentException() {
-		configListBuilder.addBuilder(configListBuilder.parent);
-	}
-
-	@Test
-	public void testSelectConfigKey_whenSimpleStringKey_shouldBehaveLikeSelectString() {
-		testSelectString_whenSimpleStringKey_shouldTreatStringAsIntIndex();
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testConfigListBuilder_whenSourceIsNull_shouldThrowIllegalArgumentException() {
-		new ConfigListBuilder(null, parent);
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testSelectInt_whenNegative_shouldThrowIllegalArgumentException() {
-		configListBuilder.select(-1);
-	}
-
-	@Test
-	public void testAddValueInt_shouldIncludeElementInBuildOutput() {
-		// setup
-		final int testValue = 1;
-
-		// run
-		configListBuilder.addValue(testValue);
-
-		// assert
-		final boolean found = configListBuilder.getConfig().iterator().next().getInt() == testValue;
-		assertTrue("test configuration was not added to final output", found);
-	}
-
-	@Test
-	public void testAddValueFloat() {
-		// setup
-		final float testValue = 1f;
-
-		// run
-		configListBuilder.addValue(testValue);
-
-		// assert
-		final boolean found = configListBuilder.getConfig().iterator().next().getFloat() == testValue;
-		assertTrue("test configuration was not added to final output", found);
-
+	public void testAddMap_shouldAddMapBuilderAsLastElement() {
+		configListBuilder.addMap();
 	}
 
 	@Test
@@ -130,6 +103,33 @@ public class ConfigListBuilderTest {
 	}
 
 	@Test
+	public void testAddValueFloat() {
+		// setup
+		final float testValue = 1f;
+
+		// run
+		configListBuilder.addValue(testValue);
+
+		// assert
+		final boolean found = configListBuilder.getConfig().iterator().next().getFloat() == testValue;
+		assertTrue("test configuration was not added to final output", found);
+
+	}
+
+	@Test
+	public void testAddValueInt_shouldIncludeElementInBuildOutput() {
+		// setup
+		final int testValue = 1;
+
+		// run
+		configListBuilder.addValue(testValue);
+
+		// assert
+		final boolean found = configListBuilder.getConfig().iterator().next().getInt() == testValue;
+		assertTrue("test configuration was not added to final output", found);
+	}
+
+	@Test
 	public void testAddValueString() {
 		// setup
 		final String testValue = SAMPLE_STRING;
@@ -143,9 +143,44 @@ public class ConfigListBuilderTest {
 
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void testConfigListBuilder_whenSourceIsNull_shouldThrowIllegalArgumentException() {
+		new ConfigListBuilder(null, parent);
+	}
+
 	@Test
-	public void testAddMap() {
-		fail("Not yet implemented");
+	public void testGetConfig_whenNoElements_shouldReturnNull() {
+		assertSame(null, configListBuilder.getConfig());
+	}
+
+	@Test
+	public void testGetConfig_whenElements_shouldReturnConfigListOfSameSize() {
+		// setup
+		configListBuilder.addConfig(sampleConfig);
+		configListBuilder.addValue(SAMPLE_STRING);
+		final int expectedSize = 2;
+		assertEquals("precondition for this test is not met", expectedSize, configListBuilder.getCount());
+
+		// run
+		final int actualSize = configListBuilder.getConfig().getCount();
+
+		//assert
+		assertEquals(expectedSize, actualSize);
+	}
+
+	@Test
+	public void testGetType_shouldReturnTypeOfConfigListTYPE() {
+		assertSame(ConfigList.TYPE, configListBuilder.getType());
+	}
+
+	@Test
+	public void testSelectConfigKey_whenSimpleStringKey_shouldBehaveLikeSelectString() {
+		testSelectString_whenSimpleStringKey_shouldTreatStringAsIntIndex();
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testSelectInt_whenNegative_shouldThrowIllegalArgumentException() {
+		configListBuilder.select(-1);
 	}
 
 	@Test
@@ -171,9 +206,8 @@ public class ConfigListBuilderTest {
 		fail("IllegalArgumentException expected for non-integer String argument");
 	}
 
-	@Test
-	public void testGetConfig() {
-		fail("Not yet implemented");
+	private <T> Iterator<T> getSingletonIterator(final T soleElement) {
+		return Collections.singleton(soleElement).iterator();
 	}
 
 	private boolean itemIsInBuildOutput(final Configuration testConfig, final ConfigListBuilder testeeBuilder) {
@@ -185,10 +219,6 @@ public class ConfigListBuilderTest {
 			}
 		}
 		return found;
-	}
-
-	private <T> Iterator<T> getSingletonIterator(final T soleElement) {
-		return Collections.singleton(soleElement).iterator();
 	}
 
 
