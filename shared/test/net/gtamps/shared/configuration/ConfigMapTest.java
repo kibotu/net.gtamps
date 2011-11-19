@@ -120,8 +120,8 @@ public class ConfigMapTest {
 		configMap.select(0);
 	}
 
-	@Test(expected=UnsupportedOperationException.class)
-	public void testGetObject_shouldThrowUnsupportedOperationException() {
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetObject_shouldThrowIllegalArgumentException() {
 		configMap.get(new Object());
 	}
 

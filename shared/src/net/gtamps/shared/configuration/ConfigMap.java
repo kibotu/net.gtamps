@@ -58,7 +58,10 @@ implements Configuration {
 
 	@Override
 	public Configuration get(final Object key) {
-		throw new UnsupportedOperationException("class mismatch: ConfigMap.get(...) takes only String oder int arguments, not " + key.getClass().getSimpleName());
+		if (java.lang.String.class == key.getClass()) {
+			return select((String) key);
+		}
+		throw new IllegalArgumentException("class mismatch: ConfigMap.get(...) takes only String arguments, not " + key.getClass().getSimpleName());
 	}
 
 	@Override
@@ -68,7 +71,7 @@ implements Configuration {
 
 	@Override
 	public Class<?> getType() {
-		return this.TYPE;
+		return TYPE;
 	}
 
 	@Override
