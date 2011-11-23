@@ -7,13 +7,18 @@ final class ConfigListBuilder extends ConfigBuilder {
 
 	private final Class<?> type = List.class;
 	private final List<ConfigBuilder> elements = new ArrayList<ConfigBuilder>();
+	private final ConfigList additionalConfigs;
 
 	ConfigListBuilder(final ConfigSource source, final ConfigBuilder parent) {
 		super(source, parent);
+		additionalConfigs = new ConfigList(source);
 	}
 
 	@Override
-	public ConfigBuilder addBuilder(final ConfigBuilder cb) {
+	protected ConfigBuilder addBuilder(final ConfigBuilder cb) {
+		if (parent != null && cb == parent) {
+			throw new IllegalArgumentException("trying to add this builder's parent as child builder. no circles allowed in this list builder!");
+		}
 		this.elements.add(cb);
 		return this;
 	}
@@ -30,14 +35,12 @@ final class ConfigListBuilder extends ConfigBuilder {
 		return select(index);
 	}
 
-	protected ConfigBuilder select(int index) {
+	protected ConfigBuilder select(final int index) {
 		if (index < 0) {
-			//TODO warn
-			index = 0;
+			throw new IllegalArgumentException("index must be >= 0, but is " + index);
 		}
 		if (index >= this.elements.size()) {
-			//TODO warn
-			index = this.elements.size() - 1;
+			throw new IndexOutOfBoundsException("index (" + index + ") out of bounds, list size is: " + elements.size());
 		}
 		return this.elements.get(index);
 	}
@@ -52,16 +55,16 @@ final class ConfigListBuilder extends ConfigBuilder {
 
 	@Override
 	protected Configuration getBuild() {
-		final ConfigList configList = new ConfigList(this.source);
+		final ConfigList configList = new ConfigList(source, additionalConfigs);
 		for (final ConfigBuilder e : this.elements) {
 			final Configuration cfg = e.getBuild();
 			if (cfg!= null) {
 				configList.addConfiguration(cfg);
 			}
 		}
-		if (configList.elementCount() == 0) {
+		if (configList.getCount() == 0) {
 			return null;
-		} else if (configList.elementCount() == 1) {
+		} else if (configList.getCount() == 1) {
 			return configList.get(0);
 		} else {
 			return configList;
@@ -71,5 +74,19 @@ final class ConfigListBuilder extends ConfigBuilder {
 	@Override
 	public Class<?> getType() {
 		return this.type;
+	}
+
+	@Override
+	public ConfigBuilder addConfig(final Configuration config) {
+		if (config == null) {
+			return this;
+		}
+		additionalConfigs.addConfiguration(config);
+		return this;
+	}
+
+	@Override
+	public int getCount() {
+		return additionalConfigs.size() + elements.size();
 	}
 }

@@ -1,4 +1,4 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
 
 import org.jdom.Element;
 

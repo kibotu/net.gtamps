@@ -1,10 +1,15 @@
 package net.gtamps.game.handler.blueprints;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.gtamps.game.handler.SimplePhysicsHandler;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.handler.HandlerBlueprint;
+
 import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.shapes.CircleDef;
 import org.jbox2d.collision.shapes.PolygonDef;
@@ -14,9 +19,6 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class PhysicsBlueprint extends HandlerBlueprint {
 
@@ -30,8 +32,8 @@ public class PhysicsBlueprint extends HandlerBlueprint {
     private final Collection<ShapeDef> shapeDefs;
 
 
-    public PhysicsBlueprint(final World world, final BodyDef bodyDef, final boolean dynamic) {
-        super(Handler.Type.PHYSICS);
+    public PhysicsBlueprint(final IGameEventDispatcher eventRoot, final World world, final BodyDef bodyDef, final boolean dynamic) {
+        super(eventRoot, Handler.Type.PHYSICS);
         this.world = world;
         this.bodyDef = PhysicsFactory.copyBodyDef(bodyDef);
         isDynamic = dynamic;
@@ -39,7 +41,7 @@ public class PhysicsBlueprint extends HandlerBlueprint {
     }
 
     public PhysicsBlueprint(final PhysicsBlueprint other) {
-        this(other.world, other.bodyDef, other.isDynamic);
+        this(other.eventRoot, other.world, other.bodyDef, other.isDynamic);
         for (final ShapeDef shapeDef : other.shapeDefs) {
             shapeDefs.add(shapeDef);
         }
@@ -50,7 +52,8 @@ public class PhysicsBlueprint extends HandlerBlueprint {
         return createHandler(parent, null, null, null);
     }
 
-    public Handler createHandler(final Entity parent, final Integer pixX, final Integer pixY, final Integer deg) {
+    @Override
+	public Handler createHandler(final Entity parent, final Integer pixX, final Integer pixY, final Integer deg) {
         Body body = null;
         final Vec2 opos = bodyDef.position;
         final float oang = bodyDef.angle;
@@ -76,7 +79,7 @@ public class PhysicsBlueprint extends HandlerBlueprint {
         if (isDynamic && body.getMass() == 0f) {
             body.setMassFromShapes();
         }
-        return new SimplePhysicsHandler(parent, body, null);
+        return new SimplePhysicsHandler(eventRoot, parent, body, null);
     }
 
 

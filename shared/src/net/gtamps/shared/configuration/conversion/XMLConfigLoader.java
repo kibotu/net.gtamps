@@ -44,13 +44,15 @@ public class XMLConfigLoader implements ConfigLoader {
 	}
 
 	private Configuration createConfiguration(final Document xmlDocument) {
-		final ConfigBuilder builderContext = ConfigBuilder.buildConfig(this.configSource);
+		final ConfigBuilder builder = ConfigBuilder.buildConfig(this.configSource);
 		final Element rootElement = xmlDocument.getRootElement(); 
-		return buildConfigFromElement(rootElement, builderContext);
+		fillMapConfigBuilderFromElement(rootElement, builder); 
+		final Configuration config = builder.getConfig(); 
+		return config;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Configuration buildConfigFromElement(final Element xmlElement, final ConfigBuilder builderContext) {
+	private ConfigBuilder fillMapConfigBuilderFromElement(final Element xmlElement, final ConfigBuilder builderContext) {
 		assert builderContext.getType() == Map.class;
 		final List<Attribute> attributeList = xmlElement.getAttributes();
 		final List<Element> childrenList =  xmlElement.getChildren();
@@ -59,20 +61,18 @@ public class XMLConfigLoader implements ConfigLoader {
 		}
 		for (final Element childElement : childrenList) {
 			final ConfigBuilder childContext = builderContext.select(childElement.getName()).addMap();
-			buildConfigFromElement(childElement, childContext);
+			fillMapConfigBuilderFromElement(childElement, childContext);
 		}
-		return builderContext.getConfig();
+		return builderContext;
 	}
 
 	static class XMLGetter {
-
-		SAXBuilder saxBuilder = null;
-
+		static SAXBuilder saxBuilder = null;
 		public Document getDocument(final InputStream in) throws JDOMException, IOException {
 			if (saxBuilder == null) {
 				saxBuilder = new SAXBuilder();
 			}
-			final Document doc = this.saxBuilder.build(in);
+			final Document doc = saxBuilder.build(in);
 			return doc;
 		}
 	}

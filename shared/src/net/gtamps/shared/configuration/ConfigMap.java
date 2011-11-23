@@ -1,6 +1,7 @@
 package net.gtamps.shared.configuration;
 
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,39 +12,42 @@ public final class ConfigMap extends AbstractMap<String, Configuration>
 implements Configuration {
 
 	private static final long serialVersionUID = 7466530368525139233L;
+	final static Class<?> TYPE = java.util.Map.class;
 
-	private final Class<?> type = Map.class;
-	private final Map<String, Configuration> entries = new HashMap<String, Configuration>();
+	Map<String, Configuration> entries = new HashMap<String, Configuration>();
 
 	private final ConfigSource source;
 
 	ConfigMap(final ConfigSource source) {
+		if (source == null) {
+			throw new IllegalArgumentException("'source' must not be 'null'");
+		}
 		this.source = source;
 	}
 
 	@Override
-	public int elementCount() {
+	public int getCount() {
 		return this.entries.size();
 	}
 
 	@Override
-	public Configuration get(final String key) {
+	public Configuration select(final String key) {
 		final ConfigKey configKey = new ConfigKey(key);
 		if (configKey.isIntermediate()) {
-			return this.entries.get(configKey.head).get(configKey.tail);
+			return this.entries.get(configKey.head).select(configKey.tail);
 		} else {
 			return this.entries.get(configKey.head);
 		}
 	}
 
 	@Override
-	public Configuration get(final int index) {
+	public Configuration select(final int index) {
 		if (index < 0) {
 			throw new IllegalArgumentException("index must be >= 0");
 		}
-		if (index >= elementCount()) {
+		if (index >= getCount()) {
 			throw new IndexOutOfBoundsException(String.format(
-					"index out of bounds (%d): %d", elementCount(), index));
+					"index out of bounds (%d): %d", getCount(), index));
 		}
 		final Iterator<String> iter = this.entries.keySet().iterator();
 		for (int i = 0; i < index; i++) {
@@ -54,7 +58,10 @@ implements Configuration {
 
 	@Override
 	public Configuration get(final Object key) {
-		throw new IllegalArgumentException("class mismatch: ConfigMap.get(...) takes only String oder int arguments, not " + key.getClass().getSimpleName());
+		if (java.lang.String.class == key.getClass()) {
+			return select((String) key);
+		}
+		throw new IllegalArgumentException("class mismatch: ConfigMap.get(...) takes only String arguments, not " + key.getClass().getSimpleName());
 	}
 
 	@Override
@@ -64,7 +71,7 @@ implements Configuration {
 
 	@Override
 	public Class<?> getType() {
-		return this.type;
+		return TYPE;
 	}
 
 	@Override
@@ -78,47 +85,72 @@ implements Configuration {
 	}
 
 	@Override
-	public boolean validates() {
-		return Map.class.equals(this.type) && this.source != null && elementCount() > 0;
-		// TODO direct keys conform to "letter/underscore" rule for 1st
-		// character
-	}
-
-	@Override
 	public Integer getInt() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
 
 	@Override
 	public Float getFloat() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
 
 	@Override
 	public Boolean getBoolean() {
-		AbstractConfigElement.warnIneffectiveMethod();
+		//TODO warn
 		return null;
 	}
 
-
-	Configuration putConfiguration(final String normKey, final Configuration value) {
-		return this.entries.put(normKey, value);
+	@Override
+	public Collection<String> getKeys() {
+		return entries.keySet();
 	}
 
-	Configuration removeConfiguration(final String normKey) {
-		return this.entries.remove(normKey);
+	@Override
+	public Iterator<Configuration> iterator() {
+		return Collections.unmodifiableCollection(entries.values()).iterator();
 	}
 
-	Configuration getConfiguration(final String normKey) {
-		return this.entries.get(normKey);
+	@Override
+	public ConfigMap clone() {
+		final ConfigMap cloneMap = new ConfigMap(source);
+		for (final Entry<String, Configuration> entry : entries.entrySet()) {
+			cloneMap.entries.put(entry.getKey(), (Configuration) entry.getValue().clone());
+		}
+		return cloneMap;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return entries.equals(o);
+	}
+
+	Configuration putConfiguration(final String key, final Configuration value) {
+		return entries.put(normalizeKey(key).head, value);
+	}
+
+	Configuration removeConfiguration(final String key) {
+		return this.entries.remove(normalizeKey(key).head);
+	}
+
+	Configuration getConfiguration(final String key) {
+		return this.entries.get(normalizeKey(key).head);
 	}
 
 	void clearMap() {
 		this.entries.clear();
 	}
+
+	private ConfigKey normalizeKey(final String key) {
+		final ConfigKey ckey = new ConfigKey(key);
+		if (ckey.isIntermediate()) {
+			throw new IllegalArgumentException("deep keys are not supported at this time");
+		}
+		return ckey;
+	}
+
 
 }

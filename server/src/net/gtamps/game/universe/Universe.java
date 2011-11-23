@@ -1,4 +1,6 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
+
+import java.util.LinkedList;
 
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
@@ -7,18 +9,17 @@ import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.*;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
-import java.util.LinkedList;
+public class Universe implements IGameEventListener, IGameEventDispatcher {
 
-public class World implements IGameEventListener, IGameEventDispatcher {
-
-    /**
-     * generated value
-     */
     private static final long serialVersionUID = 1821222727619509975L;
 
-    private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
+    private transient GameEventDispatcher eventRoot = new GameEventDispatcher();
 
     private final String name;
     private final int width;
@@ -26,18 +27,18 @@ public class World implements IGameEventListener, IGameEventDispatcher {
 
     //private LinkedList<Entity> entityList = new LinkedList<Entity>();
     private final LinkedList<Entity> spawnPoints = new LinkedList<Entity>();
-    public final Box2DEngine physics;
+    public Box2DEngine physics;
     public final EventManager eventManager;
     public final PlayerManager playerManager;
     public final EntityManager entityManager;
 
     private long revision;
 
+    // TODO universe builder!
 
-    public World(final String name, final int width, final int height, final Box2DEngine physics) {
+    public Universe(final String name, final int width, final int height) {
         Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: " + width + "x" + height);
         this.name = name;
-        this.physics = physics;
         this.width = width;
         this.height = height;
         eventManager = new EventManager(this);
@@ -50,6 +51,12 @@ public class World implements IGameEventListener, IGameEventDispatcher {
         playerManager.addEventListener(EventType.PLAYER_EVENT, eventManager);
         entityManager.addEventListener(EventType.ENTITY_EVENT, eventManager);
 
+    }
+    public void setPhysics (final Box2DEngine physics)  {
+    	if (physics == null) {
+			throw new IllegalArgumentException("'physics' must not be 'null'");
+		}
+    	this.physics = physics;
     }
 
     public String getName() {
@@ -75,6 +82,10 @@ public class World implements IGameEventListener, IGameEventDispatcher {
     public Box2DEngine getPhysics() {
         return physics;
     }
+    
+    public IGameEventDispatcher getEventRoot() {
+    	return eventRoot;
+    }
 
     public void addSpawnPoint(final Entity sp) {
         if (sp == null) {
@@ -89,18 +100,23 @@ public class World implements IGameEventListener, IGameEventDispatcher {
 
     @Override
     public void addEventListener(final EventType type, final IGameEventListener listener) {
-        eventDispatcher.addEventListener(type, listener);
+        eventRoot.addEventListener(type, listener);
     }
 
     @Override
     public void removeEventListener(final EventType type, final IGameEventListener listener) {
-        eventDispatcher.removeEventListener(type, listener);
+        eventRoot.removeEventListener(type, listener);
     }
 
     @Override
     public void dispatchEvent(final GameEvent event) {
-        eventDispatcher.dispatchEvent(event);
+        eventRoot.dispatchEvent(event);
 
+    }
+
+    @Override
+    public boolean isRegisteredListener(final IGameEventListener listener) {
+    	return eventRoot.isRegisteredListener(listener);
     }
 
     @Override

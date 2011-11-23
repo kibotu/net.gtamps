@@ -25,7 +25,10 @@ final class ConfigKey {
 	final String tail;
 
 	public ConfigKey(final String key) {
-		final String[] pair = splitKey(normalizeKey(key == null ? "" : key));
+		if (key == null) {
+			throw new IllegalArgumentException("'key' must not be 'null'");
+		}
+		final String[] pair = splitKey(normalizeKey(key));
 		this.head = pair[0];
 		this.tail = "".equals(pair[1]) ? null : pair[1];
 	}

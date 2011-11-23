@@ -5,6 +5,7 @@ import net.gtamps.game.entity.EntityManager;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 public class ShootingHandler extends Handler {
@@ -14,11 +15,10 @@ public class ShootingHandler extends Handler {
     EntityManager entityManager;
     long lastShot = System.currentTimeMillis();
 
-    public ShootingHandler(final Entity parent, final EntityManager em) {
-        super(Handler.Type.SHOOTING, parent);
+    public ShootingHandler(final IGameEventDispatcher eventRoot, final Entity parent, final EntityManager em) {
+        super(eventRoot, Handler.Type.SHOOTING, parent);
         entityManager = em;
-        setSendsUp(sendsUp);
-        setReceivesDown(receivesDown);
+        setReceives(receivesDown);
         connectUpwardsActor(parent);
     }
 

@@ -1,25 +1,25 @@
 package net.gtamps.shared.configuration;
 
-final class SingletonConfigBuilder extends ConfigBuilder {
+final class ConfigLiteralBuilder extends ConfigBuilder {
 
 	private final Configuration element;
 
-	SingletonConfigBuilder(final ConfigSource source, final String string, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final ConfigSource source, final String string, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = (string == null) ? null : new ConfigLiteralString(string, source);
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final int i, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final ConfigSource source, final int i, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralNumber(i, source);
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final float f, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final ConfigSource source, final float f, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralNumber(f, source);
 	}
 
-	SingletonConfigBuilder(final ConfigSource source, final boolean b, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final ConfigSource source, final boolean b, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralBool(b, source);
 	}
@@ -57,5 +57,19 @@ final class SingletonConfigBuilder extends ConfigBuilder {
 		.append(cb.toString());
 		throw new UnsupportedOperationException(msgBuilder.toString());
 	}
+
+	@Override
+	public ConfigBuilder addConfig (final Configuration config)
+	throws UnsupportedOperationException {
+		final StringBuilder msgBuilder = new StringBuilder("this is a single element. ")
+		.append("cannot add additional configuration.");
+		throw new UnsupportedOperationException(msgBuilder.toString());
+	}
+
+	@Override
+	public int getCount() {
+		return 0;
+	}
+
 
 }

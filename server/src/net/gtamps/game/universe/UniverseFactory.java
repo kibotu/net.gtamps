@@ -1,4 +1,4 @@
-package net.gtamps.game.world;
+package net.gtamps.game.universe;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -6,26 +6,25 @@ import java.io.InputStream;
 import java.util.NoSuchElementException;
 
 import net.gtamps.ResourceLoader;
-import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.level.Level;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
-public class WorldFactory {
+public class UniverseFactory {
 
-	private WorldFactory() {
+	private UniverseFactory() {
 	}
 	
 	/** atm, creates an empty world with size 1024x768 */
-	public static World createMap(final Box2DEngine physics) {
-		return new World("World",1024,768,physics);
+	public static Universe createMap() {
+		return new Universe("World",1024,768);
 	}
 	
 	/** use to load a map in the old (flash-era) xml format */
-	public static World loadMap(final String name) {
-		World world;
+	public static Universe loadMap(final String name) {
+		Universe world;
 		Element mapXML;
 		try {
 			mapXML = ResourceLoader.getFileAsXml(name);
@@ -48,7 +47,7 @@ public class WorldFactory {
 	 * @param path	path to level file
 	 * @return		world representation of level file
 	 */
-	public static World loadWorldFromLevel(final String path) {
+	public static Universe loadWorldFromLevel(final String path) {
 		InputStream input;
 		try {
 			input = ResourceLoader.getFileAsInputStream(path);
@@ -57,7 +56,7 @@ public class WorldFactory {
 			return null;
 		}
 		final Level level = Level.loadLevel(input);
-		final World world = LevelParser.buildWorldFromLevel(level);
+		final Universe world = LevelParser.buildWorldFromLevel(level);
 		throw new NoSuchElementException("WorldFactory.loadWorldFromLevel is not fully implemented yet");
 	}
 	

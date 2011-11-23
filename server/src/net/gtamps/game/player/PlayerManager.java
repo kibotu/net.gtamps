@@ -1,7 +1,7 @@
 package net.gtamps.game.player;
 
 import net.gtamps.game.entity.EntityManager;
-import net.gtamps.game.world.World;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.User;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -23,12 +23,12 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 
     public static final Player WORLD_PSEUDOPLAYER = new Player("world");
 
-    private final World world;
+    private final Universe world;
     private final EntityManager entityManager;
     private final Map<Integer, Player> players = new HashMap<Integer, Player>();
     private final Map<Integer, Player> inactivePlayers = new HashMap<Integer, Player>();
 
-    public PlayerManager(final World world, final EntityManager entityManager) {
+    public PlayerManager(final Universe world, final EntityManager entityManager) {
         this.world = world;
         this.entityManager = entityManager;
         players.put(WORLD_PSEUDOPLAYER.getUid(), WORLD_PSEUDOPLAYER);
