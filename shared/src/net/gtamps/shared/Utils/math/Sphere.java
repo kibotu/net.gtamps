@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Definiert eine Kugel
  */
-public final class Sphere implements IBoundsTestable {
+public final class Sphere {
 
     /**
      * Radius der Kugel
