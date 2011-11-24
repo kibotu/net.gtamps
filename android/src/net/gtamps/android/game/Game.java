@@ -92,7 +92,11 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             }
         }
 
-        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
+        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+            Vector3 temp = world.getActiveView().getObject3d().getPosition();
+            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z);
+            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
+        }
     }
 
     private long impulse = 0;
