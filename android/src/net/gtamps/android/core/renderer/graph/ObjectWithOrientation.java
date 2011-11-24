@@ -1,7 +1,8 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.shared.Utils.math.Box;
+import net.gtamps.shared.Utils.math.AxisAlignedBox;
 import net.gtamps.shared.Utils.math.Matrix4;
+import net.gtamps.shared.Utils.math.MatrixFactory;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +63,7 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
      * Die achsenorientierte Bounding Box des Elementes
      */
     @NotNull
-    protected final Box aabb = new Box(); // TODO: Cache verwenden
+    protected final AxisAlignedBox aabb = AxisAlignedBox.createNew();
 
     /**
      * Bezieht die Bounding Box des Elementes
@@ -72,7 +73,7 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
      * @see #updateBoundingBox()
      */
     @NotNull
-    public Box getBoundingBox() {
+    public AxisAlignedBox getBoundingBox() {
         return getAABB();
     }
 
@@ -82,7 +83,7 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
      * @return Die Bounding Box
      */
     @NotNull
-    public Box getAABB() {
+    public AxisAlignedBox getAABB() {
         return aabb;
     }
 
@@ -96,8 +97,8 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
     @NotNull
     public void updateBoundingBox() {
         // TODO: OBB aus Werten erzeugen
-        Box obb = new Box(); // TODO: Caching!
-        obb.setPosition(getPosition());
+        AxisAlignedBox obb = AxisAlignedBox.createNew();
+        obb.setCenter(getPosition());
 
         // TODO: OBB in AABB umwandeln
     }
@@ -325,7 +326,7 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
         //Matrix4 rotation = Matrix4.getRotationEulerRPY(rotation.x, rotation.y, rotation.z);
 
         // Matrix zusammenfalten
-        orientation = Matrix4.getTransformation(rotation, position).mul(scaling);
+        orientation = MatrixFactory.getTransformation(rotation, position).mul(scaling);
 
         // Bounding Box erzeugen
         updateBoundingBox();

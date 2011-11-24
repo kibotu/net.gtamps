@@ -366,7 +366,7 @@ public final class Frustum {
 
     public void rotate(float angle, float x, float y, float z) {
         Vector3 newView = Vector3.createNew(x, y, z);
-        Matrix4 rotMatrix = Matrix4.getRotationAxisAngle(newView, angle);
+        Matrix4 rotMatrix = MatrixFactory.getRotationAxisAngle(newView, angle);
         target.set(rotMatrix.transform(target.sub(position)).add(position));
     }
 
