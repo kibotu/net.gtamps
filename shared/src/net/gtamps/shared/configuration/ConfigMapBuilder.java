@@ -10,10 +10,10 @@ final class ConfigMapBuilder extends ConfigBuilder {
 	private final Map<String, ConfigBuilder> elements = new HashMap<String, ConfigBuilder>();
 
 
-	protected ConfigMapBuilder(final ConfigSource source) {
+	protected ConfigMapBuilder(final AbstractConfigSource source) {
 		this(source, null);
 	}
-	protected ConfigMapBuilder(final ConfigSource source, final ConfigBuilder parent) {
+	protected ConfigMapBuilder(final AbstractConfigSource source, final ConfigBuilder parent) {
 		super(source, parent);
 	}
 

@@ -16,9 +16,9 @@ implements Configuration {
 
 	Map<String, Configuration> entries = new HashMap<String, Configuration>();
 
-	private final ConfigSource source;
+	private final AbstractConfigSource source;
 
-	ConfigMap(final ConfigSource source) {
+	ConfigMap(final AbstractConfigSource source) {
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be 'null'");
 		}
@@ -75,7 +75,7 @@ implements Configuration {
 	}
 
 	@Override
-	public ConfigSource getSource() {
+	public AbstractConfigSource getSource() {
 		return this.source;
 	}
 

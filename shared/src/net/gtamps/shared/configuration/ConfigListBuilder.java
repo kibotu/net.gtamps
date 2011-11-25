@@ -9,7 +9,7 @@ final class ConfigListBuilder extends ConfigBuilder {
 	private final List<ConfigBuilder> elements = new ArrayList<ConfigBuilder>();
 	private final ConfigList additionalConfigs;
 
-	ConfigListBuilder(final ConfigSource source, final ConfigBuilder parent) {
+	ConfigListBuilder(final AbstractConfigSource source, final ConfigBuilder parent) {
 		super(source, parent);
 		additionalConfigs = new ConfigList(source);
 	}

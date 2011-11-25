@@ -1,6 +1,6 @@
 package net.gtamps.shared.configuration.conversion;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -16,7 +16,7 @@ import net.gtamps.shared.configuration.ConfigSource;
 import net.gtamps.shared.configuration.Configuration;
 
 import org.jdom.JDOMException;
-import org.junit.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 

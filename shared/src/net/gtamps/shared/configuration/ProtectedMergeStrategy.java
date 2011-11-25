@@ -38,9 +38,8 @@ import java.util.Set;
  */
 public class ProtectedMergeStrategy implements MergeStrategy {
 
-	private ConfigSource getMergeSource(final Configuration baseConfig, final Configuration otherConfig) {
-		//TODO
-		return new ConfigSource();
+	private AbstractConfigSource getMergeSource(final Configuration baseConfig, final Configuration otherConfig) {
+		return new MergedConfigSource(baseConfig.getSource(), otherConfig.getSource());
 	}
 
 	@Override

@@ -96,7 +96,7 @@ public final class MergeConfiguration implements Configuration {
 	}
 
 	@Override
-	public ConfigSource getSource() {
+	public AbstractConfigSource getSource() {
 		return baseConfig.getSource();
 	}
 

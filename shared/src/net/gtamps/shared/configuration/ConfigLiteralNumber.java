@@ -5,11 +5,11 @@ public final class ConfigLiteralNumber extends AbstractConfigLiteral {
 
 	private static final long serialVersionUID = 1162946319680822921L;
 
-	ConfigLiteralNumber(final int i, final ConfigSource source) {
+	ConfigLiteralNumber(final int i, final AbstractConfigSource source) {
 		super(i, source);
 	}
 
-	ConfigLiteralNumber(final float f, final ConfigSource source) {
+	ConfigLiteralNumber(final float f, final AbstractConfigSource source) {
 		super(f, source);
 	}
 

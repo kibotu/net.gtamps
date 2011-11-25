@@ -24,7 +24,7 @@ public class ConfigListBuilderTest {
 	private ConfigBuilder otherBuilder;
 
 	@Mock
-	private ConfigSource source;
+	private AbstractConfigSource source;
 
 	@Mock
 	private Configuration sampleConfig;

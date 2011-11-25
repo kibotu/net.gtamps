@@ -4,18 +4,18 @@ package net.gtamps.shared.configuration;
 
 public abstract class ConfigBuilder {
 
-	protected final ConfigSource source;
+	protected final AbstractConfigSource source;
 	protected ConfigBuilder parent;
 
-	public static ConfigBuilder buildConfig(final ConfigSource source) {
+	public static ConfigBuilder buildConfig(final AbstractConfigSource source) {
 		return new ConfigMapBuilder(source);
 	}
 
-	protected ConfigBuilder(final ConfigSource source) {
+	protected ConfigBuilder(final AbstractConfigSource source) {
 		this(source, null);
 	}
 
-	protected ConfigBuilder(final ConfigSource source, final ConfigBuilder parent) {
+	protected ConfigBuilder(final AbstractConfigSource source, final ConfigBuilder parent) {
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be 'null'");
 		}

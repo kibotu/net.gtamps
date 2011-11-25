@@ -39,20 +39,20 @@ public class ConfigBuilderTest {
 	private static class MockConfigBuilderImplementation extends ConfigBuilder {
 		private final Set<Configuration> configStore;
 		private final Set<ConfigBuilder> builderStore;
-		protected MockConfigBuilderImplementation(final ConfigSource source, final Set<Configuration> configStore, final Set<ConfigBuilder> builderStore) {
+		protected MockConfigBuilderImplementation(final AbstractConfigSource source, final Set<Configuration> configStore, final Set<ConfigBuilder> builderStore) {
 			super(source);
 			this.builderStore = builderStore;
 			this.configStore = configStore;
 		}
-		protected MockConfigBuilderImplementation(final ConfigSource source, final ConfigBuilder parent, final Set<Configuration> configStore, final Set<ConfigBuilder> builderStore) {
+		protected MockConfigBuilderImplementation(final AbstractConfigSource source, final ConfigBuilder parent, final Set<Configuration> configStore, final Set<ConfigBuilder> builderStore) {
 			super(source, parent);
 			this.builderStore = builderStore;
 			this.configStore = configStore;
 		}
-		protected MockConfigBuilderImplementation(final ConfigSource source) {
+		protected MockConfigBuilderImplementation(final AbstractConfigSource source) {
 			this(source, null, null);
 		}
-		protected MockConfigBuilderImplementation(final ConfigSource source, final ConfigBuilder parent) {
+		protected MockConfigBuilderImplementation(final AbstractConfigSource source, final ConfigBuilder parent) {
 			this(source, parent, null, null);
 		}
 		@Override
@@ -90,7 +90,7 @@ public class ConfigBuilderTest {
 	@Mock
 	HashSet<ConfigBuilder> builderStore;
 	@Mock
-	private ConfigSource source;
+	private AbstractConfigSource source;
 	private ConfigBuilder configBuilder;
 
 	@Before

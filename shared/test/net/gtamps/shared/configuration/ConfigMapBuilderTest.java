@@ -18,7 +18,7 @@ public class ConfigMapBuilderTest {
 	private ConfigBuilder parent;
 
 	@Mock
-	private ConfigSource source;
+	private AbstractConfigSource source;
 
 	@Mock
 	private Configuration sampleConfig;

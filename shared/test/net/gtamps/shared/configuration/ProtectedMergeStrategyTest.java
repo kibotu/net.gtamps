@@ -114,6 +114,7 @@ public class ProtectedMergeStrategyTest {
 		assertEquals(expectedConfig, mergedConfig);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMerge_whenMergedWithNewSubKeys_shouldReturnEqualToOriginal() {
 		// setup
@@ -136,7 +137,7 @@ public class ProtectedMergeStrategyTest {
 	}
 
 	private Configuration createSomeRealConfiguration(final Random valueGenerator, final Set<String>...keySets) {
-		final ConfigBuilder builder = ConfigBuilder.buildConfig(new ConfigSource());
+		final ConfigBuilder builder = ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE);
 		if (keySets.length == 1) {
 			for (final String key : keySets[0]) {
 				builder.select(key).addValue(valueGenerator.nextFloat()).back();
