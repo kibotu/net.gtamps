@@ -28,9 +28,9 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
     private final Map<Integer, Player> players = new HashMap<Integer, Player>();
     private final Map<Integer, Player> inactivePlayers = new HashMap<Integer, Player>();
 
-    public PlayerManager(final Universe universe, final EntityManager entityManager) {
+    public PlayerManager(final Universe universe) {
         this.universe = universe;
-        this.entityManager = entityManager;
+        entityManager = universe.entityManager;
         players.put(WORLD_PSEUDOPLAYER.getUid(), WORLD_PSEUDOPLAYER);
     }
 

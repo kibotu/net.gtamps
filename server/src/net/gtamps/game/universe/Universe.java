@@ -43,7 +43,7 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
         this.height = height;
         eventManager = new EventManager(this);
         entityManager = new EntityManager(this);
-        playerManager = new PlayerManager(this, entityManager);
+        playerManager = new PlayerManager(this);
 
         eventManager.addEventListener(EventType.ACTION_EVENT, playerManager);
         eventManager.addEventListener(EventType.SESSION_EVENT, entityManager);
