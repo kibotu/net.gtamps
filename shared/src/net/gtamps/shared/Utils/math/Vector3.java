@@ -202,7 +202,7 @@ public final class Vector3 {
 	 * @see Vector3#getLengthSquared
 	 */
 	public float getLength() {
-		return FloatMath.sqrt(x*x + y*y + z*z);
+		return FloatMath.sqrt(x * x + y * y + z * z);
 	}
 	
 	/**
@@ -227,22 +227,15 @@ public final class Vector3 {
         return getDistance(from.x,from.y,from.z);
 	}
 
-    /**
-	 * Berechnet die Distanz zwischen zwei Vektoren
-     *
-     * @param x die x-Position des Vectors zu dem die Distanz berechnet werden soll
-     * @param y die y-Position des Vectors zu dem die Distanz berechnet werden soll
-     * @param z die z-Position des Vectors zu dem die Distanz berechnet werden soll
-	 * @return Die Distanz zwischen den Vektoren
-	 * @see Vector3#getDistanceSquared
-	 */
     public float getDistance(final float x, final float y, final float z) {
-        final float dx = x - this.x;
+		final float dx = x - this.x;
 		final float dy = y - this.y;
 		final float dz = z - this.z;
 		return FloatMath.sqrt(dx * dx + dy * dy + dz * dz);
-    }
+	}
 
+
+	
 	/**
 	 * Berechnet die quadratische Distanz zwischen zwei Vektoren
 	 * Diese Operation ist schneller als <code>getDistanceSquared()</code>
@@ -498,16 +491,6 @@ public final class Vector3 {
 		z = -z;
 	}
 
-    /**
-     * Multipliziert die Werte des Vectors mit einem bestimmten Faktor, ohne einen neuen Vektor generierne zu müssen
-     */
-    public void multiplyByFactor(float factor) {
-        x *= factor;
-        y *= factor;
-        z *= factor;
-    }
-
-
 	/**
 	 * Erzeugt eine identische Kopie
 	 * @return Die Kopie
@@ -603,20 +586,15 @@ public final class Vector3 {
 		return equals(Vector3.ZERO);
 	}
 
-    /**
-     * Computes the angle between two vectors.
-     * <p/>
-     * u * v = |u|*|v|*cos(angel)
-     * angle = acos( (u*v) / (|u|*|v|) )
-     *
-     * @param b
-     * @return angle in degrees
-     */
-    @Deprecated
-    public float angleInBetween(Vector3 b) {
-//        float angle = (float) Math.acos(dot(b)/((getLength()*b.getLength()))) / DEG;
-        return (float) (Math.atan2(x, y) - Math.atan2(b.x, b.y)) / MathUtils.DEG_TO_RAD;
-    }
+	/**
+	 * Bezieht den Absolutbetrag des Vektors
+	 * @return Der Vektor mit den Absolutbeträgen
+	 */
+	@ReturnsCachedValue
+    @NotNull
+	public final Vector3 getAbsolute() {
+		return Vector3.createNew(Math.abs(x), Math.abs(y), Math.abs(z));
+	}
 
 	/**
 	 * Wandelt alle Werte in ihre Absolutwerte um
@@ -631,6 +609,91 @@ public final class Vector3 {
 		return this;
 	}
 
+	/**
+	 * Ermittelt, ob dieser Vektor kleiner als ein anderer Vektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return Das Resultat
+	 */
+	public final boolean isSmallerThan(@NotNull final Vector3 other) {
+		return x < other.x - EPSILON && y < other.y - EPSILON && z < other.z - EPSILON;
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor kleiner als ein anderer Vektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return Das Resultat
+	 */
+	public final boolean isSmallerOrEqual(@NotNull final Vector3 other) {
+		return x <= other.x + EPSILON && y <= other.y + EPSILON && z <= other.z + EPSILON;
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor kleiner als ein anderer Vektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return Das Resultat
+	 */
+	public final boolean isGraterThan(@NotNull final Vector3 other) {
+		return x > other.x + EPSILON && y > other.y + EPSILON && z > other.z + EPSILON;
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor kleiner als ein anderer Vektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return Das Resultat
+	 */
+	public final boolean isGreaterOrEqual(@NotNull final Vector3 other) {
+		return x >= other.x - EPSILON && y >= other.y - EPSILON && z >= other.z - EPSILON;
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor länger als ein Vergleichsvektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return <code>true</code>, wenn dieser Vektor länger ist
+	 */
+	public final boolean isLongerThan(@NotNull final Vector3 other) {
+		return getLengthSquared() > other.getLengthSquared();
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor länger als ein Vergleichsvektor ist
+	 *
+	 * @param otherLength Die Länge des Vergleichsvektors
+	 * @return <code>true</code>, wenn dieser Vektor länger ist
+	 */
+	public final boolean isLongerThan(final float otherLength) {
+		return getLengthSquared() > (otherLength* otherLength);
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor kürzer als ein Vergleichsvektor ist
+	 *
+	 * @param other Der Vergleichsvektor
+	 * @return <code>true</code>, wenn dieser Vektor kürzer ist
+	 */
+	public final boolean isShorterThan(@NotNull final Vector3 other) {
+		return getLengthSquared() < other.getLengthSquared();
+	}
+
+	/**
+	 * Ermittelt, ob dieser Vektor kürzer als ein Vergleichsvektor ist
+	 *
+	 * @param otherLength Die Länge des Vergleichsvektors
+	 * @return <code>true</code>, wenn dieser Vektor kürzer ist
+	 */
+	public final boolean isShorterThan(final float otherLength) {
+		return getLengthSquared() < (otherLength * otherLength);
+	}
+
+    /**
+     * Rotiert den aktuellen Vektor um die X-Achse.
+     *
+     * @param angle Winkel in Grad, um den rotiert wird.
+     */
     public void rotateX(float angle) {
         float cosRY = (float) Math.cos(angle);
         float sinRY = (float) Math.sin(angle);
@@ -643,6 +706,11 @@ public final class Vector3 {
         temp.recycle();
     }
 
+    /**
+     * Rotiert den aktuellen Vektor um die Y-Achse.
+     *
+     * @param angle Winkel in Grad, um den rotiert wird.
+     */
     public void rotateY(float angle) {
         float cosRY = (float) Math.cos(angle);
         float sinRY = (float) Math.sin(angle);
@@ -655,6 +723,11 @@ public final class Vector3 {
         temp.recycle();
     }
 
+    /**
+     * Rotiert den aktuellen Vektor um die Z-Achse.
+     *
+     * @param angle Winkel in Grad, um den rotiert wird.
+     */
     public void rotateZ(float angle) {
         float cosRY = (float) Math.cos(angle);
         float sinRY = (float) Math.sin(angle);
