@@ -47,7 +47,8 @@ public interface Configuration extends Cloneable, Serializable, Iterable<Configu
 	 * */
 	public Boolean getBoolean();
 
-	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists */
+	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists 
+	 * @see ConfigSource */
 	public ConfigSource getSource();
 
 	/**
