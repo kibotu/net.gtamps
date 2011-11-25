@@ -75,6 +75,7 @@ public class DriverHandler extends Handler {
         driversHumanBody.disable();
 
         setDriver(player);
+        eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
         Logger.i().log(TAG, player + " enters car " + getParent());
     }
 
@@ -97,6 +98,7 @@ public class DriverHandler extends Handler {
             driversHumanBody.rota.set(carRota + exitRotation);
             driversHumanBody.enable();
             exDriver.setEntity(driversHumanBody);
+            eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
         }
         { // LOGGING
             final String logMsg = String.format("%s exits car %s", exDriver, getParent());
