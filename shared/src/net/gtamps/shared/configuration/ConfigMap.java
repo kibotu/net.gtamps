@@ -125,7 +125,18 @@ implements Configuration {
 
 	@Override
 	public boolean equals(final Object o) {
-		return entries.equals(o);
+		if (o == null) {
+			return false;
+		}
+		if (this.getClass() != o.getClass()) {
+			return false;
+		}
+		return entries.equals(((ConfigMap) o).entries);
+	}
+
+	@Override
+	public int hashCode() {
+		return entries.hashCode();
 	}
 
 	Configuration putConfiguration(final String key, final Configuration value) {

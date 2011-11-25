@@ -84,7 +84,18 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public boolean equals(final Object o) {
-		return entries.equals(o);
+		if (o == null) {
+			return false;
+		}
+		if (this.getClass() != o.getClass()) {
+			return false;
+		}
+		return entries.equals(((ConfigList) o).entries);
+	}
+
+	@Override
+	public int hashCode() {
+		return entries.hashCode();
 	}
 
 	@Override
