@@ -71,7 +71,4 @@ public class ProtectedMergeStrategy implements MergeStrategy {
 		return builder.getConfig();
 	}
 
-
-
-
 }
