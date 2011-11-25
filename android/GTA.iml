@@ -31,15 +31,6 @@
     <content url="file://$MODULE_DIR$/../shared">
       <sourceFolder url="file://$MODULE_DIR$/../shared/src" isTestSource="false" />
     </content>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="jdk" jdkName="Android 2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="shared" level="project" />
