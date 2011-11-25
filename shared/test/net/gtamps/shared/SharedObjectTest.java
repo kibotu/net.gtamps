@@ -49,13 +49,13 @@ public class SharedObjectTest extends Assert {
 		final OKExtensionAnnotation o = new OKExtensionAnnotation();
 		o.isShareable();
 	}
-	
+
 	@Test
 	public void OKMutualReferenceTest() {
 		final OKMutualReferenceA o = new OKMutualReferenceA();
 		o.isShareable();
 	}
-	
+
 	@Test
 	public void OKByAnnotationTest() {
 		final OKByAnnotation o = new OKByAnnotation();
@@ -64,42 +64,50 @@ public class SharedObjectTest extends Assert {
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionPackageTest() {
-			final WrongExtensionPackage o = new WrongExtensionPackage();
+		final WrongExtensionPackage o = new WrongExtensionPackage();
+		assertTrue(o.isShareable());
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionPackageListTest() {
-			final WrongExtensionPackageList o = new WrongExtensionPackageList();
-			o.listField = new ArrayList<Object>();
-			o.listField.add(new Object());
-			assert o.isShareable();
+		final WrongExtensionPackageList o = new WrongExtensionPackageList();
+		o.listField = new ArrayList<Object>();
+		o.listField.add(new Object());
+		assertTrue(o.isShareable());
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionInSubclassTest() {
-			final WrongExtensionInSubclass o = new WrongExtensionInSubclass();
+		final WrongExtensionInSubclass o = new WrongExtensionInSubclass();
+		assertTrue(o.subclassField.isShareable());
+		assertTrue(o.isShareable());
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionWrongMemberButIsNullTest() {
-			final WrongExtensionWrongMemberButIsNull o = new WrongExtensionWrongMemberButIsNull();
+		final WrongExtensionWrongMemberButIsNull o = new WrongExtensionWrongMemberButIsNull();
+		assertTrue(o.isShareable());
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongExtensionWrongMemberDeclaresOKTypeTest() {
-			final WrongExtensionWrongMemberDeclaresOKType o = new WrongExtensionWrongMemberDeclaresOKType();
+		final WrongExtensionWrongMemberDeclaresOKType o = new WrongExtensionWrongMemberDeclaresOKType();
+		assertTrue(o.subclassField.isShareable());
+		assertTrue(o.isShareable());
 	}
-	
+
 	@Test(expected = ClassCastException.class)
 	public void WrongNotFinalTest() {
-		new WrongNotFinal();
+		final SharedObject o = new WrongNotFinal();
+		assertTrue(o.isShareable());
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void WrongNotPublicTest() {
-		new WrongNotPublic();
+		final SharedObject o = new WrongNotPublic();
+		assertTrue(o.isShareable());
 	}
-	
+
 }
 
 class OKExtensionSelf extends SharedObject {
