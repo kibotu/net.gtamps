@@ -59,4 +59,9 @@ public interface Configuration extends Cloneable, Serializable, Iterable<Configu
 
 	public Object clone();
 
+	@Override
+	public boolean equals(Object o);
+	@Override
+	public int hashCode();
+
 }
