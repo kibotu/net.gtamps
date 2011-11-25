@@ -224,11 +224,17 @@ public final class Vector3 {
 	 * @see Vector3#getDistanceSquared
 	 */
 	public float getDistance(@NotNull final Vector3 from) {
-		final float dx = from.x - x;
-		final float dy = from.y - y;
-		final float dz = from.z - z;
+        return getDistance(from.x,from.y,from.z);
+	}
+
+    public float getDistance(final float x, final float y, final float z) {
+		final float dx = x - this.x;
+		final float dy = y - this.y;
+		final float dz = z - this.z;
 		return FloatMath.sqrt(dx * dx + dy * dy + dz * dz);
 	}
+
+
 	
 	/**
 	 * Berechnet die quadratische Distanz zwischen zwei Vektoren
