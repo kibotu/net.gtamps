@@ -48,25 +48,24 @@ public abstract class ConfigBuilder {
 	}
 
 	/**
+	 * try to cast value as one of the other possible types 
+	 * (see overloaded {@code addValue(...)} methods) and use one of these; 
+	 * otherwise, add as String
+	 * 
 	 * @return this builder
+	 * @see #addValue(int)
+	 * @see #addValue(float)
+	 * @see #addValue(boolean)
+	 * 
 	 */
 	public ConfigBuilder addValue(final String value) {
-		addBuilder(new ConfigLiteralBuilder(this.source, value, this));
-		return this;
-	}
-
-	/**
-	 * try to cast value to the best possible type and add it to this builder
-	 * @return	this builder
-	 * @throws IllegalArgumentException
-	 */
-	public ConfigBuilder addValue(final Object value) throws IllegalArgumentException {
-		if (value == null) {
-			addValue((String) null);
+		final ConfigBuilder otherBuilder = tryAsOtherAllowedType(value);
+		if (otherBuilder != null) {
+			return otherBuilder;
 		} else {
-			addValueBestPossibleType(value);
+			addBuilder(new ConfigLiteralBuilder(this.source, value, this));
+			return this;
 		}
-		return this;
 	}
 
 	/**
@@ -139,28 +138,56 @@ public abstract class ConfigBuilder {
 	protected abstract ConfigBuilder select(ConfigKey ckey);
 	protected abstract Configuration getBuild();
 
-	private ConfigBuilder addValueBestPossibleType(final Object value) throws IllegalArgumentException {
-		try {
-			final Number n = (Number) value;
-			final Integer i = (Integer) n;
-			final Float f  = (Float) n;
-			return addValue(i.equals(f) ? i : f);
-		} catch (final ClassCastException e) {}
-		try {
-			final boolean b = (Boolean) value;
-			return addValue(b);
-		} catch (final ClassCastException e) {}
-		try {
-			final String s = (String) value;
-			return addValue(s);
-		} catch (final ClassCastException e) {}
-		throw new IllegalArgumentException("cannot add a value of type " + value.getClass().getCanonicalName());
-	}
-
 	private void excludeDeepKeys(final ConfigKey ckey) {
 		if ("".equals(ckey.tail)) {
 			throw new IllegalArgumentException("key level exceeds 1. deep key selection not implemented (yet): " + ckey);
 		}
+	}
+
+	/**
+	 * @return	valid ConfigBuilder if <tt>value</tt> has been added as another type,
+	 * 			or {@code null}	
+	 */
+	private ConfigBuilder tryAsOtherAllowedType(final String value) {
+		if (value != null) {
+			final Integer i = tryAsInteger(value);
+			if (i != null) {
+				return addValue(i);
+			}
+			final Float f = tryAsFloat(value);
+			if (f != null) {
+				return addValue(f);
+			}
+			final Boolean b = tryAsBoolean(value);
+			if (b != null) {
+				return addValue(b);
+			}
+		} 
+		return null;
+	}
+
+	private Boolean tryAsBoolean(final String value) {
+		Boolean b = null;
+		if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+			b = Boolean.valueOf(value);
+		}
+		return b;
+	}
+
+	private Float tryAsFloat(final String value) {
+		Float f = null;
+		try {
+			f = Float.parseFloat(value);
+		} catch (final NumberFormatException e) {}
+		return f;
+	}
+
+	private Integer tryAsInteger(final String value) {
+		Integer i = null;
+		try {
+			i = Integer.parseInt(value, 10);
+		} catch (final NumberFormatException e) {}
+		return i;
 	}
 
 }

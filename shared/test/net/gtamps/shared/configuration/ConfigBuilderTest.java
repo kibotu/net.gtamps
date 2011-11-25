@@ -140,37 +140,27 @@ public class ConfigBuilderTest {
 	}
 
 	@Test
-	public void testAddValueObject_whenNullArgument_shouldWorkOK() {
-		configBuilder.addValue((Object)null);
-	}
-
-	@Test
-	public void testAddValueObject_whenIntArgument_shouldAddIntLiteralBuilder() {
+	public void testAddValueString_whenIntArgument_shouldAddIntLiteralBuilder() {
 		configBuilder.addValue(1);
 		verify(builderStore).add(literalBuilderType(Integer.class));
 	}
 
 	@Test
-	public void testAddValueObject_whenFloatArgument_shouldAddFloatLiteralBuilder() {
+	public void testAddValueString_whenFloatArgument_shouldAddFloatLiteralBuilder() {
 		configBuilder.addValue(1f);
 		verify(builderStore).add(literalBuilderType(Float.class));
 	}
 
 	@Test
-	public void testAddValueObject_whenBoolArgument_shouldAddBoolLiteralBuilder() {
+	public void testAddValueString_whenBoolArgument_shouldAddBoolLiteralBuilder() {
 		configBuilder.addValue(true);
 		verify(builderStore).add(literalBuilderType(Boolean.class));
 	}
 
 	@Test
-	public void testAddValueObject_whenStringArgument_shouldAddStringLiteralBuilder() {
+	public void testAddValueString_whenStringArgument_shouldAddStringLiteralBuilder() {
 		configBuilder.addValue("string");
 		verify(builderStore).add(literalBuilderType(String.class));
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testAddValueObject_whenWrongArgumentType_shouldThrowIllegalArgumentException() {
-		configBuilder.addValue(new Object());
 	}
 
 	@Test
