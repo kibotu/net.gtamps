@@ -1,6 +1,6 @@
 package net.gtamps.shared.configuration;
 
-public final class ConfigLiteralString extends AbstractConfigLiteral {
+public final class ConfigLiteralString extends AbstractConfigLiteral<String> {
 
 	private static final long serialVersionUID = 6917569881343326134L;
 
@@ -9,7 +9,7 @@ public final class ConfigLiteralString extends AbstractConfigLiteral {
 	}
 
 	@Override
-	public AbstractConfigLiteral clone() {
+	public AbstractConfigLiteral<String> clone() {
 		return new ConfigLiteralString(getString(), source);
 	}
 

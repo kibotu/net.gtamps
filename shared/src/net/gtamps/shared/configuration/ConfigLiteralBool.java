@@ -1,6 +1,6 @@
 package net.gtamps.shared.configuration;
 
-public final class ConfigLiteralBool extends AbstractConfigLiteral {
+public final class ConfigLiteralBool extends AbstractConfigLiteral<Boolean> {
 
 	private static final long serialVersionUID = -60591522857097794L;
 
@@ -10,11 +10,11 @@ public final class ConfigLiteralBool extends AbstractConfigLiteral {
 
 	@Override
 	public Boolean getBoolean() {
-		return (Boolean) this.value;
+		return this.value;
 	}
 
 	@Override
-	public AbstractConfigLiteral clone() {
+	public AbstractConfigLiteral<Boolean> clone() {
 		return new ConfigLiteralBool(getBoolean(), source);
 	}
 
