@@ -31,7 +31,7 @@ public class XMLConfigLoaderTest {
 	private static final String SIMPLE_CONFIG_STRING_XML = "" +
 	"<X><CONFIG value=\"true\" more=\"false\"/></X>";
 
-	private static final Configuration SIMPLE_CONFIG = ConfigBuilder.buildConfig(new ConfigSource())
+	private static final Configuration SIMPLE_CONFIG = ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE)
 	.select("CONFIG").addMap() //
 	.select("value").addValue(true).back().select("more").addValue(false).back().back().back() //
 	.back().back()
@@ -54,7 +54,7 @@ public class XMLConfigLoaderTest {
 	"	</game>" +
 	"</GTACONFIG>";
 
-	private static final Configuration SAMPLE_CONFIG = ConfigBuilder.buildConfig(new ConfigSource())
+	private static final Configuration SAMPLE_CONFIG = ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE)
 	//	.select("GTACONFIG").addMap()	// loader ignores root element!
 	/**/.select("SERVER").addMap()	// each 'select(...)' or 'addMap()' moves the context one level deeper 
 	/**//**/.select("SETUP").addMap()// and requires one 'back()' each to get back to original building context	

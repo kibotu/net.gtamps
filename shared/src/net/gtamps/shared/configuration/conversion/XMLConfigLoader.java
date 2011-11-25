@@ -25,7 +25,7 @@ public class XMLConfigLoader implements ConfigLoader {
 	public XMLConfigLoader(final InputStream input) {
 		this.input = input;
 		// TODO
-		this.configSource = new ConfigSource();
+		this.configSource = ConfigSource.EMPTY_SOURCE;
 	}
 
 	//TODO better exception handling
