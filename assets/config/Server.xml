@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+<SERVER>
+	<SETUP>
+		<TCP port="8095">
+			<SOCKETHANDLER class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
+			<SERIALIZER class="net.gtamps.shared.serializer.communication.ObjectSerializer"/>
+		</TCP>
+		<SESSIONHANDLER maxSessions="0"/>
+		<CONTROL maxGames="0" maxPlayers="0"/>
+	</SETUP>
+</SERVER>
+</CONFIG>
