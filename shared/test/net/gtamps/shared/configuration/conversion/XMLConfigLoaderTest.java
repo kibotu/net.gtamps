@@ -78,8 +78,6 @@ public class XMLConfigLoaderTest {
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();
 
 		// assert
-		System.out.println(SIMPLE_CONFIG);
-		System.out.println(loadedConfig);
 		assertEquals(SIMPLE_CONFIG, loadedConfig);
 	}
 
@@ -93,8 +91,6 @@ public class XMLConfigLoaderTest {
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();
 
 		// assert
-		System.out.println(SAMPLE_CONFIG);
-		System.out.println(loadedConfig);
 		assertEquals(SAMPLE_CONFIG, loadedConfig);
 	}
 
