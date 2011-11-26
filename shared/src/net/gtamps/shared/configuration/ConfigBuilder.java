@@ -11,6 +11,10 @@ public abstract class ConfigBuilder {
 		return new ConfigMapBuilder(source);
 	}
 
+	public static Configuration getEmptyConfiguration() {
+		return ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE).getConfig();
+	}
+
 	protected ConfigBuilder(final AbstractConfigSource source) {
 		this(source, null);
 	}

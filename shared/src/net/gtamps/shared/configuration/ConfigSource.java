@@ -50,7 +50,7 @@ public final class ConfigSource extends AbstractConfigSource {
 		.append("ConfigSource [")
 		.append(type.getSimpleName())
 		.append(": ")
-		.append(name == null ? "" : name)
+		.append(name == null  || this.equals(EMPTY_SOURCE)? "EMPTY" : name)
 		.append("]")
 		.toString();
 	}

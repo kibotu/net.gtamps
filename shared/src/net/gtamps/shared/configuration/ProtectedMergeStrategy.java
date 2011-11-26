@@ -47,7 +47,7 @@ public class ProtectedMergeStrategy implements MergeStrategy {
 		if (baseConfig == null) {
 			return otherConfig;
 		}
-		if (otherConfig == null || otherConfig == baseConfig) {
+		if (otherConfig == null || otherConfig.equals(baseConfig)) {
 			return baseConfig;
 		}
 		final ConfigBuilder builder = ConfigBuilder.buildConfig(getMergeSource(baseConfig, otherConfig));

@@ -23,11 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class XMLConfigLoaderTest {
 
-	@SuppressWarnings("unused")
-	private static final String XML_FILE_PATH = "../assets/config";
-	@SuppressWarnings("unused")
-	private static final String XML_FILE_NAME = "EntityDefs.xml";
-
 	private static final String SIMPLE_CONFIG_STRING_XML = "" +
 	"<X><CONFIG value=\"true\" more=\"false\"/></X>";
 
@@ -77,7 +72,7 @@ public class XMLConfigLoaderTest {
 	public void testLoadConfig_fromSimpleString_shouldMatchSimpleConfig() throws JDOMException, IOException {
 		// setup
 		final InputStream stringInput = generateInputStreamFromString(SIMPLE_CONFIG_STRING_XML);
-		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput);
+		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput, new ConfigSource("testing"));
 
 		// run
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();
@@ -92,7 +87,7 @@ public class XMLConfigLoaderTest {
 	public void testLoadConfig_fromString_shouldMatchSampleConfig() throws JDOMException, IOException {
 		// setup
 		final InputStream stringInput = generateInputStreamFromString(SAMPLE_CONFIG_STRING_XML);
-		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput);
+		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput, new ConfigSource("testing"));
 
 		// run
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();

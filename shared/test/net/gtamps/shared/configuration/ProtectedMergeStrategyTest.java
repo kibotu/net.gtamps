@@ -63,6 +63,22 @@ public class ProtectedMergeStrategyTest {
 	}
 
 	@Test
+	public void testMerge_whenMergedWithEmpty_shouldReturnBaseConfig() {
+		final Configuration mergedConfig = mergeStrategy.merge(baseConfig, ConfigBuilder.getEmptyConfiguration());
+		assertSame(baseConfig, mergedConfig);
+	}
+
+	@Test
+	public void testMerge_whenInstantiatedWithEmptyAndNotMergedWithNull_shouldReturnOther() {
+		// run
+		final Configuration mergedConfig = mergeStrategy.merge(ConfigBuilder.getEmptyConfiguration(), otherConfig);
+
+		// assert
+		assertSame(mergedConfig, otherConfig);
+	}
+
+
+	@Test
 	public void testMerge_whenMergedWithSelf_shouldReturnSelf() {
 		final Configuration mergedConfig = mergeStrategy.merge(baseConfig, baseConfig);
 		assertSame(baseConfig, mergedConfig);
