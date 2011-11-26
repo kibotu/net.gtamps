@@ -30,11 +30,6 @@ public final class GTAMultiplayerServer {
     public static final String DEFAULT_MAP = "tinycity.xml";
 
     private static Configuration CONFIG = ConfigBuilder.getEmptyConfiguration();
-//    public static final ISerializer SERIALIZER = initSerializer();
-//    public static final ISocketHandler SOCK_HANDLER = new LengthEncodedTCPSocketHandler<ISerializer>(SERIALIZER);
-
-//    public static final ISerializer SERIALIZER = new ManualTypeSerializer();
-//    public static final ISocketHandler SOCK_HANDLER = new LineBasedTCPSocketHandler<ISerializer>(SERIALIZER);
 
     public static void main(final String[] args){
         Logger.getInstance().log(LogType.SERVER, "This is where it all begins.");
@@ -70,6 +65,7 @@ public final class GTAMultiplayerServer {
 	        final ControlCenter cc = ControlCenter.instance;
 	        Logger.getInstance().log(LogType.SERVER, "control center initialized: " + cc.toString());
     	} catch (final Exception e) {
+    		Logger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown: " + e);
     		XSocketServer.shutdownServer();
     		if (httpServer != null) {
     			httpServer.stopServer();
@@ -80,6 +76,7 @@ public final class GTAMultiplayerServer {
     }
 
 	private static ISocketHandler initSockHandler(final ISerializer serializer) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
+		@SuppressWarnings("unchecked")
 		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("server.setup.tcp.sockethandler.class").getString()).getConstructor(ISerializer.class);
 		return constructor.newInstance(serializer);
 	}
