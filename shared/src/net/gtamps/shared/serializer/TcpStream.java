@@ -32,8 +32,7 @@ public class TcpStream implements IStream {
             socket.setReceiveBufferSize(Config.SOCKET_MAX_RECEIVE_BUFFER_SIZE);
             socket.setKeepAlive(Config.SOCKET_KEEP_ALIVE_ENABLED);
             socket.setTcpNoDelay(Config.SOCKET_TCP_NO_DELAY);
-            socket.setSoTimeout(Config.SOCKET_TIMEOUT);
-//            socket.setReuseAddress(true);
+            socket.setReuseAddress(true);
         } catch (SocketException e) {
             Logger.printException(this, e);
         }
@@ -44,7 +43,7 @@ public class TcpStream implements IStream {
         initSocket();
         if (socket.isConnected()) return false;
         try {
-            socket.connect(new InetSocketAddress(host, port));
+            socket.connect(new InetSocketAddress(host, port), Config.SOCKET_TIMEOUT);
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {

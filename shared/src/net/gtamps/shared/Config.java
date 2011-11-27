@@ -2,6 +2,8 @@ package net.gtamps.shared;
 
 import net.gtamps.shared.Utils.Logger;
 
+import java.util.ArrayList;
+
 final public class Config {
 
     /**
@@ -39,19 +41,30 @@ final public class Config {
     /**
      * SOCKET
      */
-    public static final String TIL_IP_HOME = "192.168.1.27";
-    public static final String TIL_IP_JAN_HOME = "192.168.2.102";
-    public static final String TIL_IP_INI = "192.168.178.24";
-    public static final String JAN_IP_HOME = "192.168.2.101";
-    public static final String JAN_IP_INI = "192.168.178.23";
-    public static final String LOCALHOST = "localhost";
+    public static final ArrayList<String> IPS;
+//    public static final String TIL_IP_HOME = "192.168.1.27";
+//    public static final String TIL_IP_JAN_HOME = "192.168.2.102";
+//    public static final String TIL_IP_INI = "192.168.178.24";
+//    public static final String JAN_IP_HOME = "192.168.2.101";
+//    public static final String JAN_IP_INI = "192.168.178.23";
+//    public static final String LOCALHOST = "localhost";
 
-    public static final String SERVER_DEFAULT_HOST_ADDRESS = TIL_IP_INI;
+    static {
+        IPS = new ArrayList<String>(10);
+        IPS.add("localhost");
+        IPS.add("192.168.1.27");
+        IPS.add("192.168.2.102");
+        IPS.add("192.168.178.24");
+        IPS.add("192.168.2.101");
+        IPS.add("192.168.178.23");
+    }
+
+    public static final String SERVER_DEFAULT_HOST_ADDRESS = "localhost";
     public static final int SERVER_DEFAULT_PORT = 8095;
 
     public static final int SOCKET_MAX_SEND_BUFFER_SIZE = 0xFFFF;
     public static final int SOCKET_MAX_RECEIVE_BUFFER_SIZE = 0xFFFF;
-    public static final int SOCKET_TIMEOUT = 7000;
+    public static final int SOCKET_TIMEOUT = 300;
     public static final boolean SOCKET_KEEP_ALIVE_ENABLED = true;
     public static final boolean SOCKET_TCP_NO_DELAY = true;
     public static final long SOCKET_INBOX_LATENCY = 0;
