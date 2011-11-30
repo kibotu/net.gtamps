@@ -20,6 +20,12 @@ public class Sprite extends RenderableNode {
         bufferedTexture = null;
     }
 
+    public Sprite(Sprite other) {
+        this.mesh = new Mesh(other.mesh);
+        this.dimension.set(other.dimension);
+        this.scaling.set(other.scaling);
+    }
+
     /**
      * Constructs a new Sprite.
      *
@@ -138,6 +144,11 @@ public class Sprite extends RenderableNode {
     @Override
     public int hashCode() {
         return bufferedTexture.hashCode();
+    }
+
+    @Override
+    public RenderableNode getStatic() {
+        return new Sprite(this);
     }
 
     @Override

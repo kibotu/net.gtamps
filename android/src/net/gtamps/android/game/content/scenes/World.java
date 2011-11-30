@@ -9,7 +9,6 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.shared.Utils.math.Color4;
-import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class World extends EntityScene {
@@ -27,17 +26,17 @@ public class World extends EntityScene {
         Camera camera = new Camera(0, 0, 30, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
-
-        activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
-        activeView.getObject3d().add(getSpotLight());
-        add(activeView);
-        EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
-        camaro.getObject3d().setPosition(-3, 0, 0);
-        add(camaro);
-
-        EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_CHEVROLET_CORVETTE));
-        riviera.getObject3d().setPosition(3, 0, 0);
-        add(riviera);
+//
+//        activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
+//        activeView.getObject3d().add(getSpotLight());
+//        add(activeView);
+//        EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
+//        camaro.getObject3d().setPosition(-3, 0, 0);
+//        add(camaro);
+//
+//        EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_CHEVROLET_CORVETTE));
+//        riviera.getObject3d().setPosition(3, 0, 0);
+//        add(riviera);
 
         add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));
@@ -116,5 +115,9 @@ public class World extends EntityScene {
 
     @Override
     public void onDirty() {
+    }
+
+    public boolean hasPlayer() {
+        return hasPlayer();
     }
 }

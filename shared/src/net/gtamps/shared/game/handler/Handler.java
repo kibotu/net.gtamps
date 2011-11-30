@@ -1,12 +1,15 @@
 package net.gtamps.shared.game.handler;
 
 
+import java.util.Set;
+
 import net.gtamps.shared.game.IGameActor;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
@@ -16,106 +19,99 @@ import net.gtamps.shared.game.event.IGameEventListener;
  *
  * @author jan, tom, til
  */
-public class Handler implements IGameActor {
+public abstract class Handler implements IGameActor {
 
-    public enum Type {
-        DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
-    }
+	public enum Type {
+		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH
+	}
 
-    protected final Type type;
-    protected final Entity parent;
-    protected final IGameActor actor;
-
-
-    public Handler(Type type, Entity parent) {
-        if (parent == null) {
-            throw new IllegalArgumentException("'parent' must not be null");
-        }
-        this.actor = new SharedGameActor(type.name().toLowerCase());
-        this.parent = parent;
-        this.type = type;
-    }
-
-    @Override
-    public String getName() {
-        return actor.getName();
-    }
-
-    public void addEventListener(EventType type, IGameEventListener listener) {
-        actor.addEventListener(type, listener);
-    }
+	protected final Type type;
+	protected final Entity parent;
+	protected final IGameActor actor;
+	protected final IGameEventDispatcher eventRoot;
 
 
-    public void receiveEvent(GameEvent event) {
-        actor.receiveEvent(event);
-    }
+	public Handler(final IGameEventDispatcher eventRoot, final Type type, final Entity parent) {
+		if (parent == null) {
+			throw new IllegalArgumentException("'parent' must not be null");
+		}
+		this.actor = new SharedGameActor(type.name().toLowerCase());
+		this.parent = parent;
+		this.type = type;
+		this.eventRoot = eventRoot;
+		actor.addEventListener(EventType.GAME_EVENT, this);
+	}
 
+	@Override
+	public void enable() {
+		actor.enable();
+	}
 
-    public boolean isEnabled() {
-        return actor.isEnabled();
-    }
+	@Override
+	public void disable() {
+		actor.disable();
+	}
 
+	@Override
+	public String getName() {
+		return actor.getName();
+	}
 
-    public void enable() {
-        actor.enable();
-    }
+	@Override
+	public void addEventListener(final EventType type, final IGameEventListener listener) {
+		actor.addEventListener(type, listener);
+	}
 
+	@Override
+	public boolean isEnabled() {
+		return actor.isEnabled();
+	}
 
-    public void disable() {
-        actor.disable();
-    }
+	@Override
+	public void removeEventListener(final EventType type, final IGameEventListener listener) {
+		actor.removeEventListener(type, listener);
+	}
 
+	@Override
+	public void connectUpwardsActor(final IGameActor other) {
+		actor.connectUpwardsActor(other);
+	}
 
-    public void removeEventListener(EventType type, IGameEventListener listener) {
-        actor.removeEventListener(type, listener);
-    }
+	@Override
+	public void dispatchEvent(final GameEvent event) {
+		actor.dispatchEvent(event);
+	}
 
+	@Override
+	public boolean isRegisteredListener(final IGameEventListener listener) {
+		return actor.isRegisteredListener(listener);
+	}
 
-    public void connectUpwardsActor(SharedGameActor other) {
-        actor.connectUpwardsActor(other);
-    }
+	@Override
+	public void disconnectUpwardsActor(final IGameActor other) {
+		actor.disconnectUpwardsActor(other);
+	}
 
+	@Override
+	public void setReceives(final EventType[] receivesDown) {
+		actor.setReceives(receivesDown);
+	}
 
-    public void dispatchEvent(GameEvent event) {
-        actor.dispatchEvent(event);
-    }
+	public Entity getParent() {
+		return this.parent;
+	}
 
+	@Override
+	public String toString() {
+		String s = "";
+		s = String.format("%s (%s)", this.getName(), this.isEnabled() ? "on" : "off");
+		return s;
+	}
 
-    public void connectDownwardsActor(SharedGameActor actor) {
-        actor.connectDownwardsActor(actor);
-    }
+	@Override
+	public void registerListeningActor(final IGameActor listener, final Set<EventType> types) {
+		actor.registerListeningActor(listener, types);
 
-
-    public void disconnectUpwardsActor(SharedGameActor other) {
-        actor.disconnectUpwardsActor(other);
-    }
-
-
-    public void disconnectDownwardsActor(SharedGameActor actor) {
-        actor.disconnectDownwardsActor(actor);
-    }
-
-
-    public void setSendsUp(EventType[] sendsUp) {
-        actor.setSendsUp(sendsUp);
-    }
-
-
-    public void setReceivesDown(EventType[] receivesDown) {
-        actor.setReceivesDown(receivesDown);
-    }
-
-
-    public Entity getParent() {
-        return this.parent;
-    }
-
-
-    @Override
-    public String toString() {
-        String s = "";
-        s = String.format("%s (%s)", this.getName(), this.isEnabled() ? "on" : "off");
-        return s;
-    }
+	}
 
 }

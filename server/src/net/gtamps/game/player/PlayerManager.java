@@ -1,7 +1,10 @@
 package net.gtamps.game.player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.gtamps.game.entity.EntityManager;
-import net.gtamps.game.world.World;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.User;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -9,9 +12,6 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
 import net.gtamps.shared.game.player.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Manages player. Players once created cannot be removed from the game,
@@ -23,14 +23,14 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
 
     public static final Player WORLD_PSEUDOPLAYER = new Player("world");
 
-    private final World world;
+    private final Universe universe;
     private final EntityManager entityManager;
     private final Map<Integer, Player> players = new HashMap<Integer, Player>();
     private final Map<Integer, Player> inactivePlayers = new HashMap<Integer, Player>();
 
-    public PlayerManager(final World world, final EntityManager entityManager) {
-        this.world = world;
-        this.entityManager = entityManager;
+    public PlayerManager(final Universe universe) {
+        this.universe = universe;
+        entityManager = universe.entityManager;
         players.put(WORLD_PSEUDOPLAYER.getUid(), WORLD_PSEUDOPLAYER);
     }
 
@@ -45,7 +45,7 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
         final int uid = player.getUid();
         players.put(uid, player);
         coupleEventLinks(player);
-        dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));
+        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));
         return player;
     }
 
@@ -71,7 +71,7 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
         players.remove(uid);
         inactivePlayers.put(uid, player);
         decoupleEventLinks(player);
-        dispatchEvent(new GameEvent(EventType.PLAYER_LEAVES, player));
+        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_LEAVES, player));
     }
 
     public void activatePlayer(final int uid) {
@@ -82,7 +82,7 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
         inactivePlayers.remove(uid);
         players.put(uid, player);
         coupleEventLinks(player);
-        dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));
+        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_JOINS, player));
     }
 
 
@@ -101,10 +101,11 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
         //TODO create proper entity
         // create default entity at default location and add
         //PositionProperty pp = (PositionProperty) world.getRandomSpawnPoint().getProperty(Type.POSITION);
-        final Entity spawn = world.getRandomSpawnPoint();
+        final Entity spawn = universe.getRandomSpawnPoint();
         final Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
         p.setEntity(e);
-        dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
+        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
+        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, e, p));
         return true;
     }
 

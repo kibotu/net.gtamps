@@ -1,6 +1,5 @@
 package net.gtamps.android.core.renderer.graph;
 
-import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.IDirty;
@@ -113,12 +112,13 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     private boolean lineSmoothing = true;
 
-    public RenderableNode(@Nullable Mesh mesh) {
-        this.mesh = mesh;
+    public RenderableNode(@NotNull RenderableNode other) {
+        this.mesh = new Mesh(other.getMesh());
+        this.dimension.set(other.dimension);
+        this.scaling.set(other.scaling);
     }
 
     public RenderableNode() {
-        this(null);
     }
 
     @Override
@@ -161,9 +161,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // shading
         gl.glShadeModel(renderState.shader.getValue());
-
-//        Registry.getRenderer().createProgram();
-
 
         // enable color materials
         if (colorMaterialEnabled) {
@@ -587,4 +584,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     public void setRenderState(RenderState renderState) {
         this.renderState = renderState;
     }
+
+    public abstract RenderableNode getStatic();
 }

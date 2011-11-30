@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
-@Deprecated
 public class ParsedObject extends RenderableNode {
 
     public String name;
@@ -21,6 +20,12 @@ public class ParsedObject extends RenderableNode {
 
     public ParsedObject(int maxVertices, int maxFaces) {
         mesh = new Mesh(maxVertices, maxFaces);
+    }
+
+    public ParsedObject(ParsedObject other) {
+        mesh = new Mesh(other.mesh);
+        this.dimension.set(other.dimension);
+        this.scaling.set(other.scaling);
     }
 
     public static ParsedObject parseObject(String objname, int textureResourceId, boolean generateMipMap) {
@@ -33,6 +38,11 @@ public class ParsedObject extends RenderableNode {
 
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+    }
+
+    @Override
+    public RenderableNode getStatic() {
+        return new ParsedObject(this);
     }
 
     @Override

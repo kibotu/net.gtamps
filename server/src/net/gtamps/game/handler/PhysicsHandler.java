@@ -1,6 +1,8 @@
 package net.gtamps.game.handler;
 
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.server.gui.LogType;
@@ -9,17 +11,17 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PhysicsHandler extends SimplePhysicsHandler {
 
     protected ConcurrentLinkedQueue<GameEvent> actionQueue = new ConcurrentLinkedQueue<GameEvent>();
 
-    public PhysicsHandler(final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
-        super(parent, physicalRepresentation, physicalProperties);
+    public PhysicsHandler(final IGameEventDispatcher eventRoot, final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
+        super(eventRoot, parent, physicalRepresentation, physicalProperties);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class PhysicsHandler extends SimplePhysicsHandler {
             final EventType pa = actionQueue.poll().getType();
 
             if (pa == EventType.ACTION_SUICIDE) {
-                dispatchEvent(new CollisionEvent(parent, parent, 100f));
+                eventRoot.dispatchEvent(new CollisionEvent(parent, parent, 100f));
             }
 
             if (physicalProperties.TYPE == PhysicalProperties.Type.CAR) {

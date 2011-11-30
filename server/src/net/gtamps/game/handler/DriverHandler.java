@@ -7,8 +7,10 @@ import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
+
 import org.jbox2d.common.Vec2;
 
 /**
@@ -49,10 +51,9 @@ public class DriverHandler extends Handler {
     private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
             EventType.ACTION_ENTEREXIT};
 
-    public DriverHandler(final Entity parent) {
-        super(Handler.Type.DRIVER, parent);
-        setSendsUp(sendsUp);
-        setReceivesDown(receivesDown);
+    public DriverHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
+        super(eventRoot, Handler.Type.DRIVER, parent);
+        setReceives(receivesDown);
         connectUpwardsActor(parent);
     }
 
@@ -74,6 +75,7 @@ public class DriverHandler extends Handler {
         driversHumanBody.disable();
 
         setDriver(player);
+        eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
         Logger.i().log(TAG, player + " enters car " + getParent());
     }
 
@@ -96,6 +98,7 @@ public class DriverHandler extends Handler {
             driversHumanBody.rota.set(carRota + exitRotation);
             driversHumanBody.enable();
             exDriver.setEntity(driversHumanBody);
+            eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
         }
         { // LOGGING
             final String logMsg = String.format("%s exits car %s", exDriver, getParent());

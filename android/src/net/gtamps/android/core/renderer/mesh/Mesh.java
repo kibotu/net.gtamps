@@ -6,6 +6,7 @@ import net.gtamps.android.core.renderer.mesh.buffermanager.VertexManager;
 import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -17,12 +18,19 @@ public class Mesh {
     public final FaceManager faces;
 
     // gpu-server-side
-    protected Vbo vbo;
+    protected Vbo vbo = new Vbo();
 
     public Mesh(int maxAmountVertex, int maxAmountFaces) {
         vertices = new VertexManager(maxAmountVertex);
         textures = new TextureManager();
         faces = new FaceManager(maxAmountFaces);
+    }
+
+    public Mesh(@NotNull Mesh mesh) {
+        this.vbo.set(mesh.vbo);
+        vertices = null;
+        textures = null;
+        faces = null;
     }
 
     /**
@@ -50,7 +58,8 @@ public class Mesh {
     }
 
     public void setup(GL10 gl) {
-        vbo = new Vbo(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
+        if(vbo.isAllocated()) return;
+        vbo.set(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
         vbo.allocBuffers(gl);
     }
 

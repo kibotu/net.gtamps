@@ -24,3 +24,4 @@ default.properties
 *.ttf
 *.autosave
 *~
+*.pyc

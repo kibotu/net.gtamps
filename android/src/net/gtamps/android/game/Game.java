@@ -60,7 +60,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
         // hud
         scenes.add(hud);
-//        hud.getScene().setVisible(false);
+        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
 //        menu.getScene().setVisible(false);
@@ -90,6 +90,12 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             for (int i = 0; i < message.sendables.size(); i++) {
                 handleMessage(message.sendables.get(i), message);
             }
+        }
+
+        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+            Vector3 temp = world.getActiveView().getObject3d().getPosition();
+            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z);
+            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }
 
@@ -356,18 +362,18 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 break;
             case PLAYER_LEAVES:
                 break;
-            case PLAYER_NEWENTITY:
+            case ENTITY_NEW_PLAYER:
 
                 // source no player
                 if (!(event.getSource() instanceof Player)) break;
 
                 // player not active player
-                Player player = (Player) event.getSource();
+                Player player = (Player) event.getTarget();
                 if (!world.playerManager.getActivePlayer().equals(player)) break;
 
                 // target no entity
                 if (!(event.getTarget() instanceof Entity)) break;
-                Entity serverEntity = (Entity) event.getTarget();
+                Entity serverEntity = (Entity) event.getSource();
 
                 // new active object
                 EntityView entityView = world.getViewById(serverEntity.getUid());

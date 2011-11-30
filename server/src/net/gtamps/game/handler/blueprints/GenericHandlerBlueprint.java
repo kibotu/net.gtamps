@@ -1,11 +1,12 @@
 package net.gtamps.game.handler.blueprints;
 
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.handler.Handler;
-import net.gtamps.shared.game.handler.HandlerBlueprint;
-
 import java.lang.reflect.Constructor;
 import java.util.NoSuchElementException;
+
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.game.handler.HandlerBlueprint;
 
 /**
  * generic blueprint for handlers that do not need special initialization,
@@ -18,8 +19,8 @@ public class GenericHandlerBlueprint<H extends Handler> extends HandlerBlueprint
 
     private final Class<H> classObject;
 
-    public GenericHandlerBlueprint(final Class<H> classObject, final Handler.Type type) {
-        super(type);
+    public GenericHandlerBlueprint(final IGameEventDispatcher eventRoot, final Class<H> classObject, final Handler.Type type) {
+        super(eventRoot, type);
         this.classObject = classObject;
     }
 
@@ -45,7 +46,7 @@ public class GenericHandlerBlueprint<H extends Handler> extends HandlerBlueprint
 
     @Override
     public HandlerBlueprint copy() {
-        return new GenericHandlerBlueprint<H>(classObject, getType());
+        return new GenericHandlerBlueprint<H>(eventRoot, classObject, getType());
     }
 
 }

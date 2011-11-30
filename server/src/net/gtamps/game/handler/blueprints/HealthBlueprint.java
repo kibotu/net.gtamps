@@ -1,11 +1,12 @@
 package net.gtamps.game.handler.blueprints;
 
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.handler.Handler;
-import net.gtamps.shared.game.handler.HandlerBlueprint;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.game.handler.HandlerBlueprint;
 
 public class HealthBlueprint extends HandlerBlueprint {
 
@@ -15,19 +16,19 @@ public class HealthBlueprint extends HandlerBlueprint {
     private final int dmgThreshold;
     private final float dmgMultiplier;
 
-    public HealthBlueprint(final int maxHealth) {
-        this(maxHealth, 0f, 0);
+    public HealthBlueprint(final IGameEventDispatcher eventRoot, final int maxHealth) {
+        this(eventRoot, maxHealth, 0f, 0);
     }
 
-    public HealthBlueprint(final int maxHealth, final float dmgMultiplier, final int dmgThreshold) {
-        super(Handler.Type.HEALTH);
+    public HealthBlueprint(final IGameEventDispatcher eventRoot, final int maxHealth, final float dmgMultiplier, final int dmgThreshold) {
+        super(eventRoot, Handler.Type.HEALTH);
         this.maxHealth = maxHealth;
         this.dmgMultiplier = dmgMultiplier;
         this.dmgThreshold = dmgThreshold;
     }
 
     public HealthBlueprint(final HealthBlueprint other) {
-        this(other.maxHealth, other.dmgMultiplier, other.dmgThreshold);
+        this(other.eventRoot, other.maxHealth, other.dmgMultiplier, other.dmgThreshold);
     }
 
     @Override
@@ -40,8 +41,8 @@ public class HealthBlueprint extends HandlerBlueprint {
         Handler instance = null;
         try {
             final Class<?> handlerClass = Class.forName(handlerName);
-            final Constructor<?> constructor = handlerClass.getConstructor(Entity.class, int.class, float.class, int.class);
-            final Object hobject = constructor.newInstance(parent, maxHealth, dmgMultiplier, dmgThreshold);
+            final Constructor<?> constructor = handlerClass.getConstructor(IGameEventDispatcher.class, Entity.class, int.class, float.class, int.class);
+            final Object hobject = constructor.newInstance(eventRoot, parent, maxHealth, dmgMultiplier, dmgThreshold);
             instance = (Handler) hobject;
         } catch (final ClassNotFoundException e) {
             e.printStackTrace();

@@ -9,6 +9,7 @@ import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 public class HealthHandler extends Handler {
@@ -21,14 +22,13 @@ public class HealthHandler extends Handler {
     private final int dmgThreshold;
     private final float dmgMultiplier;
 
-    public HealthHandler(final Entity parent, final int maxHealth) {
-        this(parent, maxHealth, 1.0f, 0);
+    public HealthHandler(final Entity parent, final int maxHealth, final IGameEventDispatcher eventRoot) {
+        this(eventRoot, parent, maxHealth, 1.0f, 0);
     }
 
-    public HealthHandler(final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
-        super(Handler.Type.HEALTH, parent);
-        setSendsUp(new EventType[]{EventType.ENTITY_DAMAGE, EventType.ENTITY_DESTROYED});
-        setReceivesDown(new EventType[]{EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
+    public HealthHandler(final IGameEventDispatcher eventRoot, final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
+        super(eventRoot, Handler.Type.HEALTH, parent);
+        setReceives(new EventType[]{EventType.ACTION_SUICIDE, EventType.ENTITY_COLLIDE, EventType.ENTITY_BULLET_HIT});
         connectUpwardsActor(parent);
         if (maxHealth < 0) {
             throw new IllegalArgumentException("'maxHealth' must be >= 0");
@@ -60,14 +60,15 @@ public class HealthHandler extends Handler {
         if (type.isType(EventType.ENTITY_COLLIDE)) {
             final float impulse = ((CollisionEvent) event).getImpulse();
             takeDamage(impulse);
-        }
-        if (type.isType(EventType.ENTITY_BULLET_HIT)) {
+        } else if (type.isType(EventType.ENTITY_BULLET_HIT)) {
             final float impulse = ((BulletHitEvent) event).getImpulse();
             takeDamage(impulse * WorldConstants.BULLET_IMPULSE_DAMAGE_AMPLIFICATION);
             if (parent.getName().equals("bullet")) {
                 setHealth(0);
                 (parent).destroy();
             }
+        } else if (type.isType(EventType.ACTION_SUICIDE)) {
+        	setHealth(0);
         }
     }
 
@@ -98,7 +99,7 @@ public class HealthHandler extends Handler {
     private void die() {
         final GameEvent death = new GameEvent(EventType.ENTITY_DESTROYED, parent);
         System.out.println("death! destruction! calamity!");
-        dispatchEvent(death);
+        eventRoot.dispatchEvent(death);
     }
 
 
