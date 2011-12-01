@@ -36,11 +36,6 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 	public abstract AbstractConfigLiteral<T> clone();
 
 	@Override
-	public Class<?> getType() {
-		return this.type;
-	}
-
-	@Override
 	public AbstractConfigSource getSource() {
 		return this.source;
 	}
@@ -58,7 +53,7 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 	@Override
 	public Configuration select(final String key) {
 		if (!"0".equals(key)) {
-			return null;
+			keyDoesntExist(key);
 		}
 		return this;
 	}
@@ -66,7 +61,7 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 	@Override
 	public Configuration select(final int index) {
 		if (index != 0) {
-			return null;
+			keyDoesntExist(Integer.toString(index));
 		}
 		return this;
 	}
@@ -78,17 +73,17 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 
 	@Override
 	public Integer getInt() {
-		return null;
+		throw new IllegalArgumentException("no int value");
 	}
 
 	@Override
 	public Float getFloat() {
-		return null;
+		throw new IllegalArgumentException("no float value");
 	}
 
 	@Override
 	public Boolean getBoolean() {
-		return null;
+		throw new IllegalArgumentException("no boolean value");
 	}
 
 	@Override
@@ -147,7 +142,11 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 		return true;
 	}
 
-	private void validateValue(final T value) throws IllegalArgumentException {
+	protected void keyDoesntExist(final String key) throws IllegalArgumentException {
+		throw new IllegalArgumentException("key does not exist: " + key);
+	}
+
+	protected final void validateValue(final T value) throws IllegalArgumentException {
 		if (value == null) {
 			return;
 		}

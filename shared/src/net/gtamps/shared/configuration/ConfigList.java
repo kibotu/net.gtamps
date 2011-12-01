@@ -43,7 +43,8 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Class<?> getType() {
-		return TYPE;
+		final Configuration singleton = getSoleElementIfExists();
+		return singleton != null ? singleton.getType() : TYPE;
 	}
 
 	@Override
@@ -57,14 +58,18 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		try {
 			element = get(Integer.valueOf(key));
 		} catch (final NumberFormatException e){
-			// hickey-dee-doo!
+			throw new IllegalArgumentException("key does not exist: " + key, e);
 		}
 		return element;
 	}
 
 	@Override
 	public Configuration select(final int index) {
-		return this.entries.get(index);
+		try {
+			return this.entries.get(index);
+		} catch (final IndexOutOfBoundsException e) {
+			throw new IllegalArgumentException("key does not exist: " + index, e);
+		}
 	}
 
 	@Override
@@ -74,12 +79,16 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public String getString() {
-		return this.entries.toString();
+		if (getCount() == 0) {
+			return "";
+		}
+		final Configuration soleElement = getSoleElementIfExists();
+		return soleElement != null ? soleElement.getString() : this.entries.toString();
 	}
-
 	@Override
 	public AbstractConfigSource getSource() {
-		return this.source;
+		final Configuration singleton = getSoleElementIfExists();
+		return singleton != null ? singleton.getSource() : this.source;
 	}
 
 	@Override
@@ -112,11 +121,6 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		return this.entries.remove(index);
 	}
 
-	Configuration getConfiguration(final int index) {
-		checkIndex(index);
-		return this.entries.get(index);
-	}
-
 	void clearList() {
 		this.entries.clear();
 	}
@@ -133,20 +137,29 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 
 	@Override
 	public Integer getInt() {
-		//TODO warn
-		return null;
+		final Configuration singleton = getSoleElementIfExists();
+		if (singleton != null) {
+			return singleton.getInt();
+		}
+		throw new IllegalArgumentException("no int value");
 	}
 
 	@Override
 	public Float getFloat() {
-		//TODO warn
-		return null;
+		final Configuration singleton = getSoleElementIfExists();
+		if (singleton != null) {
+			return singleton.getFloat();
+		}
+		throw new IllegalArgumentException("no float value");
 	}
 
 	@Override
 	public Boolean getBoolean() {
-		//TODO warn
-		return null;
+		final Configuration singleton = getSoleElementIfExists();
+		if (singleton != null) {
+			return singleton.getBoolean();
+		}
+		throw new IllegalArgumentException("no boolean value");
 	}
 
 	@Override
@@ -168,6 +181,12 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 		return Collections.unmodifiableCollection(entries).iterator();
 	}
 
+	private Configuration getSoleElementIfExists() {
+		if (getCount() == 1) {
+			return entries.get(0);
+		}
+		return null;
+	}
 
 	private static class StringRange extends AbstractCollection<String> {
 

@@ -13,4 +13,9 @@ public final class ConfigLiteralString extends AbstractConfigLiteral<String> {
 		return new ConfigLiteralString(getString(), source);
 	}
 
+	@Override
+	public Class<String> getType() {
+		return String.class;
+	}
+
 }
