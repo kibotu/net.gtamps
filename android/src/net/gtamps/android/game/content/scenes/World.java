@@ -80,7 +80,7 @@ public class World extends EntityScene {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.getRenderState().shader = RenderState.Shader.SMOOTH;

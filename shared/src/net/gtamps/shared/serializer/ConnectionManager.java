@@ -97,16 +97,17 @@ public enum ConnectionManager implements IMessageManager {
 
     public void checkConnection() {
         if (!isConnected()) {
-            while (!connect()) {
-                if (currentSocketTimeOut <= 0) System.exit(0);
-                try {
-                    Thread.sleep(Config.SOCKET_TIMEOUT);
-                    currentSocketTimeOut -= Config.SOCKET_TIMEOUT;
-                } catch (InterruptedException e) {
+            int i = 0;
+            while (!connect(Config.IPS.get(i),Config.SERVER_DEFAULT_PORT)) {
+                Logger.I(this, "Connecting to " + Config.IPS.get(i) + ":" + Config.SERVER_DEFAULT_PORT);
+                if(i < Config.IPS.size()-1) {
+                    i++;
+                } else {
+                    return;
                 }
                 Logger.E(this, "Server unavailable. Trying to reconnect");
             }
         }
-        currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
     }
 }
+

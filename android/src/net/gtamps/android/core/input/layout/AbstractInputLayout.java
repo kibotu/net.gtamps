@@ -1,15 +1,15 @@
 package net.gtamps.android.core.input.layout;
 
-import java.util.LinkedList;
-
 import net.gtamps.android.core.input.event.InputEventDispatcher;
 import net.gtamps.android.core.input.event.InputInterpreter;
 import net.gtamps.android.core.input.touch.TouchInputWindow;
 
+import java.util.LinkedList;
+
 public abstract class AbstractInputLayout {
-	TouchInputWindow touchWindow = new TouchInputWindow();
-	InputEventDispatcher inputEventDispatcher;
-	LinkedList<InputInterpreter> inputInterpreterList = new LinkedList<InputInterpreter>();
+	protected TouchInputWindow touchWindow = new TouchInputWindow();
+	protected InputEventDispatcher inputEventDispatcher;
+	protected LinkedList<InputInterpreter> inputInterpreterList = new LinkedList<InputInterpreter>();
 	
 	public TouchInputWindow getTouchWindow() {
 		return touchWindow;
