@@ -1,5 +1,12 @@
 package net.gtamps.server;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
 import net.gtamps.server.gui.LogType;
@@ -9,13 +16,6 @@ import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.AuthentificationData;
 import net.gtamps.shared.serializer.communication.data.StringData;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ControlCenter implements Runnable, IMessageHandler {
     private static final LogType TAG = LogType.SERVER;
@@ -64,7 +64,14 @@ public class ControlCenter implements Runnable, IMessageHandler {
     public void receiveMessage(final Connection<?> c, final Message msg) {
         if (msg != null) {
             Logger.getInstance().log(TAG, msg.toString());
-            final String sessionId = SessionManager.instance.getSessionForMessage(msg, c);
+            String sessionId;
+			try {
+				sessionId = SessionManager.instance.getSessionForMessage(msg, c);
+			} catch (final ServerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
             msg.setSessionId(sessionId);
             inbox.add(msg);
         }
