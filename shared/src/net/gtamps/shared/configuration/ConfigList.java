@@ -16,9 +16,9 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 	static final Class<?> TYPE = java.util.List.class;
 
 	private final List<Configuration> entries = new ArrayList<Configuration>();
-	private final ConfigSource source;
+	private final AbstractConfigSource source;
 
-	ConfigList(final ConfigSource source) {
+	ConfigList(final AbstractConfigSource source) {
 		this(source, 10);
 	}
 
@@ -26,12 +26,12 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 	 * copy entries of {@code otherList} into this list. might set a source different
 	 * from {@code source}.
 	 */
-	ConfigList(final ConfigSource source, final ConfigList otherList) {
-		this(new ConfigSource(), otherList.entries.size() + 10);
+	ConfigList(final AbstractConfigSource source, final ConfigList otherList) {
+		this(source, otherList.entries.size() + 10);
 		this.entries.addAll(otherList.entries);
 	}
 
-	ConfigList(final ConfigSource source, final int initSize) {
+	ConfigList(final AbstractConfigSource source, final int initSize) {
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be 'null'");
 		}
@@ -78,13 +78,24 @@ public final class ConfigList extends AbstractList<Configuration> implements Con
 	}
 
 	@Override
-	public ConfigSource getSource() {
+	public AbstractConfigSource getSource() {
 		return this.source;
 	}
 
 	@Override
 	public boolean equals(final Object o) {
-		return entries.equals(o);
+		if (o == null) {
+			return false;
+		}
+		if (this.getClass() != o.getClass()) {
+			return false;
+		}
+		return entries.equals(((ConfigList) o).entries);
+	}
+
+	@Override
+	public int hashCode() {
+		return entries.hashCode();
 	}
 
 	@Override

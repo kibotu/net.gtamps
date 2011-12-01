@@ -22,10 +22,9 @@ public class XMLConfigLoader implements ConfigLoader {
 	private final InputStream input;
 	private final ConfigSource configSource;
 
-	public XMLConfigLoader(final InputStream input) {
+	public XMLConfigLoader(final InputStream input, final ConfigSource source) {
 		this.input = input;
-		// TODO
-		this.configSource = new ConfigSource();
+		this.configSource = source;
 	}
 
 	//TODO better exception handling

@@ -1,9 +1,8 @@
 package net.gtamps.shared.configuration;
 
-import java.io.Serializable;
 import java.util.Collection;
 
-public interface Configuration extends Cloneable, Serializable, Iterable<Configuration> {
+public interface Configuration extends Cloneable, Iterable<Configuration> {
 
 	/** the character used to delimit different layers of a configuration key, and
 	 * thus allows to bridge several layers of hierarchy */
@@ -47,8 +46,9 @@ public interface Configuration extends Cloneable, Serializable, Iterable<Configu
 	 * */
 	public Boolean getBoolean();
 
-	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists */
-	public ConfigSource getSource();
+	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists 
+	 * @see ConfigSource */
+	public AbstractConfigSource getSource();
 
 	/**
 	 * @return 	a collection of the valid keys to this configuration. Does not include magic keys that
@@ -57,5 +57,10 @@ public interface Configuration extends Cloneable, Serializable, Iterable<Configu
 	public Collection<String> getKeys() ;
 
 	public Object clone();
+
+	@Override
+	public boolean equals(Object o);
+	@Override
+	public int hashCode();
 
 }

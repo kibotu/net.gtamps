@@ -16,13 +16,13 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 
 	private static final long serialVersionUID = -1240349053596166316L;
 
-	protected final ConfigSource source;
+	protected final AbstractConfigSource source;
 	protected final Class<?> type;
 	protected final T value;
 
 	private transient Integer hash = null;
 
-	AbstractConfigLiteral(final T value, final ConfigSource source) {
+	AbstractConfigLiteral(final T value, final AbstractConfigSource source) {
 		if (source == null) {
 			throw new IllegalArgumentException("'source' must not be 'null'");
 		}
@@ -41,7 +41,7 @@ abstract class AbstractConfigLiteral<T> implements Configuration {
 	}
 
 	@Override
-	public ConfigSource getSource() {
+	public AbstractConfigSource getSource() {
 		return this.source;
 	}
 

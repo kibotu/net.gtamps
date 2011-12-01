@@ -1,6 +1,6 @@
 package net.gtamps.shared.configuration.conversion;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -16,22 +16,17 @@ import net.gtamps.shared.configuration.ConfigSource;
 import net.gtamps.shared.configuration.Configuration;
 
 import org.jdom.JDOMException;
-import org.junit.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XMLConfigLoaderTest {
 
-	@SuppressWarnings("unused")
-	private static final String XML_FILE_PATH = "../assets/config";
-	@SuppressWarnings("unused")
-	private static final String XML_FILE_NAME = "EntityDefs.xml";
-
 	private static final String SIMPLE_CONFIG_STRING_XML = "" +
 	"<X><CONFIG value=\"true\" more=\"false\"/></X>";
 
-	private static final Configuration SIMPLE_CONFIG = ConfigBuilder.buildConfig(new ConfigSource())
+	private static final Configuration SIMPLE_CONFIG = ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE)
 	.select("CONFIG").addMap() //
 	.select("value").addValue(true).back().select("more").addValue(false).back().back().back() //
 	.back().back()
@@ -54,7 +49,7 @@ public class XMLConfigLoaderTest {
 	"	</game>" +
 	"</GTACONFIG>";
 
-	private static final Configuration SAMPLE_CONFIG = ConfigBuilder.buildConfig(new ConfigSource())
+	private static final Configuration SAMPLE_CONFIG = ConfigBuilder.buildConfig(ConfigSource.EMPTY_SOURCE)
 	//	.select("GTACONFIG").addMap()	// loader ignores root element!
 	/**/.select("SERVER").addMap()	// each 'select(...)' or 'addMap()' moves the context one level deeper 
 	/**//**/.select("SETUP").addMap()// and requires one 'back()' each to get back to original building context	
@@ -77,14 +72,12 @@ public class XMLConfigLoaderTest {
 	public void testLoadConfig_fromSimpleString_shouldMatchSimpleConfig() throws JDOMException, IOException {
 		// setup
 		final InputStream stringInput = generateInputStreamFromString(SIMPLE_CONFIG_STRING_XML);
-		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput);
+		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput, new ConfigSource("testing"));
 
 		// run
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();
 
 		// assert
-		System.out.println(SIMPLE_CONFIG);
-		System.out.println(loadedConfig);
 		assertEquals(SIMPLE_CONFIG, loadedConfig);
 	}
 
@@ -92,14 +85,12 @@ public class XMLConfigLoaderTest {
 	public void testLoadConfig_fromString_shouldMatchSampleConfig() throws JDOMException, IOException {
 		// setup
 		final InputStream stringInput = generateInputStreamFromString(SAMPLE_CONFIG_STRING_XML);
-		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput);
+		final XMLConfigLoader xmlConfigLoader = new XMLConfigLoader(stringInput, new ConfigSource("testing"));
 
 		// run
 		final Configuration loadedConfig = xmlConfigLoader.loadConfig();
 
 		// assert
-		System.out.println(SAMPLE_CONFIG);
-		System.out.println(loadedConfig);
 		assertEquals(SAMPLE_CONFIG, loadedConfig);
 	}
 

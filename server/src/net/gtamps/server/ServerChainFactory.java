@@ -1,16 +1,16 @@
 package net.gtamps.server;
 
+import java.io.FileNotFoundException;
+
 import net.gtamps.server.http.SimpleHttpServer;
 import net.gtamps.server.xsocket.XSocketServer;
-
-import java.io.FileNotFoundException;
 
 public class ServerChainFactory {
 
     private static SimpleHttpServer httpServer = null;
 
 
-    public static void startHTTPServer(final String path) {
+    public static SimpleHttpServer startHTTPServer(final String path) {
         if (httpServer == null) {
             try {
                 httpServer = new SimpleHttpServer(8080, path, false);
@@ -19,6 +19,7 @@ public class ServerChainFactory {
                 System.out.println("Error starting HTTP Server:\n" + e);
             }
         }
+        return httpServer;
     }
 
     public static void stopHTTPServer() {
@@ -27,8 +28,10 @@ public class ServerChainFactory {
         }
     }
 
-    public static void createServerChain(final ISocketHandler handler) {
-        new Thread(new XSocketServer(handler)).start();
+    public static XSocketServer createServerChain(final ISocketHandler handler) {
+    	final XSocketServer server = new XSocketServer(handler);
+        new Thread(server).start();
+        return server;
     }
 
 }

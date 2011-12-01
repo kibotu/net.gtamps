@@ -4,22 +4,22 @@ final class ConfigLiteralBuilder extends ConfigBuilder {
 
 	private final Configuration element;
 
-	ConfigLiteralBuilder(final ConfigSource source, final String string, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final AbstractConfigSource source, final String string, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = (string == null) ? null : new ConfigLiteralString(string, source);
 	}
 
-	ConfigLiteralBuilder(final ConfigSource source, final int i, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final AbstractConfigSource source, final int i, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralNumber(i, source);
 	}
 
-	ConfigLiteralBuilder(final ConfigSource source, final float f, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final AbstractConfigSource source, final float f, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralNumber(f, source);
 	}
 
-	ConfigLiteralBuilder(final ConfigSource source, final boolean b, final ConfigBuilder parent) {
+	ConfigLiteralBuilder(final AbstractConfigSource source, final boolean b, final ConfigBuilder parent) {
 		super(source, parent);
 		this.element = new ConfigLiteralBool(b, source);
 	}

@@ -1,15 +1,15 @@
 package net.gtamps.shared.configuration;
 
 
-public final class ConfigLiteralNumber extends AbstractConfigLiteral {
+public final class ConfigLiteralNumber extends AbstractConfigLiteral<Number> {
 
 	private static final long serialVersionUID = 1162946319680822921L;
 
-	ConfigLiteralNumber(final int i, final ConfigSource source) {
+	ConfigLiteralNumber(final int i, final AbstractConfigSource source) {
 		super(i, source);
 	}
 
-	ConfigLiteralNumber(final float f, final ConfigSource source) {
+	ConfigLiteralNumber(final float f, final AbstractConfigSource source) {
 		super(f, source);
 	}
 
@@ -24,7 +24,7 @@ public final class ConfigLiteralNumber extends AbstractConfigLiteral {
 	}
 
 	@Override
-	public AbstractConfigLiteral clone() {
+	public AbstractConfigLiteral<Number> clone() {
 		if (value.getClass() == Integer.class) {
 			return new ConfigLiteralNumber(getInt(), source);
 		} else if (value.getClass() == Float.class) {

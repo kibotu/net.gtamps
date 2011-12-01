@@ -18,7 +18,7 @@ public class ConfigMapTest {
 	private static final String SIMPLE_SAMPLE_KEY = "key";
 
 	@Mock
-	private ConfigSource source;
+	private AbstractConfigSource source;
 
 	@Mock
 	private Configuration config,  otherConfig;

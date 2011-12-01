@@ -87,7 +87,7 @@ public class SharedObject implements Serializable {
 	 * @throws IllegalArgumentException if a non-final class is encountered
 	 */
 	private static void selfTest() throws IllegalArgumentException {
-		System.err.println("SharedObject.selfTest() is not implemented and does nothing useful.");
+		//		System.err.println("SharedObject.selfTest() is not implemented and does nothing useful.");
 	}
 
 
@@ -152,12 +152,12 @@ public class SharedObject implements Serializable {
 			}
 			if (todo.topIs(item)) {            // no additional checks pushed: we're done here
 				todo.pop();
-			if (checking.topIs(item)) {    // did we push item on the checkStack?
-				checking.pop();
-			}
-			if (!item.requestsFinalAppeal) {    // don't add suspicious items to the clean list
-				checked.add(item.type);
-			}
+				if (checking.topIs(item)) {    // did we push item on the checkStack?
+					checking.pop();
+				}
+				if (!item.requestsFinalAppeal) {    // don't add suspicious items to the clean list
+					checked.add(item.type);
+				}
 			}
 		}
 		return true;
@@ -186,6 +186,7 @@ public class SharedObject implements Serializable {
 		final FilteringCollection<Field> fields;
 		fields = FilteringArrayList.fromArray(item.type.getDeclaredFields());
 		fields.removeAll(isTransientField)
+		.removeAll(isSynthetic)
 		.removeAll(isPrimitiveField)
 		.removeAll(isSharedField)
 		.removeAll(isEnumSelfReference);
@@ -338,6 +339,18 @@ public class SharedObject implements Serializable {
 		@Override
 		public String toString() {
 			return "p(x) := isPrimitive(CheckItem)";
+		}
+	};
+
+	/** checks if field was added by compiler */
+	private static transient final Predicate<Field> isSynthetic = new Predicate<Field>() {
+		@Override
+		public boolean isTrueFor(final Field x) {
+			return x.isSynthetic();
+		}
+		@Override
+		public String toString() {
+			return "p(x) := isSynthetic(Field)";
 		}
 	};
 
