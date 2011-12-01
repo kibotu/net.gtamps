@@ -36,27 +36,21 @@ final public class Config {
      */
     public static final float MIN_ZOOM = 0;
     public static final float MAX_ZOOM = 90;
-    public static final float PIXEL_TO_NATIVE = 0.3f;
+    public static final float PIXEL_TO_NATIVE = 0.1f;
 
     /**
      * SOCKET
      */
     public static final ArrayList<String> IPS;
-//    public static final String TIL_IP_HOME = "192.168.1.27";
-//    public static final String TIL_IP_JAN_HOME = "192.168.2.102";
-//    public static final String TIL_IP_INI = "192.168.178.24";
-//    public static final String JAN_IP_HOME = "192.168.2.101";
-//    public static final String JAN_IP_INI = "192.168.178.23";
-//    public static final String LOCALHOST = "localhost";
 
     static {
         IPS = new ArrayList<String>(10);
         IPS.add("localhost");
+        IPS.add("192.168.178.23");
+        IPS.add("192.168.178.24");
         IPS.add("192.168.1.27");
         IPS.add("192.168.2.102");
-        IPS.add("192.168.178.24");
         IPS.add("192.168.2.101");
-        IPS.add("192.168.178.23");
     }
 
     public static final String SERVER_DEFAULT_HOST_ADDRESS = "localhost";

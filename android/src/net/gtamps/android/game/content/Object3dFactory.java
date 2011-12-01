@@ -85,7 +85,7 @@ final public class Object3dFactory {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
         parsedChild.setScaling(0.3f, 0.3f, 0.3f);
@@ -103,7 +103,7 @@ final public class Object3dFactory {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
         parsedChild.setScaling(5, 5, 5);
@@ -119,7 +119,7 @@ final public class Object3dFactory {
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(false);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
         return parsedObject;

@@ -100,7 +100,7 @@ public enum ConnectionManager implements IMessageManager {
             int i = 0;
             while (!connect(Config.IPS.get(i),Config.SERVER_DEFAULT_PORT)) {
                 Logger.I(this, "Connecting to " + Config.IPS.get(i) + ":" + Config.SERVER_DEFAULT_PORT);
-                if(i < Config.IPS.size()) {
+                if(i < Config.IPS.size()-1) {
                     i++;
                 } else {
                     return;

@@ -60,7 +60,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
         // hud
         scenes.add(hud);
-        hud.getScene().setVisible(false);
+//        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
 //        menu.getScene().setVisible(false);
@@ -94,7 +94,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
         if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z);
+            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+30);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }
@@ -364,15 +364,16 @@ public class Game implements BasicRenderActivity.IRenderActivity {
                 break;
             case ENTITY_NEW_PLAYER:
 
-                // source no player
-                if (!(event.getSource() instanceof Player)) break;
+                // target no player
+                if (!(event.getTarget() instanceof Player)) break;
 
                 // player not active player
                 Player player = (Player) event.getTarget();
+
                 if (!world.playerManager.getActivePlayer().equals(player)) break;
 
-                // target no entity
-                if (!(event.getTarget() instanceof Entity)) break;
+                // source no entity
+                if (!(event.getSource() instanceof Entity)) break;
                 Entity serverEntity = (Entity) event.getSource();
 
                 // new active object

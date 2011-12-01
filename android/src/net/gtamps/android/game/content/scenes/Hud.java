@@ -4,11 +4,11 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.event.InputEventListener;
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
-import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.graph.scene.primitives.AnimatedSprite;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Sprite;
+import net.gtamps.android.game.content.scenes.layouts.HudLayout;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.state.State;
 import net.gtamps.shared.serializer.ConnectionManager;
@@ -43,7 +43,7 @@ public class Hud extends BasicScene implements InputEventListener {
 
         // add cursor
         cursor = new AnimatedSprite();
-        cursor.setVisible(true);
+        cursor.setVisible(false);
         add(cursor);
 
         // add textures
@@ -52,7 +52,7 @@ public class Hud extends BasicScene implements InputEventListener {
         cursor.animate(0.51f, State.Type.IDLE);
 
         // setup layout
-        layout = new InputLayoutIngame();
+        layout = new HudLayout();
         InputEngineController.getInstance().setLayout(layout);
         InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
 
