@@ -8,7 +8,38 @@ import java.util.ArrayList;
 
 public class Message extends SharedObject {
 
-    private static final long serialVersionUID = 608050744473650094L;
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sendables == null) ? 0 : sendables.hashCode());
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Message other = (Message) obj;
+		if (sendables == null) {
+			if (other.sendables != null)
+				return false;
+		} else if (!sendables.equals(other.sendables))
+			return false;
+		if (sessionId == null) {
+			if (other.sessionId != null)
+				return false;
+		} else if (!sessionId.equals(other.sessionId))
+			return false;
+		return true;
+	}
+
+	private static final long serialVersionUID = 608050744473650094L;
 
     @NotNull
     private volatile String sessionId;
