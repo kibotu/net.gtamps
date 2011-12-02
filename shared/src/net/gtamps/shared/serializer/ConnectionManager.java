@@ -41,14 +41,20 @@ public enum ConnectionManager implements IMessageManager {
     public Message poll() {
         Message message = inbox.poll();
         currentSessionId = message.getSessionId();
-        Logger.i(this, "inbox poll: " + message.toString());
+      //remove string allocations
+    	if(Config.LOG_LEVEL != Logger.Level.NO_LOGGING){
+    		Logger.i(this, "inbox poll: " + message.toString());
+    	}
         return message;
     }
 
     @Override
     public boolean add(@NotNull Message message) {
         message.setSessionId(currentSessionId);
-        Logger.i(this, "outbox add: " + message.toString());
+      //remove string allocations
+    	if(Config.LOG_LEVEL != Logger.Level.NO_LOGGING){
+    		Logger.i(this, "outbox add: " + message.toString());
+    	}
         return outbox.add(message);
     }
 
