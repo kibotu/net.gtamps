@@ -15,7 +15,7 @@ public interface IObjectCache<T> {
 	 * @return This instance for method chaining
 	 */
 	@NotNull
-	RealObjectCache<T> registerElement(@NotNull T element);
+	IObjectCache<T> registerElement(@NotNull T element);
 
 	/**
 	 * Gets the number of elements
@@ -42,7 +42,7 @@ public interface IObjectCache<T> {
 	 * @see #registerElement(Object)
 	 */
 	@NotNull
-    @ReturnsCachedValue
+	@ReturnsCachedValue
 	T getOrCreate();
 
 	/**
@@ -55,7 +55,7 @@ public interface IObjectCache<T> {
 	 * @see #registerElement(Object)
 	 */
 	@NotNull
-    @ReturnsCachedValue
+	@ReturnsCachedValue
 	T getElement();
 
 	/**
