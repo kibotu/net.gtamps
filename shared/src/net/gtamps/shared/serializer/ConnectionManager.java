@@ -2,6 +2,7 @@ package net.gtamps.shared.serializer;
 
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.serializer.communication.CompressedObjectSerializer;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.ObjectSerializer;
@@ -22,7 +23,7 @@ public enum ConnectionManager implements IMessageManager {
     public volatile long currentRevId;
     private int currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
-    private static ISerializer serializer = new ObjectSerializer();
+    private static ISerializer serializer = new CompressedObjectSerializer();
 
     private ConnectionManager() {
         stream = new TcpStream();

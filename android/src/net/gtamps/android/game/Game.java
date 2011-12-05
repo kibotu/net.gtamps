@@ -3,30 +3,18 @@ package net.gtamps.android.game;
 import android.os.SystemClock;
 import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
-import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
-import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
 import net.gtamps.android.game.content.scenes.World;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
-import net.gtamps.shared.game.GameObject;
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageFactory;
-import net.gtamps.shared.serializer.communication.Sendable;
-import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.FloatData;
-import net.gtamps.shared.serializer.communication.data.PlayerData;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Game implements BasicRenderActivity.IRenderActivity {
 

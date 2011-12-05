@@ -63,8 +63,9 @@ final public class Config {
     public static final boolean SOCKET_TCP_NO_DELAY = true;
     public static final long SOCKET_INBOX_LATENCY = 0;
     public static final long SOCKET_OUTBOX_LATENCY = 0;
-    public static final long IMPULS_FREQUENCY = 0;
     public static final int MAX_SOCKET_TIMEOUT = 14000;
+    public static final int SERVER_ANGLE_TO_NATIVE = 270;
+    public static final long HUD_INPUT_MESSAGE_TIMOUT = 30;
 
     private Config() {
     }

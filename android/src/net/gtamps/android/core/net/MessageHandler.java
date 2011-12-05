@@ -1,7 +1,5 @@
 package net.gtamps.android.core.net;
 
-import java.util.List;
-
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.sound.SoundEngine;
 import net.gtamps.android.game.content.EntityView;
@@ -17,6 +15,8 @@ import net.gtamps.shared.serializer.communication.MessageFactory;
 import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
+
+import java.util.List;
 
 public class MessageHandler {
 
@@ -192,9 +192,6 @@ public class MessageHandler {
 
 	public void handleEvent(GameEvent event) {
 		Logger.i(this, "Handle event " + event);
-
-		sourceEntity = world.getViewById(event.getSourceUid()).entity;
-		targetEntity = world.getViewById(event.getTargetUid()).entity;
 
 		switch (event.getType()) {
 		case ACTION_ACCELERATE:
