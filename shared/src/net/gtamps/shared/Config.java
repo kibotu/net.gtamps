@@ -48,6 +48,7 @@ final public class Config {
         IPS.add("localhost");
         IPS.add("192.168.178.23");
         IPS.add("192.168.178.24");
+        IPS.add("192.168.178.25");
         IPS.add("192.168.1.27");
         IPS.add("192.168.2.102");
         IPS.add("192.168.2.101");
