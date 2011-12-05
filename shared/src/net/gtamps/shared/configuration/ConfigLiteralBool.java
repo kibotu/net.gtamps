@@ -9,6 +9,11 @@ public final class ConfigLiteralBool extends AbstractConfigLiteral<Boolean> {
 	}
 
 	@Override
+	public Class<Boolean> getType() {
+		return java.lang.Boolean.class;
+	}
+
+	@Override
 	public Boolean getBoolean() {
 		return this.value;
 	}

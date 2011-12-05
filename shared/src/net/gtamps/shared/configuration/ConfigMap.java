@@ -33,21 +33,26 @@ implements Configuration {
 	@Override
 	public Configuration select(final String key) {
 		final ConfigKey configKey = new ConfigKey(key);
+		Configuration config = null;
 		if (configKey.isIntermediate()) {
-			return this.entries.get(configKey.head).select(configKey.tail);
+			config = this.entries.get(configKey.head).select(configKey.tail);
 		} else {
-			return this.entries.get(configKey.head);
+			config = this.entries.get(configKey.head);
 		}
+		if (config == null) {
+			throw new IllegalArgumentException("key does not exist: " + key);
+		}
+		return config;
 	}
 
 	@Override
 	public Configuration select(final int index) {
 		if (index < 0) {
-			throw new IllegalArgumentException("index must be >= 0");
+			throw new IllegalArgumentException("key does not exist: index must be >= 0, is " + index);
 		}
 		if (index >= getCount()) {
-			throw new IndexOutOfBoundsException(String.format(
-					"index out of bounds (%d): %d", getCount(), index));
+			throw new IllegalArgumentException("key does not exist: " + index, new IndexOutOfBoundsException(String.format(
+					"index out of bounds (%d): %d", getCount(), index)));
 		}
 		final Iterator<String> iter = this.entries.keySet().iterator();
 		for (int i = 0; i < index; i++) {
@@ -86,22 +91,19 @@ implements Configuration {
 
 	@Override
 	public Integer getInt() {
-		//TODO warn
-		return null;
+		throw new IllegalArgumentException("no int value");
 	}
 
 
 	@Override
 	public Float getFloat() {
-		//TODO warn
-		return null;
+		throw new IllegalArgumentException("no float value");
 	}
 
 
 	@Override
 	public Boolean getBoolean() {
-		//TODO warn
-		return null;
+		throw new IllegalArgumentException("no boolean value");
 	}
 
 	@Override

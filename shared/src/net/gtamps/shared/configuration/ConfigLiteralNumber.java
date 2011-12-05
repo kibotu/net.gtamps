@@ -5,22 +5,40 @@ public final class ConfigLiteralNumber extends AbstractConfigLiteral<Number> {
 
 	private static final long serialVersionUID = 1162946319680822921L;
 
+	private final Class<? extends Number> type;
+
 	ConfigLiteralNumber(final int i, final AbstractConfigSource source) {
 		super(i, source);
+		this.type = Integer.class;
 	}
 
 	ConfigLiteralNumber(final float f, final AbstractConfigSource source) {
 		super(f, source);
+		this.type = Float.class;
+	}
+
+	@Override
+	public Class<? extends Number> getType() {
+		return this.type;
 	}
 
 	@Override
 	public Integer getInt() {
-		return (Integer) value;
+		try {
+			return (Integer) value;
+		} catch (final ClassCastException e) {
+			throw new IllegalArgumentException("no int value", e);
+		}
 	}
 
 	@Override
 	public Float getFloat() {
-		return (Float) value;
+		try {
+			return (Float) value;
+		} catch (final ClassCastException e) {
+			throw new IllegalArgumentException("no float value", e);
+		}
+
 	}
 
 	@Override

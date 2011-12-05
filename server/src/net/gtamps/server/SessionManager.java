@@ -1,45 +1,23 @@
 package net.gtamps.server;
 
-import net.gtamps.game.IGame;
-import net.gtamps.shared.serializer.communication.Message;
-
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
+
+import net.gtamps.game.IGame;
+import net.gtamps.shared.serializer.communication.Message;
 
 public final class SessionManager {
 
-    public static final SessionManager instance = new SessionManager();
-    private static final Pattern ID_PATTERN = Pattern.compile("[0-9A-Fa-f]{16}");
+    public static final SessionManager instance = new SessionManager(0);
 
+    private final Object lock = new Object();
     private final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<String, Session>();
+    private final int maxSessions;
 
-    private SessionManager() {
+    private SessionManager(final int maxSessions) {
+    	this.maxSessions = Math.max(0, maxSessions);
     }
-
-//	@Override
-//	public void receiveMessage(final Connection<?>c, final Message m) {
-//		final Session s = getSessionForMessage(c, m);
-//		ControlCenter.instance.receiveMessage(c, m);
-//	}
-//
-//	public Session getSessionById(final String id) {
-//		return sessions.get(id);
-//	}
-//
-//	public void handleResponse(final SendableSessionPair pair) {
-//		// TODO: session state change
-//		sessions.put(pair.session.getId(), pair.session);
-//		sendInMessage(pair);
-//	}
-
-//	public Session getSession(final String presumptiveId) {
-//		final String realId = clearSessionId(presumptiveId);
-//		final Session newSession = new Session(realId);
-//		final Session existing = sessions.putIfAbsent(realId, newSession);
-//		return existing != null ? existing : newSession;
-//	}
 
     /**
      * Ensure a proper {@link Session} exists for the <tt>message</tt> and
@@ -47,9 +25,13 @@ public final class SessionManager {
      *
      * @param message
      * @param connection
+     * 
      * @return the id of the session associated with the message
+     * 
+     * @throws ServerException	if the session limit has been reached,
+     * 							and no new session can be created
      */
-    public String getSessionForMessage(final Message message, final Connection<?> connection) {
+    public String getSessionForMessage(final Message message, final Connection<?> connection) throws ServerException {
         if (connection == null) {
             throw new IllegalArgumentException("'connection' must not be null");
         }
@@ -63,6 +45,12 @@ public final class SessionManager {
             connectSession(existing, connection);
             return existing.getId();
         } else {
+        	synchronized (lock) {
+        		if (maxSessionsReached()) {
+        			sessions.remove(id);
+        			throw new ServerException("Server session limit reached. Please try again later.");
+        		}
+        	}
             return newSession.getId();
         }
     }
@@ -129,27 +117,6 @@ public final class SessionManager {
         }
     }
 
-//	private Session getSessionForMessage(final Connection<?> c, final Message msg) {
-//		// this assumes the id fields to be immutable for concurrency
-//		// if no session exists yet, create one and remember it
-//		final String id = getSessionIdForMessage(msg);
-//		final Session newSession = new Session(id, c);
-//		final Session existing = sessions.putIfAbsent(id, newSession);
-//		return existing != null ? existing : newSession;
-//	}
-
-//	private void sendInMessage(final SendableSessionPair pair) {
-//		final Message msg = new Message();
-//		msg.setSessionId(pair.session.getId());
-//		msg.addSendable(pair.sendable);
-//		final Connection<?> c = pair.session.getConnection();
-//		//debug
-//		if (c == null) {
-//			throw new NullPointerException("Session: " + pair.session.toString());
-//		}
-//		c.send(msg);
-//	}
-
     private Session retrieveSession(final String id) {
         final Session s = sessions.get(id);
         if (s == null) {
@@ -167,23 +134,12 @@ public final class SessionManager {
         }
     }
 
-
     private String getSessionId(final String presumptiveId) {
         if (isValidId(presumptiveId)) {
             return presumptiveId;
         }
         return generateSessionId();
     }
-
-//	private String getSessionIdForMessage(final Message msg) {
-//		final String presumptiveId = msg.getSessionId();
-//		if (isValidId(presumptiveId)) {
-//			return presumptiveId;
-//		}
-//		final String newId = generateSessionId();
-//		msg.setSessionId(newId);
-//		return newId;
-//	}
 
     private boolean isValidId(final String id) {
         return (id != null && sessions.containsKey(id));
@@ -195,5 +151,14 @@ public final class SessionManager {
         final long lo = uid.getLeastSignificantBits() & 0x00FFFFFFFFFFFFFFl;
         final String id = Long.toHexString(hi | lo);
         return id;
+    }
+    
+    // TODO synchronize properly
+    private boolean maxSessionsReached() {
+    	if (maxSessions < 1) {
+    		return false;
+    	} else {
+			return sessions.size() > maxSessions;
+		}
     }
 }

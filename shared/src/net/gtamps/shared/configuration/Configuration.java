@@ -21,30 +21,40 @@ public interface Configuration extends Cloneable, Iterable<Configuration> {
 	 * @param key	either a name (starts with letter or underscore, case-insensitive),
 	 * 				or a numerical string used as index
 	 * @return		the configuration fitting <tt>key</tt>, or <code>null</code>
+	 * @throws	IllegalArgumentException	if key does not exist
 	 */
-	public Configuration select(String key);
+	public Configuration select(String key) throws IllegalArgumentException;
 
 	/**
 	 * @param index	for a list config element, 
 	 * @return	the sub-configuration with the given <tt>index</tt>; for a list, this
 	 * 			is consistent, for a map, exact behavior is not defined
+	 * @throws	IllegalArgumentException	if key does not exist
 	 */
-	public Configuration select(int index);
+	public Configuration select(int index) throws IllegalArgumentException;
 
 	/** @return get a string representation of the stored value; for maps and lists, this is purely informative */
 	public String getString();
 
-	/** @return an integer representation of the stored value, or <code>null</code>, if none exists */
-	public Integer getInt();
+	/**
+	 * @return an integer representation of the stored value
+	 * @throws	IllegalArgumentException	if no int value exists
+	 */
+	public Integer getInt() throws IllegalArgumentException;
 
-	/** @return a float representation of the stored value, or <code>null</code>, if none exists */	
-	public Float getFloat();
+	/** 
+	 * @return a float representation of the stored value 
+	 * @throws	IllegalArgumentException	if no float value exists
+	 */	
+	public Float getFloat() throws IllegalArgumentException;
 
-	/** @return a boolean representation of the stored value, or <code>null</code>, if none exists 
+	/** 
+	 * @return a boolean representation of the stored value, or <code>null</code>, if none exists 
 	 * 			only guaranteed to behave as expected for String inputs of case-insensitive forms of 
 	 * 			<code>true</code> and <code>false</code>.	
-	 * */
-	public Boolean getBoolean();
+	 * @throws	IllegalArgumentException	if no boolean value exists
+	 */
+	public Boolean getBoolean() throws IllegalArgumentException;
 
 	/** @return the source of the configuration. only meaningful for single value types, not for maps or lists 
 	 * @see ConfigSource */
