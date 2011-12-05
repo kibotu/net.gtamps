@@ -35,12 +35,12 @@ public class HudInterpreter extends InputInterpreter {
             }
 
             // left
-            if(x < 0.30f){
+            if(x > 0.30f){
                 eventDispatcher.dispatch(SendableType.ACTION_LEFT, new FloatData((0.60f-x)*2f));
             }
 
             // right
-            if(x > 0.60f){
+            if(x < 0.60f){
                 eventDispatcher.dispatch(SendableType.ACTION_RIGHT, new FloatData((x-0.60f)*2f));
             }
         }
