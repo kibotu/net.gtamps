@@ -31,7 +31,7 @@ public final class GTAMultiplayerServer {
 
     public static final boolean DEBUG = true;
     /**
-     * @deprecated use configuration: server.setup.httpserver.docroot
+     * @deprecated use configuration: common.setup.httpserver.docroot
      */
     @Deprecated
     public static final String DEFAULT_PATH = "../assets/kompilat/";
@@ -68,12 +68,12 @@ public final class GTAMultiplayerServer {
 	        final ISocketHandler sockHandler = initSockHandler(serializer);
 	        Logger.getInstance().log(LogType.SERVER, "socketHandler initialized: " + sockHandler.toString());
 	        
-	        final int gameport = CONFIG.select("server.setup.gameserver.port").getInt();
+	        final int gameport = CONFIG.select("common.setup.gameserver.port").getInt();
 	        gameServer = ServerChainFactory.createServerChain(gameport, sockHandler);
 	        Logger.getInstance().log(LogType.SERVER, "server running: " + gameServer.toString());
 	        
-	        final int httpport = CONFIG.select("server.setup.httpserver.port").getInt();
-	        final String docroot = CONFIG.select("server.setup.httpserver.docroot").getString();
+	        final int httpport = CONFIG.select("common.setup.httpserver.port").getInt();
+	        final String docroot = CONFIG.select("common.setup.httpserver.docroot").getString();
 	        httpServer = ServerChainFactory.startHTTPServer(httpport, docroot);
 	        Logger.getInstance().log(LogType.SERVER, "http server running: " + httpServer.toString());
 	      
@@ -87,7 +87,7 @@ public final class GTAMultiplayerServer {
 	        INSTANCE = this;
 	        Logger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
     	} catch (final Exception e) {
-    		Logger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown: " + e);
+    		Logger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown: " + exceptionToVerboseString(e));
     		XSocketServer.shutdownServer();
     		if (httpServer != null) {
     			httpServer.stopServer();
@@ -97,9 +97,20 @@ public final class GTAMultiplayerServer {
     	}
     }
 
+	private String exceptionToVerboseString(final Exception e) {
+		final int maxTraceDepth = -1;
+		final StringBuilder sb =  new StringBuilder().append(e.toString());
+		final StackTraceElement[] stack = e.getStackTrace();
+		for(int i = 0; (maxTraceDepth < 0 || i < maxTraceDepth) && i < stack.length; i++) {
+			sb.append('\n')
+			.append(stack[i].toString());
+		}
+		return sb.toString();
+	}
+
 	private static ISocketHandler initSockHandler(final ISerializer serializer) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
 		@SuppressWarnings("unchecked")
-		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("server.setup.gameserver.sockethandler.class").getString()).getConstructor(ISerializer.class);
+		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("common.setup.gameserver.sockethandler.class").getString()).getConstructor(ISerializer.class);
 		return constructor.newInstance(serializer);
 	}
     
@@ -110,7 +121,7 @@ public final class GTAMultiplayerServer {
     }
     
     private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    	return (ISerializer) Class.forName(CONFIG.select("server.setup.gameserver.serializer.class").getString()).newInstance();
+    	return (ISerializer) Class.forName(CONFIG.select("common.setup.gameserver.serializer.class").getString()).newInstance();
     }
 
 	public static ControlCenter getControlCenter() {
@@ -124,7 +135,7 @@ public final class GTAMultiplayerServer {
 
 	public static ServerData getHttpServerData() {
 		final String httpHost = ServerHelper.getLocalIP();
-		final int httpPort = CONFIG.select("server.setup.httpserver.port").getInt();
+		final int httpPort = CONFIG.select("common.setup.httpserver.port").getInt();
 		return new ServerData(httpHost, httpPort);
 	}
 
