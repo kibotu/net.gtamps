@@ -8,6 +8,7 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +39,7 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(addPlane()));
+        add(new EntityView(addLevel()));
 //        add(new EntityView(getSunLight()));
     }
 
@@ -89,16 +90,16 @@ public class World extends EntityScene {
     }
 
     public static RenderableNode addLevel() {
-        ParsedObject parsedObject = ParsedObject.parseObject("city_obj", R.drawable.grid, true);
+        ParsedObject parsedObject = ParsedObject.parseObject("map1_obj", R.drawable.grid, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(true);
-        parsedChild.enableLighting(true);
+        parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedObject.setScaling(0.5f, 0.5f, 0.5f);
+        parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
         parsedObject.setPosition(0, 0, -3f);
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
         parsedChild.enableMipMap(true);

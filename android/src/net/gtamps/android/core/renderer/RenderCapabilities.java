@@ -93,7 +93,7 @@ public class RenderCapabilities {
     }
 
     /**
-     * Called by Renderer.onSurfaceCreate()
+     * Called by GLRenderer.onSurfaceCreate()
      */
     static void setRenderCaps(GL10 $gl) /* package-private*/ {
         IntBuffer i;

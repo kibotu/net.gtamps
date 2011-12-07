@@ -1,7 +1,9 @@
 package net.gtamps.android.core.renderer.graph;
 
+import android.opengl.GLES20;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,6 +81,15 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
     private boolean useSharedTextureCoordBuffer = false;
+    private Shader shader;
+
+    public Shader getShader() {
+        return shader;
+    }
+    
+    public void setShader(Shader shader) {
+        this.shader = shader;
+    }
 
     public void setTextureId(int textureId) {
         this.textureId = textureId;
@@ -155,7 +166,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Default rendering process.
      */
-    protected void render(GL11 gl) {
+    public void render(GL11 gl) {
         if (mesh == null) return;
         if (isDirty) onDirty(gl);
 
@@ -269,6 +280,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         gl.glEnableClientState(GL_VERTEX_ARRAY);
         gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
         gl.glVertexPointer(3, GL_FLOAT, 0, 0);
+
+        GLES20.glGetAttribLocation(shader.getProgram(), "aPosition");
 
         // actually draw the mesh by index buffer
         gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);

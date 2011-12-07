@@ -2,6 +2,7 @@ package net.gtamps.android.core.renderer;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.opengl.GLSurfaceView;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public class Registry {
     public static ActivityManager.MemoryInfo memoryInfo;
     private static Context context;
     private static TextureLibrary textureLibrary;
-    private static Renderer renderer;
+    private static BasicRenderer renderer;
 
     public static Context getContext() {
         return context;
@@ -43,11 +44,11 @@ public class Registry {
         return memoryInfo.availMem;
     }
 
-    public static void setRenderer(@NotNull Renderer renderer) {
+    public static void setRenderer(@NotNull BasicRenderer renderer) {
         Registry.renderer = renderer;
     }
 
-    public static Renderer getRenderer() {
+    public static BasicRenderer getRenderer() {
         return renderer;
     }
 }

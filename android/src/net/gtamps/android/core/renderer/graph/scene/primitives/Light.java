@@ -115,7 +115,7 @@ public class Light extends RenderableNode {
     }
 
     @Override
-    protected void render(GL11 gl) {
+    public void render(GL11 gl) {
 
         GL11 gl11 = (GL11) gl;
 

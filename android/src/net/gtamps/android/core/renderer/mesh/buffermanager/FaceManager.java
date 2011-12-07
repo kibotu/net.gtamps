@@ -102,7 +102,7 @@ public class FaceManager {
     }
 
     /**
-     * If true, Renderer will only draw the faces as defined by
+     * If true, GLRenderer will only draw the faces as defined by
      * renderSubsetStartIndex and renderSubsetLength
      */
     public boolean renderSubsetEnabled() {

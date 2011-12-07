@@ -1,0 +1,11 @@
+uniform mat4 u_MVP;
+
+attribute vec4 a_VertexPosition;
+attribute vec2 a_TextCoord;
+varying vec2 v_TextCoord;
+
+void main()
+{
+    gl_Position = u_MVP * a_VertexPosition;
+    v_TextCoord = a_TextCoord;
+}

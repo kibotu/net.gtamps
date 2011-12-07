@@ -87,6 +87,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
             world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+30);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
+            world.getActiveCamera().rotate(30,1,0,0);
         }
     }
 
