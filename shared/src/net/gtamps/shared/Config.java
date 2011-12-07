@@ -48,6 +48,7 @@ final public class Config {
         IPS.add("localhost");
         IPS.add("192.168.178.23");
         IPS.add("192.168.178.24");
+        IPS.add("192.168.178.25");
         IPS.add("192.168.1.27");
         IPS.add("192.168.2.102");
         IPS.add("192.168.2.101");
@@ -66,6 +67,8 @@ final public class Config {
     public static final int MAX_SOCKET_TIMEOUT = 14000;
     public static final int SERVER_ANGLE_TO_NATIVE = 270;
     public static final long HUD_INPUT_MESSAGE_TIMOUT = 30;
+    public static String DEFAULT_USERNAME = ""+ Math.random()*64;
+    public static final String DEFAULT_PASSWORD = ""+ Math.random()*64;
 
     private Config() {
     }

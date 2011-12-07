@@ -4,6 +4,7 @@ import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.sound.SoundEngine;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.World;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
@@ -125,7 +126,7 @@ public class MessageHandler {
 
 		case SESSION_OK:
 			connection.currentSessionId = message.getSessionId();
-			connection.add(MessageFactory.createRegisterRequest("username", "password"));
+			connection.add(MessageFactory.createRegisterRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
 			break;
 		case SESSION_NEED:
 			break;
