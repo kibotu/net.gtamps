@@ -223,7 +223,11 @@ public final class SimpleHttpServerHandler implements Runnable {
 		final Element element = new Element(name);
 		for (final Field field : o.getClass().getFields()) {
 			try {
-				element.setAttribute(field.getName(), field.get(o).toString());
+				final String fname = field.getName();
+				final Object fvalue = field.get(o);
+				if (fvalue != null) {
+					element.setAttribute(fname, fvalue.toString());
+				}
 			} catch (final IllegalArgumentException e) {
 				System.err.println("Error translating GameData to XML");
 				e.printStackTrace();

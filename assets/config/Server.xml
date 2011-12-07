@@ -2,10 +2,11 @@
 <CONFIG>
 <SERVER>
 	<SETUP>
-		<TCP port="8095">
-			<SOCKETHANDLER class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
-			<SERIALIZER class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
-		</TCP>
+        <GAMESERVER port="8095" protocol="tcp">
+			    <SOCKETHANDLER class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
+			    <SERIALIZER class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
+        </GAMESERVER>
+        <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
 		<SESSIONHANDLER maxSessions="0"/>
 		<CONTROL maxGames="0" maxPlayers="0"/>
 	</SETUP>

@@ -245,7 +245,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
 				-1,
 				20,
 				1234,
-				"http://1.2.3.4:5/gta/assets/pingpong.png");
+				"../img/pingpong.png");
 	}
 
 }

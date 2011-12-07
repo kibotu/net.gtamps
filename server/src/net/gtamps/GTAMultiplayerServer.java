@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.ServerChainFactory;
+import net.gtamps.server.ServerHelper;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
 import net.gtamps.server.gui.ServerGUI;
@@ -24,11 +25,18 @@ import net.gtamps.shared.serializer.communication.ISerializer;
 
 public final class GTAMultiplayerServer {
 	
+	private static final String BASE_CONFIG_PATH = "../assets/config/Server.xml";
+
 	public enum Mode { DEBUG, PRODUCTION }
 
     public static final boolean DEBUG = true;
+    /**
+     * @deprecated use configuration: server.setup.httpserver.docroot
+     */
+    @Deprecated
     public static final String DEFAULT_PATH = "../assets/kompilat/";
     public static final String DEFAULT_MAP = "tinycity.xml";
+    
 
     private static GTAMultiplayerServer INSTANCE = null;
     private static ControlCenter CONTROL = null;
@@ -46,22 +54,27 @@ public final class GTAMultiplayerServer {
     private XSocketServer gameServer;
     private SimpleHttpServer httpServer;
     
-    @SuppressWarnings("unused")
-	private GTAMultiplayerServer(final Mode mode) {
-//    	XSocketServer gameServer = null;
-//    	SimpleHttpServer httpServer = null;
+    private GTAMultiplayerServer(final Mode mode) {
     	try {
     		new ServerGUI();
     		Logger.getInstance().log(LogType.SERVER, "server GUI is up.");
-    		CONFIG = loadConfig("../assets/config/Server.xml");
+
+    		CONFIG = loadConfig(BASE_CONFIG_PATH);
     		Logger.getInstance().log(LogType.SERVER, "configuration loaded: " + CONFIG.getSource());
+    		
 	        final ISerializer serializer = initSerializer();
 	        Logger.getInstance().log(LogType.SERVER, "serializer initialized: " + serializer.toString());
+	        
 	        final ISocketHandler sockHandler = initSockHandler(serializer);
 	        Logger.getInstance().log(LogType.SERVER, "socketHandler initialized: " + sockHandler.toString());
-	        gameServer = ServerChainFactory.createServerChain(sockHandler);
+	        
+	        final int gameport = CONFIG.select("server.setup.gameserver.port").getInt();
+	        gameServer = ServerChainFactory.createServerChain(gameport, sockHandler);
 	        Logger.getInstance().log(LogType.SERVER, "server running: " + gameServer.toString());
-	        httpServer = ServerChainFactory.startHTTPServer(DEFAULT_PATH);
+	        
+	        final int httpport = CONFIG.select("server.setup.httpserver.port").getInt();
+	        final String docroot = CONFIG.select("server.setup.httpserver.docroot").getString();
+	        httpServer = ServerChainFactory.startHTTPServer(httpport, docroot);
 	        Logger.getInstance().log(LogType.SERVER, "http server running: " + httpServer.toString());
 	      
 	//		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
@@ -86,7 +99,7 @@ public final class GTAMultiplayerServer {
 
 	private static ISocketHandler initSockHandler(final ISerializer serializer) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
 		@SuppressWarnings("unchecked")
-		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("server.setup.tcp.sockethandler.class").getString()).getConstructor(ISerializer.class);
+		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("server.setup.gameserver.sockethandler.class").getString()).getConstructor(ISerializer.class);
 		return constructor.newInstance(serializer);
 	}
     
@@ -97,7 +110,7 @@ public final class GTAMultiplayerServer {
     }
     
     private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    	return (ISerializer) Class.forName(CONFIG.select("server.setup.tcp.serializer.class").getString()).newInstance();
+    	return (ISerializer) Class.forName(CONFIG.select("server.setup.gameserver.serializer.class").getString()).newInstance();
     }
 
 	public static ControlCenter getControlCenter() {
@@ -107,6 +120,12 @@ public final class GTAMultiplayerServer {
 	public static ServerData getGameServerData() {
 		final XSocketServer srv = INSTANCE.gameServer;
 		return new ServerData(srv.getLocalIPAddress(), srv.getLocalPort());
+	}
+
+	public static ServerData getHttpServerData() {
+		final String httpHost = ServerHelper.getLocalIP();
+		final int httpPort = CONFIG.select("server.setup.httpserver.port").getInt();
+		return new ServerData(httpHost, httpPort);
 	}
 
 }
