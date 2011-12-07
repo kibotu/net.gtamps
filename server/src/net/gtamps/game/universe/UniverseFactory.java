@@ -56,7 +56,8 @@ public class UniverseFactory {
 			return null;
 		}
 		final Level level = Level.loadLevel(input);
-		final Universe world = LevelParser.buildWorldFromLevel(level);
+		final LevelParser levelParser = new LevelParser(level);
+		final Universe world = levelParser.buildWorldFromLevel();
 		throw new NoSuchElementException("WorldFactory.loadWorldFromLevel is not fully implemented yet");
 	}
 	
