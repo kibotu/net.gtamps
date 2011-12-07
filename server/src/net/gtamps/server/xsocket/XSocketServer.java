@@ -1,6 +1,8 @@
 package net.gtamps.server.xsocket;
 
 import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.ServerHelper;
+
 import org.xsocket.connection.IServer;
 import org.xsocket.connection.Server;
 
@@ -35,7 +37,7 @@ public class XSocketServer implements Runnable {
     @Override
     public void run() {
         try {
-            srv = new Server(PORT, socketHandler);
+            srv = new Server(ServerHelper.getLocalIP(), PORT, socketHandler);
             srv.run();
             isOnline = true;
         } catch (final Exception ex) {
@@ -59,6 +61,14 @@ public class XSocketServer implements Runnable {
             new Thread(this).start();
             wasStarted = true;
         }
+    }
+    
+    public String getLocalIPAddress() {
+    	return srv.getLocalAddress().getHostAddress();
+    }
+    
+    public int getLocalPort() {
+    	return srv.getLocalPort();
     }
 
 }

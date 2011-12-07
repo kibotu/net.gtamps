@@ -19,6 +19,7 @@ import net.gtamps.shared.configuration.Configuration;
 import net.gtamps.shared.configuration.MergeConfiguration;
 import net.gtamps.shared.configuration.ProtectedMergeStrategy;
 import net.gtamps.shared.configuration.conversion.XMLConfigLoader;
+import net.gtamps.shared.game.ServerData;
 import net.gtamps.shared.serializer.communication.ISerializer;
 
 public final class GTAMultiplayerServer {
@@ -29,6 +30,8 @@ public final class GTAMultiplayerServer {
     public static final String DEFAULT_PATH = "../assets/kompilat/";
     public static final String DEFAULT_MAP = "tinycity.xml";
 
+    private static GTAMultiplayerServer INSTANCE = null;
+    private static ControlCenter CONTROL = null;
     private static Configuration CONFIG = ConfigBuilder.getEmptyConfiguration();
 
     public static void main(final String[] args){
@@ -40,10 +43,13 @@ public final class GTAMultiplayerServer {
     	return CONFIG;
     }
     
+    private XSocketServer gameServer;
+    private SimpleHttpServer httpServer;
+    
     @SuppressWarnings("unused")
 	private GTAMultiplayerServer(final Mode mode) {
-    	XSocketServer gameServer = null;
-    	final SimpleHttpServer httpServer = null;
+//    	XSocketServer gameServer = null;
+//    	SimpleHttpServer httpServer = null;
     	try {
     		new ServerGUI();
     		Logger.getInstance().log(LogType.SERVER, "server GUI is up.");
@@ -55,15 +61,18 @@ public final class GTAMultiplayerServer {
 	        Logger.getInstance().log(LogType.SERVER, "socketHandler initialized: " + sockHandler.toString());
 	        gameServer = ServerChainFactory.createServerChain(sockHandler);
 	        Logger.getInstance().log(LogType.SERVER, "server running: " + gameServer.toString());
-	//      httpServer = ServerChainFactory.startHTTPServer(DEFAULT_PATH);
+	        httpServer = ServerChainFactory.startHTTPServer(DEFAULT_PATH);
+	        Logger.getInstance().log(LogType.SERVER, "http server running: " + httpServer.toString());
+	      
 	//		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
 	//		dbHandler.createPlayer("tom", "mysecretpassword");
 	//		dbHandler.authPlayer("tom", "mysecretpassword");
 	//		dbHandler.deletePlayer("tom", "mysecretpassword");
 	//		dbHandler.authPlayer("tom", "mysecretpassword");
 	        
-	        final ControlCenter cc = ControlCenter.instance;
-	        Logger.getInstance().log(LogType.SERVER, "control center initialized: " + cc.toString());
+	        CONTROL = ControlCenter.instance;
+	        INSTANCE = this;
+	        Logger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
     	} catch (final Exception e) {
     		Logger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown: " + e);
     		XSocketServer.shutdownServer();
@@ -90,5 +99,14 @@ public final class GTAMultiplayerServer {
     private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     	return (ISerializer) Class.forName(CONFIG.select("server.setup.tcp.serializer.class").getString()).newInstance();
     }
+
+	public static ControlCenter getControlCenter() {
+		return CONTROL;
+	}
+
+	public static ServerData getGameServerData() {
+		final XSocketServer srv = INSTANCE.gameServer;
+		return new ServerData(srv.getLocalIPAddress(), srv.getLocalPort());
+	}
 
 }
