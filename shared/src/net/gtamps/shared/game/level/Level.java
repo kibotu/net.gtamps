@@ -1,9 +1,13 @@
 package net.gtamps.shared.game.level;
 
-import net.gtamps.shared.Utils.Logger;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.LinkedList;
+
+import net.gtamps.shared.Utils.Logger;
 
 public class Level implements Serializable {
     /**
@@ -11,8 +15,11 @@ public class Level implements Serializable {
      */
     private static final long serialVersionUID = -3756877185706183170L;
 
+    int LevelWidthInPixelCoord = 0;
+    int LevelHeightInPixelCoord = 0;
     LinkedList<PhysicalShape> physicalShapes = new LinkedList<PhysicalShape>();
     LinkedList<EntityPosition> entityPositions = new LinkedList<EntityPosition>();
+    String levelName = "";
     private String OBJMap = "";
 
     public LinkedList<PhysicalShape> getPhysicalShapes() {
@@ -23,26 +30,37 @@ public class Level implements Serializable {
         return entityPositions;
     }
 
-    public void set3DMap(String ObjFromMap) {
-        this.OBJMap = ObjFromMap;
+    public void set3DMap(final String ObjFromMap) {
+        OBJMap = ObjFromMap;
     }
 
-    public static Level loadLevel(InputStream is) {
+    public int getHeightInPixelCoord() {
+		return LevelHeightInPixelCoord;
+	}
+    public int getWidthInPixelCoord() {
+		return LevelWidthInPixelCoord;
+	}
+    
+    public static Level loadLevel(final InputStream is) {
         ObjectInputStream in;
         try {
             in = new ObjectInputStream(is);
-            Level level = (Level) in.readObject();
+            final Level level = (Level) in.readObject();
             in.close();
             return level;
-        } catch (StreamCorruptedException e) {
+        } catch (final StreamCorruptedException e) {
             Logger.e(Level.class, "Stream corrupted! Level loading failed!");
             return null;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Logger.e(Level.class, "IO Exception! Level loading failed!");
             return null;
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             Logger.e(Level.class, "Class not Found! Level loading failed!");
             return null;
         }
     }
+
+	public String getName() {
+		return levelName;
+	}
 }
