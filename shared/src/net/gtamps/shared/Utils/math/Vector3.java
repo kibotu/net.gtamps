@@ -1,5 +1,7 @@
 package net.gtamps.shared.Utils.math;
 
+import java.io.Serializable;
+
 import net.gtamps.shared.Utils.cache.IObjectCache;
 import net.gtamps.shared.Utils.cache.ObjectFactory;
 import net.gtamps.shared.Utils.cache.ThreadLocalObjectCache;
@@ -13,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  *     {@link #recycle(Vector3)} zurückgegeben werden.
  * </p>
  */
-public final class Vector3 {
+public final class Vector3 implements Serializable{
 
 	/**
 	 * Instanz, die die Verwaltung nicht länger benötigter Instanzen übernimmt
