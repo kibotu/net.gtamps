@@ -42,6 +42,13 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
     public EntityManager(final Universe universe) {
         this.universe = universe;
     }
+    
+    public EntityManager registerEntity(final Entity e) {
+    	addEventListener(EventType.SESSION_EVENT, e);
+    	e.addEventListener(EventType.ENTITY_EVENT, this);
+    	entities.put(e.getUid(), e);
+    	return this;
+    }
 
     public Entity createEntityCar(final int pixX, final int pixY, final int rotation) {
         // TODO
