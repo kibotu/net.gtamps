@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.game.universe.UniverseFactory;
@@ -33,7 +32,8 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final LogType TAG = LogType.GAMEWORLD;
+    private static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
+	private static final LogType TAG = LogType.GAMEWORLD;
     private static final long THREAD_UPDATE_SLEEP_TIME = 20;
     private static final int PHYSICS_ITERATIONS = 20;
 
@@ -56,7 +56,8 @@ public class Game implements IGame, Runnable {
         id = ++Game.instanceCounter;
         final String name = "Game " + id;
         thread = new Thread(this, name);
-        universe = UniverseFactory.loadMap(mapPath);
+//        universe = UniverseFactory.loadMap(mapPath);
+        universe = UniverseFactory.loadWorldFromLevel(mapPath);
         if (universe != null) {
             Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
             run = true;
@@ -72,7 +73,7 @@ public class Game implements IGame, Runnable {
     }
 
     public Game() {
-        this(GTAMultiplayerServer.DEFAULT_PATH + GTAMultiplayerServer.DEFAULT_MAP);
+        this(TEST_LEVEL_PATH);
     }
 
     @Override
