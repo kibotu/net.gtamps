@@ -8,14 +8,14 @@ import java.net.Socket;
 
 public class SimpleHttpServer implements Runnable {
 
-    private int port;
-    private File documentDir;
-    private boolean enableLogging;
+	private final int port;
+    private final File documentDir;
+    private final boolean enableLogging;
     private boolean isRunning = false;
 
-    public SimpleHttpServer(int port, String directoryPath, boolean enableLogging) throws FileNotFoundException {
+    public SimpleHttpServer(final int port, final String directoryPath, final boolean enableLogging) throws FileNotFoundException {
         this.port = port;
-        this.documentDir = new File(directoryPath);
+        documentDir = new File(directoryPath);
         this.enableLogging = enableLogging;
         if (!documentDir.exists()) {
             throw new FileNotFoundException("No such document-dir exists: " + documentDir.getAbsolutePath());
@@ -27,13 +27,13 @@ public class SimpleHttpServer implements Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
-            this.isRunning = true;
+            final ServerSocket serverSocket = new ServerSocket(port);
+            isRunning = true;
             try {
                 while (isRunning) {
                     // wait for the next client to connect and get its
                     // socket connection
-                    Socket socket = serverSocket.accept();
+                    final Socket socket = serverSocket.accept();
                     // handle the socket connection by a handler in a new
                     // thread
                     new Thread(new SimpleHttpServerHandler(socket, documentDir, enableLogging)).start();
@@ -46,19 +46,31 @@ public class SimpleHttpServer implements Runnable {
                     new Thread(new SimpleHttpServerHandler(socket, documentDir, enableLogging)).start();
 
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 System.err
                         .println("Error while accepting connection on port "
                                 + port);
             } finally {
                 serverSocket.close();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Failed to bind to port " + port);
         }
     }
 
     public void stopServer() {
-        this.isRunning = false;
+        isRunning = false;
     }
+    
+    @Override
+	public String toString() {
+		return "SimpleHttpServer ["
+			+ "port=" + port + ", "
+			+ (documentDir != null ? "documentDir=" + documentDir + ", " : "")
+//			+ "enableLogging=" + enableLogging
+//			+ ", isRunning=" + isRunning
+			+ "]";
+	}
+
+    
 }

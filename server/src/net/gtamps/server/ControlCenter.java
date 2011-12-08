@@ -1,5 +1,6 @@
 package net.gtamps.server;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.Logger;
+import net.gtamps.shared.game.GameData;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableType;
@@ -231,5 +233,19 @@ public class ControlCenter implements Runnable, IMessageHandler {
         game = new Game();
         return game;
     }
+
+	public List<GameData> getGames() {
+		return Collections.singletonList(getGameDataFromGame(game));
+	}
+
+	private GameData getGameDataFromGame(final IGame gameThread) {
+		return new GameData(
+				"SampleGameName",
+				"sampleHash" + Long.toHexString(gameThread.getId()),
+				-1,
+				20,
+				1234,
+				"../img/pingpong.png");
+	}
 
 }

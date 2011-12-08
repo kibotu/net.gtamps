@@ -33,11 +33,9 @@ implements Configuration {
 	@Override
 	public Configuration select(final String key) {
 		final ConfigKey configKey = new ConfigKey(key);
-		Configuration config = null;
-		if (configKey.isIntermediate()) {
-			config = this.entries.get(configKey.head).select(configKey.tail);
-		} else {
-			config = this.entries.get(configKey.head);
+		Configuration config = this.entries.get(configKey.head);
+		if (configKey.isIntermediate() && config != null) {
+			config = config.select(configKey.tail);
 		}
 		if (config == null) {
 			throw new IllegalArgumentException("key does not exist: " + key);

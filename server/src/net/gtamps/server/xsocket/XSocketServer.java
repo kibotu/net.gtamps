@@ -1,24 +1,28 @@
 package net.gtamps.server.xsocket;
 
+import java.net.InetAddress;
+
 import net.gtamps.server.ISocketHandler;
+
 import org.xsocket.connection.IServer;
 import org.xsocket.connection.Server;
 
 public class XSocketServer implements Runnable {
-    private static IServer srv;
-    private static int PORT = 8095;
+
+	private static IServer srv;
     private static boolean isOnline = true;
     private static boolean wasStarted = false;
 
     private final ISocketHandler socketHandler;
-
+    private final int port;
 
 //	MessageHandler messageHandler;
 
-    public XSocketServer(final ISocketHandler socketHandler) {
+    public XSocketServer(final int port, final ISocketHandler socketHandler) {
         if (socketHandler == null) {
             throw new IllegalArgumentException("'serializer' must not be null");
         }
+        this.port = port;
         this.socketHandler = socketHandler;
     }
 
@@ -35,7 +39,7 @@ public class XSocketServer implements Runnable {
     @Override
     public void run() {
         try {
-            srv = new Server(PORT, socketHandler);
+            srv = new Server(port, socketHandler);
             srv.run();
             isOnline = true;
         } catch (final Exception ex) {
@@ -60,5 +64,24 @@ public class XSocketServer implements Runnable {
             wasStarted = true;
         }
     }
-
+    
+    public InetAddress getLocalAddress() {
+    	return srv.getLocalAddress();
+    }
+    
+    public String getLocalIPAddress() {
+    	return srv.getLocalAddress().getHostAddress();
+    }
+    
+    public int getLocalPort() {
+    	return srv.getLocalPort();
+    }
+    
+    @Override
+	public String toString() {
+		return "XSocketServer ["
+		+ "port=" + port + ", "
+		+ (socketHandler != null ? "socketHandler=" + socketHandler  : "")
+		+ "]";
+	}
 }
