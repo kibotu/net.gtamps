@@ -48,7 +48,7 @@ public class Game implements IGame, Runnable {
     private volatile boolean run;
     private volatile boolean isActive;
 
-    private final Universe world;
+    private final Universe universe;
     private final PlayerManagerFacade playerStorage;
     private final TimeKeeper gameTime;
 
@@ -56,11 +56,11 @@ public class Game implements IGame, Runnable {
         id = ++Game.instanceCounter;
         final String name = "Game " + id;
         thread = new Thread(this, name);
-        world = UniverseFactory.loadMap(mapPath);
-        if (world != null) {
-            Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + world.getName());
+        universe = UniverseFactory.loadMap(mapPath);
+        if (universe != null) {
+            Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
             run = true;
-            playerStorage = new PlayerManagerFacade(world.playerManager);
+            playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
             start();
         } else {
@@ -82,7 +82,7 @@ public class Game implements IGame, Runnable {
 
     @Override
     public String getName() {
-        return world.getName();
+        return universe.getName();
     }
 
     @Override
@@ -111,10 +111,10 @@ public class Game implements IGame, Runnable {
     }
 
     private void doCycle() {
-        world.updateRevision(gameTime.getTotalDurationMillis());
-        world.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
+        universe.updateRevision(gameTime.getTotalDurationMillis());
+        universe.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
         //TODO
-		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
+		universe.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
 
         //for fps debugging
 //		lastUpdate += timeElapsedInSeceonds;
@@ -267,7 +267,7 @@ public class Game implements IGame, Runnable {
                 type = EventType.ACTION_SUICIDE;
         }
         if (type != null) {
-            world.eventManager.dispatchEvent(new GameEvent(type, player));
+            universe.eventManager.dispatchEvent(new GameEvent(type, player));
         }
     }
 
@@ -312,9 +312,9 @@ public class Game implements IGame, Runnable {
             return sendable.createResponse(SendableType.GETPLAYER_NEED);
         }
         final long baseRevision = ((RevisionData) sendable.data).revisionId;
-        final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
-        final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);
-        final UpdateData update = new UpdateData(baseRevision, world.getRevision());
+        final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
+        final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
+        final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
         update.gameObjects = new ArrayList<GameObject>();
         update.gameObjects.addAll(entities);
         update.gameObjects.addAll(events);
