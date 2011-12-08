@@ -18,6 +18,11 @@ import org.jetbrains.annotations.NotNull;
 public final class Vector3 implements Serializable{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6251644491030110030L;
+
+	/**
 	 * Instanz, die die Verwaltung nicht länger benötigter Instanzen übernimmt
 	 */
 	public static final IObjectCache<Vector3> Cache = new ThreadLocalObjectCache<Vector3>(new ObjectFactory<Vector3>() {
