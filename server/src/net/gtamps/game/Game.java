@@ -12,8 +12,8 @@ import net.gtamps.game.universe.Universe;
 import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
-import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
@@ -32,7 +32,7 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
+    private static final String TEST_LEVEL_PATH = "../assets/map2.map.lvl";
 	private static final LogType TAG = LogType.GAMEWORLD;
     private static final long THREAD_UPDATE_SLEEP_TIME = 20;
     private static final int PHYSICS_ITERATIONS = 20;
