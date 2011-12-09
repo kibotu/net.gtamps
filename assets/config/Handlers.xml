@@ -1,10 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
+	
+	<PHYSICS>
+		<ELEMENT name="Body">
+			<ATTRIB name="posx" type="int" comment="pixels"/>
+			<ATTRIB name="posy" type="int" comment="pixels"/>
+			<ATTRIB name="angle" type="int" comment="degrees"/>
+			<ATTRIB name="isbullet" type="boolean" />
+			<ATTRIB name="linearDamping" type="float" default="0"/>
+			<ATTRIB name="angularDamping" type="float" default="0"/>
+			<LISTATTRIB name="shapes" type="Shape" />
+		</ELEMENT>
+		
+		<ELEMENT name="Shape" abstract="true">
+			<ATTRIB name="density" type="float" default="0" />
+			<ATTRIB name="friction" type="float" default="0" />
+			<ATTRIB name="restitution" type="float" default="0" />
+		</ELEMENT>
+		
+		<ELEMENT name="Box" extends="Shape">
+			<ATTRIB name="width" type="int" comment="pixels"/>
+			<ATTRIB name="height" type="int" comment="pixels"/>
+		</ELEMENT>
+		
+		<ELEMENT name="Circle" extends="Shape">
+			<ATTRIB name="radius" type="int" comment="pixels" />
+		</ELEMENT>
+	</PHYSICS>
+
 	<HANDLERS>
 		
-		<TYPE id="Physics" class="">
-			<PARAM type="" default="" />
-		</TYPE>		
+
+		<TYPE name="Physics" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="dynamic" type="boolean" default="false" />
+			<PARAM name="body" type="Body" />
+		</TYPE>
+		
+		<TYPE name="Mobility" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="f_velocity" type="int" default="0" />
+			<PARAM name="f_steering" type="int" default="0" />
+			<PARAM name="r_steering" type="int" default="0" />
+			<PARAM name="r_steering" type="int" default="0" />
+			<PARAM name="speed_max" type="int" default="0" />
+		</TYPE>
+		
+		<TYPE name="Health" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="max" type="int"/>
+			<PARAM name="dmgThresh" type="int" default="0" />
+			<PARAM name="dmgMult" type="float" default="1" />
+		</TYPE>
+		
+		<TYPE name="DoorSensorReceiver" class="net.gtamps.game.handler.SensorDoorHandler"/>
+		
+		
 		
 		
 	</HANDLERS>
