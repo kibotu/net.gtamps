@@ -13,7 +13,7 @@ import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
@@ -59,13 +59,13 @@ public class Game implements IGame, Runnable {
 //        universe = UniverseFactory.loadMap(mapPath);
         universe = UniverseFactory.loadWorldFromLevel(mapPath);
         if (universe != null) {
-            Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
+            GUILogger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
             run = true;
             playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
             start();
         } else {
-            Logger.i().log(LogType.GAMEWORLD, "Game not loaded");
+            GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
             run = false;
             playerStorage = null;
             gameTime = null;
@@ -256,7 +256,7 @@ public class Game implements IGame, Runnable {
                 break;
             case ACTION_ENTEREXIT:
                 type = EventType.ACTION_ENTEREXIT;
-                Logger.i().log(TAG, "ENTER/EXIT received");
+                GUILogger.i().log(TAG, "ENTER/EXIT received");
                 break;
             case ACTION_SHOOT:
                 type = EventType.ACTION_SHOOT;

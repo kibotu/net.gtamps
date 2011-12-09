@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.GameData;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.Sendable;
@@ -65,7 +65,7 @@ public class ControlCenter implements Runnable, IMessageHandler {
     @Override
     public void receiveMessage(final Connection<?> c, final Message msg) {
         if (msg != null) {
-            Logger.getInstance().log(TAG, msg.toString());
+            GUILogger.getInstance().log(TAG, msg.toString());
             String sessionId;
 			try {
 				sessionId = SessionManager.instance.getSessionForMessage(msg, c);

@@ -1,7 +1,7 @@
 package net.gtamps.server.db;
 
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -17,8 +17,8 @@ public class JDBCConnector {
         this.path = path;
         try {
             Driver driverClass = (Driver) DriverManager.getDriver("jdbc:derby:" + path);
-            Logger.i().log(TAG, "Driver for jdbc:derby:" + path);
-            Logger.i().log(TAG, "   " + driverClass.getClass().getName());
+            GUILogger.i().log(TAG, "Driver for jdbc:derby:" + path);
+            GUILogger.i().log(TAG, "   " + driverClass.getClass().getName());
             listDrivers();
 
         } catch (SQLException e) {
@@ -29,10 +29,10 @@ public class JDBCConnector {
 
     private void listDrivers() {
         Enumeration driverList = DriverManager.getDrivers();
-        Logger.i().log(TAG, "List of drivers:");
+        GUILogger.i().log(TAG, "List of drivers:");
         while (driverList.hasMoreElements()) {
             Driver driverClass = (Driver) driverList.nextElement();
-            Logger.i().log(TAG, "   " + driverClass.getClass().getName());
+            GUILogger.i().log(TAG, "   " + driverClass.getClass().getName());
         }
     }
 

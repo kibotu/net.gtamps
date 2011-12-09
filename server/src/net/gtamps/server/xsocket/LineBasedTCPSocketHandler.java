@@ -3,7 +3,7 @@ package net.gtamps.server.xsocket;
 import net.gtamps.server.Connection;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import org.xsocket.connection.INonBlockingConnection;
 
@@ -48,7 +48,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
         try {
             data = nbc.readBytesByDelimiter("\n");
             this.receive(nbc, data);
-            Logger.i().indicateNetworkReceiveActivity();
+            GUILogger.i().indicateNetworkReceiveActivity();
             nbc.write(PROMPT);
             nbc.flush();
         } catch (final ClosedChannelException e) {
@@ -111,7 +111,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
     private void connect(final INonBlockingConnection nbc) {
         final String id = nbc.getId();
         System.out.println("New Connection: " + id);
-        Logger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
+        GUILogger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
         abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
         actualConnections.put(id, nbc);
     }
@@ -119,7 +119,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
     private void disconnect(final INonBlockingConnection nbc) {
         final String id = nbc.getId();
         System.out.println("Closed Connection: " + id);
-        Logger.i().log(LogType.SERVER, "Closed Connection: " + id);
+        GUILogger.i().log(LogType.SERVER, "Closed Connection: " + id);
         abstractConnections.remove(id);
         actualConnections.remove(id);
     }

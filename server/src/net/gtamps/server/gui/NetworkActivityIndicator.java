@@ -26,10 +26,10 @@ public class NetworkActivityIndicator extends JRadioButton implements ActionList
     public void actionPerformed(ActionEvent e) {
         this.setEnabled(false);
         if (this.type == Type.SEND) {
-            this.setSelected(Logger.i().getNetworkSendActivity());
+            this.setSelected(GUILogger.i().getNetworkSendActivity());
         }
         if (this.type == Type.RECEIVE) {
-            this.setSelected(Logger.i().getNetworkReceiveActivity());
+            this.setSelected(GUILogger.i().getNetworkReceiveActivity());
         }
     }
 
