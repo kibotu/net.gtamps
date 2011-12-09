@@ -55,12 +55,26 @@ public class ProtectedMergeStrategy implements MergeStrategy {
 		keys.addAll(otherConfig.getKeys());
 		keys.addAll(baseConfig.getKeys());
 		for (final String key : keys) {
-			final Configuration baseList = baseConfig.select(key);
-			final Configuration otherList = otherConfig.select(key);
+			Configuration baseList;
+			Configuration otherList;
+
+			try {
+				baseList = baseConfig.select(key);
+			} catch (final IllegalArgumentException e) {
+				baseList = null;
+			}
+
+			try {
+				otherList = otherConfig.select(key);
+			} catch (final IllegalArgumentException e) {
+				otherList = null;
+			}
+
+
 			final Configuration mergeList;
 			if (baseList == null) {
 				mergeList = otherList;
-			} else if (baseList.getType() == Map.class && otherList.getType() == Map.class){
+			} else if (otherList != null && baseList.getType() == Map.class && otherList.getType() == Map.class){
 				mergeList = merge(baseList, otherList);
 			} else {
 				mergeList = baseList;

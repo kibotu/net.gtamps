@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.server.ControlCenter;
+import net.gtamps.shared.configuration.Configuration;
 import net.gtamps.shared.game.GameData;
 import net.gtamps.shared.game.ServerData;
 
@@ -32,6 +33,7 @@ public final class SimpleHttpServerHandler implements Runnable {
     public static String default_served_file = "index.html";
     
     private static final String RUNNING_GAMES_REQUEST_PATH = "/games/";
+    private static final String CONFIG_REQUEST_PATH = "/config/";
     
     private static final Pattern REQUEST_PATTERN = Pattern
             .compile("^GET (/.*) HTTP/1.[01]$");
@@ -122,6 +124,8 @@ public final class SimpleHttpServerHandler implements Runnable {
                 status = sendErrorResponse(400, "Bad Request");
             } else if (path.equals(RUNNING_GAMES_REQUEST_PATH)) {
             	len = sendString(getRunningGamesAsString());
+            } else if (path.equals(CONFIG_REQUEST_PATH)) {
+            	len = sendString(getGameServerConfigAsString());
             } else {
                 if (path.equals("/")) {
                     path = default_served_file;
@@ -161,6 +165,11 @@ public final class SimpleHttpServerHandler implements Runnable {
             System.out.println(sb);
         }
     }
+
+	private String getGameServerConfigAsString() {
+		final Configuration config = GTAMultiplayerServer.getConfig();
+		return config.getString();
+	}
 
 	private long sendString(final String sendMe) throws IOException {
 		final byte[] bytes = sendMe.getBytes();

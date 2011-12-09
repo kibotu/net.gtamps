@@ -27,7 +27,11 @@ import net.gtamps.shared.serializer.communication.ISerializer;
 
 public final class GTAMultiplayerServer {
 	
-	private static final String BASE_CONFIG_PATH = "../assets/config/Server.xml";
+	private static final String BASE_CONFIG_PATH = "../assets/config/";
+	private static final String[] LOAD_CONFIG = {
+		"Server.xml",
+		"Entities.xml"
+	};
 
 	public enum Mode { DEBUG, PRODUCTION }
 
@@ -63,7 +67,7 @@ public final class GTAMultiplayerServer {
     		new ServerGUI();
     		GUILogger.getInstance().log(LogType.SERVER, "server GUI is up.");
 
-    		CONFIG = loadConfig(BASE_CONFIG_PATH);
+    		CONFIG = loadConfig();
     		
 	        final ISerializer serializer = initSerializer();
 	        final ISocketHandler sockHandler = initSockHandler(serializer);
@@ -124,9 +128,14 @@ public final class GTAMultiplayerServer {
 		return sockHandler;
 	}
     
-    private static MergeConfiguration loadConfig(final String path) throws FileNotFoundException, RuntimeException {
-		final Configuration loadedConfig = new XMLConfigLoader(ResourceLoader.getFileAsInputStream(path), new ConfigSource(new File(path))).loadConfig();
-		final MergeConfiguration config = new MergeConfiguration(new ProtectedMergeStrategy(), loadedConfig);
+    private static MergeConfiguration loadConfig() throws FileNotFoundException, RuntimeException {
+    	final MergeConfiguration config = new MergeConfiguration(new ProtectedMergeStrategy());
+    	Configuration loadedConfig = null;
+		for (int i = 0; i < LOAD_CONFIG.length; i++) {
+			final String path = BASE_CONFIG_PATH + LOAD_CONFIG[i];
+			loadedConfig = new XMLConfigLoader(ResourceLoader.getFileAsInputStream(path), new ConfigSource(new File(path))).loadConfig();
+			config.merge(loadedConfig);
+		}
 		GUILogger.getInstance().log(LogType.SERVER, "configuration loaded: " + config.getSource());
     	return config;
     }
