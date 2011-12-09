@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CONFIG>
+	<EVENT name="GAME_EVENT" abstract="true" />
+	
+	<EVENT name="SESSION_EVENT" abstract="true" />
+		
+	<EVENT name="PLAYER_EVENT" abstract="true" />
+		
+	<EVENT name="ENTITY_EVENT" abstract="true" />
+		
+</CONFIG>

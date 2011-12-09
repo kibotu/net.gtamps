@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+	<ENTITY name="_default" abstract="true">
+		<PROPERTIES>
+			<PROPERTY name="posx" type="int" default="0" lazy="false" comment="in pix"/>
+			<PROPERTY name="posy" type="int" default="0" lazy="false" comment="in pix"/>
+			<PROPERTY name="posz" type="int" default="0" lazy="false" comment="in pix"/>
+			<PROPERTY name="rota" type="int" default="0" lazy="false" comment="degrees"/>
+			<PROPERTY name="speedx" type="int" default="0" comment="degrees"/>
+			<PROPERTY name="speedy" type="int" default="0" comment="degrees"/>
+			<PROPERTY name="health" type="int" default="0" comment="absolute"/>
+			<PROPERTY name="healthratio" type="float" default="0" comment="health / maxhealth"/>
+			<PROPERTY name="alive" type="bool" default="true" comment="is considered operational"/>
+		</PROPERTIES>
+	</ENTITY>
+	<!-- ... -->
+</CONFIG>

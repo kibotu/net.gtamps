@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+<COMMON>
+<GAME>
+	<DEF>
+		<TYPE name="GameObject" abstract="true">
+			<FIELD name="uid" type="int" />
+			<FIELD name="name" type="String" />
+			<FIELD name="revision" type="long" default="0"/>
+			<FIELD name="type" type="Class" />
+			<FIELD name="hasChanged" type="boolean" transient="true" />
+			<FIELD name="properties" type="Property" />
+		</TYPE>
+		
+		<TYPE name="PROPERTY" extends="GameObject">
+			<FIELD name="name" ref="PropertyType" />
+			<FIELD name="value" type="?" />
+		</TYPE>
+		
+		<TYPE name="GameEvent" extends="GameObject">
+			<FIELD name="name" ref="EventType" />
+			<FIELD name="sourceUid" type="int" />
+			<FIELD name="targetUid" type="int" />
+		</TYPE>
+
+		<TYPE name="Entity" extends="GameObject">
+			<FIELD name="name" ref="EntityType" />
+		</TYPE>
+		
+		<TYPE name="Player" extends="GameObject"/>
+		
+	</DEF>	
+	
+	<OBJECTS>
+		<%INCLUDE ref="Entities.xml" asKey="Entities"/>
+		<%INCLUDE ref="Events.xml" asKey="Events"/>
+		<%INCLUDE ref="Handlers.xml" asKey="Handlers"/>		
+	</OBJECTS>
+
+			
+</GAME>
+</COMMON>
+</CONFIG>
