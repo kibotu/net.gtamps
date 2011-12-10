@@ -26,7 +26,7 @@ public class PlayerManagerFacade {
         } else {
             player = createPlayerForUser(user);
         }
-        if (player.getEntity() != null) {
+        if (player.getEntity() == null) {
 	        final boolean spawned = playerManager.spawnPlayer(player.getUid());
 	        return spawned ? player : null;
         } else {
