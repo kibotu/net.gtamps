@@ -6,8 +6,8 @@ import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.player.PlayerManager;
-import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -95,7 +95,10 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     }
 
     public Entity getRandomSpawnPoint() {
-        return spawnPoints.get((int) (spawnPoints.size() * Math.random()));
+    	if (spawnPoints.size() > 0 ) {
+    		return spawnPoints.get((int) (spawnPoints.size() * Math.random()));
+    	}
+    	return null;
     }
 
     @Override

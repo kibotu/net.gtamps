@@ -1,10 +1,10 @@
 package net.gtamps.game.player;
 
-import net.gtamps.server.User;
-import net.gtamps.shared.game.player.Player;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import net.gtamps.server.User;
+import net.gtamps.shared.game.player.Player;
 
 public class PlayerManagerFacade {
 
@@ -26,8 +26,8 @@ public class PlayerManagerFacade {
         } else {
             player = createPlayerForUser(user);
         }
-        playerManager.spawnPlayer(player.getUid());
-        return player;
+        final boolean spawned = playerManager.spawnPlayer(player.getUid());
+        return spawned ? player : null;
     }
 
     public void leaveUser(final User user) {
