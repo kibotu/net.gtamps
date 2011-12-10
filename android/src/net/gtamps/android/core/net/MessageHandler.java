@@ -16,6 +16,7 @@ import net.gtamps.shared.serializer.communication.MessageFactory;
 import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class MessageHandler {
 
 	public void handleMessage(Sendable sendable, Message message) {
 
-//		Logger.i(this, "Handles message.");
-//		Logger.i(this, sendable);
+		Logger.i(this, "Handles message.");
+		Logger.i(this, sendable);
 
 		switch (sendable.type) {
 		case GETUPDATE_OK:
@@ -67,7 +68,7 @@ public class MessageHandler {
 						Logger.E(this, "Server entity after game event. GameEvent fired on empty entities.");
 					keepTrackOfOrder = 1;
 
-					newOrUpdateEntity(go);
+					updateOrCreateEntity((Entity) go);
 				} else {
 					Logger.d(this, "NOT HANDLED UPDATE -> " + go);
 				}
@@ -93,9 +94,9 @@ public class MessageHandler {
             Player player = ((PlayerData) sendable.data).player;
 			world.playerManager.setActivePlayer(player);
 
-            newOrUpdateEntity(player.getEntity());
+            updateOrCreateEntity(player.getEntity());
 
-			Logger.D(this, "GETPLAYER_OK " + world.playerManager.getActivePlayer());
+			Logger.D(this, "GETPLAYER_OK " + player);
 
 			// get update
 			connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
@@ -178,9 +179,7 @@ public class MessageHandler {
 		}
 	}
 
-    private void newOrUpdateEntity(GameObject go) {
-        // entity
-        Entity serverEntity = (Entity) go;
+    private void updateOrCreateEntity(@NotNull Entity serverEntity) {
 
         // new or update
         EntityView entityView = world.getViewById(serverEntity.getUid());
