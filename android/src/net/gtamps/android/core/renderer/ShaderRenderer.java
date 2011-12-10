@@ -45,8 +45,9 @@ public class ShaderRenderer extends BasicRenderer {
 
         camera.render(glState.getGl11());
 
-        // use program
+        // actually use shader
         GLES20.glUseProgram(program);
+        checkGlError("glUseProgram");
 
         // send to the shader
 //        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "uMVPMatrix"), 1, false,camera.getCombinedTransformation().values , 0);
@@ -77,10 +78,10 @@ public class ShaderRenderer extends BasicRenderer {
 	}
 
     private void loadShader() {
-//        shaderMap.put("phong",new Shader(R.raw.phong_vs,R.raw.phong_ps, Registry.getContext().getApplicationContext(), false, 0));
+        shaderMap.put("phong",new Shader(R.raw.phong_vs,R.raw.phong_ps, Registry.getContext().getApplicationContext(), false, 0));
 //        shaderMap.put("gouraud",new Shader(R.raw.gouraud_vs,R.raw.gouraud_ps, Registry.getContext().getApplicationContext(), false, 0));
 //        shaderMap.put("normal",new Shader(R.raw.normalmap_vs,R.raw.normalmap_ps, Registry.getContext().getApplicationContext(), false, 0));
-        shaderMap.put("min",new Shader(R.raw.min_vs,R.raw.min_ps, Registry.getContext().getApplicationContext(), false, 0));
+//        shaderMap.put("min",new Shader(R.raw.min_vs,R.raw.min_ps, Registry.getContext().getApplicationContext(), false, 0));
     }
 
     @Override

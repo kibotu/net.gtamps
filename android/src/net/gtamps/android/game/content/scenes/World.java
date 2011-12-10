@@ -117,8 +117,4 @@ public class World extends EntityScene {
     @Override
     public void onDirty() {
     }
-
-    public boolean hasPlayer() {
-        return hasPlayer();
-    }
 }
