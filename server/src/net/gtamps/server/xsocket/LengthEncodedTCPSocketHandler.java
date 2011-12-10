@@ -1,13 +1,5 @@
 package net.gtamps.server.xsocket;
 
-import net.gtamps.server.Connection;
-import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.GUILogger;
-import net.gtamps.shared.serializer.communication.ISerializer;
-import org.jetbrains.annotations.NotNull;
-import org.xsocket.connection.INonBlockingConnection;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.BufferOverflowException;
@@ -15,6 +7,15 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.gtamps.server.Connection;
+import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.serializer.communication.ISerializer;
+
+import org.jetbrains.annotations.NotNull;
+import org.xsocket.connection.INonBlockingConnection;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
@@ -55,7 +56,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
             }
             // TODO: better solution
             try {
-                Thread.currentThread().sleep(20);
+                Thread.sleep(20);
             } catch (final InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -151,22 +152,11 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 
     @Override
     public boolean onConnect(final INonBlockingConnection nbc) {
-//		synchronized (connections) {
-        // try {
-        // nbc.write("Hello and welcome to the server!\n\0");
-        // } catch (BufferOverflowException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
         final String id = nbc.getId();
         System.out.println("New Connection: " + id);
         GUILogger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
         abstractConnections.put(id, new Connection<LengthEncodedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
         actualConnections.put(id, nbc);
-//		}
         return true;
     }
 
@@ -185,14 +175,11 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
         final byte low = (byte) (length & 0xFF);
 
         try {
-            //NonBlockingConnection ncv;
-            //ncv.write(buffers);
             nbc.write(high);
             nbc.write(low);
             nbc.write(bytes);
             nbc.flush();
             System.out.println(length + " + 2 bytes send");
-            // System.out.println(msg);
         } catch (final BufferOverflowException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -202,17 +189,4 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
         }
     }
 
-    /*private boolean isKnownConnection(INonBlockingConnection nbc) {
-         synchronized (connections) {
-             return connections.containsKey(nbc.getId());
-         }
-     }*/
-
-    private String bytesToStr(final byte[] b) {
-        String s = "";
-        for (int i = 0; i < b.length; i++) {
-            s += (int) b[i] + " ";
-        }
-        return s;
-    }
 }

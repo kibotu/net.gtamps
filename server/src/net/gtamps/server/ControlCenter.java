@@ -19,7 +19,7 @@ import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.AuthentificationData;
 import net.gtamps.shared.serializer.communication.data.StringData;
 
-public class ControlCenter implements Runnable, IMessageHandler {
+public final class ControlCenter implements Runnable, IMessageHandler {
     private static final LogType TAG = LogType.SERVER;
     private static final long TARGET_CYCLE_TIME = 20;
 
@@ -28,10 +28,10 @@ public class ControlCenter implements Runnable, IMessageHandler {
     public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
     public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
     public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
-
-    private final boolean run = true;
+    
     private final Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
-
+    
+    private boolean run = true;
     private IGame game; //tmp
 
     private ControlCenter() {
@@ -83,6 +83,10 @@ public class ControlCenter implements Runnable, IMessageHandler {
         if (response != null) {
             responsebox.add(response);
         }
+    }
+    
+    public void shutdown() {
+    	run = false;
     }
 
     @Deprecated

@@ -10,8 +10,7 @@ public final class Connection<H extends ISocketHandler> {
     private final H socketHandler;
     private final ISerializer serializer;
     private final String id;
-//	private final String host;
-//	private final int port;
+    private final ControlCenter controlCenter = ControlCenter.instance;
 
     public Connection(final String id, final H socketHandler, final ISerializer serializer) {
         if (id == null) {
@@ -38,8 +37,7 @@ public final class Connection<H extends ISocketHandler> {
             throw new IllegalArgumentException("'bytes' must not be null");
         }
         final Message m = serializer.deserializeMessage(bytes);
-        //SessionManager.instance.receiveMessage(this, m);
-        ControlCenter.instance.receiveMessage(this, m);
+        controlCenter.receiveMessage(this, m);
     }
 
     @Override

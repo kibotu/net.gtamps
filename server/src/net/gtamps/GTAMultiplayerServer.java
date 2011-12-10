@@ -59,6 +59,10 @@ public final class GTAMultiplayerServer {
     	return CONFIG;
     }
     
+    public static DBHandler getDBHandler() {
+    	return INSTANCE.dbHandler;
+    }
+    
     private XSocketServer gameServer;
     private SimpleHttpServer httpServer;
     private DBHandler dbHandler;
