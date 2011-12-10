@@ -25,7 +25,7 @@ public enum AndroidLogger implements ILogger {
     private final static Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if(msg.arg1 == 1) {
-                Toast t =  Toast.makeText(Registry.getContext().getApplicationContext(),msg.obj.toString(), Toast.LENGTH_LONG);
+                Toast t =  Toast.makeText(Registry.getContext().getApplicationContext(),""+msg.obj, Toast.LENGTH_LONG);
                 t.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
                 t.show();
             }

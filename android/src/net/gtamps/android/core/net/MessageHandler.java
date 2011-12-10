@@ -31,8 +31,8 @@ public class MessageHandler {
 
 	public void handleMessage(Sendable sendable, Message message) {
 
-		Logger.i(this, "Handles message.");
-		Logger.i(this, sendable);
+//		Logger.i(this, "Handles message.");
+//		Logger.i(this, sendable);
 
 		switch (sendable.type) {
 		case GETUPDATE_OK:
@@ -206,7 +206,7 @@ public class MessageHandler {
 	Entity targetEntity;
 
 	public void handleEvent(GameEvent event) {
-		Logger.i(this, "Handle event " + event);
+//		Logger.i(this, "Handle event " + event);
 
 		switch (event.getType()) {
 		case ACTION_ACCELERATE:
