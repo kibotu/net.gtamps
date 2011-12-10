@@ -100,7 +100,7 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     	}
     	return null;
     }
-
+    
     @Override
     public void addEventListener(final EventType type, final IGameEventListener listener) {
         eventRoot.addEventListener(type, listener);

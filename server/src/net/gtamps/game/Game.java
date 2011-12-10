@@ -23,6 +23,7 @@ import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.RevisionData;
+import net.gtamps.shared.serializer.communication.data.StringData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 
@@ -278,7 +279,9 @@ public class Game implements IGame, Runnable {
         final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
         final Player player = playerStorage.joinUser(user);
         if (player == null) {
-            return sendable.createResponse(SendableType.JOIN_ERROR);
+            final Sendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
+            joinError.data = new StringData("no spawnpoint found");
+            return joinError;
         }
         SessionManager.instance.joinSession(sendable.sessionId, this);
         return sendable.createResponse(SendableType.JOIN_OK);
