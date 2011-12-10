@@ -98,6 +98,7 @@ public class MessageHandler {
 		case GETUPDATE_BAD:
 			break;
 		case GETUPDATE_ERROR:
+            Logger.toast(this, "GETUPDATE_ERROR");
 			break;
 
 		case GETPLAYER_OK:
@@ -122,6 +123,7 @@ public class MessageHandler {
 		case GETPLAYER_BAD:
 			break;
 		case GETPLAYER_ERROR:
+            Logger.toast(this, "GETPLAYER_ERROR");
 			break;
 
 		case SESSION_OK:
@@ -133,6 +135,7 @@ public class MessageHandler {
 		case SESSION_BAD:
 			break;
 		case SESSION_ERROR:
+            Logger.toast(this, "SESSION_ERROR");
 			break;
 
 		case JOIN_OK:
@@ -143,6 +146,7 @@ public class MessageHandler {
 		case JOIN_BAD:
 			break;
 		case JOIN_ERROR:
+            Logger.toast(this, "JOIN_ERROR");
 			break;
 
 		case GETMAPDATA_OK:
@@ -152,6 +156,7 @@ public class MessageHandler {
 		case GETMAPDATA_BAD:
 			break;
 		case GETMAPDATA_ERROR:
+            Logger.toast(this, "GETMAPDATA_ERROR");
 			break;
 
 		case LEAVE_OK:
@@ -161,6 +166,7 @@ public class MessageHandler {
 		case LEAVE_BAD:
 			break;
 		case LEAVE_ERROR:
+            Logger.toast(this, "LEAVE_ERROR");
 			break;
 
 		case LOGIN_OK:
@@ -171,6 +177,7 @@ public class MessageHandler {
 		case LOGIN_BAD:
 			break;
 		case LOGIN_ERROR:
+            Logger.toast(this, "LOGIN_ERROR");
 			break;
 
 		case REGISTER_OK:
@@ -181,6 +188,7 @@ public class MessageHandler {
 		case REGISTER_BAD:
 			break;
 		case REGISTER_ERROR:
+            Logger.toast(this, "REGISTER_ERROR");
 			break;
 		default:
 			break;

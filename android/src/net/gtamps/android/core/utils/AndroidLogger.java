@@ -1,5 +1,7 @@
 package net.gtamps.android.core.utils;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -14,10 +16,21 @@ public enum AndroidLogger implements ILogger {
 
     @Override
     public void toast(@NotNull String o, String message) {
-        Toast t = Toast.makeText(Registry.getContext().getApplicationContext(), message, Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-        t.show();
+        Message msg = handler.obtainMessage();
+        msg.arg1 = 1;
+        handler.sendMessage(msg);
+        msg.obj = message;
     }
+
+    private final static Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            if(msg.arg1 == 1) {
+                Toast t =  Toast.makeText(Registry.getContext().getApplicationContext(),msg.obj.toString(), Toast.LENGTH_LONG);
+                t.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                t.show();
+            }
+        }
+    };
 
     @Override
     public void d(@NotNull String id, @Nullable String message) {
