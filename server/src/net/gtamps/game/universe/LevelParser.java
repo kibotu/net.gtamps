@@ -44,7 +44,8 @@ public class LevelParser {
 				entityManager.createEntityCar((int)ep.getPosition().x, (int)ep.getPosition().y, 0);
 			}
 			if( ep.getType().equals(Type.SPAWNPOINT)){
-				entityManager.createEntitySpawnPoint(universe, (int)ep.getPosition().x, (int)ep.getPosition().y, 0);
+				final Entity spawnPoint = entityManager.createEntitySpawnPoint(universe, (int)ep.getPosition().x, (int)ep.getPosition().y, 0);
+				universe.addSpawnPoint(spawnPoint);
 			}
 		}
 		
