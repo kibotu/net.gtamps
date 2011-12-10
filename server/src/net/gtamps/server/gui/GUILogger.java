@@ -3,17 +3,16 @@ package net.gtamps.server.gui;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Logger {
+public class GUILogger {
 
     private static HashMap<LogType, LinkedList<String>> logmap;
     private static HashMap<LogType, Boolean> updateFlags;
-    private static Logger guiLogger = null;
+    private static GUILogger guiLogger = null;
     public static final String lock = "LOCK";
     private boolean activitySend = false;
     private boolean activityReceive = false;
-
-
-    private Logger() {
+    
+    private GUILogger() {
         logmap = new HashMap<LogType, LinkedList<String>>();
         updateFlags = new HashMap<LogType, Boolean>();
         resetUpdateFlags();
@@ -22,14 +21,14 @@ public class Logger {
         }
     }
 
-    public static Logger getInstance() {
+    public static GUILogger getInstance() {
         if (guiLogger == null) {
-            guiLogger = new Logger();
+            guiLogger = new GUILogger();
         }
         return guiLogger;
     }
 
-    public static Logger i() {
+    public static GUILogger i() {
         return getInstance();
     }
 
@@ -86,4 +85,5 @@ public class Logger {
             updateFlags.put(type, false);
         }
     }
+
 }

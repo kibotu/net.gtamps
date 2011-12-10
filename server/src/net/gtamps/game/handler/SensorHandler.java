@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -80,7 +80,7 @@ public class SensorHandler extends Handler {
             sensed.remove(subject);
         }
         if (sensorType.isType(EventType.ENTITY_SENSE_DOOR)) {
-            Logger.i().log(TAG, target + " detected door of " + source);
+            GUILogger.i().log(TAG, target + " detected door of " + source);
         }
 
 /*		switch (event.getType()) {

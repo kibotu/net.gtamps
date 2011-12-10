@@ -10,10 +10,10 @@ public class ServerChainFactory {
     private static SimpleHttpServer httpServer = null;
 
 
-    public static SimpleHttpServer startHTTPServer(final String path) {
+    public static SimpleHttpServer startHTTPServer(final int port, final String path) {
         if (httpServer == null) {
             try {
-                httpServer = new SimpleHttpServer(8080, path, false);
+                httpServer = new SimpleHttpServer(port, path, false);
                 new Thread(httpServer).start();
             } catch (final FileNotFoundException e) {
                 System.out.println("Error starting HTTP Server:\n" + e);
@@ -28,8 +28,8 @@ public class ServerChainFactory {
         }
     }
 
-    public static XSocketServer createServerChain(final ISocketHandler handler) {
-    	final XSocketServer server = new XSocketServer(handler);
+    public static XSocketServer createServerChain(final int port, final ISocketHandler handler) {
+    	final XSocketServer server = new XSocketServer(port, handler);
         new Thread(server).start();
         return server;
     }

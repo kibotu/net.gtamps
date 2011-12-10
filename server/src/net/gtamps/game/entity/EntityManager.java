@@ -42,7 +42,24 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
     public EntityManager(final Universe universe) {
         this.universe = universe;
     }
+    
+    public EntityManager registerEntity(final Entity e) {
+    	addEventListener(EventType.SESSION_EVENT, e);
+    	e.addEventListener(EventType.ENTITY_EVENT, this);
+    	entities.put(e.getUid(), e);
+    	return this;
+    }
+    
+    public Entity createEntity(final String name, final int pixX, final int pixY, final int rotation) {
+    	final Entity e = EntityFactory.createEntity(universe, name, pixX, pixY, rotation);
+    	registerEntity(e);
+    	return e;
+    }
 
+    /**
+     * @deprecated	use {@link #createEntity(String, int, int, int)}
+     */
+    @Deprecated
     public Entity createEntityCar(final int pixX, final int pixY, final int rotation) {
         // TODO
         final Entity e = EntityFactory.createEntityCar(universe, pixX, pixY, rotation);
@@ -53,6 +70,10 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
         return e;
     }
 
+    /**
+     * @deprecated	use {@link #createEntity(String, int, int, int)}
+     */
+    @Deprecated
     public Entity createEntityHuman(final int pixX, final int pixY, final int rotation) {
         final Entity e = EntityFactory.createEntityHuman(universe, pixX, pixY, rotation, this);
         addEventListener(EventType.SESSION_EVENT, e);
@@ -62,6 +83,12 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
         return e;
     }
 
+    /**
+     * @deprecated	workaround: {@link EntityFactory#createSpecialEntityHouse(Universe, net.gtamps.shared.game.level.PhysicalShape)}, then {@link #registerEntity(Entity)}
+     * @see EntityFactory#createSpecialEntityHouse(Universe, net.gtamps.shared.game.level.PhysicalShape)
+     * @see #registerEntity(Entity)
+     */
+    @Deprecated
     public Entity createEntityHouse(final int pixX, final int pixY) {
         // TODO
         final Entity e = EntityFactory.createEntityHouse(universe, pixX, pixY);
@@ -80,6 +107,10 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
         return e;
     }
 
+    /**
+     * @deprecated	use {@link #createEntity(String, int, int, int)}
+     */
+    @Deprecated
     public Entity createEntityBullet(final int pixX, final int pixY, final Integer rotation) {
         //FIXME launch Distance is just some value: should be determined by the entity.
         //it is, just as the position property set in pixels.

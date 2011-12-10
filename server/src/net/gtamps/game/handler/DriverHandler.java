@@ -3,7 +3,7 @@ package net.gtamps.game.handler;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -76,7 +76,7 @@ public class DriverHandler extends Handler {
 
         setDriver(player);
         eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
-        Logger.i().log(TAG, player + " enters car " + getParent());
+        GUILogger.i().log(TAG, player + " enters car " + getParent());
     }
 
     public void exit() {
@@ -103,8 +103,8 @@ public class DriverHandler extends Handler {
         { // LOGGING
             final String logMsg = String.format("%s exits car %s", exDriver, getParent());
             final String logMsg2 = String.format("is now %s", driversHumanBody);
-            Logger.i().log(TAG, logMsg);
-            Logger.i().log(TAG, logMsg2);
+            GUILogger.i().log(TAG, logMsg);
+            GUILogger.i().log(TAG, logMsg2);
         }
         driversHumanBody = null;
     }

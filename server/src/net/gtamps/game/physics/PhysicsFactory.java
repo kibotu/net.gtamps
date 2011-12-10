@@ -10,7 +10,7 @@ import net.gtamps.game.handler.blueprints.MobilityBlueprint;
 import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.level.PhysicalShape;
@@ -207,7 +207,7 @@ public class PhysicsFactory {
      */
     @Deprecated
     public static Body createSportsCar(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int deg) {
-        Logger.i().log(TAG, "Creating car at x:" + pixX + " y:" + pixY + " deg:" + deg);
+        GUILogger.i().log(TAG, "Creating car at x:" + pixX + " y:" + pixY + " deg:" + deg);
         final float x = lengthToPhysics(pixX);
         final float y = lengthToPhysics(pixY);
         final float rotation = angleToPhysics(deg);
@@ -280,7 +280,7 @@ public class PhysicsFactory {
      */
     @Deprecated
     public static Body createHuman(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int rota) {
-        Logger.i().log(TAG, "Creating human at x:" + pixX + " y:" + pixY);
+        GUILogger.i().log(TAG, "Creating human at x:" + pixX + " y:" + pixY);
 
         final float x = lengthToPhysics(pixX);
         final float y = lengthToPhysics(pixY);
@@ -316,7 +316,7 @@ public class PhysicsFactory {
      */
     @Deprecated
     public static Body createHouse(final World world, final int pixX, final int pixY) {
-        Logger.i().log(TAG, "Creating house at x:" + pixX + " y:" + pixY);
+        GUILogger.i().log(TAG, "Creating house at x:" + pixX + " y:" + pixY);
 
         final float x = lengthToPhysics(pixX);
         final float y = lengthToPhysics(pixY);
@@ -352,7 +352,7 @@ public class PhysicsFactory {
      */
     @Deprecated
     public static Body createSpawnPoint(final World world, final int pixX, final int pixY, final Integer rotation) {
-        Logger.i().log(TAG, "Creating spawnpoint at x:" + pixX + " y:" + pixY);
+        GUILogger.i().log(TAG, "Creating spawnpoint at x:" + pixX + " y:" + pixY);
 
         final float x = lengthToPhysics(pixY);
         final float y = lengthToPhysics(pixY);
@@ -384,7 +384,7 @@ public class PhysicsFactory {
      */
     @Deprecated
     public static Body createBullet(final World world, final PhysicalProperties physprop, final int pixX, final int pixY, final int angle) {
-        Logger.i().log(TAG, "Creating bullet at x:" + pixX + " y:" + pixY);
+        GUILogger.i().log(TAG, "Creating bullet at x:" + pixX + " y:" + pixY);
 
         final float x = lengthToPhysics(pixX);
         final float y = lengthToPhysics(pixY);

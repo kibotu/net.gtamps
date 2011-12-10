@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+<COMMON>
+<GAME>
+<OBJECTS>
+<ENTITIES>
+	<ENTITY name="__default" abstract="true">
+		<!--<__ALIAS name="properties" ref="common.objects.properties.entity" />-->
+		<PROPERTY name="posx" type="int" default="0" lazy="false" comment="in pix"/>
+		<PROPERTY name="posy" type="int" default="0" lazy="false" comment="in pix"/>
+		<PROPERTY name="posz" type="int" default="0" lazy="false" comment="in pix"/>
+		<PROPERTY name="rota" type="int" default="0" lazy="false" comment="degrees"/>
+		<PROPERTY name="speedx" type="int" default="0" comment="degrees"/>
+		<PROPERTY name="speedy" type="int" default="0" comment="degrees"/>
+		<PROPERTY name="health" type="int" default="0" comment="absolute"/>
+		<PROPERTY name="healthratio" type="float" default="0" comment="health / maxhealth"/>
+		<PROPERTY name="alive" type="bool" default="true" comment="is considered operational"/>
+	</ENTITY>
+	
+	<ENTITY name="car" type="CAR" >
+		<PHYSICS dynamic="true">
+			<BODY 	
+				angular_damping="2"
+				linear_damping="1"
+				is_bullet = "false"/>
+			<SHAPE 
+				type="box" hx="3.1" hy="1.55" 
+				density="1" 
+				friction="0.1" 
+				restitution="0.5" 
+			/>
+			<SENSORSHAPE
+				type="box" hx="1" hy="2.5"
+				event="EventType.ENTITY_SENSE_DOOR"
+			/> 
+		</PHYSICS>
+		<MOBILITY
+			f_velocity = "1500"
+			f_steering = "200"
+			r_steering = "3"
+			slidyness = "0.5"
+			speed_max = "100"
+		/>
+		<DESTRUCTION remove="false" explode="true"/>
+		<HEALTH max="2000" dmgThresh="5" dmgMult="1" />
+		<DRIVABLE/>
+	</ENTITY>
+	
+	<ENTITY name="human" type="HUMAN">
+		<PHYSICS dynamic="true">
+			<BODY 	
+				angular_damping="1.05"
+				linear_damping="0.01"
+				is_bullet = "false"
+			/>
+			<SHAPE 
+				type="circle" radius = "0.8" 
+				density="1" 
+				friction="0.1" 
+				restitution="0.5" 
+			/>
+		</PHYSICS>
+		<MOBILITY
+			f_velocity = "5"
+			f_steering = "2"
+			r_steering = "0"
+			slidyness = "0"
+			speed_max = "10"
+		/>
+		<SENSOR name="SensorDoorHandler"/>
+		<DESTRUCTION remove="false" explode="false"/>
+		<SHOOTING><SLOT xOffset="20" yOffset="20" weapon="gun"/></SHOOTING>
+		<HEALTH max="100" dmgThresh="1" dmgMult="1"/>
+	</ENTITY>
+	
+	<WEAPON name="gun" ammo="bullet" impulse="100" delay="300" max="10"/>
+	
+	<ENTITY name="bullet" type="PROJECTILE">
+		<PHYSICS  dynamic="true">
+			<BODY 	
+				angular_damping="1.05"
+				linear_damping="0.01"
+				is_bullet = "true"
+			/>
+			<SHAPE 
+				type="circle" radius = "0.1" 
+				density="100" 
+				friction="0.1" 
+				restitution="0.5" 
+			/>
+		</PHYSICS>
+		<COLLISION amplify="5"/>
+	</ENTITY>
+	
+</ENTITIES>
+</OBJECTS>	
+</GAME>
+</COMMON>
+</CONFIG>

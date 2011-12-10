@@ -1,7 +1,7 @@
 package net.gtamps.server;
 
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
@@ -54,7 +54,7 @@ public class ManualTypeSerializer implements ISerializer {
 
     @Override
     public byte[] serializeMessage(@NotNull final Message message) {
-        Logger.getInstance().log(TAG, "serializing message: " + message);
+        GUILogger.getInstance().log(TAG, "serializing message: " + message);
         final StringBuilder bld = new StringBuilder();
         addToken(bld, MESSAGE);
         final String sessId = message.getSessionId();
@@ -165,7 +165,7 @@ public class ManualTypeSerializer implements ISerializer {
     public Message deserializeMessage(@NotNull final byte[] bytes)
             throws MessageDeserializationException {
         final String msgString = new String(bytes);
-        Logger.getInstance().log(TAG, "deserializing message: " + msgString);
+        GUILogger.getInstance().log(TAG, "deserializing message: " + msgString);
         final Message m = new Message();
         final Scanner scanner = new Scanner(msgString);
         try {
@@ -178,13 +178,13 @@ public class ManualTypeSerializer implements ISerializer {
                 s.sessionId = sessId;
                 m.addSendable(s);
             }
-            Logger.getInstance().log(TAG, "finished deserializing message: " + m);
+            GUILogger.getInstance().log(TAG, "finished deserializing message: " + m);
         } catch (final InputMismatchException e) {
             throw new MessageDeserializationException(e);
         } catch (final NoSuchElementException e) {
             throw new MessageDeserializationException(e);
         } catch (final SendableDeserializationException e) {
-            Logger.getInstance().log(TAG, "MessageDeserializationException");
+            GUILogger.getInstance().log(TAG, "MessageDeserializationException");
             throw new MessageDeserializationException(e);
         }
         return m;
@@ -235,7 +235,7 @@ public class ManualTypeSerializer implements ISerializer {
             id = (id == null) ? -1 : id;
             s = new Sendable(SendableType.BAD_SENDABLE, id, null);
             s.data = new StringData(e.getMessage());
-            Logger.getInstance().log(TAG, e.getCause().toString());
+            GUILogger.getInstance().log(TAG, e.getCause().toString());
             System.err.println(e.getCause().toString());
             proceedToNext(scanner, SENDABLE);
         }

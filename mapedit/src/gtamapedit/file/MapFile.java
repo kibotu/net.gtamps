@@ -113,12 +113,18 @@ public class MapFile implements Serializable {
 			}
 		}*/
 		
+		int sizeX = mapData.length;
+		int sizeY = mapData[0].length;
+		
+		level.setWidthInPixelCoord(sizeX * Configuration.tileSize);
+		level.setHeightInPixelCoord(sizeY * Configuration.tileSize);
+		
 		/*
 		 * Add all shapes to the level: the shapes are defined to be 2d on the
 		 * x/y axis
 		 */
-		for (int x = 0; x < mapData.length; x++) {
-			for (int y = 0; y < mapData[0].length; y++) {
+		for (int x = 0; x < sizeX; x++) {
+			for (int y = 0; y < sizeY; y++) {
 				if (mapData[x][y].getFloors() > 0) {
 					PhysicalShape shape = new PhysicalShape();
 					shape.add(Vector3.createNew(x * Configuration.tileSize, y * Configuration.tileSize, 0));

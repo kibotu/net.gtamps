@@ -69,12 +69,12 @@ public class EntityFactory {
     }
 
     //TODO de-uglify
-    public static Entity createSpecialEntityHouse(final Universe universe, final PhysicalShape pshape, final int pixX, final int pixY, final int deg) {
+    public static Entity createSpecialEntityHouse(final Universe universe, final PhysicalShape pshape) {
         final String houseName = "house";
         final String normName = Entity.normalizeName(houseName);
         final EntityBlueprint houseblup = getBlueprint(universe, normName);
         houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(universe, pshape));
-        return houseblup.createEntity(pixX, pixY, deg);
+        return houseblup.createEntity(0, 0, 0);
     }
 
 

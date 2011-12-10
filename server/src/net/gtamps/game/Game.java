@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
@@ -33,7 +32,8 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final LogType TAG = LogType.GAMEWORLD;
+    private static final String TEST_LEVEL_PATH = "../assets/map2.map.lvl";
+	private static final LogType TAG = LogType.GAMEWORLD;
     private static final long THREAD_UPDATE_SLEEP_TIME = 20;
     private static final int PHYSICS_ITERATIONS = 20;
 
@@ -48,7 +48,7 @@ public class Game implements IGame, Runnable {
     private volatile boolean run;
     private volatile boolean isActive;
 
-    private final Universe world;
+    private final Universe universe;
     private final PlayerManagerFacade playerStorage;
     private final TimeKeeper gameTime;
 
@@ -56,15 +56,16 @@ public class Game implements IGame, Runnable {
         id = ++Game.instanceCounter;
         final String name = "Game " + id;
         thread = new Thread(this, name);
-        world = UniverseFactory.loadMap(mapPath);
-        if (world != null) {
-            Logger.i().log(LogType.GAMEWORLD, "Starting new Game: " + world.getName());
+//        universe = UniverseFactory.loadMap(mapPath);
+        universe = UniverseFactory.loadWorldFromLevel(mapPath);
+        if (universe != null) {
+            GUILogger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
             run = true;
-            playerStorage = new PlayerManagerFacade(world.playerManager);
+            playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
             start();
         } else {
-            Logger.i().log(LogType.GAMEWORLD, "Game not loaded");
+            GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
             run = false;
             playerStorage = null;
             gameTime = null;
@@ -72,7 +73,7 @@ public class Game implements IGame, Runnable {
     }
 
     public Game() {
-        this(GTAMultiplayerServer.DEFAULT_PATH + GTAMultiplayerServer.DEFAULT_MAP);
+        this(TEST_LEVEL_PATH);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class Game implements IGame, Runnable {
 
     @Override
     public String getName() {
-        return world.getName();
+        return universe.getName();
     }
 
     @Override
@@ -111,10 +112,10 @@ public class Game implements IGame, Runnable {
     }
 
     private void doCycle() {
-        world.updateRevision(gameTime.getTotalDurationMillis());
-        world.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
+        universe.updateRevision(gameTime.getTotalDurationMillis());
+        universe.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
         //TODO
-		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
+		universe.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
 
         //for fps debugging
 //		lastUpdate += timeElapsedInSeceonds;
@@ -255,7 +256,7 @@ public class Game implements IGame, Runnable {
                 break;
             case ACTION_ENTEREXIT:
                 type = EventType.ACTION_ENTEREXIT;
-                Logger.i().log(TAG, "ENTER/EXIT received");
+                GUILogger.i().log(TAG, "ENTER/EXIT received");
                 break;
             case ACTION_SHOOT:
                 type = EventType.ACTION_SHOOT;
@@ -267,7 +268,7 @@ public class Game implements IGame, Runnable {
                 type = EventType.ACTION_SUICIDE;
         }
         if (type != null) {
-            world.eventManager.dispatchEvent(new GameEvent(type, player));
+            universe.eventManager.dispatchEvent(new GameEvent(type, player));
         }
     }
 
@@ -312,9 +313,9 @@ public class Game implements IGame, Runnable {
             return sendable.createResponse(SendableType.GETPLAYER_NEED);
         }
         final long baseRevision = ((RevisionData) sendable.data).revisionId;
-        final ArrayList<GameObject> entities = world.entityManager.getUpdate(baseRevision);
-        final ArrayList<GameObject> events = world.eventManager.getUpdate(baseRevision);
-        final UpdateData update = new UpdateData(baseRevision, world.getRevision());
+        final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
+        final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
+        final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
         update.gameObjects = new ArrayList<GameObject>();
         update.gameObjects.addAll(entities);
         update.gameObjects.addAll(events);
