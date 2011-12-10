@@ -67,26 +67,7 @@ public class MessageHandler {
 						Logger.E(this, "Server entity after game event. GameEvent fired on empty entities.");
 					keepTrackOfOrder = 1;
 
-					// entity
-					Entity serverEntity = (Entity) go;
-
-					// new or update
-					EntityView entityView = world.getViewById(serverEntity.getUid());
-					if (entityView == null) {
-
-						// new entity
-						entityView = new EntityView(serverEntity);
-						world.add(entityView);
-
-						// add to setup
-						Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
-
-						Logger.i(this, "Add new entity " + serverEntity.getUid());
-					} else {
-						// update
-						entityView.update(serverEntity);
-						Logger.i(this, "Update existing entity " + serverEntity.getUid());
-					}
+					newOrUpdateEntity(go);
 				} else {
 					Logger.d(this, "NOT HANDLED UPDATE -> " + go);
 				}
@@ -108,9 +89,11 @@ public class MessageHandler {
 				break;
 
 			// not player data
-			if (!(sendable.data instanceof PlayerData))
-				break;
-			world.playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+			if (!(sendable.data instanceof PlayerData))	break;
+            Player player = ((PlayerData) sendable.data).player;
+			world.playerManager.setActivePlayer(player);
+
+            newOrUpdateEntity(player.getEntity());
 
 			Logger.D(this, "GETPLAYER_OK " + world.playerManager.getActivePlayer());
 
@@ -195,7 +178,30 @@ public class MessageHandler {
 		}
 	}
 
-	// preallocate
+    private void newOrUpdateEntity(GameObject go) {
+        // entity
+        Entity serverEntity = (Entity) go;
+
+        // new or update
+        EntityView entityView = world.getViewById(serverEntity.getUid());
+        if (entityView == null) {
+
+            // new entity
+            entityView = new EntityView(serverEntity);
+            world.add(entityView);
+
+            // add to setup
+            Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
+
+            Logger.i(this, "Add new entity " + serverEntity.getUid());
+        } else {
+            // update
+            entityView.update(serverEntity);
+            Logger.i(this, "Update existing entity " + serverEntity.getUid());
+        }
+    }
+
+    // preallocate
 	Entity sourceEntity;
 	Entity targetEntity;
 

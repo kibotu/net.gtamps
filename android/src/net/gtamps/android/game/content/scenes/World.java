@@ -38,7 +38,7 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(addPlane()));
+//        add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));
     }
 
@@ -115,9 +115,5 @@ public class World extends EntityScene {
 
     @Override
     public void onDirty() {
-    }
-
-    public boolean hasPlayer() {
-        return hasPlayer();
     }
 }

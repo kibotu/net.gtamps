@@ -66,7 +66,7 @@ final public class Config {
     public static final long SOCKET_OUTBOX_LATENCY = 0;
     public static final int MAX_SOCKET_TIMEOUT = 14000;
     public static final int SERVER_ANGLE_TO_NATIVE = 270;
-    public static final long HUD_INPUT_MESSAGE_TIMOUT = 30;
+    public static final long HUD_INPUT_MESSAGE_TIMOUT = 90;
     public static String DEFAULT_USERNAME = ""+ Math.random()*64;
     public static final String DEFAULT_PASSWORD = ""+ Math.random()*64;
 
