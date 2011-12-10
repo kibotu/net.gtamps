@@ -25,3 +25,4 @@ default.properties
 *.autosave
 *~
 *.pyc
+.checkstyle
