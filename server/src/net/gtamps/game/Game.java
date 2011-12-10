@@ -278,7 +278,7 @@ public class Game implements IGame, Runnable {
         final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
         final Player player = playerStorage.joinUser(user);
         if (player == null) {
-            return sendable.createResponse(SendableType.JOIN_BAD);
+            return sendable.createResponse(SendableType.JOIN_ERROR);
         }
         SessionManager.instance.joinSession(sendable.sessionId, this);
         return sendable.createResponse(SendableType.JOIN_OK);
