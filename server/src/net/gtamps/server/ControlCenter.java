@@ -10,8 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import net.gtamps.game.Game;
 import net.gtamps.game.IGame;
-import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameData;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.Sendable;

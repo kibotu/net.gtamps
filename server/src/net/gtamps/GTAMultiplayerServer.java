@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.ServerChainFactory;
+import net.gtamps.server.ServerException;
 import net.gtamps.server.ServerHelper;
+import net.gtamps.server.db.DBHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.GUILoggerToGeneralAdapter;
 import net.gtamps.server.gui.LogType;
@@ -59,6 +61,7 @@ public final class GTAMultiplayerServer {
     
     private XSocketServer gameServer;
     private SimpleHttpServer httpServer;
+    private DBHandler dbHandler;
     
     private GTAMultiplayerServer(final Mode mode) {
     	try {
@@ -74,18 +77,13 @@ public final class GTAMultiplayerServer {
 	        gameServer = initGameServer(sockHandler);
 	        
 	        httpServer = initHttpServer();
+	        dbHandler = initDBHandler();
 	      
-	//		DBHandler dbHandler = new DBHandler("db/net.net.gtamps");
-	//		dbHandler.createPlayer("tom", "mysecretpassword");
-	//		dbHandler.authPlayer("tom", "mysecretpassword");
-	//		dbHandler.deletePlayer("tom", "mysecretpassword");
-	//		dbHandler.authPlayer("tom", "mysecretpassword");
-	        
 	        CONTROL = ControlCenter.instance;
 	        GUILogger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
 	        INSTANCE = this;
     	} catch (final Exception e) {
-    		GUILogger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown: " + exceptionToVerboseString(e));
+    		GUILogger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown:\n" + exceptionToVerboseString(e));
     		XSocketServer.shutdownServer();
     		if (httpServer != null) {
     			httpServer.stopServer();
@@ -94,6 +92,20 @@ public final class GTAMultiplayerServer {
 		} finally {
     	}
     }
+    
+    private DBHandler initDBHandler() throws ServerException {
+		final DBHandler dbHandler = new DBHandler("db/gtamps");
+		assert databaseResponds(dbHandler);
+		return dbHandler;
+    }
+
+	private boolean databaseResponds(final DBHandler dbHandler) {
+		assert 0 <= dbHandler.createPlayer("test", "mysecretpassword");
+		assert 0 <= dbHandler.authPlayer("test", "mysecretpassword");
+		dbHandler.deletePlayer("test", "mysecretpassword");
+		assert 0 > dbHandler.authPlayer("test", "mysecretpassword");
+		return true;
+	}
 
 	private SimpleHttpServer initHttpServer() {
         final int port = CONFIG.select("common.setup.httpserver.port").getInt();
@@ -110,14 +122,22 @@ public final class GTAMultiplayerServer {
 		return srv;
 	}
 
-	private String exceptionToVerboseString(final Exception e) {
-		final StringBuilder sb =  new StringBuilder().append(e.toString());
+	private String exceptionToVerboseString(final Throwable e) {
+		return exceptionToVerboseString(new StringBuilder(), e).toString();
+	}
+	
+	private StringBuilder exceptionToVerboseString(final StringBuilder sb, final Throwable e) {
+		sb.append(e.toString());
 		final StackTraceElement[] stack = e.getStackTrace();
 		for(int i = 0; i < stack.length; i++) {
-			sb.append('\n')
-			.append(stack[i].toString());
+			sb.append('\n').append('\t').append(stack[i].toString());
 		}
-		return sb.toString();
+		sb.append('\n');
+		final Throwable cause = e.getCause();
+		if (cause != null) {
+			exceptionToVerboseString(sb, cause);
+		}
+		return sb;
 	}
 
 	private static ISocketHandler initSockHandler(final ISerializer serializer) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {

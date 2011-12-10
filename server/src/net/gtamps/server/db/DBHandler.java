@@ -1,19 +1,20 @@
 package net.gtamps.server.db;
 
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.GUILogger;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import net.gtamps.server.ServerException;
+import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
+
 public class DBHandler {
     LogType TAG = LogType.DB;
     Connection conn;
 
-    public DBHandler(String path) {
-        JDBCConnector jdbc = new JDBCConnector(path);
+    public DBHandler(final String path) throws ServerException {
+        final JDBCConnector jdbc = new JDBCConnector(path);
         conn = jdbc.getConnection();
         if (conn == null) {
             GUILogger.i().log(TAG, "DATABASE CONNECTION FAILED");
@@ -22,12 +23,12 @@ public class DBHandler {
         }
     }
 
-    protected ResultSet query(String sqlquery) {
+    protected ResultSet query(final String sqlquery) {
         try {
-            Statement stat = conn.createStatement();
+            final Statement stat = conn.createStatement();
             stat.execute(sqlquery);
             return stat.getResultSet();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -41,8 +42,8 @@ public class DBHandler {
      * @param username
      * @return
      */
-    public boolean hasPlayer(String username) {
-        boolean found = DBPlayer.hasPlayer(this, username);
+    public boolean hasPlayer(final String username) {
+        final boolean found = DBPlayer.hasPlayer(this, username);
         if (found) {
             GUILogger.i().log(TAG, "player lookup [" + username + "] returned true!");
         } else {
@@ -57,8 +58,8 @@ public class DBHandler {
      *
      * @return a valid player id (&gt;1) or -1 as error-id
      */
-    public int authPlayer(String username, String password) {
-        int uid = DBPlayer.authPlayer(this, username, password);
+    public int authPlayer(final String username, final String password) {
+        final int uid = DBPlayer.authPlayer(this, username, password);
         if (uid != -1) {
             GUILogger.i().log(TAG, "AUTH player [" + username + ":" + uid + "] successful!");
         } else {
@@ -67,8 +68,8 @@ public class DBHandler {
         return uid;
     }
 
-    public int createPlayer(String username, String password) {
-        int uid = DBPlayer.createPlayer(this, username, password);
+    public int createPlayer(final String username, final String password) {
+        final int uid = DBPlayer.createPlayer(this, username, password);
         if (uid != -1) {
             GUILogger.i().log(TAG, "Creation of player [" + username + ":" + uid + "] successful!");
         } else {
@@ -77,7 +78,7 @@ public class DBHandler {
         return uid;
     }
 
-    public void deletePlayer(String username, String password) {
+    public void deletePlayer(final String username, final String password) {
         GUILogger.i().log(TAG, "Deleting player [" + username + "] if existing...");
         DBPlayer.deletePlayer(this, username, password);
     }
