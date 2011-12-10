@@ -41,7 +41,7 @@ public class ShaderRenderer extends BasicRenderer {
     @Override
     public void draw(GL10 unusedGL) {
 
-        int program = shaderMap.get("min").getProgram();
+        int program = shaderMap.get("phong").getProgram();
 
         camera.render(glState.getGl11());
 
@@ -49,7 +49,7 @@ public class ShaderRenderer extends BasicRenderer {
         GLES20.glUseProgram(program);
 
         // send to the shader
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "uMVPMatrix"), 1, false,camera.getCombinedTransformation().values , 0);
+//        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "uMVPMatrix"), 1, false,camera.getCombinedTransformation().values , 0);
 
         cube.render(glState.getGl11());
 
