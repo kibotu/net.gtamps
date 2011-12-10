@@ -1,5 +1,10 @@
 package net.gtamps.android.core.utils;
 
+import android.opengl.GLES20;
+import android.opengl.GLU;
+import android.util.Log;
+import net.gtamps.shared.Utils.Logger;
+
 import java.nio.*;
 import java.util.List;
 
@@ -236,5 +241,13 @@ final public class OpenGLUtils {
         buffer.put(a);
         buffer.position(0);
         return buffer;
+    }
+
+    public static void checkGlError(String op) {
+        int error;
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            Log.e("GLERROR", op + ": glError " + error + " " + GLU.gluErrorString(error));
+            throw new RuntimeException(op + ": glError " + error + " " + GLU.gluErrorString(error));
+        }
     }
 }

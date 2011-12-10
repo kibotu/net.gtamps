@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer;
 
+import android.opengl.GLES20;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -21,40 +22,12 @@ public class GLRenderer extends BasicRenderer {
        super(renderActivity);
     }
 
-//    private long startTime = SystemClock.elapsedRealtime();
-//    private int secondLength = 0;
-//    private int currentFps = 0;
-
     @Override
     public void draw(GL10 gl10) {
 
-//        // Compute elapsed time
-//        final long finalDelta = SystemClock.elapsedRealtime() - startTime;
-//
-//        // new start time
-//        startTime = SystemClock.elapsedRealtime();
-//
-//        // Limit Frame Rate
-//        if (Config.ENABLE_FRAME_LIMITER) {
-//            if (finalDelta < Config.FPS) {
-//                try {
-//                    Thread.sleep(Config.FPS - finalDelta);
-//                } catch (final InterruptedException e) {
-//                    Logger.printException(this, e);
-//                }
-//            }
-//        }
-//
-//        // Display Current Frame Rate
-//        if (Config.DISPLAY_FRAME_RATE) {
-//            secondLength += finalDelta;
-//            currentFps++;
-//            if (secondLength > 1000) {
-//                Logger.i(this, "FPS: " + currentFps);
-//                secondLength = 0;
-//                currentFps = 0;
-//            }
-//        }
+        // clear screen
+        gl10.glClearColor(.0f, .0f, .0f, 1.0f);
+        gl10.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
         // draw
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {

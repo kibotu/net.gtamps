@@ -4,6 +4,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
+import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
@@ -39,7 +40,7 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(addLevel()));
+        add(new EntityView(new Cube()));
 //        add(new EntityView(getSunLight()));
     }
 

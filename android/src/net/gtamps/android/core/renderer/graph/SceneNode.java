@@ -1,9 +1,11 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  *
  * @author sunside
  */
-public abstract class SceneNode extends ObjectWithOrientation implements IProcessable, IUpdatableLogic, ICleanable {
+public abstract class SceneNode extends ObjectWithOrientation implements IProcessable, IShadeable, IUpdatableLogic, ICleanable {
 
     /**
      * Die kombinierte Transformationsmatrix aller Elternelemente
@@ -259,6 +261,18 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
      * @param deltat Zeitdifferenz zum vorherigen Frame
      */
     protected abstract void updateInternal(float deltat);
+    
+    public final void shade(@NotNull ProcessingState state) {
+        if(!isVisible) return;
+
+        shadeInternal(state);
+
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).shade(state);
+        }
+    }
+
+    protected abstract void shadeInternal(@NotNull ProcessingState state);
 
     /**
      * Verarbeitet den Knoten und alle Kindknoten

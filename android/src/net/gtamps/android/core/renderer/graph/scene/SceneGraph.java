@@ -1,9 +1,6 @@
 package net.gtamps.android.core.renderer.graph.scene;
 
-import net.gtamps.android.core.renderer.graph.IProcessable;
-import net.gtamps.android.core.renderer.graph.IUpdatableLogic;
-import net.gtamps.android.core.renderer.graph.ProcessingState;
-import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.*;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.NullNode;
 import net.gtamps.shared.Utils.math.Color4;
@@ -15,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Der Szenengraph
  */
-public class SceneGraph implements IUpdatableLogic, IProcessable {
+public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
 
     /**
      * Der Wurzelknoten
@@ -206,6 +203,11 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 
     public void setBackground(Color4 color) {
         this.background = color;
+    }
+
+    @Override
+    public void shade(@NotNull ProcessingState state) {
+        rootNode.shade(state);
     }
 }
 

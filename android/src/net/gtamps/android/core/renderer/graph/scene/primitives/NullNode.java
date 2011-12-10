@@ -4,6 +4,8 @@ import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import org.jetbrains.annotations.NotNull;
 
+import javax.microedition.khronos.opengles.GL10;
+
 /**
  * SceneNode, der nicht selbst rendert, sondern lediglich für Organisationszwecke verwendet wird
  */
@@ -15,6 +17,10 @@ public final class NullNode extends SceneNode {
      */
     @Override
     protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void shadeInternal(@NotNull ProcessingState state) {
     }
 
     @Override

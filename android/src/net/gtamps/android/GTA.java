@@ -28,7 +28,7 @@ public class GTA extends BasicRenderActivity {
         BasicRenderer renderer;
 
         // detect if OpenGL ES 2.0 support exists
-        if (detectOpenGLES20()) {
+        if (RenderCapabilities.detectOpenGLES20(this)) {
             view.setEGLContextClientVersion(2);
             renderer = new ShaderRenderer(game);
         } else {
@@ -57,17 +57,5 @@ public class GTA extends BasicRenderActivity {
     public void onDestroy() {
         game.stop();
         super.onDestroy();
-    }
-
-    /**
-     * Detects if OpenGL ES 2.0 exists
-     *
-     * @return <code>true</code> if it does
-     */
-    private boolean detectOpenGLES20() {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo info = am.getDeviceConfigurationInfo();
-        Logger.d("OpenGL Ver:", info.getGlEsVersion());
-        return (info.reqGlEsVersion >= 0x20000);
     }
 }

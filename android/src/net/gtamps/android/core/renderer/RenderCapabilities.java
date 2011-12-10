@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -22,7 +23,7 @@ public class RenderCapabilities {
 
     private static float openGLVersion;
     private static boolean isGL10Only;
-    private static boolean openglesSupport;
+    private static boolean supportsOpenGLES;
     private static int maxTextureUnits;
     private static int maxTextureSize;
     private static int aliasedPointSizeMin;
@@ -44,8 +45,8 @@ public class RenderCapabilities {
         return isGL10Only;
     }
 
-    public static boolean isOpenglesSupport() {
-        return openglesSupport;
+    public static boolean isSupportsOpenGLES() {
+        return supportsOpenGLES;
     }
 
     public static int maxTextureUnits() {
@@ -95,59 +96,71 @@ public class RenderCapabilities {
     /**
      * Called by GLRenderer.onSurfaceCreate()
      */
-    static void setRenderCaps(GL10 $gl) /* package-private*/ {
+    static void setRenderCaps(GL10 gl) /* package-private*/ {
         IntBuffer i;
 
         // OpenGL ES version
-        if ($gl instanceof GL11) {
+        if (gl instanceof GL11) {
             openGLVersion = 1.1f;
         } else {
             openGLVersion = 1.0f;
         }
 
         // Max texture units
-        i = IntBuffer.allocate(1);
-        $gl.glGetIntegerv(GL_MAX_TEXTURE_UNITS, i);
-        maxTextureUnits = i.get(0);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(1);
+            gl.glGetIntegerv(GL_MAX_TEXTURE_UNITS, i);
+            maxTextureUnits = i.get(0);
+        }
 
         // Max texture size
         i = IntBuffer.allocate(1);
-        $gl.glGetIntegerv(GL_MAX_TEXTURE_SIZE, i);
+        gl.glGetIntegerv(GL_MAX_TEXTURE_SIZE, i);
         maxTextureSize = i.get(0);
 
         // Aliased point size range
-        i = IntBuffer.allocate(2);
-        $gl.glGetIntegerv(GL_ALIASED_POINT_SIZE_RANGE, i);
-        aliasedPointSizeMin = i.get(0);
-        aliasedPointSizeMax = i.get(1);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(2);
+            gl.glGetIntegerv(GL_ALIASED_POINT_SIZE_RANGE, i);
+            aliasedPointSizeMin = i.get(0);
+            aliasedPointSizeMax = i.get(1);
+        }
 
         // Smooth point size range
-        i = IntBuffer.allocate(2);
-        $gl.glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, i);
-        smoothPointSizeMin = i.get(0);
-        smoothPointSizeMax = i.get(1);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(2);
+            gl.glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, i);
+            smoothPointSizeMin = i.get(0);
+            smoothPointSizeMax = i.get(1);
+        }
 
         // Aliased line width range
-        i = IntBuffer.allocate(2);
-        $gl.glGetIntegerv(GL_ALIASED_LINE_WIDTH_RANGE, i);
-        aliasedLineSizeMin = i.get(0);
-        aliasedLineSizeMax = i.get(1);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(2);
+            gl.glGetIntegerv(GL_ALIASED_LINE_WIDTH_RANGE, i);
+            aliasedLineSizeMin = i.get(0);
+            aliasedLineSizeMax = i.get(1);
+        }
 
         // Smooth line width range
-        i = IntBuffer.allocate(2);
-        $gl.glGetIntegerv(GL_SMOOTH_LINE_WIDTH_RANGE, i);
-        smoothLineSizeMin = i.get(0);
-        smoothLineSizeMax = i.get(1);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(2);
+            gl.glGetIntegerv(GL_SMOOTH_LINE_WIDTH_RANGE, i);
+            smoothLineSizeMin = i.get(0);
+            smoothLineSizeMax = i.get(1);
+        }
 
         // Max lights
-        i = IntBuffer.allocate(1);
-        $gl.glGetIntegerv(GL_MAX_LIGHTS, i);
-        maxLights = i.get(0);
+        if(openGLVersion <= 1.1) {
+            i = IntBuffer.allocate(1);
+            gl.glGetIntegerv(GL_MAX_LIGHTS, i);
+            maxLights = i.get(0);
+        }
 
-        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion + " ("+(openglesSupport? "With " : "Without ") + "OpenGLES20 support.)");
-        Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + maxTextureUnits);
+        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion + " ("+(supportsOpenGLES? "With " : "Without ") + "OpenGLES20 support.)");
+        if(openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + maxTextureUnits);
         Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + maxTextureSize);
-        Logger.i(TAG, "RenderCapabilities - maxLights: " + maxLights);
+        if(openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxLights: " + maxLights);
     }
 
     /**
@@ -158,6 +171,10 @@ public class RenderCapabilities {
 	public static boolean detectOpenGLES20(final Context context) {
 		ActivityManager am = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 		ConfigurationInfo info = am.getDeviceConfigurationInfo();
-		return openglesSupport = (info.reqGlEsVersion >= 0x20000);
+		return supportsOpenGLES = (info.reqGlEsVersion >= 0x20000);
 	}
+
+    public static boolean supportsOpenGLES() {
+        return supportsOpenGLES;
+    }
 }

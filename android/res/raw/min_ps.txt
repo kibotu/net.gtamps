@@ -1,3 +1,5 @@
+precision mediump float;
+
 const vec4 c_color1 = vec4(1.0,0.0,0.0,1.0);
 const vec4 c_color2 = vec4(1.0,1.0,0.0,1.0);
 varying vec2 v_TextCoord;

@@ -4,6 +4,7 @@ import net.gtamps.android.core.renderer.mesh.buffermanager.FaceManager;
 import net.gtamps.android.core.renderer.mesh.buffermanager.Vbo;
 import net.gtamps.android.core.renderer.mesh.buffermanager.VertexManager;
 import net.gtamps.android.core.renderer.mesh.texture.TextureManager;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;

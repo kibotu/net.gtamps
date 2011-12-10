@@ -18,10 +18,10 @@ public class Vbo {
     public int textureCoordinateBufferId;
 
     public FloatBuffer vertexBuffer;
-    public ShortBuffer indexBuffer;
     public FloatBuffer normalBuffer;
     public FloatBuffer colorBuffer;
     public FloatBuffer textureCoordinateBuffer;
+    public ShortBuffer indexBuffer;
 
     private boolean isAllocated;
 

@@ -6,6 +6,7 @@ import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
+import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -25,13 +26,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
     protected BasicRenderActivity.IRenderActivity renderActivity;
     protected ProcessingState glState;
 
-    protected ArrayList<BasicScene> basicScenes;
     private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
     public BasicRenderer(BasicRenderActivity.IRenderActivity renderActivity) {
         Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
         this.renderActivity = renderActivity;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
+        glState = new ProcessingState();
     }
 
     @Override
@@ -42,16 +43,10 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         // get mobile capabilities
         RenderCapabilities.setRenderCaps(gl10);
 
-        // on create for all render activities
+        // activity on create
         renderActivity.onCreate();
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {
             renderActivity.getScenes().get(i).onCreate();
-        }
-
-        // finish basicScenes graph setup
-        glState = new ProcessingState(gl10);
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).getScene().setup(glState);
         }
 
         // last best gc call
@@ -75,15 +70,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         // get time difference since last frame
         int delta = getDelta();
 
+        // limits frame rate
         limitFrameRate(delta);
 
         // activity draw loop
         renderActivity.onDrawFrame();
 
-        // clear screen
-        gl10.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
-
-        // custom implementation of a renderer
+        // render draw loop
         draw(gl10);
 
         // setup on the fly

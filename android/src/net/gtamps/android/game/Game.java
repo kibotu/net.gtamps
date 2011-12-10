@@ -44,7 +44,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
     public void onCreate() {
 
         // create world
-        scenes.add(world);
+//        scenes.add(world);
 //        world.getScene().setVisible(false);
 //        PlayerMovementListener cl = new PlayerMovementListener();
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
@@ -76,19 +76,19 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         //connection.checkConnection();
 
         // handle inbox messages
-        while (!connection.isEmpty()) {
-            Message message = connection.poll();
-            for (int i = 0; i < message.sendables.size(); i++) {
-                messageHandler.handleMessage(message.sendables.get(i), message);
-            }
-        }
+//        while (!connection.isEmpty()) {
+//            Message message = connection.poll();
+//            for (int i = 0; i < message.sendables.size(); i++) {
+//                messageHandler.handleMessage(message.sendables.get(i), message);
+//            }
+//        }
 
-        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
-            Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+30);
-            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
-            world.getActiveCamera().rotate(30,1,0,0);
-        }
+//        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+//            Vector3 temp = world.getActiveView().getObject3d().getPosition();
+//            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+30);
+//            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
+//            world.getActiveCamera().rotate(30,1,0,0);
+//        }
     }
 
     private long impulse = 0;
