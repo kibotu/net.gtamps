@@ -13,4 +13,12 @@ public class Coordinate {
 	public float getY() {
 		return y;
 	}
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+	@Override
+	public String toString() {
+		return "Coordinate x:"+x+" y:"+y;
+	}
 }

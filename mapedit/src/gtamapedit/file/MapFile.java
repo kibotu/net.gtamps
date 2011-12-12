@@ -76,7 +76,9 @@ public class MapFile implements Serializable {
 	}
 
 	public void saveMap(String filename) {
-		TileBitmapBuilder.createTileMap(this);
+		TileBitmapBuilder tileImageBuilder = new TileBitmapBuilder(); 
+		tileImageBuilder.createTileMap(this);
+		tileImageBuilder.saveImage(filename+".png");
 		
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -90,7 +92,7 @@ public class MapFile implements Serializable {
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			PrintWriter pw = new PrintWriter(bos);
 					
-			pw.write(OBJBuilder.buildObjFromMap(this.getRawData()));
+			pw.write(OBJBuilder.buildObjFromMap(this.getRawData(),tileImageBuilder.getImageMapping(),tileImageBuilder.getTextureSpacing()));
 			pw.flush();
 			pw.close();
 			bos.close();
@@ -104,15 +106,10 @@ public class MapFile implements Serializable {
 		Level level = new Level();
 		LinkedList<PhysicalShape> phys = level.getPhysicalShapes();
 		LinkedList<EntityPosition> entPos = level.getEntityPositions();
+		
+		TileBitmapBuilder tileImageBuilder = new TileBitmapBuilder(); 
+		tileImageBuilder.createTileMap(this);
 
-		
-		/*MapFileTileElement[][] mapData = new MapFileTileElement[map.length][map[0].length];
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[0].length; y++) {
-				mapData[x][y] = new MapFileTileElement(map[x][y]);
-			}
-		}*/
-		
 		/*
 		 * Add all shapes to the level: the shapes are defined to be 2d on the
 		 * x/y axis
@@ -151,7 +148,7 @@ public class MapFile implements Serializable {
 		
 		
 
-		String objfile = OBJBuilder.buildObjFromMap(mapData);
+		String objfile = OBJBuilder.buildObjFromMap(mapData,tileImageBuilder.getImageMapping(),tileImageBuilder.getTextureSpacing());
 		level.set3DMap(objfile);
 
 		FileOutputStream fos = null;
@@ -169,8 +166,6 @@ public class MapFile implements Serializable {
 	}
 
 	public void loadMap(String path) {
-		//MapElement[][] mapData = null;
-		//LinkedList<EntityPosition> entpos = null;
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
@@ -187,13 +182,5 @@ public class MapFile implements Serializable {
 			ex.printStackTrace();
 		}
 
-		/*MapElement[][] map = new MapElement[mapData.length][mapData[0].length];
-		for (int x = 0; x < mapData.length; x++) {
-			for (int y = 0; y < mapData[0].length; y++) {
-				map[x][y] = new MapElement(mapData[x][y]);
-			}
-		}
-
-		return new MapFile(map, entpos);*/
 	}
 }
