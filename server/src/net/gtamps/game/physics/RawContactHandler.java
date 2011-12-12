@@ -2,7 +2,7 @@ package net.gtamps.game.physics;
 
 import net.gtamps.game.handler.SimplePhysicsHandler;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
@@ -39,7 +39,7 @@ public final class RawContactHandler implements ContactListener {
         final Entity two = (Entity) point.shape2.getBody().getUserData();
         EventType sensorType;
         if (point.shape1.isSensor() && point.shape2.isSensor()) {
-            Logger.i().log(TAG, "sensor/sensor contact: SHOULD BE FILTERED!");
+            GUILogger.i().log(TAG, "sensor/sensor contact: SHOULD BE FILTERED!");
             return;
         } else if (point.shape1.isSensor()) {
             sensorType = (EventType) point.shape1.getUserData();
@@ -80,7 +80,7 @@ public final class RawContactHandler implements ContactListener {
         final Object two = point.shape2.getBody().getUserData();
         if (point.shape1.isSensor() || point.shape2.isSensor()) {
 //			throw new RuntimeException("sensor events shouldn't pass through here!");
-            Logger.i().log(TAG, "SENSOR events in contact result callback!");
+            GUILogger.i().log(TAG, "SENSOR events in contact result callback!");
         } else {
             hardContact(one, two, point.normalImpulse);
         }
@@ -121,7 +121,7 @@ public final class RawContactHandler implements ContactListener {
         }
         final Entity oneEntity = (Entity) one;
         final Entity twoEntity = (Entity) two;
-        Logger.i().log(
+        GUILogger.i().log(
                 TAG,
                 String.format("collision: %s, %s [%d]", oneEntity, twoEntity,
                         (int) impulse));

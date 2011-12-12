@@ -102,11 +102,14 @@ public class PlayerManager extends GameEventDispatcher implements IGameEventList
         // create default entity at default location and add
         //PositionProperty pp = (PositionProperty) world.getRandomSpawnPoint().getProperty(Type.POSITION);
         final Entity spawn = universe.getRandomSpawnPoint();
-        final Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
-        p.setEntity(e);
-        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
-        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, e, p));
-        return true;
+        if (spawn != null) {
+	        final Entity e = entityManager.createEntityHuman(spawn.x.value(), spawn.y.value(), spawn.rota.value());
+	        p.setEntity(e);
+	        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.PLAYER_SPAWNS, p));
+	        universe.getEventRoot().dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, e, p));
+	        return true;
+        }
+        return false;
     }
 
     @Override

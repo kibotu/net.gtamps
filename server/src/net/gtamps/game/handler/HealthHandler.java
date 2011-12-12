@@ -2,7 +2,7 @@ package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.BulletHitEvent;
@@ -80,7 +80,7 @@ public class HealthHandler extends Handler {
         final int damage = (int) (force * dmgMultiplier - dmgThreshold);
         if (damage > 0) {
             setHealth(health.value() - damage);
-            Logger.getInstance().log(TAG, parent.getName() + " takes " + damage + " damage");
+            GUILogger.getInstance().log(TAG, parent.getName() + " takes " + damage + " damage");
         }
     }
 

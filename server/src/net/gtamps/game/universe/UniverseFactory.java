@@ -3,7 +3,6 @@ package net.gtamps.game.universe;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.NoSuchElementException;
 
 import net.gtamps.ResourceLoader;
 import net.gtamps.shared.Utils.Logger;
@@ -57,8 +56,8 @@ public class UniverseFactory {
 		}
 		final Level level = Level.loadLevel(input);
 		final LevelParser levelParser = new LevelParser(level);
-		final Universe world = levelParser.buildWorldFromLevel();
-		throw new NoSuchElementException("WorldFactory.loadWorldFromLevel is not fully implemented yet");
+		final Universe universe = levelParser.buildWorldFromLevel();
+		return universe;
 	}
 	
 		

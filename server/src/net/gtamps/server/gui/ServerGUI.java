@@ -1,11 +1,13 @@
 package net.gtamps.server.gui;
 
-import net.gtamps.server.ControlCenter;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 /**
  * ugly-ass hacked class to easily control some server stuff...
@@ -13,9 +15,9 @@ import java.awt.event.ActionListener;
  * @author tom
  */
 public class ServerGUI {
-    private JFrame frame;
-    private NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
-    private NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
+    private final JFrame frame;
+    private final NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
+    private final NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
 
     public ServerGUI() {
         frame = new JFrame("GTA MultiServer");
@@ -27,7 +29,7 @@ public class ServerGUI {
 ////				connectionManager.startNewServer(8090);
 //			}
 //		});
-//		JButton stopServer = new JButton("stop Server");		
+//		JButton stopServer = new JButton("stop Server");
 //		stopServer.addActionListener(new ActionListener() {
 //			@Override
 //			public void actionPerformed(ActionEvent e) {
@@ -42,7 +44,7 @@ public class ServerGUI {
 ////				connectionManager.startNewHttpServer();
 //			}
 //		});
-//		JButton stopHttpServer = new JButton("stop Server");		
+//		JButton stopHttpServer = new JButton("stop Server");
 //		stopHttpServer.addActionListener(new ActionListener() {
 //			@Override
 //			public void actionPerformed(ActionEvent e) {
@@ -50,23 +52,24 @@ public class ServerGUI {
 //			}
 //		});
 
-        JButton restartGameButton = new JButton("Restart Game");
+        final JButton restartGameButton = new JButton("Restart Game");
         restartGameButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                ControlCenter.instance.restart();
+            public void actionPerformed(final ActionEvent e) {
+                //GTAMultiplayerServer.restart();
+            	System.err.println("Restart not implemented at the moment");
             }
         });
 
 
-        GridLayout buttonPanel = new GridLayout(1, 0);
-        Container buttonContainer = new Container();
+        final GridLayout buttonPanel = new GridLayout(1, 0);
+        final Container buttonContainer = new Container();
         buttonContainer.setLayout(buttonPanel);
         buttonContainer.add(networkSendActivity);
         buttonContainer.add(networkReceiveActivity);
         buttonContainer.add(restartGameButton);
 
-        Container container = new Container();
+        final Container container = new Container();
         container.setLayout(new BorderLayout());
         /*container.add(startServer);
           container.add(stopServer);

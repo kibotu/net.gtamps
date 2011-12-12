@@ -157,6 +157,6 @@ final public class Object3dFactory {
 
     private static RenderableNode createHuman() {
         Logger.v(TAG, "Create human.");
-        return createCarRiveria();
+        return  createCarRiveria();
     }
 }

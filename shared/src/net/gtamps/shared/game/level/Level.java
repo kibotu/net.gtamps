@@ -31,6 +31,10 @@ public class Level implements Serializable {
         return physicalShapes;
     }
 
+	public LinkedList<PhysicalShape> getPhysicalShapes() {
+		return physicalShapes;
+	}
+
     public LinkedList<EntityPosition> getEntityPositions() {
         return entityPositions;
     }
@@ -45,7 +49,14 @@ public class Level implements Serializable {
     public int getWidthInPixelCoord() {
 		return LevelWidthInPixelCoord;
 	}
-    
+
+	public void setWidthInPixelCoord(final int levelWidthInPixelCoord) {
+		LevelWidthInPixelCoord = levelWidthInPixelCoord;
+	}
+
+	public void setHeightInPixelCoord(final int levelHeightInPixelCoord) {
+		LevelHeightInPixelCoord = levelHeightInPixelCoord;
+	}
     public static Level loadLevel(final InputStream is) {
         ObjectInputStream in;
         try {

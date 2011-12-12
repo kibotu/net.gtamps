@@ -33,7 +33,7 @@ public class TabbedPane extends JTabbedPane implements ChangeListener, ActionLis
 
     @Override
     public void stateChanged(final ChangeEvent e) {
-        if (Logger.i().wasUpdated()) {
+        if (GUILogger.i().wasUpdated()) {
             updateActivePane();
         }
     }
@@ -45,13 +45,13 @@ public class TabbedPane extends JTabbedPane implements ChangeListener, ActionLis
 
     private void updateActivePane() {
         //TODO performance issue?
-        if (Logger.getInstance().wasUpdated()) {
+        if (GUILogger.getInstance().wasUpdated()) {
             for (final LogType lt : LogType.values()) {
-                if (Logger.getInstance().wasUpdated(lt)) {
+                if (GUILogger.getInstance().wasUpdated(lt)) {
                     final TabbedPaneComponent tpc = panes.get(lt);
                     if (tpc != null) {
-                        synchronized (Logger.lock) {
-                            final LinkedList<String> copy = new LinkedList<String>(Logger.getLogs(tpc.getLogType()));
+                        synchronized (GUILogger.lock) {
+                            final LinkedList<String> copy = new LinkedList<String>(GUILogger.getLogs(tpc.getLogType()));
                             tpc.updateLog(copy);
                         }
                         tpc.invalidate();

@@ -25,3 +25,5 @@ default.properties
 *.autosave
 *~
 *.pyc
+.checkstyle
+derby.log

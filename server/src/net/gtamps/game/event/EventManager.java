@@ -34,6 +34,7 @@ public class EventManager extends GameEventDispatcher implements IGameEventListe
         removeEventListener(EventType.ACTION_DECELERATE, this);
         removeEventListener(EventType.ACTION_TURNLEFT, this);
         removeEventListener(EventType.ACTION_TURNRIGHT, this);
+        removeEventListener(EventType.ENTITY_SENSE, this);
     }
 
     @Override

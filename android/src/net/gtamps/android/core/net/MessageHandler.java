@@ -16,6 +16,7 @@ import net.gtamps.shared.serializer.communication.MessageFactory;
 import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.UpdateData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -67,26 +68,7 @@ public class MessageHandler {
 						Logger.E(this, "Server entity after game event. GameEvent fired on empty entities.");
 					keepTrackOfOrder = 1;
 
-					// entity
-					Entity serverEntity = (Entity) go;
-
-					// new or update
-					EntityView entityView = world.getViewById(serverEntity.getUid());
-					if (entityView == null) {
-
-						// new entity
-						entityView = new EntityView(serverEntity);
-						world.add(entityView);
-
-						// add to setup
-						Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
-
-						Logger.i(this, "Add new entity " + serverEntity.getUid());
-					} else {
-						// update
-						entityView.update(serverEntity);
-						Logger.i(this, "Update existing entity " + serverEntity.getUid());
-					}
+					updateOrCreateEntity((Entity) go);
 				} else {
 					Logger.d(this, "NOT HANDLED UPDATE -> " + go);
 				}
@@ -98,6 +80,7 @@ public class MessageHandler {
 		case GETUPDATE_BAD:
 			break;
 		case GETUPDATE_ERROR:
+            Logger.toast(this, "GETUPDATE_ERROR");
 			break;
 
 		case GETPLAYER_OK:
@@ -107,11 +90,13 @@ public class MessageHandler {
 				break;
 
 			// not player data
-			if (!(sendable.data instanceof PlayerData))
-				break;
-			world.playerManager.setActivePlayer(((PlayerData) sendable.data).player);
+			if (!(sendable.data instanceof PlayerData))	break;
+            Player player = ((PlayerData) sendable.data).player;
+			world.playerManager.setActivePlayer(player);
 
-			Logger.D(this, "GETPLAYER_OK " + world.playerManager.getActivePlayer());
+            updateOrCreateEntity(player.getEntity());
+
+			Logger.D(this, "GETPLAYER_OK " + player);
 
 			// get update
 			connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
@@ -122,6 +107,7 @@ public class MessageHandler {
 		case GETPLAYER_BAD:
 			break;
 		case GETPLAYER_ERROR:
+            Logger.toast(this, "GETPLAYER_ERROR");
 			break;
 
 		case SESSION_OK:
@@ -133,6 +119,7 @@ public class MessageHandler {
 		case SESSION_BAD:
 			break;
 		case SESSION_ERROR:
+            Logger.toast(this, "SESSION_ERROR");
 			break;
 
 		case JOIN_OK:
@@ -143,6 +130,7 @@ public class MessageHandler {
 		case JOIN_BAD:
 			break;
 		case JOIN_ERROR:
+            Logger.toast(this, "JOIN_ERROR");
 			break;
 
 		case GETMAPDATA_OK:
@@ -152,6 +140,7 @@ public class MessageHandler {
 		case GETMAPDATA_BAD:
 			break;
 		case GETMAPDATA_ERROR:
+            Logger.toast(this, "GETMAPDATA_ERROR");
 			break;
 
 		case LEAVE_OK:
@@ -161,6 +150,7 @@ public class MessageHandler {
 		case LEAVE_BAD:
 			break;
 		case LEAVE_ERROR:
+            Logger.toast(this, "LEAVE_ERROR");
 			break;
 
 		case LOGIN_OK:
@@ -171,6 +161,7 @@ public class MessageHandler {
 		case LOGIN_BAD:
 			break;
 		case LOGIN_ERROR:
+            Logger.toast(this, "LOGIN_ERROR");
 			break;
 
 		case REGISTER_OK:
@@ -181,18 +172,40 @@ public class MessageHandler {
 		case REGISTER_BAD:
 			break;
 		case REGISTER_ERROR:
+            Logger.toast(this, "REGISTER_ERROR");
 			break;
 		default:
 			break;
 		}
 	}
 
-	// preallocate
+    private void updateOrCreateEntity(@NotNull Entity serverEntity) {
+
+        // new or update
+        EntityView entityView = world.getViewById(serverEntity.getUid());
+        if (entityView == null) {
+
+            // new entity
+            entityView = new EntityView(serverEntity);
+            world.add(entityView);
+
+            // add to setup
+            Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
+
+            Logger.i(this, "Add new entity " + serverEntity.getUid());
+        } else {
+            // update
+            entityView.update(serverEntity);
+            Logger.i(this, "Update existing entity " + serverEntity.getUid());
+        }
+    }
+
+    // preallocate
 	Entity sourceEntity;
 	Entity targetEntity;
 
 	public void handleEvent(GameEvent event) {
-		Logger.i(this, "Handle event " + event);
+//		Logger.i(this, "Handle event " + event);
 
 		switch (event.getType()) {
 		case ACTION_ACCELERATE:

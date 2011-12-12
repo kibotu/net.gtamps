@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -121,10 +121,10 @@ public class MobilityHandler extends Handler {
                 }
             }
             if (mobilityProperties.TYPE == MobilityProperties.Type.HUMAN) {
-                Logger.getInstance().log(LogType.PHYSICS, parent.toString());
+                GUILogger.getInstance().log(LogType.PHYSICS, parent.toString());
                 if (pa == EventType.ACTION_ACCELERATE) {
                     final Vec2 force = new Vec2((float) Math.cos(body.getAngle()) * velocityForce, (float) Math.sin(body.getAngle()) * velocityForce);
-                    Logger.getInstance().log(LogType.PHYSICS, "Accelerate " + force);
+                    GUILogger.getInstance().log(LogType.PHYSICS, "Accelerate " + force);
                     body.setLinearVelocity(force);
                     body.wakeUp();
                 }

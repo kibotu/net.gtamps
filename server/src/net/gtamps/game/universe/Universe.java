@@ -6,8 +6,8 @@ import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.player.PlayerManager;
+import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -37,7 +37,7 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     // TODO universe builder!
 
     public Universe(final String name, final int width, final int height) {
-        Logger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: " + width + "x" + height);
+        GUILogger.i().log(LogType.GAMEWORLD, "GameWorld was created, size: " + width + "x" + height);
         this.name = name;
         this.width = width;
         this.height = height;
@@ -95,9 +95,12 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
     }
 
     public Entity getRandomSpawnPoint() {
-        return spawnPoints.get((int) (spawnPoints.size() * Math.random()));
+    	if (spawnPoints.size() > 0 ) {
+    		return spawnPoints.get((int) (spawnPoints.size() * Math.random()));
+    	}
+    	return null;
     }
-
+    
     @Override
     public void addEventListener(final EventType type, final IGameEventListener listener) {
         eventRoot.addEventListener(type, listener);
