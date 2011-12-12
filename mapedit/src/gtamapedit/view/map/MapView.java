@@ -127,6 +127,7 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 				}
 				g.drawOval((int)ep.getPosition().x-es/2, (int)ep.getPosition().y-es/2, es, es);
 				g.drawString(ep.getType().toString(), (int)ep.getPosition().x+es/2, (int)ep.getPosition().y+es/2);
+				g.drawLine((int)ep.getPosition().x, (int)ep.getPosition().y, (int)(ep.getPosition().x+Math.cos(ep.getRotationInRadiants())*es), (int)(ep.getPosition().y+Math.sin(ep.getRotationInRadiants())*es));
 			}
 		}
 		

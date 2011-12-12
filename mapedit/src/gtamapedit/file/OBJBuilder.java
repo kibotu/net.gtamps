@@ -49,47 +49,62 @@ public class OBJBuilder {
 					v.append("v " + (ts + ts * x) + " " + (ts * y) + " " + (ts * fl) + "\n");
 
 					boolean textureWasSet = false;
-					if(mapData[x][y].getRotation()==180){
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)+"\n");
-	
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y)+"\n");
-						textureWasSet = true;
-					}
-					if(mapData[x][y].getRotation()==90){
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						textureWasSet = true;
-					}
-					if(mapData[x][y].getRotation()==0){
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						textureWasSet = true;
-					}
-					if(mapData[x][y].getRotation()==270){
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)+"\n");
-						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y)+"\n");
+					if (mapData[x][y].getRotation() == 180) {
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)
+								+ "\n");
 
-						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)+"\n");
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " "
+								+ (UVMapper.get(texName).y + textureSpacing) + "\n");
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)
+								+ "\n");
+
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y) + "\n");
+						textureWasSet = true;
+					}
+					if (mapData[x][y].getRotation() == 90) {
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y) + "\n");
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)
+								+ "\n");
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " "
+								+ (UVMapper.get(texName).y + textureSpacing) + "\n");
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)
+								+ "\n");
+						textureWasSet = true;
+					}
+					if (mapData[x][y].getRotation() == 0) {
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)
+								+ "\n");
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y) + "\n");
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)
+								+ "\n");
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " "
+								+ (UVMapper.get(texName).y + textureSpacing) + "\n");
+						textureWasSet = true;
+					}
+					if (mapData[x][y].getRotation() == 270) {
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " "
+								+ (UVMapper.get(texName).y + textureSpacing) + "\n");
+
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y + textureSpacing)
+								+ "\n");
+						vt.append("vt " + (UVMapper.get(texName).x) + " " + (UVMapper.get(texName).y) + "\n");
+
+						vt.append("vt " + (UVMapper.get(texName).x + textureSpacing) + " " + (UVMapper.get(texName).y)
+								+ "\n");
 						textureWasSet = true;
 					}
 
-					f.append("f " + (vi + 1) + "/" + (vti + 1) + "/3 " + (vi + 2) + "/" + (vti + 2) + "/3 " + (vi + 3)
-							+ "/" + (vti + 3) + "/3" + "\n");
-					f.append("f " + (vi + 1) + "/" + (vti + 1) + "/3 " + (vi + 3) + "/" + (vti + 3) + "/3 " + (vi + 4)
-							+ "/" + (vti + 4) + "/3" + "\n");
-					vi += 4;
-					if(textureWasSet){
+					if (textureWasSet) {
+						f.append("f " + (vi + 1) + "/" + (vti + 1) + "/3 " + (vi + 2) + "/" + (vti + 2) + "/3 "
+								+ (vi + 3) + "/" + (vti + 3) + "/3" + "\n");
+						f.append("f " + (vi + 1) + "/" + (vti + 1) + "/3 " + (vi + 3) + "/" + (vti + 3) + "/3 "
+								+ (vi + 4) + "/" + (vti + 4) + "/3" + "\n");
 						vti += 4;
+					} else {
+						f.append("f " + (vi + 1) + "//3 " + (vi + 2) + "//3 " + (vi + 3) + "//3" + "\n");
+						f.append("f " + (vi + 1) + "//3 " + (vi + 3) + "//3 " + (vi + 4) + "//3" + "\n");
 					}
+					vi += 4;
 
 					for (fl = 0; fl < mapData[x][y].getFloors(); fl++) {
 						// DrawWalls
@@ -97,13 +112,17 @@ public class OBJBuilder {
 
 						// southwall
 						String texNameSouth = mapData[x][y].getTextureSouth();
-						boolean southTexWasSet = false; 
-						if(texNameSouth!=null && !texNameSouth.isEmpty()){
-								vt.append("vt " + (UVMapper.get(texNameSouth).x) + " " + (UVMapper.get(texNameSouth).y + textureSpacing)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameSouth).x) + " " + (UVMapper.get(texNameSouth).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameSouth).x + textureSpacing) + " " + (UVMapper.get(texNameSouth).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameSouth).x + textureSpacing) + " " + (UVMapper.get(texNameSouth).y + textureSpacing)+"\n");
-								southTexWasSet = true;
+						boolean southTexWasSet = false;
+						if (texNameSouth != null && !texNameSouth.isEmpty()) {
+							vt.append("vt " + (UVMapper.get(texNameSouth).x) + " "
+									+ (UVMapper.get(texNameSouth).y + textureSpacing) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameSouth).x) + " " + (UVMapper.get(texNameSouth).y)
+									+ "\n");
+							vt.append("vt " + (UVMapper.get(texNameSouth).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameSouth).y) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameSouth).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameSouth).y + textureSpacing) + "\n");
+							southTexWasSet = true;
 						}
 
 						v.append("v " + (ts * x) + " " + (ts + ts * y) + " " + (ts + ts * fl) + "\n");
@@ -111,20 +130,31 @@ public class OBJBuilder {
 						v.append("v " + (ts + ts * x) + " " + (ts + ts * y) + " " + (ts * fl) + "\n");
 						v.append("v " + (ts + ts * x) + " " + (ts + ts * y) + " " + (ts + ts * fl) + "\n");
 
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/4 " + (vi + 2) + "/"+(vti+2)+"/4 " + (vi + 3) + "/"+(vti+3)+"/4" + "\n");
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/4 " + (vi + 3) + "/"+(vti+3)+"/4 " + (vi + 4) + "/"+(vti+4)+"/4" + "\n");
+						if (southTexWasSet) {
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/4 " + (vi + 2) + "/" + (vti + 2) + "/4 "
+									+ (vi + 3) + "/" + (vti + 3) + "/4" + "\n");
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/4 " + (vi + 3) + "/" + (vti + 3) + "/4 "
+									+ (vi + 4) + "/" + (vti + 4) + "/4" + "\n");
+							vti += 4;
+						} else {
+							f.append("f " + (vi + 1) + "//4 " + (vi + 2) + "//4 " + (vi + 3) + "//4" + "\n");
+							f.append("f " + (vi + 1) + "//4 " + (vi + 3) + "//4 " + (vi + 4) + "//4" + "\n");
+						}
 						vi += 4;
-						if(southTexWasSet) vti += 4;
 
 						// eastwall
 						String texNameEast = mapData[x][y].getTextureEast();
-						boolean eastTexWasSet = false; 
-						if(texNameEast!=null && !texNameEast.isEmpty()){
-								vt.append("vt " + (UVMapper.get(texNameEast).x) + " " + (UVMapper.get(texNameEast).y + textureSpacing)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameEast).x) + " " + (UVMapper.get(texNameEast).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameEast).x + textureSpacing) + " " + (UVMapper.get(texNameEast).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameEast).x + textureSpacing) + " " + (UVMapper.get(texNameEast).y + textureSpacing)+"\n");
-								eastTexWasSet = true;
+						boolean eastTexWasSet = false;
+						if (texNameEast != null && !texNameEast.isEmpty()) {
+							vt.append("vt " + (UVMapper.get(texNameEast).x) + " "
+									+ (UVMapper.get(texNameEast).y + textureSpacing) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameEast).x) + " " + (UVMapper.get(texNameEast).y)
+									+ "\n");
+							vt.append("vt " + (UVMapper.get(texNameEast).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameEast).y) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameEast).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameEast).y + textureSpacing) + "\n");
+							eastTexWasSet = true;
 						}
 
 						v.append("v " + (ts + ts * x) + " " + (ts + ts * y) + " " + (ts + ts * fl) + "\n");
@@ -132,21 +162,32 @@ public class OBJBuilder {
 						v.append("v " + (ts + ts * x) + " " + (ts * y) + " " + (ts * fl) + "\n");
 						v.append("v " + (ts + ts * x) + " " + (ts * y) + " " + (ts + ts * fl) + "\n");
 
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/2 " + (vi + 2) + "/"+(vti+2)+"/2 " + (vi + 3) + "/"+(vti+3)+"/2" + "\n");
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/2 " + (vi + 3) + "/"+(vti+3)+"/2 " + (vi + 4) + "/"+(vti+4)+"/2" + "\n");
+						if (eastTexWasSet) {
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/2 " + (vi + 2) + "/" + (vti + 2) + "/2 "
+									+ (vi + 3) + "/" + (vti + 3) + "/2" + "\n");
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/2 " + (vi + 3) + "/" + (vti + 3) + "/2 "
+									+ (vi + 4) + "/" + (vti + 4) + "/2" + "\n");
+							vti += 4;
+						} else {
+							f.append("f " + (vi + 1) + "//2 " + (vi + 2) + "//2 " + (vi + 3) + "//2" + "\n");
+							f.append("f " + (vi + 1) + "//2 " + (vi + 3) + "//2 " + (vi + 4) + "//2" + "\n");
+						}
 						vi += 4;
-						if(eastTexWasSet) vti += 4;
 
 						// northwall
-						
+
 						String texNameNorth = mapData[x][y].getTextureNorth();
-						boolean northTexWasSet = false; 
-						if(texNameNorth!=null && !texNameNorth.isEmpty()){
-								vt.append("vt " + (UVMapper.get(texNameNorth).x) + " " + (UVMapper.get(texNameNorth).y + textureSpacing)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameNorth).x) + " " + (UVMapper.get(texNameNorth).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameNorth).x + textureSpacing) + " " + (UVMapper.get(texNameNorth).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameNorth).x + textureSpacing) + " " + (UVMapper.get(texNameNorth).y + textureSpacing)+"\n");
-								northTexWasSet = true;
+						boolean northTexWasSet = false;
+						if (texNameNorth != null && !texNameNorth.isEmpty()) {
+							vt.append("vt " + (UVMapper.get(texNameNorth).x) + " "
+									+ (UVMapper.get(texNameNorth).y + textureSpacing) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameNorth).x) + " " + (UVMapper.get(texNameNorth).y)
+									+ "\n");
+							vt.append("vt " + (UVMapper.get(texNameNorth).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameNorth).y) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameNorth).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameNorth).y + textureSpacing) + "\n");
+							northTexWasSet = true;
 						}
 
 						v.append("v " + (ts * x) + " " + (ts * y) + " " + (ts + ts * fl) + "\n");
@@ -154,36 +195,53 @@ public class OBJBuilder {
 						v.append("v " + (ts + ts * x) + " " + (ts * y) + " " + (ts * fl) + "\n");
 						v.append("v " + (ts + ts * x) + " " + (ts * y) + " " + (ts + ts * fl) + "\n");
 
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/5 " + (vi + 2) + "/"+(vti+2)+"/5 " + (vi + 3) + "/"+(vti+3)+"/5" + "\n");
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/5 " + (vi + 3) + "/"+(vti+3)+"/5 " + (vi + 4) + "/"+(vti+4)+"/5" + "\n");
+						if (northTexWasSet) {
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/5 " + (vi + 2) + "/" + (vti + 2) + "/5 "
+									+ (vi + 3) + "/" + (vti + 3) + "/5" + "\n");
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/5 " + (vi + 3) + "/" + (vti + 3) + "/5 "
+									+ (vi + 4) + "/" + (vti + 4) + "/5" + "\n");
+							vti += 4;
+						} else {
+							f.append("f " + (vi + 1) + "//5 " + (vi + 2) + "//5 " + (vi + 3) + "//5" + "\n");
+							f.append("f " + (vi + 1) + "//5 " + (vi + 3) + "//5 " + (vi + 4) + "//5" + "\n");
+						}
 						vi += 4;
-						if(northTexWasSet) vti += 4;
 
 						// westwall
 						String texNameWest = mapData[x][y].getTextureWest();
-						boolean westTexWasSet = false; 
-						if(texNameWest!=null && !texNameWest.isEmpty()){
-								vt.append("vt " + (UVMapper.get(texNameWest).x) + " " + (UVMapper.get(texNameWest).y + textureSpacing)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameWest).x) + " " + (UVMapper.get(texNameWest).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameWest).x + textureSpacing) + " " + (UVMapper.get(texNameWest).y)+"\n");
-								vt.append("vt " + (UVMapper.get(texNameWest).x + textureSpacing) + " " + (UVMapper.get(texNameWest).y + textureSpacing)+"\n");
-								westTexWasSet = true;
+						boolean westTexWasSet = false;
+						if (texNameWest != null && !texNameWest.isEmpty()) {
+							vt.append("vt " + (UVMapper.get(texNameWest).x) + " "
+									+ (UVMapper.get(texNameWest).y + textureSpacing) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameWest).x) + " " + (UVMapper.get(texNameWest).y)
+									+ "\n");
+							vt.append("vt " + (UVMapper.get(texNameWest).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameWest).y) + "\n");
+							vt.append("vt " + (UVMapper.get(texNameWest).x + textureSpacing) + " "
+									+ (UVMapper.get(texNameWest).y + textureSpacing) + "\n");
+							westTexWasSet = true;
 						}
 						v.append("v " + (ts * x) + " " + (ts + ts * y) + " " + (ts + ts * fl) + "\n");
 						v.append("v " + (ts * x) + " " + (ts + ts * y) + " " + (ts * fl) + "\n");
 						v.append("v " + (ts * x) + " " + (ts * y) + " " + (ts * fl) + "\n");
 						v.append("v " + (ts * x) + " " + (ts * y) + " " + (ts + ts * fl) + "\n");
 
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/1 " + (vi + 2) + "/"+(vti+2)+"/1 " + (vi + 3) + "/"+(vti+3)+"/1" + "\n");
-						f.append("f " + (vi + 1) + "/"+(vti+1)+"/1 " + (vi + 3) + "/"+(vti+3)+"/1 " + (vi + 4) + "/"+(vti+4)+"/1" + "\n");
+						if (westTexWasSet) {
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/1 " + (vi + 2) + "/" + (vti + 2) + "/1 "
+									+ (vi + 3) + "/" + (vti + 3) + "/1" + "\n");
+							f.append("f " + (vi + 1) + "/" + (vti + 1) + "/1 " + (vi + 3) + "/" + (vti + 3) + "/1 "
+									+ (vi + 4) + "/" + (vti + 4) + "/1" + "\n");
+							vti += 4;
+						} else {
+							f.append("f " + (vi + 1) + "//1 " + (vi + 2) + "//1 " + (vi + 3) + "//1" + "\n");
+							f.append("f " + (vi + 1) + "//1 " + (vi + 3) + "//1 " + (vi + 4) + "//1" + "\n");
+						}
 						vi += 4;
-						if(westTexWasSet) vti += 4;
 
 					}
 				}
 			}
 		}
-
 		return start.toString() + v.toString() + vn.toString() + vt.toString() + f.toString();
 
 	}

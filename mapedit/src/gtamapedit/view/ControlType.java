@@ -21,4 +21,5 @@ public class ControlType {
 	public static final String ENTITY_CREATE_SELECT = "ENTITY_CREATE_SELECT";
 	public static final String ENTITY_TYPE_CHANGE = "ENTITY_TYPE_CHANGE";
 	public static final String ENTITY_DELETE_SELECTION = "ENTITY_DELETE_SELECTION";
+	public static final String ENTITY_CHANGE_ROTATION = "ENTITY_CHANGE_ROTATION";
 }
