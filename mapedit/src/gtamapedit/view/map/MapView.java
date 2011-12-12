@@ -85,7 +85,6 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 						default:
 							g.drawImage(map[x][y].getTextureTop().getTileImage(), drawX, drawY, null);
 					}
-					
 				}
 				
 				g.setColor(Color.BLACK);
@@ -142,13 +141,11 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
