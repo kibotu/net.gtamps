@@ -118,7 +118,7 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 		} else if(mec.getMode() == Modus.ENTITY_MODE){
 			//Graphics2D g2d = (Graphics2D) g;
 			g.setColor(new Color(0.0f,0.0f,0.0f,0.5f));
-			g.fillRect(0, 0, g.getClipBounds().width,g.getClipBounds().height);
+			g.fillRect(0, 0, map.length*tileSize,map[0].length*tileSize);
 			for(EntityPosition ep : mm.getEntityList()){
 				int es = Configuration.ENTITY_SIZE;
 				if(ep.equals(mm.getEntitySelection())){

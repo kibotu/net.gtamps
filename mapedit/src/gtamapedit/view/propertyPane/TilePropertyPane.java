@@ -8,6 +8,9 @@ import gtamapedit.view.propertyPane.components.SideTextureSelectors;
 import gtamapedit.view.propertyPane.components.TextureRotation;
 import gtamapedit.view.propertyPane.components.TextureSelector;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +38,7 @@ public class TilePropertyPane extends JComponent{
 		
 	JPanel entityPropertyPanel = new JPanel();
 	
-	JButton modeSwitcher = new JButton("Tile Mode\n[Switch to Entity mode]");
+	JButton modeSwitcher = new JButton("Switch to Entity mode");
 	
 	public TilePropertyPane(MapEditorComponent mec){
 		floorSlider = new FloorSlider(mec);
@@ -47,17 +50,17 @@ public class TilePropertyPane extends JComponent{
 		modeSwitcher.addActionListener(mec);
 			
 		floorSlider.addChangeListener(mec);
-		this.setLayout(new GridLayout(1,0));
-		this.add(modeSwitcher);
+		this.setLayout(new BorderLayout());
+		this.add(modeSwitcher,BorderLayout.WEST);
 		
-		tilePropertyPanel.setLayout(new GridLayout(1,0));
+		tilePropertyPanel.setLayout(new FlowLayout());
 		tilePropertyPanel.add(floorSlider);
 		tilePropertyPanel.add(topTexture);
 		tilePropertyPanel.add(sideTexture);
 		tilePropertyPanel.add(textureRotation);
 		//this.add(tilePropertyPanel);
 		
-		entityPropertyPanel.setLayout(new GridLayout(1,0));
+		entityPropertyPanel.setLayout(new FlowLayout());
 		entityDelete.addActionListener(mec);
 		entityDelete.setActionCommand(ControlType.ENTITY_DELETE_SELECTION);
 		entityPropertyPanel.add(entityDelete);
@@ -99,10 +102,10 @@ public class TilePropertyPane extends JComponent{
 	public void setMode(Modus mode) {
 		if(mode==Modus.ENTITY_MODE){
 			this.remove(tilePropertyPanel);
-			this.add(entityPropertyPanel);
+			this.add(entityPropertyPanel,BorderLayout.CENTER);
 		}
 		if(mode==Modus.TILE_MODE){
-			this.add(tilePropertyPanel);
+			this.add(tilePropertyPanel,BorderLayout.CENTER);
 			this.remove(entityPropertyPanel);
 		}
 	}

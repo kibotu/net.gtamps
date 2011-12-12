@@ -103,7 +103,7 @@ public class MapFile implements Serializable {
 	}
 
 	public String exportMap(String filename) {
-		Level level = new Level();
+		Level level = new Level(mapData.length*Configuration.tileSize, mapData[0].length*Configuration.tileSize);
 		LinkedList<PhysicalShape> phys = level.getPhysicalShapes();
 		LinkedList<EntityPosition> entPos = level.getEntityPositions();
 		

@@ -21,4 +21,5 @@ public class Coordinate {
 	public String toString() {
 		return "Coordinate x:"+x+" y:"+y;
 	}
+	
 }

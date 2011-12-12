@@ -22,6 +22,11 @@ public class Level implements Serializable {
     String levelName = "";
     private String OBJMap = "";
 
+    public Level(int widthInPixelCoordinates, int heightInPixelCoordinates){
+    	this.LevelWidthInPixelCoord = widthInPixelCoordinates;
+    	this.LevelHeightInPixelCoord = heightInPixelCoordinates;
+    }
+    
     public LinkedList<PhysicalShape> getPhysicalShapes() {
         return physicalShapes;
     }

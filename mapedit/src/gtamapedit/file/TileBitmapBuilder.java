@@ -80,7 +80,7 @@ public class TileBitmapBuilder {
 			Graphics2D g2d = tileMap.createGraphics();
 			g2d.drawImage(t.getTileImage(), (i%tileMapSize)*ts, (i/tileMapSize)*ts, null);
 			
-			imageMapping.put(t.getFilename(),new Coordinate((float)(i%tileMapSize)/tileMapSize, (float)(i/tileMapSize)/tileMapSize));
+			imageMapping.put(t.getFilename(),new Coordinate((float)(i%tileMapSize)/tileMapSize, (1f-textureSpacing)-(float)(i/tileMapSize)/tileMapSize));
 			System.out.println(t+": "+imageMapping.get(t.getFilename()));
 			
 			
