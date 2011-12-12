@@ -27,9 +27,6 @@ public class Level implements Serializable {
     	this.LevelHeightInPixelCoord = heightInPixelCoordinates;
     }
     
-    public LinkedList<PhysicalShape> getPhysicalShapes() {
-        return physicalShapes;
-    }
 
 	public LinkedList<PhysicalShape> getPhysicalShapes() {
 		return physicalShapes;
