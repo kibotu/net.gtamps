@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import net.gtamps.GTAMultiplayerServer;
+import net.gtamps.preview.PreviewFrame;
+
 /**
  * ugly-ass hacked class to easily control some server stuff...
  *
@@ -61,12 +64,24 @@ public class ServerGUI {
             }
         });
 
+        
+        final JButton previewGameButton = new JButton("Preview Game");
+        if (GTAMultiplayerServer.DEBUG) {
+        	previewGameButton.setEnabled(true);
+	        previewGameButton.addActionListener(new ActionListener() {
+	        	@Override
+	        	public void actionPerformed(final ActionEvent e) {
+	        		new PreviewFrame("GamePreview", 1024, 768, DebugGameBridge.instance.getAWorld());
+	        	}
+	        });
+        }
 
         final GridLayout buttonPanel = new GridLayout(1, 0);
         final Container buttonContainer = new Container();
         buttonContainer.setLayout(buttonPanel);
         buttonContainer.add(networkSendActivity);
         buttonContainer.add(networkReceiveActivity);
+        buttonContainer.add(previewGameButton);
         buttonContainer.add(restartGameButton);
 
         final Container container = new Container();

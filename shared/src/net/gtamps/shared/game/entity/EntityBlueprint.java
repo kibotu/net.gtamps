@@ -10,80 +10,91 @@ import java.util.Map;
 
 public final class EntityBlueprint {
 
-    // STATIC
+	// STATIC
 
-    private static final int EXPECTED_NUMBER_OF_HANDLERS = 10;
-    private static final int EXPECTED_NUMBER_OF_PROTOTYPES = 10;
-    private static final Map<String, EntityBlueprint> protoCache =
-            new HashMap<String, EntityBlueprint>(EXPECTED_NUMBER_OF_PROTOTYPES);
+	private static final int EXPECTED_NUMBER_OF_HANDLERS = 10;
+	private static final int EXPECTED_NUMBER_OF_PROTOTYPES = 10;
+	private static final Map<String, EntityBlueprint> protoCache =
+		new HashMap<String, EntityBlueprint>(EXPECTED_NUMBER_OF_PROTOTYPES);
 
-    public static EntityBlueprint get(String name) {
-        String realName = Entity.normalizeName(name);
-        if (protoCache.containsKey(realName)) {
-            return protoCache.get(realName);
-        } else {
-            return new EntityBlueprint(name);
-        }
-    }
+	public static EntityBlueprint getCached(final String name) {
+		final String realName = Entity.normalizeName(name);
+		if (protoCache.containsKey(realName)) {
+			return protoCache.get(realName);
+		} else {
+			final EntityBlueprint blup = new EntityBlueprint(realName);
+			protoCache.put(blup.name, blup);
+			return blup;
+		}
+	}
+
+	public static EntityBlueprint getDisposableBlueprint(final String name) {
+		final String realName = Entity.normalizeName(name);
+		return new EntityBlueprint(realName);
+	}
 
 
-    // INSTANCE
+	// INSTANCE
 
-    private final String name;
-    private final Collection<HandlerBlueprint> handlerPrototypes;
+	private final String name;
+	private final Collection<HandlerBlueprint> handlerPrototypes;
 
-    private EntityBlueprint(String name) {
-        this.name = Entity.normalizeName(name);
-        handlerPrototypes = new ArrayList<HandlerBlueprint>(EXPECTED_NUMBER_OF_HANDLERS);
-        protoCache.put(this.name, this);
-    }
+	private EntityBlueprint(final String name) {
+		this.name = Entity.normalizeName(name);
+		handlerPrototypes = new ArrayList<HandlerBlueprint>(EXPECTED_NUMBER_OF_HANDLERS);
 
-    public String getName() {
-        return this.name;
-    }
+	}
 
-    public Entity createEntity(Integer pixX, Integer pixY, Integer deg) {
-        Entity entity = new Entity(this.name);
-        for (HandlerBlueprint hproto : handlerPrototypes) {
-            assert hproto != null;
-            entity.setHandler(hproto.createHandler(entity, pixX, pixY, deg));
-        }
-        return entity;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public void addHandlerPrototype(@NotNull HandlerBlueprint proto) {
-        assert proto != null;
-        handlerPrototypes.add(proto.copy());
-    }
+	public Entity createEntity(final Integer pixX, final Integer pixY, final Integer deg) {
+		final Entity entity = new Entity(this.name);
+		for (final HandlerBlueprint hproto : handlerPrototypes) {
+			assert hproto != null;
+			entity.setHandler(hproto.createHandler(entity, pixX, pixY, deg));
+		}
+		return entity;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+	public void addHandlerPrototype(@NotNull final HandlerBlueprint proto) {
+		assert proto != null;
+		handlerPrototypes.add(proto.copy());
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof EntityBlueprint)) {
-            return false;
-        }
-        EntityBlueprint other = (EntityBlueprint) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        return true;
-    }
+	public void removeAllHandlerPrototypes() {
+		handlerPrototypes.clear();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof EntityBlueprint)) {
+			return false;
+		}
+		final EntityBlueprint other = (EntityBlueprint) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
 
 }

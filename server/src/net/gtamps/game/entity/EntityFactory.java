@@ -31,7 +31,7 @@ public class EntityFactory {
     }
 
     private static EntityBlueprint createBlueprint(final Universe universe, final String normName) {
-        final EntityBlueprint blup = EntityBlueprint.get(normName);
+        final EntityBlueprint blup = EntityBlueprint.getDisposableBlueprint(normName);
         final PhysicalProperties physprop;
         if (normName.equals("CAR")) {
             physprop = PhysicalProperties.Sportscar;
@@ -52,7 +52,7 @@ public class EntityFactory {
         return blup;
     }
 
-    private static EntityBlueprint getBlueprint(final Universe universe, final String normName) {
+    private static EntityBlueprint getCachedBlueprint(final Universe universe, final String normName) {
         final EntityBlueprint blup;
         if (blueprints.containsKey(normName)) {
             blup = blueprints.get(normName);
@@ -62,19 +62,24 @@ public class EntityFactory {
         }
         return blup;
     }
+    
+    private static EntityBlueprint getEmptyDisposableBlueprint(final Universe universe, final String normName) {
+    	return EntityBlueprint.getDisposableBlueprint(normName);
+    }
 
     public static Entity createEntity(final Universe universe, final String name, final int pixX, final int pixY, final int deg) {
         final String normName = Entity.normalizeName(name);
-        return getBlueprint(universe, normName).createEntity(pixX, pixY, deg);
+        return getCachedBlueprint(universe, normName).createEntity(pixX, pixY, deg);
     }
 
     //TODO de-uglify
     public static Entity createSpecialEntityHouse(final Universe universe, final PhysicalShape pshape) {
         final String houseName = "house";
         final String normName = Entity.normalizeName(houseName);
-        final EntityBlueprint houseblup = getBlueprint(universe, normName);
+        final EntityBlueprint houseblup = getEmptyDisposableBlueprint(universe, normName);
         houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(universe, pshape));
-        return houseblup.createEntity(0, 0, 0);
+        final Entity house =  houseblup.createEntity(0, 0, 0);
+        return house;
     }
 
 

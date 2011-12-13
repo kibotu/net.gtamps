@@ -9,8 +9,8 @@ import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.handler.blueprints.MobilityBlueprint;
 import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.game.universe.Universe;
-import net.gtamps.server.gui.LogType;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.level.PhysicalShape;
@@ -44,8 +44,12 @@ public class PhysicsFactory {
         final PhysicsBlueprint blup = createPhysicsBlueprint(universe, PhysicalProperties.Empty);
         final PolygonDef polyDef = new PolygonDef();
         for (final Vector3 vertex : levelshape) {
-            polyDef.addVertex(new Vec2(vertex.x, vertex.y));
+        	final float x = lengthToPhysics((int) vertex.x);
+        	final float y = lengthToPhysics((int) vertex.y);
+            polyDef.addVertex(new Vec2(x, y));
         }
+        polyDef.filter = new FilterData();
+        polyDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_STATIONARY;
         blup.addShapeDef(polyDef);
         return blup;
     }
@@ -145,13 +149,17 @@ public class PhysicsFactory {
             def.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_MOBILE;
             def.isSensor = false;
             defs.add(def);
+        } else {
+        	
         }
         // secondary shapes
         switch (physicalProperties.TYPE) {
             case CAR:
                 final CircleDef explosionSensorDef = new CircleDef();
                 explosionSensorDef.isSensor = true;
-                explosionSensorDef.radius = 100;
+                final float radius = 10f;
+                explosionSensorDef.localPosition = new Vec2(-radius, -radius);
+                explosionSensorDef.radius = radius;
                 explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
                 explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
                 final PolygonDef doorDef = new PolygonDef();
@@ -425,7 +433,7 @@ public class PhysicsFactory {
         return (int) (radians * 180f / Math.PI) % 360;
     }
 
-    public static float lengthToPhysics(final int pixels) {
+    public static float lengthToPhysics(final float pixels) {
         return pixels / WorldConstants.PIX_TO_PHYSICS_RATIO;
     }
 
