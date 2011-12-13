@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
+import net.gtamps.server.gui.DebugGameBridge;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
@@ -64,6 +66,11 @@ public class Game implements IGame, Runnable {
             run = true;
             playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
+            
+            if (GTAMultiplayerServer.DEBUG) {
+            	DebugGameBridge.instance.setWorld(universe.physics.getWorld());
+            }
+            
             start();
         } else {
             GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
