@@ -235,6 +235,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //        OpenGLUtils.checkGlError("glDrawElements");
     }
 
+
+
     /**
      * Default rendering process.
      */

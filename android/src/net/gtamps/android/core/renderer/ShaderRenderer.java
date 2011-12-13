@@ -155,7 +155,7 @@ public class ShaderRenderer extends BasicRenderer {
 
     private void loadShader() {
         shaderMap.put("phong",new Shader(R.raw.phong_vs,R.raw.phong_ps, Registry.getContext().getApplicationContext(), false, 0));
-        shaderMap.put("gouraud",new Shader(R.raw.gouraud_vs,R.raw.gouraud_ps, Registry.getContext().getApplicationContext(), false, 0));
+//        shaderMap.put("gouraud",new Shader(R.raw.gouraud_vs,R.raw.gouraud_ps, Registry.getContext().getApplicationContext(), false, 0));
 //        shaderMap.put("normal",new Shader(R.raw.normalmap_vs,R.raw.normalmap_ps, Registry.getContext().getApplicationContext(), false, 0));
 //        shaderMap.put("min",new Shader(R.raw.min_vs,R.raw.min_ps, Registry.getContext().getApplicationContext(), false, 0));
     }
