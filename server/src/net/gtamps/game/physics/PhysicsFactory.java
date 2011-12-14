@@ -158,7 +158,7 @@ public class PhysicsFactory {
                 final CircleDef explosionSensorDef = new CircleDef();
                 explosionSensorDef.isSensor = true;
                 final float radius = 10f;
-                explosionSensorDef.localPosition = new Vec2(-radius, -radius);
+                explosionSensorDef.localPosition = new Vec2(0, 0);
                 explosionSensorDef.radius = radius;
                 explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
                 explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;

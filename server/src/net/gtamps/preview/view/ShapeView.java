@@ -7,10 +7,9 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 
-public abstract class ShapeView implements PhysicsView {
+public abstract class ShapeView extends PhysicsView {
 	
-	protected Color fillColor = Color.BLACK;
-	protected Color lineColor = Color.WHITE;
+	protected Color shapeColor = DEFAULT_LINE_COLOR;
 	
 	
 	public static ShapeView getShapeView(final Shape shape) {
@@ -32,15 +31,21 @@ public abstract class ShapeView implements PhysicsView {
 	
 	@Override
 	public final void paint(final Graphics2D g) {
+		final Color previousColor = g.getColor();
 		setColorsAccordingtoShape(g, shape);
 		paintHook(g);
+		g.setColor(previousColor);
 	}
 
 	protected abstract void paintHook(Graphics2D g);
+
 	
 	private void setColorsAccordingtoShape(final Graphics2D g, final Shape shape) {
-		g.setColor(lineColor);
-		g.setBackground(fillColor);
+		if (shape.isSensor()) {
+			shapeColor = SENSOR_SHAPE_COLOR;
+		}
+		final Color givenColor = g.getColor();
+		g.setColor(mix(givenColor, shapeColor, 0.9f));
 	}
 
 }

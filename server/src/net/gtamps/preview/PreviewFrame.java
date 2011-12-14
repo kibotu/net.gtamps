@@ -19,6 +19,7 @@ import net.gtamps.preview.view.PreviewPerspective;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.shapes.CircleDef;
+import org.jbox2d.collision.shapes.PolygonDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -102,14 +103,20 @@ public class PreviewFrame extends JFrame {
         final World world = new World(aabb, gravity, true);
         
         final CircleDef circleDef = new CircleDef();
+        circleDef.localPosition = new Vec2(1f, 1f);
         circleDef.radius = 10f;
         
-        final BodyDef circleBodyDef = new BodyDef();
-        circleBodyDef.position = new Vec2(0, 0);
+        final PolygonDef polyDef = new PolygonDef();
+        polyDef.setAsBox(3, 3, upperVertex.mul(0.1f), 0f);
+//        polyDef.setAsBox(3, 3);
         
-        final Body circleBody = world.createBody(circleBodyDef);
-        circleBody.createShape(circleDef);
-        circleBody.setMassFromShapes();
+        final BodyDef bodyDef = new BodyDef();
+        bodyDef.position = new Vec2(10, 10);
+        
+        final Body body = world.createBody(bodyDef);
+//        body.createShape(circleDef);
+//        body.createShape(polyDef);
+//        body.setMassFromShapes();
         
         
         return world;

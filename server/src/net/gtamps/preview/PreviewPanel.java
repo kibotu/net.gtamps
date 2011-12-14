@@ -75,23 +75,6 @@ public class PreviewPanel extends JPanel  {
 			}
 		});
         
-//        addMouseMotionListener(new MouseMotionListener() {
-//
-//			@Override
-//			public void mouseMoved(final MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseDragged(final MouseEvent e) {
-//				final Point point = e.getPoint();
-//				PreviewPerspective.centerOn(new Vec2(point.x, point.y));
-//				repaint();
-//			}
-//		});
-        
-		
 	}
 	
 	public void addBody(final BodyView bodyView) {
@@ -106,12 +89,12 @@ public class PreviewPanel extends JPanel  {
 		g2d.setBackground(DEFAULT_BACKGROUND);
 		g2d.clearRect(0, 0, getWidth(), getHeight());
 		
-		g2d.scale(PreviewPerspective.getZoomLevel(), PreviewPerspective.getZoomLevel());
-		g2d.translate(PreviewPerspective.getOffset().x, PreviewPerspective.getOffset().y);
-
 		g2d.drawString(PreviewPerspective.getZoomLevel() + "", 10, 10);
 		g2d.drawString(PreviewPerspective.getOffset().toString() + "", 10, 20);
 		
+		g2d.scale(PreviewPerspective.getZoomLevel(), PreviewPerspective.getZoomLevel());
+		g2d.translate(PreviewPerspective.getOffset().x, PreviewPerspective.getOffset().y);
+
 		for (final BodyView bv : bodyViews) {
 			bv.paint(g2d);
 		}

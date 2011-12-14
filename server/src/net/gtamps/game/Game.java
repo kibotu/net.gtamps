@@ -35,7 +35,7 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final String TEST_LEVEL_PATH = "../assets/map2.map.lvl";
+    private static final String TEST_LEVEL_PATH = "../assets/map3.map.lvl";
 	private static final LogType TAG = LogType.GAMEWORLD;
     private static final long THREAD_UPDATE_SLEEP_TIME = 20;
     private static final int PHYSICS_ITERATIONS = 20;
