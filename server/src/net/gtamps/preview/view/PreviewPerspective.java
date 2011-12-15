@@ -1,79 +1,60 @@
 package net.gtamps.preview.view;
 
-import org.jbox2d.common.Vec2;
+import java.awt.Dimension;
+import java.awt.Point;
 
 public class PreviewPerspective {
 	
-	private static final int MOVE_AMOUNT = 5;
-
+	private static float MIN_ZOOM = 0.01f;
 	private static final float ZOOM_AMOUNT = 0.05f;
-
-	static float MIN_ZOOM = 0.01f;
 	
-	private static Vec2 dimension = new Vec2(0,0);
-	private static final float worldToPixFactor = 10;
-	private static float zoom = 1f;
-	private static Vec2 topLeftOffset = new Vec2(0,0);
+	private Point offset = new Point(0, 0);
+	private float zoomf = 1f;
+	private final Dimension viewingArea;
 	
-	public static void setDimension(final float x, final float y) {
-		dimension = new Vec2(x, y);
+	public PreviewPerspective(final Dimension dimension) {
+		viewingArea = dimension;
 	}
 	
-	public static Vec2 worldToPix(final Vec2 v) {
-		return v.clone().mul(worldToPixFactor);
+	public Point getTopleft() {
+		return offset;
 	}
 	
-	public static void translate(final float x, final float y) {
-		topLeftOffset = new Vec2(x, y);
-	}
-
-	public static void move(final float x, final float y) {
-		topLeftOffset.addLocal(new Vec2(x, y));
+	public float getZoom() {
+		return zoomf;
 	}
 	
-	public static void up() {
-		topLeftOffset.addLocal(0, -MOVE_AMOUNT);
+	public Dimension getViewingArea() {
+		return viewingArea;
 	}
 	
-	public static void down() {
-		topLeftOffset.addLocal(0, MOVE_AMOUNT);
+	public void setTopleft(final Point newOffset) {
+		offset = newOffset;
 	}
 	
-	public static void left() {
-		topLeftOffset.addLocal(-MOVE_AMOUNT, 0);
+	public void setZoom(final float newZoom) {
+		zoomf = Math.max(newZoom, MIN_ZOOM);
 	}
 	
-	public static void right() {
-		topLeftOffset.addLocal(MOVE_AMOUNT, 0);
+	public void zoomIn(final int amount) {
+		final float f = zoomf + ZOOM_AMOUNT * Math.signum(amount);
+		setZoom(f);
 	}
 	
-	public static void zoom(final int amount) {
-		final float f = zoom + ZOOM_AMOUNT * Math.signum(amount);
-		zoom = Math.max(f, MIN_ZOOM);
+	public void zoomIn(final Point zoomPoint, final int amount) {
+		// TODO
+		zoomIn(amount);
 	}
 	
-	public static void zoom(final int amount, final Vec2 pos) {
-		zoom(amount);
-		//translate(pos.x, pos.y);
+	public void setCenter(final Point center) {
+		final int topX = center.x - (viewingArea.width >> 1);
+		final int topY = center.y - (viewingArea.height >> 1);
+		setTopleft(new Point(topX, topY));
 	}
 	
-	public static void centerOn(final Vec2 point) {
-		final Vec2 localizedPoint = point.add(topLeftOffset);
-		final Vec2 centerOffset = dimension.mul(0.5f);
-		final Vec2 newCenter = localizedPoint.sub(centerOffset);
-		topLeftOffset = newCenter;
-	}
-	
-	public static int worldLengthToPix(final float l) {
-		return (int)(l*worldToPixFactor);
-	}
-
-	public static float getZoomLevel() {
-		return zoom;
-	}
-
-	public static Vec2 getOffset() {
-		return topLeftOffset.clone();
+	public void move(final int dx, final int dy) {
+		final Point topLeft = getTopleft();
+		setTopleft(new Point(topLeft.x + dx, topLeft.y + dy));
 	}
 	
 }

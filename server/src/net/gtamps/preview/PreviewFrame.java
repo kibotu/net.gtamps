@@ -44,7 +44,7 @@ public class PreviewFrame extends JFrame {
 		super(name);
 
 		final Dimension size = new Dimension (width > 0 ? width : DEFAULT_WIDTH, height > 0 ? height : DEFAULT_HEIGHT);
-		PreviewPerspective.setDimension(size.width, size.height);
+		final PreviewPerspective perspective = new PreviewPerspective(size);
 
 		final Container content = new JPanel();
 		content.setBackground(Color.lightGray);
@@ -52,7 +52,7 @@ public class PreviewFrame extends JFrame {
 		
 		
 		this.world = world;
-		final PreviewPanel preview = new PreviewPanel();
+		final PreviewPanel preview = new PreviewPanel(perspective);
 		preview.setPreferredSize(size);
 		for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
 			preview.addBody(new BodyView(body));
@@ -62,18 +62,44 @@ public class PreviewFrame extends JFrame {
 		preview.setBackground(Color.BLACK);
 		content.add(preview, BorderLayout.CENTER);
         
-        final JButton redrawButton = new JButton("Redraw");
-        redrawButton.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(final ActionEvent e) {
-        		invalidate();
-        	}
-        });
-        
+		final JButton redrawButton = new JButton("Redraw");
+		final JButton startUpdateButton = new JButton("Auto Update ON");
+		final JButton stopUpdateButton = new JButton("AutoUpdate OFF");
+		stopUpdateButton.setEnabled(false);
+
+		redrawButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				preview.updateContent();
+			}
+		});
+		
+		startUpdateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				startUpdateButton.setEnabled(false);
+				stopUpdateButton.setEnabled(true);
+				redrawButton.setEnabled(false);
+				preview.startAutoUpdate();
+			}
+		});
+		
+		stopUpdateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				startUpdateButton.setEnabled(true);
+				stopUpdateButton.setEnabled(false);
+				redrawButton.setEnabled(true);
+				preview.stopAutoUpdate();
+			}
+		});
+		
         final GridLayout buttonPanel = new GridLayout(1, 0);
         final Container buttonContainer = new Container();
         buttonContainer.setLayout(buttonPanel);
         buttonContainer.add(redrawButton);
+        buttonContainer.add(startUpdateButton);
+        buttonContainer.add(stopUpdateButton);
         
         content.add(buttonContainer, BorderLayout.SOUTH);
 
@@ -114,9 +140,9 @@ public class PreviewFrame extends JFrame {
         bodyDef.position = new Vec2(10, 10);
         
         final Body body = world.createBody(bodyDef);
-//        body.createShape(circleDef);
-//        body.createShape(polyDef);
-//        body.setMassFromShapes();
+        body.createShape(circleDef);
+        body.createShape(polyDef);
+        body.setMassFromShapes();
         
         
         return world;

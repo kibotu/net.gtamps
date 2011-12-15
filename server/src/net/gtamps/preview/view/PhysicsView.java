@@ -1,50 +1,69 @@
 package net.gtamps.preview.view;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 
 import org.jbox2d.common.Vec2;
 
-public abstract class PhysicsView {
+public abstract class PhysicsView extends ViewNode {
+
+	private static final float FLOAT_TO_PIX_FACTOR = 10f;
 	
-	public static final float PHYSICS_PIX_FACTOR = 1f;
+	private static final float ARROWBARB_RELATIVE_SIZE = 0.05f;
+	private static final float ARROWBARB_HALFANGLE = (float) Math.toRadians(45);
 	
-	protected static final Color DEFAULT_LINE_COLOR = Color.WHITE;
-	protected static final Color DEFAULT_BACK_COLOR = Color.BLACK;
-	protected static final Color SENSOR_SHAPE_COLOR = new Color(0, 0, 192, 48);
-	
-	public abstract void paint(Graphics2D g);
-	
-	protected final int worldToPixels(final float worldLength) {
-		return PreviewPerspective.worldLengthToPix(worldLength);
+	protected void setPosition(final float x, final float y) {
+		setPosition(worldToPixels(x), worldToPixels(y));
 	}
 	
-	protected final Vec2 worldToPixels(final Vec2 pos) {
-		return new Vec2(worldToPixels(pos.x), worldToPixels(pos.y));
-	}
-	
-	protected final void translate(final Vec2 pos, final Graphics2D g) {
-		final float tx = worldToPixels(pos.x);
-		final float ty = worldToPixels(pos.y);
-		g.translate(tx, ty);
+	protected void setPosition(final Vec2 pos) {
+		setPosition(pos.x, pos.y);
 	}
 
-	protected final void rotate(final float radians, final Graphics2D g) {
-		g.rotate(radians);
+	protected Shape getCircle(final Vec2 center, final float radius) {
+		final float worldRadius = worldToPixels(radius);
+		final float diam = worldRadius * 2f;
+		final float x0 = worldToPixels(center.x - radius);
+		final float y0 = worldToPixels(center.y - radius);
+		return new Ellipse2D.Float(x0, y0, diam, diam);
 	}
 	
-	protected final Color mix(final Color c1, final Color c2, final float ratio) {
-		assert ratio >= 0f && ratio <= 1f : "ratio must be between 0 and 1";
-		final int r = mix(c1.getRed(), c2.getRed(), ratio);
-		final int g = mix(c1.getGreen(), c2.getGreen(), ratio);
-		final int b = mix(c1.getBlue(), c2.getBlue(), ratio);
-		final int alpha = mix(c1.getAlpha(), c2.getAlpha(), ratio);
-		return new Color(r, g, b, alpha);
+	protected Shape getPolygon(final Vec2... vertices) {
+		final Polygon p = new Polygon();
+		for (final Vec2 v: vertices) {
+			final Vec2 w = worldToPixels(v);
+			p.addPoint((int)w.x, (int)w.y);
+		}
+		return p;
 	}
 	
-	private final int mix(final int a, final int b, final float ratio) {
-		final float invRatio = 1f - ratio;
-		return (int) (a * ratio + b * invRatio);
+	protected Shape getArrow(final Vec2 direction) {
+		final Vec2 end = direction.mul(FLOAT_TO_PIX_FACTOR);
+		final Vec2 barbVec  = end.mul(ARROWBARB_RELATIVE_SIZE).negateLocal();
+		final float sinA = (float) Math.sin(ARROWBARB_HALFANGLE);
+		final float cosA = (float) Math.cos(ARROWBARB_HALFANGLE);
+		final float dx = barbVec.x * cosA - barbVec.y * sinA;
+		final float dy = barbVec.x * sinA + barbVec.y * cosA;
+
+		final Path2D path = new Path2D.Float();
+		path.moveTo(end.x, end.y);
+		path.lineTo(0, 0);
+		path.moveTo(end.x, end.y);
+		path.lineTo(end.x + dx, end.y + dy);
+		
+		return path;
 	}
 	
+	
+	private Vec2 worldToPixels(final Vec2 v) {
+		return new Vec2(worldToPixels(v.x), worldToPixels(v.y));
+	}
+	
+	private int worldToPixels(final float worldLength) {
+		return (int) (worldLength * FLOAT_TO_PIX_FACTOR);
+	}
+
 }

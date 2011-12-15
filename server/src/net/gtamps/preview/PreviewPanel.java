@@ -4,102 +4,125 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import net.gtamps.preview.view.BodyView;
 import net.gtamps.preview.view.PreviewPerspective;
-
-import org.jbox2d.common.Vec2;
+import net.gtamps.preview.view.Scene;
+import net.gtamps.shared.Utils.MovingFloatAverage;
 
 public class PreviewPanel extends JPanel  {
 	
 	private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 	private static final Color DEFAULT_FOREGROUND = Color.WHITE;
 	
-	private final List<BodyView> bodyViews = new ArrayList<BodyView>();
+	private static final int TARGET_FPS = 20;
+	private static final int TARGET_FPS_SPEED = 1000 / TARGET_FPS;
 	
-	public PreviewPanel() {
-		
+//	private final List<BodyView> bodyViews = new ArrayList<BodyView>();
+	private final PreviewPerspective perspective;
+	private final Scene scene;
+	private final Timer timer;
+	private final MovingFloatAverage fpsAverage = new MovingFloatAverage(5);
+	
+	public PreviewPanel(final PreviewPerspective perspective) {
+		if (perspective == null) {
+			throw new IllegalArgumentException("'perspective' must not be 'null'");
+		}
+		this.perspective = perspective;
+		scene = new Scene(perspective);
+		timer = new Timer(TARGET_FPS_SPEED, new ActionListener() {
+
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				updateContent();
+			}
+			
+		});
 		
         addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseWheelMoved(final MouseWheelEvent e) {
 				final int amount = e.getWheelRotation();
 				final Point loc = e.getPoint();
-				PreviewPerspective.zoom(amount, new Vec2(loc.x, loc.y));
-				repaint();
+//				PreviewPerspective.zoom(amount, new Vec2(loc.x, loc.y));
+				perspective.zoomIn(loc, amount);
+				updateContent();
 			}
 		});
         
-        addMouseListener(new MouseListener() {
+        addMouseListener(new MouseAdapter() {
 			
         	Point clickPoint;
         	
 			@Override
 			public void mouseReleased(final MouseEvent e) {
 				final Point nowPoint = e.getPoint();
-				final Vec2 diff = new Vec2(nowPoint.x - clickPoint.x, nowPoint.y - clickPoint.y);
-//				clickPoint = nowPoint;
-				PreviewPerspective.move(diff.x, diff.y);
-				repaint();
+				final int dx = nowPoint.x - clickPoint.x;
+				final int dy = nowPoint.y - clickPoint.y;
+				perspective.move(dx, dy);
+				updateContent();
 			}
 			
 			@Override
 			public void mousePressed(final MouseEvent e) {
 				clickPoint = e.getPoint();
 			}
-			
-			@Override
-			public void mouseExited(final MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(final MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseClicked(final MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
 		});
-        
 	}
 	
 	public void addBody(final BodyView bodyView) {
-		bodyViews.add(bodyView);
+		scene.addChild(bodyView);
 	}
 	
+	public void updateContent() {
+		scene.update();
+		repaint();
+	}
+	
+	public void startAutoUpdate() {
+		lastTime = System.currentTimeMillis();
+		timer.start();
+	}
+	
+	public void stopAutoUpdate() {
+		timer.stop();
+	}
+
 	@Override
 	protected void paintComponent(final Graphics g) {
+		computeFps();
+		
 		final Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.setColor(DEFAULT_FOREGROUND);
 		g2d.setBackground(DEFAULT_BACKGROUND);
 		g2d.clearRect(0, 0, getWidth(), getHeight());
 		
-		g2d.drawString(PreviewPerspective.getZoomLevel() + "", 10, 10);
-		g2d.drawString(PreviewPerspective.getOffset().toString() + "", 10, 20);
-		
-		g2d.scale(PreviewPerspective.getZoomLevel(), PreviewPerspective.getZoomLevel());
-		g2d.translate(PreviewPerspective.getOffset().x, PreviewPerspective.getOffset().y);
+		g2d.drawString(perspective.getZoom() + "", 10, 10);
+		g2d.drawString(perspective.getTopleft().x + ", " + perspective.getTopleft().y, 10, 20);
+		g2d.drawString(fpsAverage.getAverage() + "", 10, 30);
 
-		for (final BodyView bv : bodyViews) {
-			bv.paint(g2d);
-		}
-		
-		
+		scene.paint(g2d);
 	}
+
+	private long lastTime = System.currentTimeMillis();
+	
+	private void computeFps() {
+		final long now = System.currentTimeMillis();
+		final long timeDiff = now - lastTime;
+		lastTime = now;
+		final float fps = 1000f / timeDiff;
+		fpsAverage.addValue((float)timeDiff);
+	}
+	
 
 }

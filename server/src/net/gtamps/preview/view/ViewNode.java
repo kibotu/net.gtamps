@@ -4,30 +4,51 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
-
-import org.jbox2d.common.Vec2;
+import java.awt.geom.AffineTransform;
+import java.util.Collection;
+import java.util.LinkedList;
 
 public abstract class ViewNode {
 	
-	private static final float FLOAT_TO_PIX_FACTOR = 1f;
-
-	Graphics2D g;
-	Point position;
-	float rotation;
+	protected static final Color DEFAULT_COLOR = Color.WHITE;
+	private static final Point ORIGIN = new Point(0,0);
 	
-	Color savedColor = null;
+	private final Collection<ViewNode> children = new LinkedList<ViewNode>();
 	
-	public void paint(final Graphics2D g) {
+	private Graphics2D g;
+	private Point position = new Point(0,0);
+	private float rotation = 0f;
+	private float scale = 1f;
+	
+	private Color savedColor = null;
+	private AffineTransform savedTransform = null;
+	
+	public final void update() {
+		updateHook();
+		for (final ViewNode child: children) {
+			child.update();
+		}
+	}
+	
+	public final void paint(final Graphics2D g) {
 		this.g = g;
 		saveColor();
-		translate();
-		rotate();
+		saveTransform();
+		transform();
 		
 		paintHook();
 		
-		undoRotate();
-		undoTranslate();
+		for (final ViewNode child: children) {
+			child.paint(g);
+		}
+		
+		restoreTransform();
 		restoreColor();
+		this.g = null;
+	}
+	
+	public void addChild(final ViewNode child) {
+		children.add(child);
 	}
 
 	public Point getPosition() {
@@ -53,22 +74,30 @@ public abstract class ViewNode {
 		.toString();
 	}
 	
+	protected abstract void updateHook();
 	protected abstract void paintHook();
 	
-	protected void setPosition(final float x, final float y) {
-		position = new Point(worldToPixels(x), worldToPixels(y));
+	protected void setPosition(final int x, final int y) {
+		position = new Point(x, y);
 	}
 
-	protected void setPosition(final Vec2 pos) {
-		setPosition(pos.x, pos.y);
-	}
-	
 	protected void setRotation(final float radians) {
 		rotation = radians;
 	}
 	
+	protected void setScale(final float s) {
+		if (s <= 0) {
+			throw new IllegalArgumentException("'s' must be > 0");
+		}
+		scale = s;
+	}
+
 	protected void setColor(final Color c) {
 		g.setColor(c);
+	}
+	
+	protected void setBackgroundColor(final Color c) {
+		g.setBackground(c);
 	}
 	
 	protected Color getColor() {
@@ -86,19 +115,20 @@ public abstract class ViewNode {
 	protected void drawShape(final Shape shape) {
 		g.draw(shape);
 	}
-	
-	protected void drawString(final String string, final float x, final float y) {
-		drawStringPix(string, worldToPixels(x), worldToPixels(y));
+
+	protected void fillShape(final Shape shape) {
+		g.fill(shape);
 	}
 	
-	protected void drawStringPix(final String string, final int pixX, final int pixY) {
-		g.drawString(string, pixX, pixY);
+	protected void drawString(final String string, final int x, final int y) {
+		g.drawString(string, x, y);
 	}
 	
-	private int worldToPixels(final float worldLength) {
-		return (int) (worldLength * FLOAT_TO_PIX_FACTOR);
+	protected void markLocation() {
+		final int size = 10;
+		final int halfSize = size >> 1;
+		g.fillOval(-halfSize, -halfSize, size, size);
 	}
-	
 	
 	private Color mix(final Color c1, final Color c2, final float ratio) {
 		assert ratio >= 0f && ratio <= 1f : "ratio must be between 0 and 1";
@@ -122,20 +152,28 @@ public abstract class ViewNode {
 		g.setColor(savedColor);
 	}
 	
-	private void rotate() {
-		g.rotate(rotation);
+	private void transform() {
+		if (rotation != 0) {
+			g.rotate(rotation);
+		}
+		if (!ORIGIN.equals(position)) {
+			g.translate(position.x, position.y);
+		}
+		if (scale != 1f) {
+			g.scale(scale, scale);
+		}
 	}
 	
-	private void undoRotate() {
-		g.rotate(-rotation);
+	private void saveTransform() {
+		savedTransform = g.getTransform();
+		assert savedTransform != null;
 	}
-	
-	private void translate() {
-		g.translate(position.x, position.y);
+
+	private void restoreTransform() {
+		assert savedTransform != null;
+		g.setTransform(savedTransform);
 	}
-	
-	private void undoTranslate() {
-		g.translate(-position.x, -position.y);
-	}
-	
+
+
 }
+
