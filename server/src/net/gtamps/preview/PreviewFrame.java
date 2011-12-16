@@ -37,6 +37,11 @@ public class PreviewFrame extends JFrame {
 		pframe.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+	PreviewPanel preview;
+	JButton redrawButton;
+	JButton startUpdateButton;
+	JButton stopUpdateButton;
+	
 	
 	public PreviewFrame(final String name, final int width, final int height, final World world) {
 		super(name);
@@ -50,19 +55,15 @@ public class PreviewFrame extends JFrame {
 		
 		
 		final PhysicsAccessor physics = new PhysicsAccessor(world);
-		final PreviewPanel preview = new PreviewPanel(perspective, physics);
+		preview = new PreviewPanel(perspective, physics);
 		preview.setPreferredSize(size);
-//		for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
-//			preview.addBody(new BodyView(body));
-//		}
-//
 
 		preview.setBackground(Color.BLACK);
 		content.add(preview, BorderLayout.CENTER);
         
-		final JButton redrawButton = new JButton("Redraw");
-		final JButton startUpdateButton = new JButton("Auto Update ON");
-		final JButton stopUpdateButton = new JButton("AutoUpdate OFF");
+		redrawButton = new JButton("Redraw");
+		startUpdateButton = new JButton("Auto Update ON");
+		stopUpdateButton = new JButton("AutoUpdate OFF");
 		stopUpdateButton.setEnabled(false);
 
 		redrawButton.addActionListener(new ActionListener() {
@@ -117,6 +118,15 @@ public class PreviewFrame extends JFrame {
 		pack();
         setVisible(true);
 
+	}
+	
+	
+	
+	public void stop() {
+		preview.stopAutoUpdate();
+		redrawButton.setEnabled(false);
+		startUpdateButton.setEnabled(false);
+		stopUpdateButton.setEnabled(false);
 	}
 	
 	private static World initTestPhysics() {

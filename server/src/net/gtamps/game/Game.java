@@ -67,10 +67,6 @@ public class Game implements IGame, Runnable {
             playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
             
-            if (GTAMultiplayerServer.DEBUG) {
-            	DebugGameBridge.instance.setWorld(universe.physics.getWorld());
-            }
-            
             start();
         } else {
             GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
@@ -108,6 +104,12 @@ public class Game implements IGame, Runnable {
     @Override
     public void run() {
         isActive = true;
+
+        if (GTAMultiplayerServer.DEBUG) {
+        	DebugGameBridge.instance.setWorld(universe.physics.getWorld());
+        }
+        
+        
 //		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
         while (run) {
             gameTime.startCycle();
@@ -116,6 +118,11 @@ public class Game implements IGame, Runnable {
             sleepIfCycleTimeRemaining();
         }
 //		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
+        
+        if (GTAMultiplayerServer.DEBUG) {
+        	DebugGameBridge.instance.setWorld(null);
+        }
+        
         isActive = false;
     }
 
