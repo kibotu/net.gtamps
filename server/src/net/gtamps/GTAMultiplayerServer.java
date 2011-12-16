@@ -5,6 +5,10 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import net.gtamps.server.ControlCenter;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.ServerChainFactory;
@@ -28,7 +32,7 @@ import net.gtamps.shared.game.ServerData;
 import net.gtamps.shared.serializer.communication.ISerializer;
 
 public final class GTAMultiplayerServer {
-	
+
 	private static final String BASE_CONFIG_PATH = "../assets/config/";
 	private static final String[] LOAD_CONFIG = {
 		"Server.xml",
@@ -37,71 +41,94 @@ public final class GTAMultiplayerServer {
 
 	public enum Mode { DEBUG, PRODUCTION }
 
-    public static final boolean DEBUG = true;
-    /**
-     * @deprecated use configuration: common.setup.httpserver.docroot
-     */
-    @Deprecated
-    public static final String DEFAULT_PATH = "../assets/kompilat/";
-    public static final String DEFAULT_MAP = "tinycity.xml";
-    
+	public static final boolean DEBUG = true;
+	/**
+	 * @deprecated use configuration: common.setup.httpserver.docroot
+	 */
+	@Deprecated
+	public static final String DEFAULT_PATH = "../assets/kompilat/";
+	public static final String DEFAULT_MAP = "tinycity.xml";
 
-    private static GTAMultiplayerServer INSTANCE = null;
-    private static ControlCenter CONTROL = null;
-    private static Configuration CONFIG = ConfigBuilder.getEmptyConfiguration();
 
-    public static void main(final String[] args){
-        GUILogger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-        new GTAMultiplayerServer(DEBUG ? Mode.DEBUG : Mode.PRODUCTION);
-    }
-    
-    public static Configuration getConfig() {
-    	return CONFIG;
-    }
-    
-    public static DBHandler getDBHandler() {
-    	return INSTANCE.dbHandler;
-    }
-    
-    private XSocketServer gameServer;
-    private SimpleHttpServer httpServer;
-    private DBHandler dbHandler;
-    
-    private GTAMultiplayerServer(final Mode mode) {
-    	try {
-    		Logger.setLogger(new GUILoggerToGeneralAdapter(GUILogger.getInstance()));
-    		Logger.d("SERVER", "logger adapter works");
-    		new ServerGUI();
-    		GUILogger.getInstance().log(LogType.SERVER, "server GUI is up.");
+	private static GTAMultiplayerServer INSTANCE = null;
+	private static ControlCenter CONTROL = null;
+	private static Configuration CONFIG = ConfigBuilder.getEmptyConfiguration();
 
-    		CONFIG = loadConfig();
-    		
-	        final ISerializer serializer = initSerializer();
-	        final ISocketHandler sockHandler = initSockHandler(serializer);
-	        gameServer = initGameServer(sockHandler);
-	        
-	        httpServer = initHttpServer();
-	        dbHandler = initDBHandler();
-	      
-	        CONTROL = ControlCenter.instance;
-	        GUILogger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
-	        INSTANCE = this;
-    	} catch (final Exception e) {
-    		GUILogger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown:\n" + exceptionToVerboseString(e));
-    		XSocketServer.shutdownServer();
-    		if (httpServer != null) {
-    			httpServer.stopServer();
-    		}
+	public static void main(final String[] args){
+		GUILogger.getInstance().log(LogType.SERVER, "This is where it all begins.");
+		new GTAMultiplayerServer(DEBUG ? Mode.DEBUG : Mode.PRODUCTION);
+	}
+
+	public static Configuration getConfig() {
+		return CONFIG;
+	}
+
+	public static DBHandler getDBHandler() {
+		return INSTANCE.dbHandler;
+	}
+
+	private XSocketServer gameServer;
+	private SimpleHttpServer httpServer;
+	private DBHandler dbHandler;
+	private ServerGUI gui;
+
+	private GTAMultiplayerServer(final Mode mode) {
+		try {
+			Logger.setLogger(new GUILoggerToGeneralAdapter(GUILogger.getInstance()));
+			Logger.d("SERVER", "logger adapter works");
+
+			CONFIG = loadConfig();
+
+			initGUI();
+
+			final ISerializer serializer = initSerializer();
+			final ISocketHandler sockHandler = initSockHandler(serializer);
+			gameServer = initGameServer(sockHandler);
+
+			httpServer = initHttpServer();
+			dbHandler = initDBHandler();
+
+			CONTROL = ControlCenter.instance;
+			GUILogger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
+			INSTANCE = this;
+		} catch (final Exception e) {
+			GUILogger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown:\n" + exceptionToVerboseString(e));
+			XSocketServer.shutdownServer();
+			if (httpServer != null) {
+				httpServer.stopServer();
+			}
 			e.printStackTrace();
 		} finally {
-    	}
-    }
-    
-    private DBHandler initDBHandler() throws ServerException {
+		}
+	}
+
+	private void initGUI() {
+		final String lookAndFeel = CONFIG.select("common.setup.gui.lookandfeel.name").getString();
+		try {
+			for (final LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equalsIgnoreCase(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+
+		} catch (ClassNotFoundException
+				| InstantiationException
+				| IllegalAccessException
+				| UnsupportedLookAndFeelException e)
+		{
+			Logger.e("SERVER", e);
+			e.printStackTrace();
+		}
+		gui = new ServerGUI();
+		GUILogger.getInstance().log(LogType.SERVER, "server GUI is up.");
+	}
+
+	private DBHandler initDBHandler() throws ServerException {
 		final DBHandler dbHandler = new DBHandler("db/gtamps");
 		assert databaseResponds(dbHandler);
 		return dbHandler;
-    }
+	}
 
 	private boolean databaseResponds(final DBHandler dbHandler) {
 		assert 0 <= dbHandler.createPlayer("test", "mysecretpassword");
@@ -112,8 +139,8 @@ public final class GTAMultiplayerServer {
 	}
 
 	private SimpleHttpServer initHttpServer() {
-        final int port = CONFIG.select("common.setup.httpserver.port").getInt();
-        final String docroot = CONFIG.select("common.setup.httpserver.docroot").getString();
+		final int port = CONFIG.select("common.setup.httpserver.port").getInt();
+		final String docroot = CONFIG.select("common.setup.httpserver.docroot").getString();
 		final SimpleHttpServer srv = ServerChainFactory.startHTTPServer(port, docroot);
 		GUILogger.getInstance().log(LogType.SERVER, "http server running: " + srv.toString());
 		return srv;
@@ -129,7 +156,7 @@ public final class GTAMultiplayerServer {
 	private String exceptionToVerboseString(final Throwable e) {
 		return exceptionToVerboseString(new StringBuilder(), e).toString();
 	}
-	
+
 	private StringBuilder exceptionToVerboseString(final StringBuilder sb, final Throwable e) {
 		sb.append(e.toString());
 		final StackTraceElement[] stack = e.getStackTrace();
@@ -151,24 +178,24 @@ public final class GTAMultiplayerServer {
 		GUILogger.getInstance().log(LogType.SERVER, "socketHandler initialized: " + sockHandler.toString());
 		return sockHandler;
 	}
-    
-    private static MergeConfiguration loadConfig() throws FileNotFoundException, RuntimeException {
-    	final MergeConfiguration config = new MergeConfiguration(new ProtectedMergeStrategy());
-    	Configuration loadedConfig = null;
+
+	private static MergeConfiguration loadConfig() throws FileNotFoundException, RuntimeException {
+		final MergeConfiguration config = new MergeConfiguration(new ProtectedMergeStrategy());
+		Configuration loadedConfig = null;
 		for (int i = 0; i < LOAD_CONFIG.length; i++) {
 			final String path = BASE_CONFIG_PATH + LOAD_CONFIG[i];
 			loadedConfig = new XMLConfigLoader(ResourceLoader.getFileAsInputStream(path), new ConfigSource(new File(path))).loadConfig();
 			config.merge(loadedConfig);
 		}
 		GUILogger.getInstance().log(LogType.SERVER, "configuration loaded: " + config.getSource());
-    	return config;
-    }
-    
-    private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    	final ISerializer serializer = (ISerializer) Class.forName(CONFIG.select("common.setup.gameserver.serializer.class").getString()).newInstance();
-    	GUILogger.getInstance().log(LogType.SERVER, "serializer initialized: " + serializer.toString());
-    	return serializer;
-    }
+		return config;
+	}
+
+	private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		final ISerializer serializer = (ISerializer) Class.forName(CONFIG.select("common.setup.gameserver.serializer.class").getString()).newInstance();
+		GUILogger.getInstance().log(LogType.SERVER, "serializer initialized: " + serializer.toString());
+		return serializer;
+	}
 
 	public static ControlCenter getControlCenter() {
 		return CONTROL;

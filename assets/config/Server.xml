@@ -18,6 +18,10 @@
 			    <SERIALIZER class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
         </GAMESERVER>
         <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
+        <GUI>
+        	<LOOKANDFEEL name="nimbus"/> <!--things to try: Metal Nimbus CDE/Motif -->
+        	<!-- or java cmd line:  -Dswing.defaultlaf=com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel -->
+        </GUI>
 	</SETUP>
 </COMMON>
 <SERVER>

@@ -19,6 +19,7 @@ import net.gtamps.preview.PreviewFrame;
  * @author tom
  */
 public class ServerGUI {
+	
     private final JFrame frame;
     private final NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
     private final NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
