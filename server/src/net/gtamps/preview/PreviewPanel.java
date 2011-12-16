@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
@@ -19,7 +20,7 @@ import net.gtamps.preview.view.PreviewPerspective;
 import net.gtamps.preview.view.Scene;
 import net.gtamps.shared.Utils.MovingFloatAverage;
 
-public class PreviewPanel extends JPanel  {
+public class PreviewPanel extends JPanel {
 	
 	private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 	private static final Color DEFAULT_FOREGROUND = Color.WHITE;
@@ -32,6 +33,9 @@ public class PreviewPanel extends JPanel  {
 	private final Scene scene;
 	private final Timer timer;
 	private final MovingFloatAverage fpsAverage = new MovingFloatAverage(5);
+	
+	private boolean dragScene = false;
+	private Point clickPoint;
 	
 	public PreviewPanel(final PreviewPerspective perspective) {
 		if (perspective == null) {
@@ -54,27 +58,48 @@ public class PreviewPanel extends JPanel  {
 				final int amount = e.getWheelRotation();
 				final Point loc = e.getPoint();
 //				PreviewPerspective.zoom(amount, new Vec2(loc.x, loc.y));
-				perspective.zoomIn(loc, amount);
+				perspective.zoomIn(loc, -amount);
 				updateContent();
 			}
 		});
         
         addMouseListener(new MouseAdapter() {
 			
-        	Point clickPoint;
         	
 			@Override
 			public void mouseReleased(final MouseEvent e) {
-				final Point nowPoint = e.getPoint();
-				final int dx = nowPoint.x - clickPoint.x;
-				final int dy = nowPoint.y - clickPoint.y;
-				perspective.move(dx, dy);
-				updateContent();
+				dragScene = false;
+				
 			}
 			
 			@Override
 			public void mousePressed(final MouseEvent e) {
+				dragScene = true;
 				clickPoint = e.getPoint();
+				
+			}
+		});
+        
+        addMouseMotionListener(new MouseMotionListener() {
+			
+        	
+			@Override
+			public void mouseMoved(final MouseEvent e) {
+				
+				
+			}
+			
+			@Override
+			public void mouseDragged(final MouseEvent e) {
+				if(dragScene){
+					final Point nowPoint = e.getPoint();
+					final int dx = nowPoint.x - clickPoint.x;
+					final int dy = nowPoint.y - clickPoint.y;
+					perspective.move(dx, dy);
+					updateContent();
+					clickPoint = e.getPoint();
+				}
+				
 			}
 		});
 	}
