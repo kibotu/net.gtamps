@@ -95,7 +95,7 @@ public class ServerGUI {
 
         frame.setContentPane(container);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(700, 500);
         frame.setVisible(true);
     }
 }
