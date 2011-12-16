@@ -8,6 +8,7 @@ import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.utils.Utils;
+import net.gtamps.android.game.Game;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -24,14 +25,14 @@ import static javax.microedition.khronos.opengles.GL10.GL_SMOOTH;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
-    private BasicRenderActivity.IRenderActivity renderActivity;
+    private Game renderActivity;
     private ProcessingState glState;
 
     private ArrayList<BasicScene> basicScenes;
     private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
-    public Renderer(BasicRenderActivity.IRenderActivity renderActivity) {
-        this.renderActivity = renderActivity;
+    public Renderer(Game game) {
+        this.renderActivity = game;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
 
