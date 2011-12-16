@@ -22,6 +22,7 @@ import net.gtamps.shared.Utils.MovingFloatAverage;
 
 public class PreviewPanel extends JPanel {
 	
+	private static final long serialVersionUID = -4216757155920777054L;
 	private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 	private static final Color DEFAULT_FOREGROUND = Color.WHITE;
 	
