@@ -4,15 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import net.gtamps.preview.view.BodyView;
 import net.gtamps.preview.view.PreviewPerspective;
@@ -24,14 +21,10 @@ public class PreviewPanel extends JPanel  {
 	private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 	private static final Color DEFAULT_FOREGROUND = Color.WHITE;
 	
-	private static final int TARGET_FPS = 20;
-	private static final int TARGET_FPS_SPEED = 1000 / TARGET_FPS;
-	
-//	private final List<BodyView> bodyViews = new ArrayList<BodyView>();
 	private final PreviewPerspective perspective;
 	private final Scene scene;
-	private final Timer timer;
-	private final MovingFloatAverage fpsAverage = new MovingFloatAverage(5);
+	private final MovingFloatAverage paintRunAverage = new MovingFloatAverage(10);
+	private AutoUpdate updateThread;
 	
 	public PreviewPanel(final PreviewPerspective perspective) {
 		if (perspective == null) {
@@ -39,21 +32,12 @@ public class PreviewPanel extends JPanel  {
 		}
 		this.perspective = perspective;
 		scene = new Scene(perspective);
-		timer = new Timer(TARGET_FPS_SPEED, new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				updateContent();
-			}
-			
-		});
 		
         addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseWheelMoved(final MouseWheelEvent e) {
 				final int amount = e.getWheelRotation();
 				final Point loc = e.getPoint();
-//				PreviewPerspective.zoom(amount, new Vec2(loc.x, loc.y));
 				perspective.zoomIn(loc, amount);
 				updateContent();
 			}
@@ -79,6 +63,21 @@ public class PreviewPanel extends JPanel  {
 		});
 	}
 	
+	public void startAutoUpdate() {
+		if (updateThread == null || !updateThread.isActive()) {
+			updateThread = new AutoUpdate(this);
+			updateThread.setTargetFps(25);
+			updateThread.start();
+		}
+	}
+
+	
+	public void stopAutoUpdate() {
+		if (updateThread != null && updateThread.isActive()) {
+			updateThread.hardstop();
+		}
+	}
+	
 	public void addBody(final BodyView bodyView) {
 		scene.addChild(bodyView);
 	}
@@ -88,18 +87,10 @@ public class PreviewPanel extends JPanel  {
 		repaint();
 	}
 	
-	public void startAutoUpdate() {
-		lastTime = System.currentTimeMillis();
-		timer.start();
-	}
-	
-	public void stopAutoUpdate() {
-		timer.stop();
-	}
-
 	@Override
 	protected void paintComponent(final Graphics g) {
-		computeFps();
+		updatePaintRuntime();
+		//adjustUpdateRate();
 		
 		final Graphics2D g2d = (Graphics2D) g;
 		
@@ -109,20 +100,28 @@ public class PreviewPanel extends JPanel  {
 		
 		g2d.drawString(perspective.getZoom() + "", 10, 10);
 		g2d.drawString(perspective.getTopleft().x + ", " + perspective.getTopleft().y, 10, 20);
-		g2d.drawString(fpsAverage.getAverage() + "", 10, 30);
+		g2d.drawString(paintRunAverage.getAverage() + "", 10, 30);
+		g2d.drawString(updateThread == null ? "" : updateThread.getTargetFps() + "", 10, 40);
 
 		scene.paint(g2d);
 	}
 
 	private long lastTime = System.currentTimeMillis();
 	
-	private void computeFps() {
+	private void updatePaintRuntime() {
 		final long now = System.currentTimeMillis();
-		final long timeDiff = now - lastTime;
+		final float diff = (now - lastTime) / 1000f;
 		lastTime = now;
-		final float fps = 1000f / timeDiff;
-		fpsAverage.addValue((float)timeDiff);
+		paintRunAverage.addValue(diff);
 	}
+
+	private void adjustUpdateRate() {
+		if (updateThread != null && updateThread.isActive()) {
+			final float fps = (1f/paintRunAverage.getAverage());
+			updateThread.setTargetFps(Math.min(fps, 25));
+		}
+	}
+	
 	
 
 }

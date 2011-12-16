@@ -20,6 +20,7 @@ public abstract class ViewNode {
 	private float rotation = 0f;
 	private float scale = 1f;
 	
+	
 	private Color savedColor = null;
 	private AffineTransform savedTransform = null;
 	
@@ -59,10 +60,6 @@ public abstract class ViewNode {
 		return rotation;
 	}
 	
-	public int getRotationDeg() {
-		return (int) (Math.toDegrees(rotation)) % 360;
-	}
-
 	@Override
 	public String toString() {
 		return new StringBuilder()
@@ -163,14 +160,13 @@ public abstract class ViewNode {
 			g.scale(scale, scale);
 		}
 	}
+
 	
 	private void saveTransform() {
 		savedTransform = g.getTransform();
-		assert savedTransform != null;
 	}
 
 	private void restoreTransform() {
-		assert savedTransform != null;
 		g.setTransform(savedTransform);
 	}
 

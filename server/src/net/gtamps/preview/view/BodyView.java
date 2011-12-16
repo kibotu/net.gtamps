@@ -42,9 +42,9 @@ public class BodyView extends PhysicsView {
 		
 		setColorAccordingToBody();
 		markLocation();
-		if (entity != null) {
-			drawString(entity.toString(), 5, 5);
-		}
+//		if (entity != null) {
+//			drawString(entity.getName(), 5, 5);
+//		}
 
 	}
 

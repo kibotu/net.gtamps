@@ -5,10 +5,6 @@ import gtamapedit.tileManager.TileImageHolder;
 import gtamapedit.view.map.MapElement;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-import ar.com.hjg.pngj.PngWriter;
 
 public class TileBitmapBuilder {
 	private LinkedList<TileImageHolder> tileImagesDistinct = new LinkedList<TileImageHolder>();

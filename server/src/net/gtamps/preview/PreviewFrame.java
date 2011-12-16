@@ -120,7 +120,6 @@ public class PreviewFrame extends JFrame {
 
 	}
 	
-	
 	private static World initTestPhysics() {
         final Vec2 lowerVertex = new Vec2(0, 0);
         final Vec2 upperVertex = new Vec2(100, 100);
