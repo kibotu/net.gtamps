@@ -2,6 +2,7 @@ package net.gtamps.preview.view;
 
 import java.awt.Color;
 
+import org.jbox2d.collision.FilterData;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
@@ -32,6 +33,8 @@ public abstract class ShapeView<T extends Shape> extends PhysicsView {
 	@Override
 	public void paintHook() {
 		setColorsAccordingtoShape(shape);
+		final FilterData filter = shape.getFilterData();
+		drawString("CollsionGrp " + filter.groupIndex, 5, 35);
 	}
 
 	private void setColorsAccordingtoShape(final Shape shape) {

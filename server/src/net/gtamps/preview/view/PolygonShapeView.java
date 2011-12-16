@@ -19,6 +19,7 @@ public class PolygonShapeView extends ShapeView<PolygonShape> {
 
 	@Override
 	public void paintHook() {
+		super.paintHook();
 		drawShape(polygon);
 	}
 

@@ -42,9 +42,15 @@ public class BodyView extends PhysicsView {
 		
 		setColorAccordingToBody();
 		markLocation();
-//		if (entity != null) {
-//			drawString(entity.getName(), 5, 5);
-//		}
+		if (entity != null) {
+			final String name = entity.getName();
+//			if (name.equalsIgnoreCase("spawnpoint")
+//					|| name.equalsIgnoreCase("car")
+//					|| name.equalsIgnoreCase("human")) {
+				drawString(entity.getName(), 5, 5);
+				drawString(entity.x.getAsString() + ":" + entity.y.getAsString(), 5, 15);
+//			}
+		}
 
 	}
 
