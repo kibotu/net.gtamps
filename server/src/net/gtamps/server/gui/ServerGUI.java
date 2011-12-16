@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.preview.PreviewFrame;
@@ -21,7 +22,8 @@ public class ServerGUI {
     private final JFrame frame;
     private final NetworkActivityIndicator networkSendActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.SEND);
     private final NetworkActivityIndicator networkReceiveActivity = new NetworkActivityIndicator(NetworkActivityIndicator.Type.RECEIVE);
-
+	private final Timer checkTimer;
+	private PreviewFrame previewFrame;
     public ServerGUI() {
         frame = new JFrame("GTA MultiServer");
 
@@ -54,28 +56,55 @@ public class ServerGUI {
 ////				connectionManager.stopHttpServer();
 //			}
 //		});
+        
+
+        
+        final JButton previewGameButton = new JButton("Preview Game");
+        if (GTAMultiplayerServer.DEBUG) {
+        	previewGameButton.setEnabled(false);
+	        previewGameButton.addActionListener(new ActionListener() {
+
+				
+
+				@Override
+	        	public void actionPerformed(final ActionEvent e) {
+	        		previewFrame = new PreviewFrame("GamePreview", 1024, 768, DebugGameBridge.instance.getAWorld());
+	        	}
+	        });
+        }
 
         final JButton restartGameButton = new JButton("Restart Game");
         restartGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                //GTAMultiplayerServer.restart();
-            	System.err.println("Restart not implemented at the moment");
+            	previewGameButton.setEnabled(false);
+            	if (previewFrame != null) {
+            		previewFrame.stop();
+            	}
+                GTAMultiplayerServer.getControlCenter().restart();
+                //            	System.err.println("Restart not implemented at the moment");
             }
         });
 
         
-        final JButton previewGameButton = new JButton("Preview Game");
-        if (GTAMultiplayerServer.DEBUG) {
-        	previewGameButton.setEnabled(true);
-	        previewGameButton.addActionListener(new ActionListener() {
-	        	@Override
-	        	public void actionPerformed(final ActionEvent e) {
-	        		new PreviewFrame("GamePreview", 1024, 768, DebugGameBridge.instance.getAWorld());
-	        	}
-	        });
-        }
+        
+        checkTimer = new Timer(1000, new ActionListener() {
 
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if (DebugGameBridge.instance.world != null) {
+					previewGameButton.setEnabled(true);
+				} else {
+					previewGameButton.setEnabled(false);
+					if (previewFrame != null) {
+						previewFrame.stop();
+					}
+				}
+			}
+        	
+        });
+        checkTimer.start();
+        
         final GridLayout buttonPanel = new GridLayout(1, 0);
         final Container buttonContainer = new Container();
         buttonContainer.setLayout(buttonPanel);

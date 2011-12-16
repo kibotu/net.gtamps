@@ -29,7 +29,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
     public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
     public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
     
-    private final Map<Integer, IGame> gameThreads = new HashMap<Integer, IGame>();
+    private final Map<Long, IGame> gameThreads = new HashMap<Long, IGame>();
     
     private boolean run = true;
     private IGame game; //tmp
@@ -234,7 +234,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 
     private IGame createGame(final String mapname) {
+    	if (game != null) {
+    		game.hardstop();
+    	}
         game = new Game();
+        gameThreads.put(game.getId(), game);
         return game;
     }
 
