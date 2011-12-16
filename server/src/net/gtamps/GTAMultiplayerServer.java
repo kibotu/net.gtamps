@@ -106,22 +106,27 @@ public final class GTAMultiplayerServer {
 		final String lookAndFeel = CONFIG.select("common.setup.gui.lookandfeel.name").getString();
 		try {
 			for (final LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equalsIgnoreCase(info.getName())) {
+				if (lookAndFeel.equalsIgnoreCase(info.getName())) {
 					UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
 			}
-
-		} catch (ClassNotFoundException
-				| InstantiationException
-				| IllegalAccessException
-				| UnsupportedLookAndFeelException e)
-		{
-			Logger.e("SERVER", e);
-			e.printStackTrace();
+		} catch (final ClassNotFoundException e) {
+			handleThrowable(e);
+		} catch (final InstantiationException e) {
+			handleThrowable(e);
+		} catch (final IllegalAccessException e) {
+			handleThrowable(e);
+		} catch (final UnsupportedLookAndFeelException e) {
+			handleThrowable(e);
 		}
 		gui = new ServerGUI();
 		GUILogger.getInstance().log(LogType.SERVER, "server GUI is up.");
+	}
+
+	private void handleThrowable(final Throwable e) {
+		Logger.e("SERVER", e);
+		e.printStackTrace();
 	}
 
 	private DBHandler initDBHandler() throws ServerException {
