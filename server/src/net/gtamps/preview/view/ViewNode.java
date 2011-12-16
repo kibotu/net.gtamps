@@ -14,6 +14,7 @@ public abstract class ViewNode {
 	private static final Point ORIGIN = new Point(0,0);
 	
 	private final Collection<ViewNode> children = new LinkedList<ViewNode>();
+	private ViewNode parent = null;
 	
 	private Graphics2D g;
 	private Point position = new Point(0,0);
@@ -50,6 +51,8 @@ public abstract class ViewNode {
 	
 	public void addChild(final ViewNode child) {
 		children.add(child);
+		child.removeParent();
+		child.setParent(this);
 	}
 
 	public Point getPosition() {
@@ -58,6 +61,13 @@ public abstract class ViewNode {
 	
 	public float getRotation() {
 		return rotation;
+	}
+	
+	public void dispose() {
+		for (final ViewNode child: children) {
+			child.dispose();
+		}
+		removeParent();
 	}
 	
 	@Override
@@ -168,6 +178,25 @@ public abstract class ViewNode {
 
 	private void restoreTransform() {
 		g.setTransform(savedTransform);
+	}
+	
+	private void setParent(final ViewNode node) {
+		if (parent != null) {
+			throw new IllegalStateException("node already has a parent. call removeParent first.");
+		}
+		parent = node;
+	}
+	
+	private void removeParent() {
+		if (parent == null) {
+			return;
+		}
+		parent.removeChild(this);
+		parent = null;
+	}
+	
+	private void removeChild(final ViewNode node) {
+		children.remove(node);
 	}
 
 
