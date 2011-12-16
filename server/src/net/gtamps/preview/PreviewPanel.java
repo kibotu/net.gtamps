@@ -11,6 +11,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -18,7 +21,10 @@ import javax.swing.Timer;
 import net.gtamps.preview.view.BodyView;
 import net.gtamps.preview.view.PreviewPerspective;
 import net.gtamps.preview.view.Scene;
+import net.gtamps.preview.view.ViewNode;
 import net.gtamps.shared.Utils.MovingFloatAverage;
+
+import org.jbox2d.dynamics.Body;
 
 public class PreviewPanel extends JPanel {
 	
@@ -28,20 +34,27 @@ public class PreviewPanel extends JPanel {
 	
 	private static final int TARGET_FPS = 20;
 	private static final int TARGET_FPS_SPEED = 1000 / TARGET_FPS;
-	
-//	private final List<BodyView> bodyViews = new ArrayList<BodyView>();
+
+	private final PhysicsAccessor physics;
 	private final PreviewPerspective perspective;
 	private final Scene scene;
 	private final Timer timer;
 	private final MovingFloatAverage fpsAverage = new MovingFloatAverage(5);
 	
+	private final Map<Body, ViewNode> viewMap = new HashMap<Body, ViewNode>();
+	private final Map<Body, Boolean> markMap = new HashMap<Body, Boolean>();
+	
 	private boolean dragScene = false;
 	private Point clickPoint;
 	
-	public PreviewPanel(final PreviewPerspective perspective) {
+	public PreviewPanel(final PreviewPerspective perspective, final PhysicsAccessor physics) {
 		if (perspective == null) {
 			throw new IllegalArgumentException("'perspective' must not be 'null'");
 		}
+		if (physics == null) {
+			throw new IllegalArgumentException("'physics' must not be 'null'");
+		}
+		this.physics = physics;
 		this.perspective = perspective;
 		scene = new Scene(perspective);
 		timer = new Timer(TARGET_FPS_SPEED, new ActionListener() {
@@ -110,6 +123,7 @@ public class PreviewPanel extends JPanel {
 	}
 	
 	public void updateContent() {
+		updatePhysics();
 		scene.update();
 		repaint();
 	}
@@ -122,10 +136,59 @@ public class PreviewPanel extends JPanel {
 	public void stopAutoUpdate() {
 		timer.stop();
 	}
+	
+	private synchronized void updatePhysics() {
+		updateBodies();
+	}
 
+	private void updateBodies() {
+			for (final Iterator<Body> bodyIterator = physics.bodyIterator(); bodyIterator.hasNext();) {
+				final Body body = bodyIterator.next();
+				if (isUnknown(body)) {
+					final BodyView node = new BodyView(body);
+					addBody(node);
+					register(body, node);
+				}
+				mark(body);
+			}
+			removeUnmarkedBodies();
+	}
+
+	private boolean isUnknown(final Body body) {
+		return !viewMap.containsKey(body);
+	}
+
+	private void register(final Body body, final ViewNode node) {
+		viewMap.put(body, node);
+	}
+	
+	private void mark(final Body body) {
+		markMap.put(body, true);
+	}
+	
+	private void remove(final Body body) {
+		final ViewNode node = viewMap.get(body);
+		if (node != null) {
+			node.dispose();
+			viewMap.remove(body);
+			markMap.remove(body);
+		}
+	}
+	
+	private void removeUnmarkedBodies() {
+		for (final Body body : markMap.keySet()) {
+			if (markMap.get(body) == false) {
+				remove(body);
+			} else {
+				markMap.put(body, false);
+			}
+		}
+	}
+	
 	@Override
 	protected void paintComponent(final Graphics g) {
 		computeFps();
+		//adjustUpdateRate();
 		
 		final Graphics2D g2d = (Graphics2D) g;
 		
@@ -149,6 +212,13 @@ public class PreviewPanel extends JPanel {
 		final float fps = 1000f / timeDiff;
 		fpsAverage.addValue((float)timeDiff);
 	}
+	
+//	private void adjustUpdateRate() {
+//		if (updateThread != null && updateThread.isActive()) {
+//			final float fps = (1f/paintRunAverage.getAverage());
+//			updateThread.setTargetFps(Math.min(fps, 25));
+//		}
+//	}
 	
 
 }

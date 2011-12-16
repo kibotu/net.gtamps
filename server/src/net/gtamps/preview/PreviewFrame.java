@@ -14,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import net.gtamps.preview.view.BodyView;
 import net.gtamps.preview.view.PreviewPerspective;
 
 import org.jbox2d.collision.AABB;
@@ -38,7 +37,6 @@ public class PreviewFrame extends JFrame {
 		pframe.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
-	private final World world;
 	
 	public PreviewFrame(final String name, final int width, final int height, final World world) {
 		super(name);
@@ -51,13 +49,13 @@ public class PreviewFrame extends JFrame {
 		content.setLayout(new BorderLayout());
 		
 		
-		this.world = world;
-		final PreviewPanel preview = new PreviewPanel(perspective);
+		final PhysicsAccessor physics = new PhysicsAccessor(world);
+		final PreviewPanel preview = new PreviewPanel(perspective, physics);
 		preview.setPreferredSize(size);
-		for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
-			preview.addBody(new BodyView(body));
-		}
-		
+//		for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
+//			preview.addBody(new BodyView(body));
+//		}
+//
 
 		preview.setBackground(Color.BLACK);
 		content.add(preview, BorderLayout.CENTER);
@@ -109,6 +107,7 @@ public class PreviewFrame extends JFrame {
 			@Override
 			public void windowClosing(final WindowEvent we){
 				setVisible(false);
+				dispose();
 			}
 		});
 		
@@ -119,7 +118,6 @@ public class PreviewFrame extends JFrame {
         setVisible(true);
 
 	}
-	
 	
 	private static World initTestPhysics() {
         final Vec2 lowerVertex = new Vec2(0, 0);

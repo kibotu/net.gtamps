@@ -20,7 +20,7 @@ public class CircleShapeView extends ShapeView<CircleShape> {
 	@Override
 	public void paintHook() {
 		super.paintHook();
-		fillShape(ellipse);
+//		fillShape(ellipse);
 		drawShape(ellipse);
 	}
 
