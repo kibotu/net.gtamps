@@ -56,7 +56,7 @@ public final class GTAMultiplayerServer {
 
 	public static void main(final String[] args){
 		GUILogger.getInstance().log(LogType.SERVER, "This is where it all begins.");
-		new GTAMultiplayerServer(DEBUG ? Mode.DEBUG : Mode.PRODUCTION);
+		INSTANCE = new GTAMultiplayerServer(DEBUG ? Mode.DEBUG : Mode.PRODUCTION);
 	}
 
 	public static Configuration getConfig() {
@@ -90,7 +90,6 @@ public final class GTAMultiplayerServer {
 
 			CONTROL = ControlCenter.instance;
 			GUILogger.getInstance().log(LogType.SERVER, "control center initialized: " + CONTROL.toString());
-			INSTANCE = this;
 		} catch (final Exception e) {
 			GUILogger.getInstance().log(LogType.SERVER, "THE END! emergency shutdown:\n" + exceptionToVerboseString(e));
 			XSocketServer.shutdownServer();
@@ -112,30 +111,31 @@ public final class GTAMultiplayerServer {
 				}
 			}
 		} catch (final ClassNotFoundException e) {
-			handleThrowable(e);
+			swallowThrowable(e);
 		} catch (final InstantiationException e) {
-			handleThrowable(e);
+			swallowThrowable(e);
 		} catch (final IllegalAccessException e) {
-			handleThrowable(e);
+			swallowThrowable(e);
 		} catch (final UnsupportedLookAndFeelException e) {
-			handleThrowable(e);
+			swallowThrowable(e);
 		}
 		gui = new ServerGUI();
 		GUILogger.getInstance().log(LogType.SERVER, "server GUI is up.");
 	}
 
-	private void handleThrowable(final Throwable e) {
+	private void swallowThrowable(final Throwable e) {
 		Logger.e("SERVER", e);
 		e.printStackTrace();
 	}
 
 	private DBHandler initDBHandler() throws ServerException {
 		final DBHandler dbHandler = new DBHandler("db/gtamps");
-		assert databaseResponds(dbHandler);
+		//		assert databasePassesBasicTests(dbHandler);
 		return dbHandler;
 	}
 
-	private boolean databaseResponds(final DBHandler dbHandler) {
+	@SuppressWarnings("unused")
+	private boolean databasePassesBasicTests(final DBHandler dbHandler) {
 		assert 0 <= dbHandler.createPlayer("test", "mysecretpassword");
 		assert 0 <= dbHandler.authPlayer("test", "mysecretpassword");
 		dbHandler.deletePlayer("test", "mysecretpassword");
