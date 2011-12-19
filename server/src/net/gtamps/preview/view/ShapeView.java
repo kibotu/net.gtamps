@@ -8,10 +8,10 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 
 public abstract class ShapeView<T extends Shape> extends PhysicsView {
-	
+
 	protected Color shapeColor = DEFAULT_COLOR;
-	
-	
+
+
 	public static ShapeView<? extends Shape> getShapeView(final Shape shape) {
 		final Class<? extends Shape> type = shape.getClass();
 		if (type == CircleShape.class) {
@@ -22,14 +22,14 @@ public abstract class ShapeView<T extends Shape> extends PhysicsView {
 			throw new IllegalArgumentException("unknown shape type");
 		}
 	}
-	
+
 	protected T shape;
-	
+
 	protected ShapeView(final T shape) {
 		this.shape = shape;
 		update();
 	}
-	
+
 	@Override
 	public void paintHook() {
 		setColorsAccordingtoShape(shape);
@@ -41,7 +41,7 @@ public abstract class ShapeView<T extends Shape> extends PhysicsView {
 		if (shape.isSensor()) {
 			shapeColor = new Color(0, 0, 192, 24);
 		}
-		addMixColor(shapeColor, 0.9f);
+		addMixColor(shapeColor, 0.5f);
 	}
 
 }

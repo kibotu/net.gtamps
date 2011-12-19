@@ -60,10 +60,10 @@ public class BodyView extends PhysicsView {
 	}
 
 	private void setColorAccordingToBody() {
-		final float alpha = 0.2f;
+		final float alpha = 0.4f;
 		Color color;
 		if (body.isFrozen()) {
-			color = new Color(0.2f, 0.2f, 0.2f, alpha);
+			color = new Color(0.4f, 0.4f, 0.4f, alpha);
 		} else if (body.isSleeping()) {
 			color = new Color(0.6f, 0.6f, 0.6f, alpha);
 		} else if (body.isStatic()) {
