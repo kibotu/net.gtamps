@@ -72,7 +72,25 @@ public enum SendableType {
     ACTION_RIGHT,
     ACTION_SUICIDE;
 
-
+    byte currentIdCounter = 1;
+    byte binaryTypeId;
+    private SendableType(){
+    	this.binaryTypeId = currentIdCounter;
+    	currentIdCounter++;
+    }
+    
+    public byte getBinaryTypeId() {
+		return binaryTypeId;
+	}
+    public static SendableType getTypeByBinaryTypeId(byte typeid){
+    	for(SendableType st : SendableType.values()){
+    		if(st.getBinaryTypeId()==typeid){
+    			return st;
+    		}
+    	}
+    	return null;
+    }
+    
     public SendableType getOKResponse() {
         SendableType type = null;
         switch (this) {
