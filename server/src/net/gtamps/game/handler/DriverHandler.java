@@ -63,11 +63,13 @@ public class DriverHandler extends Handler {
 	}
 
 	public void enter(final Player player) {
-		Logger.i("GAMEWORLD", player.getUid() + ": player sent enter/exit to " + parent.getUid());
+		Logger.i("GAMEWORLD", player.getUid() + ": player sent enter/exit to entity " + parent.getUid());
 		if (!isAvailable()) {
+			Logger.i("GAMEWORLD", parent.getUid() + ": can't enter/exit, not available");
 			return;
 		}
 		if (!canActivate()) {
+			Logger.i("GAMEWORLD", parent.getUid() + ": can't enter/exit, time-out constraint");
 			return;
 		}
 		if (driver != null) {
@@ -104,9 +106,9 @@ public class DriverHandler extends Handler {
 		}
 		{ // LOGGING
 			final String logMsg = String.format("%s exits car %s", exDriver, getParent());
-		final String logMsg2 = String.format("is now %s", driversHumanBody);
-		GUILogger.i().log(TAG, logMsg);
-		GUILogger.i().log(TAG, logMsg2);
+			final String logMsg2 = String.format("is now %s", driversHumanBody);
+			GUILogger.i().log(TAG, logMsg);
+			GUILogger.i().log(TAG, logMsg2);
 		}
 		driversHumanBody = null;
 	}
