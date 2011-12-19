@@ -41,7 +41,7 @@ public abstract class ShapeView<T extends Shape> extends PhysicsView {
 		if (shape.isSensor()) {
 			shapeColor = new Color(0, 0, 192, 24);
 		}
-		addMixColor(shapeColor, 0.5f);
+		//		addMixColor(shapeColor, 0.5f);
 	}
 
 }
