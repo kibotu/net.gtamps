@@ -4,7 +4,6 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -63,13 +62,13 @@ public class DriverHandler extends Handler {
 	}
 
 	public void enter(final Player player) {
-		Logger.i("GAMEWORLD", player.getUid() + ": player sent enter/exit to entity " + parent.getUid());
+		GUILogger.i().log(LogType.GAMEWORLD, player.getUid() + ": player sent enter/exit to entity " + parent.getUid());
 		if (!isAvailable()) {
-			Logger.i("GAMEWORLD", parent.getUid() + ": can't enter/exit, not available");
+			GUILogger.i().log(LogType.GAMEWORLD, parent.getUid() + ": can't enter/exit, not available");
 			return;
 		}
 		if (!canActivate()) {
-			Logger.i("GAMEWORLD", parent.getUid() + ": can't enter/exit, time-out constraint");
+			GUILogger.i().log(LogType.GAMEWORLD, parent.getUid() + ": can't enter/exit, time-out constraint");
 			return;
 		}
 		if (driver != null) {

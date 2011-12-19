@@ -1,5 +1,7 @@
 package net.gtamps.game.handler;
 
+import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -76,7 +78,7 @@ public class SensorDoorHandler extends SensorHandler {
 			if (driver != null) {
 				driver.enter(player);
 			} else {
-				Logger.i("GAMEWORLD", "no driver handler found");
+				GUILogger.i().log(LogType.GAMEWORLD, "no driver handler found");
 			}
 		}
 

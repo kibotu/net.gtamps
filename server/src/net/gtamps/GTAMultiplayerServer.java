@@ -75,7 +75,9 @@ public final class GTAMultiplayerServer {
 	private GTAMultiplayerServer(final Mode mode) {
 		try {
 			Logger.setLogger(new GUILoggerToGeneralAdapter(GUILogger.getInstance()));
-			Logger.d("SERVER", "logger adapter works");
+			Logger.e("SERVER", "logger adapter works");
+
+			logJavaProperties();
 
 			CONFIG = loadConfig();
 
@@ -99,6 +101,15 @@ public final class GTAMultiplayerServer {
 			e.printStackTrace();
 		} finally {
 		}
+	}
+
+	private void logJavaProperties() {
+		final String vmName = System.getProperty("java.vm.name");
+		final String vmVersion = System.getProperty("java.vm.version");
+		final String runtimeVersion = System.getProperty("java.runtime.version");
+		final String javaProp = vmName + " v. " + vmVersion + "; runtime: " + runtimeVersion;
+		System.out.println(javaProp);
+		GUILogger.i().log(LogType.SERVER, javaProp);
 	}
 
 	private void initGUI() {
