@@ -10,9 +10,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-public class MenuActivity extends Activity {
+public class MenuActivity extends Activity implements OnClickListener {
 
 	HashMap<menuMode, Integer> idMapping = new HashMap<MenuActivity.menuMode, Integer>();
 
@@ -31,14 +30,11 @@ public class MenuActivity extends Activity {
 
 		setMenuMode(menuMode.MAIN);
 		
-		Button buttonStartGame = (Button) findViewById(R.id.menuButtonStartGame);
-		buttonStartGame.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setMenuMode(menuMode.LOADING);
-				startGame();
-			}
-		});
+		((Button)findViewById(R.id.menuButtonStartGame)).setOnClickListener(this);
+		((Button)findViewById(R.id.menuButtonConfiguration)).setOnClickListener(this);
+		((Button)findViewById(R.id.menuButtonQuit)).setOnClickListener(this);
+		((Button)findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
+		
 	}
 
 	private void startGame() {
@@ -56,6 +52,19 @@ public class MenuActivity extends Activity {
 				layout.setVisibility(LinearLayout.GONE);
 			}
 		}
-		
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(v.equals(findViewById(R.id.menuButtonStartGame))){
+			setMenuMode(menuMode.LOADING);
+			startGame();
+		}
+		if(v.equals(findViewById(R.id.menuButtonConfiguration))){
+			setMenuMode(menuMode.CONFIGURATION);
+		}
+		if(v.equals(findViewById(R.id.menuButtonGoToMain))){
+			setMenuMode(menuMode.MAIN);
+		}
 	}
 }

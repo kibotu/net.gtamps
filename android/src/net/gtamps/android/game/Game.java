@@ -3,6 +3,7 @@ package net.gtamps.android.game;
 import android.os.SystemClock;
 import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.android.core.renderer.BasicRenderActivity;
+import net.gtamps.android.core.renderer.IRenderActivity;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
@@ -16,7 +17,7 @@ import net.gtamps.shared.serializer.communication.MessageFactory;
 
 import java.util.ArrayList;
 
-public class Game implements BasicRenderActivity.IRenderActivity {
+public class Game implements IRenderActivity {
 
     private boolean isRunning;
     private boolean isPaused;

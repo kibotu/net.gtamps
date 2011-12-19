@@ -9,6 +9,9 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 public class MenuButton extends Button {
+	int wigglex = 0;
+	int wiggley = 0;
+	
 	public MenuButton(Context context, AttributeSet attrs){
 		super(context, attrs,0);
 		init(attrs);
@@ -24,7 +27,7 @@ public class MenuButton extends Button {
 		this.pos[0] = 15;
 		this.pos[1] = 25;
 		String currentText = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
-		setWidth(currentText.length()*9+30);	
+		setWidth(currentText.length()*10+30);	
 		setHeight(40);
 	}
 
@@ -32,13 +35,16 @@ public class MenuButton extends Button {
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
+//		wigglex = (int) Math.random()*7;
+//		wiggley = (int) Math.random()*7;
 		Paint paint = this.getPaint();
 		//paint.setARGB(0, 0, 0, 0);
 		//canvas.drawRect(new Rect(0, 0, this.getWidth(), this.getHeight()), paint);
 		paint.setTypeface(Typeface.MONOSPACE);
-		paint.setColor(0xffFFB400);
+		paint.setColor(0xff765400);
 		canvas.drawText((String) this.getText(), pos[0], pos[1], paint);
-		
+		paint.setColor(0xffFFB400);
+		canvas.drawText((String) this.getText(), pos[0], pos[1], paint);		
 	}	
 
 }
