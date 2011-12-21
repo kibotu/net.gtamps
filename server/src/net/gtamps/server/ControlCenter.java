@@ -201,10 +201,12 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 		} catch (final ServerException e) {
 			// from Authenticator
 			response = request.createResponse(SendableType.LOGIN_BAD);
+			response.data = new StringData(e.getMessage());
 		} catch (final IllegalStateException e) {
 			// cannot login: session already used by another user
 			// TODO log or something?
 			response = request.createResponse(SendableType.LOGIN_BAD);
+			response.data = new StringData(e.getMessage());
 		} finally {
 			handleResponse(response);
 		}
