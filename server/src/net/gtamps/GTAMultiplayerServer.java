@@ -188,11 +188,50 @@ public final class GTAMultiplayerServer {
 	}
 
 	private static ISocketHandler initSockHandler(final ISerializer serializer) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
-		@SuppressWarnings("unchecked")
-		final Constructor<ISocketHandler> constructor = (Constructor<ISocketHandler>) Class.forName(CONFIG.select("common.setup.gameserver.sockethandler.class").getString()).getConstructor(ISerializer.class);
+		final Configuration sockConfig = CONFIG.select("common.setup.gameserver.sockethandler");
+		final Class<ISocketHandler> sockClass = getClassFromConfig(sockConfig, ISocketHandler.class);
+		final Constructor<ISocketHandler> constructor = sockClass.getConstructor(ISerializer.class);
 		final ISocketHandler sockHandler = constructor.newInstance(serializer);
 		GUILogger.getInstance().log(LogType.SERVER, "socketHandler initialized: " + sockHandler.toString());
 		return sockHandler;
+	}
+
+	private static <T> Class<T> getClassFromConfig(final Configuration config, final Class<T> expectedType) throws ClassNotFoundException {
+		Class<T> finalClass;
+		try {
+			final String className = config.select("class").getString();
+			final Class<?> clazz = Class.forName(className);
+			if (! expectedType.isAssignableFrom(clazz)) {
+				throw new IllegalArgumentException("class referenced in config is not assignable from expected class");
+			}
+			finalClass = expectedType.getClass().cast(clazz);
+		} catch (final IllegalArgumentException e1) {
+			try {
+				final Configuration typeConfig = getTypeConfig(config);
+				finalClass = getClassFromConfig(typeConfig, expectedType);
+			} catch (final IllegalArgumentException e2) {
+				e2.initCause(e1);
+				throw new IllegalArgumentException("expected class information not found in config", e2);
+			}
+		}
+		return finalClass;
+	}
+
+	private static Configuration getTypeConfig(final String typename) {
+		final Configuration types = CONFIG.select("def").select("type");
+		Configuration typeConfig = null;
+		for (final Configuration config: types) {
+			if (typename.equalsIgnoreCase(config.select("name").getString())) {
+				typeConfig = config;
+				break;
+			}
+		}
+		return typeConfig;
+	}
+
+	private static Configuration getTypeConfig(final Configuration configWithTypeKey) {
+		final String typename = configWithTypeKey.select("type").getString();
+		return getTypeConfig(typename);
 	}
 
 	private static MergeConfiguration loadConfig() throws FileNotFoundException, RuntimeException {
@@ -208,7 +247,9 @@ public final class GTAMultiplayerServer {
 	}
 
 	private static ISerializer initSerializer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		final ISerializer serializer = (ISerializer) Class.forName(CONFIG.select("common.setup.gameserver.serializer.class").getString()).newInstance();
+		final Configuration serializerConfig = CONFIG.select("common.setup.gameserver.serializer");
+		final Class<ISerializer> serializerClass = getClassFromConfig(serializerConfig, ISerializer.class);
+		final ISerializer serializer = serializerClass.newInstance();
 		GUILogger.getInstance().log(LogType.SERVER, "serializer initialized: " + serializer.toString());
 		return serializer;
 	}
