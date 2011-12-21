@@ -84,21 +84,38 @@ def sendMessage(sock,sessionid,message,messageid):
 			global revisionID
 			revisionID = rID
 		
-
 ip = input('Please enter target ip (default: 127.0.0.1):')
 if ip == '':
 	ip = '127.0.0.1'
+
+profiles = [ ('tom','secretpassword'), ('til','secretpassword'), ('jan','secretpassword') ]
+print('Profiles: ')
+for i in range(len(profiles)):
+	print(str(i)+' -> '+profiles[i][0])
+
+password = ''
 username = input('Username (default: random):')
-if username == '':
+
+try:
+	if int(username) in range(len(profiles)):
+		print('using profile: '+profiles[int(username)][0])
+		password = profiles[int(username)][1]
+		username = profiles[int(username)][0]
+except ValueError:
+		print('ommiting profiles.')
+
+if (username == ''):
 	username = 'USER_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
-password = input('Password (default: random):')
-if password == '':
-	password = 'PASS_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
+	
+if(password==''):
+	password = input('Password (default: random):')
+	if password == '':
+		password = 'PASS_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
 print(usage)
 s=None
 while(s==None):
 	try:
-		s = socket.create_connection(('127.0.0.1',8095))
+		s = socket.create_connection((ip,8095))
 	except socket.error:
 		print('Connection refused... retring in 5s.')
 		time.sleep(5)
