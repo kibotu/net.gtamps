@@ -19,7 +19,7 @@
         </GAMESERVER>
         <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
         <GUI>
-        	<LOOKANDFEEL name="nimbus"/> <!--things to try: Metal Nimbus CDE/Motif -->
+        	<LOOKANDFEEL name="metal"/> <!--things to try: Metal Nimbus CDE/Motif -->
         	<!-- or java cmd line:  -Dswing.defaultlaf=com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel -->
         </GUI>
 	</SETUP>
