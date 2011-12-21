@@ -2,6 +2,8 @@ import socket
 import sys
 import time
 import re
+import random
+import string
 
 class _Getch:
 	"""Gets a single character from standard input.  Does not echo to the
@@ -83,6 +85,15 @@ def sendMessage(sock,sessionid,message,messageid):
 			revisionID = rID
 		
 
+ip = input('Please enter target ip (default: 127.0.0.1):')
+if ip == '':
+	ip = '127.0.0.1'
+username = input('Username (default: random):')
+if username == '':
+	username = 'USER_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
+password = input('Password (default: random):')
+if password == '':
+	password = 'PASS_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
 print(usage)
 s=None
 while(s==None):
@@ -101,7 +112,7 @@ revisionID = '0'
 while(True):
 	#fake switch statement
 	if (a=='l' ):
-		sendMessage(s,sessionID,'LOGIN USER PASS',messageID)
+		sendMessage(s,sessionID,'LOGIN '+username+' '+password,messageID)
 	if (a=='j' ):
 		sendMessage(s,sessionID,'GETUPDATE '+revisionID,messageID)
 	if (a=='k' ):
