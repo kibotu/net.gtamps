@@ -3,13 +3,13 @@ package net.gtamps.game.handler;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 /**
@@ -18,7 +18,7 @@ import net.gtamps.shared.game.handler.Handler;
  *
  * @author jan, tom, til
  */
-public class SensorHandler extends Handler {
+public class SensorHandler extends ServersideHandler {
 	private static final LogType TAG = LogType.GAMEWORLD;
 
 	private static EventType[] sendsUp = {};
@@ -29,8 +29,8 @@ public class SensorHandler extends Handler {
 	protected final EventType sensorType;
 	protected final EventType triggerEvent;
 
-	public SensorHandler(final IGameEventDispatcher eventRoot, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
-		super(eventRoot, Handler.Type.SENSOR, parent);
+	public SensorHandler(final Universe universe, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
+		super(universe, Handler.Type.SENSOR, parent);
 		this.sensorType = sensorType;
 		this.triggerEvent = triggerEvent;
 		setReceives(receivesDown);

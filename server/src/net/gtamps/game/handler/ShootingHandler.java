@@ -2,27 +2,22 @@ package net.gtamps.game.handler;
 
 import net.gtamps.game.conf.WorldConstants;
 import net.gtamps.game.entity.EntityManager;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
-public class ShootingHandler extends Handler {
+public class ShootingHandler extends ServersideHandler {
 	private final EventType[] sendsUp = {};
 	private final EventType[] receivesDown = {EventType.ACTION_SHOOT};
 
 	EntityManager entityManager;
 	long lastShot = System.currentTimeMillis();
 
-	// FIXME find better way to set entityManager
-	public ShootingHandler (final IGameEventDispatcher eventRoot, final Entity parent) {
-		this(eventRoot, parent, null);
-	}
-
-	public ShootingHandler(final IGameEventDispatcher eventRoot, final Entity parent, final EntityManager em) {
-		super(eventRoot, Handler.Type.SHOOTING, parent);
-		entityManager = em;
+	public ShootingHandler(final Universe universe, final Entity parent) {
+		super(universe, Handler.Type.SHOOTING, parent);
+		entityManager = universe.entityManager;
 		setReceives(receivesDown);
 		connectUpwardsActor(parent);
 	}

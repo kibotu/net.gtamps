@@ -1,6 +1,8 @@
-package net.gtamps.shared.game.entity;
+package net.gtamps.game.entity;
 
-import net.gtamps.shared.game.handler.HandlerBlueprint;
+import net.gtamps.game.handler.blueprints.HandlerBlueprint;
+import net.gtamps.shared.game.entity.Entity;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

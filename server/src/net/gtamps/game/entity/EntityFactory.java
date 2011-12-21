@@ -15,7 +15,6 @@ import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.entity.EntityBlueprint;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.level.PhysicalShape;
 
@@ -40,12 +39,12 @@ public class EntityFactory {
 		final PhysicalProperties physprop;
 		if (normName.equals("CAR")) {
 			physprop = PhysicalProperties.Sportscar;
-			blup.addHandlerPrototype(new GenericHandlerBlueprint<DriverHandler>(universe.getEventRoot(), DriverHandler.class, Handler.Type.DRIVER));
+			blup.addHandlerPrototype(new GenericHandlerBlueprint<DriverHandler>(universe, DriverHandler.class, Handler.Type.DRIVER));
 		} else if (normName.equals("HUMAN")) {
 			physprop = PhysicalProperties.Human;
-			blup.addHandlerPrototype(new HealthBlueprint(universe.getEventRoot(), 100, 1f, 1));
-			blup.addHandlerPrototype(new GenericHandlerBlueprint<SensorDoorHandler>(universe.getEventRoot(), SensorDoorHandler.class, Handler.Type.SENSOR));
-			blup.addHandlerPrototype(new GenericHandlerBlueprint<ShootingHandler>(universe.getEventRoot(), ShootingHandler.class, Handler.Type.SHOOTING));
+			blup.addHandlerPrototype(new HealthBlueprint(universe, 100, 1f, 1));
+			blup.addHandlerPrototype(new GenericHandlerBlueprint<SensorDoorHandler>(universe, SensorDoorHandler.class, Handler.Type.SENSOR));
+			blup.addHandlerPrototype(new GenericHandlerBlueprint<ShootingHandler>(universe, ShootingHandler.class, Handler.Type.SHOOTING));
 		} else if (normName.equals("BULLET")) {
 			physprop = PhysicalProperties.Bullet;
 		} else {
