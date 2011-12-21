@@ -1,11 +1,14 @@
 package net.gtamps.android.core.renderer.graph.scene.primitives;
 
+import android.opengl.GLES20;
 import android.opengl.GLU;
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +19,6 @@ import javax.microedition.khronos.opengles.GL10;
  * Kameraknoten
  */
 public class Camera extends RenderableNode {
-
 
     /**
      * Der Sichtkegel
@@ -29,6 +31,12 @@ public class Camera extends RenderableNode {
      */
     @NotNull
     private Vector3 viewportCoords = Vector3.createNew(0, 0, 0);
+
+    private Vector3 viewPortDimension = Vector3.createNew(800,480,0);
+
+    protected Matrix4 projectionMatrix = Matrix4.createNew();
+    protected Matrix4 modelViewMatrix = Matrix4.createNew();
+    protected Matrix4 modelViewProjectMatrix = Matrix4.createNew();
 
     private boolean hasDepthTest = true;
 
@@ -70,23 +78,6 @@ public class Camera extends RenderableNode {
         define(positionX, positionY, positionZ,
                 eyeX, eyeY, eyeZ,
                 upX, upY, upZ);
-    }
-
-    /**
-     * Setzt den Viewport
-     *
-     * @param x      X-Koordinate in px
-     * @param y      Y-Koordinate in px
-     * @param width  Breite in px
-     * @param height Höhe in px
-     */
-    public void setViewport(float x, float y, float width, float height) {
-        viewportCoords.set(x, y, 0);
-        dimension.set(width, height, 0);
-        // TODO: FUCK YOU 4/3 Aspect!!!!! Wir haben doch 800/480 = ~16:10 (1.6666)
-        frustum.setAspectRatio(width / height);
-        Logger.i(this, "[height:" + height + "|width:" + width + "|aspect:" + frustum.getAspectRatio() + "]");
-
     }
 
     /**
@@ -245,6 +236,19 @@ public class Camera extends RenderableNode {
     protected void setOptions() {
     }
 
+    public void update(GL10 gl10) {
+        Vector3 pos = frustum.getPosition();
+        Vector3 target = frustum.getTarget();
+        Vector3 up = frustum.getUp();
+//        Matrix.setLookAtM(modelViewMatrix.values, 0, pos.x,pos.y,pos.z, target.x,target.y, target.z, up.x,up.y,up.z);
+        Matrix4.setLookAt(modelViewMatrix,pos,target,up);
+
+        modelViewProjectMatrix = modelViewMatrix.mul(this.modelViewMatrix);
+        modelViewProjectMatrix.mulInPlace(projectionMatrix);
+//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, modelViewMatrix.values, 0, modelViewMatrix.values, 0);
+//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, projectionMatrix.values, 0, modelViewProjectMatrix.values, 0);
+    }
+
     /**
      * Spezifische Implementierung des Bereinigungsvorganges
      *
@@ -375,5 +379,27 @@ public class Camera extends RenderableNode {
     @Override
     public void afterProcess(ProcessingState state) {
         // do nothing
+    }
+
+    public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
+        viewportCoords.set(x, y, 0);
+        viewPortDimension.set(width, height, 0);
+        frustum.setAspectRatio(width / height);
+        if(RenderCapabilities.supportsGLES20()) setViewportGLES20();
+        else setViewportGL10(gl10);
+        Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
+    }
+
+    private void setViewportGLES20() {
+//        Matrix.frustumM(projectionMatrix.values, 0, -frustum.getAspectRatio(), frustum.getAspectRatio(), -1, 1,frustum.getNearDistance(),frustum.getFarDistance());
+//        float left = 0.0, right = 320.0, bottom = 480.0, top = 0.0;
+//        frustum.setOrthographicProjection(projectionMatrix);
+        frustum.setPerspectiveProjection(projectionMatrix);
+        GLES20.glViewport((int) viewportCoords.x, (int) viewportCoords.y,(int) dimension.x, (int) dimension.y);
+        setDirtyFlag();
+    }
+
+    private void setViewportGL10(GL10 gl10) {
+        setDirtyFlag();
     }
 }

@@ -33,7 +33,7 @@ public class GLRenderer extends BasicRenderer {
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {
             BasicScene scene = renderActivity.getScenes().get(i);
             if(scene.isDirty()) scene.onDirty();
-            scene.getScene().render(gl10);
+            scene.getScene().render(glState);
         }
     }
 

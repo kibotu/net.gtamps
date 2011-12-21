@@ -404,4 +404,12 @@ public final class Frustum {
     public Vector3 getUp() {
         return up;
     }
+
+    public void setPerspectiveProjection(Matrix4 matrix) {
+        Matrix4.setPerspectiveProjection(matrix, getHorizontalFieldOfViewEffective(), getNearDistance(), getFarDistance(), getAspectRatio());
+    }
+
+    public void setOrthographicProjection(Matrix4 projectionMatrix) {
+        Matrix4.setOrthographicProjection(projectionMatrix,  -getAspectRatio(), getAspectRatio(), -1, 1, getNearDistance(),getFarDistance());
+    }
 }

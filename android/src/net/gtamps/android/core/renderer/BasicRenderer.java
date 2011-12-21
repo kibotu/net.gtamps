@@ -6,6 +6,7 @@ import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Config;
@@ -94,10 +95,14 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         Logger.i(this, "Surface changed.");
         height = height == 0 ? 1 : height;
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).getActiveCamera().setViewport(0, 0, width, height);
+
+        Shader.load();
+
+        // inform camera that surface has changed
+        for(int i = 0; i < renderActivity.getScenes().size(); i++) {
+            renderActivity.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10,0,0,width,height);
+            renderActivity.getScenes().get(i).getScene().onResume(glState);
         }
-        glState.setGl(gl10);
     }
 
     final public void addToSetupQueue(@NotNull SceneNode node) {

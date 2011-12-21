@@ -45,7 +45,7 @@ public class RenderCapabilities {
         return isGL10Only;
     }
 
-    public static boolean isSupportsOpenGLES() {
+    public static boolean supportsGLES20() {
         return supportsOpenGLES;
     }
 

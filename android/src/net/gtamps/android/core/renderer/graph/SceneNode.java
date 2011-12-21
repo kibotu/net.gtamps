@@ -321,6 +321,15 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
         }
     }
 
+    public final void onResume(@NotNull ProcessingState state) {
+        onResumeInternal(state);
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).onResume(state);
+        }
+    }
+
+    protected abstract void onResumeInternal(ProcessingState state);
+
     /**
      * Spezifische Implementierung des Bereinigungsvorganges
      *

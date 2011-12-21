@@ -85,14 +85,14 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
     private boolean useSharedTextureCoordBuffer = false;
-    private Shader shader;
+    private Shader.Type shaderTyp;
 
-    public Shader getShader() {
-        return shader;
+    public Shader.Type getShader() {
+        return shaderTyp;
     }
     
-    public void setShader(Shader shader) {
-        this.shader = shader;
+    public void setShader(Shader.Type shaderTyp) {
+        this.shaderTyp = shaderTyp;
     }
 
     public void setTextureId(int textureId) {
@@ -172,7 +172,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (mesh == null) return;
         if (isDirty) onDirty(state.getGl());
 
-        int program = shader.get_program();
+        int program = shaderTyp.shader.getProgram();
 
         // vertices
         GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aPosition"),3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().vertexBuffer);
@@ -208,7 +208,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (mesh == null) return;
         if (isDirty) onDirty(state.getGl());
 
-        int program = shader.get_program();
+        int program = shaderTyp.shader.getProgram();
 
         // vertices
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
@@ -227,7 +227,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aColor"),4, GLES20.GL_FLOAT, false, 0, 0);
 //        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aColor"));
 //        OpenGLUtils.checkGlError("aColor");
-
 
         // material
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matAmbient"), 1, material.getAmbient().asArray(), 0);
@@ -700,4 +699,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     }
 
     public abstract RenderableNode getStatic();
+
+    @Override
+    protected void onResumeInternal(ProcessingState state) {
+        if(mesh == null) return;
+        mesh.invalidate();
+    }
 }

@@ -38,9 +38,9 @@ public class Vbo {
         if (textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
     }
 
-    private void allocBuffersES() {
+    private void allocBuffersGLES20() {
         // get buffer ids
-        final int [] buffer = new int[5];
+        final int[] buffer = new int[5];
         GLES20.glGenBuffers(5, buffer, 0);
         vertexBufferId = buffer[0];
         indexBufferId = buffer[1];
@@ -126,16 +126,14 @@ public class Vbo {
     public void allocBuffers(GL10 gl) {
 
         // don't allocate twice
-        if (isAllocated) {
-            return;
-        }
+        if (isAllocated) return;
 
         // set buffer pointer to position 0
         positionZero();
 
         // allocate buffers
         if(RenderCapabilities.supportsOpenGLES()) {
-           allocBuffersES();
+           allocBuffersGLES20();
         } else {
             allocateBuffersGL10(gl);
         }
@@ -218,5 +216,9 @@ public class Vbo {
         textureCoordinateBufferId = vbo.textureCoordinateBufferId;
         isAllocated = true;
         return this;
+    }
+
+    public void invalidate() {
+        isAllocated = false;
     }
 }

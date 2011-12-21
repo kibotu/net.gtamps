@@ -95,4 +95,8 @@ public class Mesh {
         result = 31 * result + vbo.hashCode();
         return result;
     }
+
+    public void invalidate() {
+        vbo.invalidate();
+    }
 }

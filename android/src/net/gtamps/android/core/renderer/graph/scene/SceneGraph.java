@@ -64,9 +64,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
      * @param gl Die OpenGL-Instanz
      * @see #process(ProcessingState)
      */
-    public void render(@NotNull GL10 gl) {
-        state.reset();
-        state.setGl(gl);
+    public void render(ProcessingState state) {
         process(state);
         if (isDirty) {
             state.getGl().glClearColor(background.r, background.g, background.b, background.a);
@@ -208,6 +206,10 @@ public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
     @Override
     public void shade(@NotNull ProcessingState state) {
         rootNode.shade(state);
+    }
+
+    public void onResume(@NotNull ProcessingState state) {
+        rootNode.onResume(state);
     }
 }
 

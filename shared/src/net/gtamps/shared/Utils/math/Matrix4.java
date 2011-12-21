@@ -1326,4 +1326,133 @@ public final class Matrix4 {
         matrix.values[4] = -matrix.values[1];
         matrix.values[5] = matrix.values[0];
     }
+
+    public static void setPerspectiveProjection(Matrix4 matrix, float fovy, float near, float far, float aspectRatio) {
+
+        float size = (float) (near * Math.tan(MathUtils.deg2Rad(fovy) / 2));
+        float left = -size, right = size, bottom = -size / aspectRatio, top = size / aspectRatio;
+
+        // First Column
+        matrix.values[0] = 2 * near / (right - left);
+        matrix.values[1] = 0;
+        matrix.values[2] = 0;
+        matrix.values[3] = 0;
+
+        // Second Column
+        matrix.values[4] = 0;
+        matrix.values[5] = 2 * near / (top - bottom);
+        matrix.values[6] = 0;
+        matrix.values[7] = 0;
+
+        // Third Column
+        matrix.values[8] = (right + left) / (right - left);
+        matrix.values[9] = (top + bottom) / (top - bottom);
+        matrix.values[10] = -(far + near) / (far - near);
+        matrix.values[11] = -1;
+
+        // Fourth Column
+        matrix.values[12] = 0;
+        matrix.values[13] = 0;
+        matrix.values[14] = -(2 * far * near) / (far - near);
+        matrix.values[15] = 0;
+    }
+
+    public static void setOrthographicProjection(Matrix4 matrix, float left, float right, float bottom, float top, float near, float far) {
+
+        // First Column
+        matrix.values[0] = 2 / (right - left);
+        matrix.values[1] = 0;
+        matrix.values[2] = 0;
+        matrix.values[3] = 0;
+
+        // Second Column
+        matrix.values[4] = 0;
+        matrix.values[5] = 2 / (top - bottom);
+        matrix.values[6] = 0;
+        matrix.values[7] = 0;
+
+        // Third Column
+        matrix.values[8] = 0;
+        matrix.values[9] = 0;
+        matrix.values[10] = -2 / (far - near);
+        matrix.values[11] = 0;
+
+        // Fourth Column
+        matrix.values[12] = -(right + left) / (right - left);
+        matrix.values[13] = -(top + bottom) / (top - bottom);
+        matrix.values[14] = -(far + near) / (far - near);
+        matrix.values[15] = 1;
+    }
+
+    public static void setLookAt(Matrix4 matrix, Vector3 position, Vector3 target, Vector3 up) {
+        setLookAt(matrix,position.x,position.y,position.z, target.x,target.y,target.z,up.x,up.y,up.z);
+    }
+
+    private static void setLookAt(Matrix4 matrix, float posX, float posY, float posZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
+        float x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+
+        if (posX == targetX && posY == posY && posZ == targetZ) {
+            matrix = Matrix4.UNIT;
+        }
+
+        z0 = posX - targetX;
+        z1 = posY - targetY;
+        z2 = posZ - targetZ;
+
+        // normalize (no check needed for 0 because of early return)
+        len = (float) (1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2));
+        z0 *= len;
+        z1 *= len;
+        z2 *= len;
+
+        //vec3.normalize(vec3.cross(up, z, x));
+        x0 = upY * z2 - upZ * z1;
+        x1 = upZ * z0 - upX * z2;
+        x2 = upX * z1 - upY * z0;
+        len = (float) Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+        if (len == Float.NaN) {
+            x0 = 0;
+            x1 = 0;
+            x2 = 0;
+        } else {
+            len = 1 / len;
+            x0 *= len;
+            x1 *= len;
+            x2 *= len;
+        }
+
+        //vec3.normalize(vec3.cross(z, x, y));
+        y0 = z1 * x2 - z2 * x1;
+        y1 = z2 * x0 - z0 * x2;
+        y2 = z0 * x1 - z1 * x0;
+
+        len = (float) Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+        if (len == Float.NaN) {
+            y0 = 0;
+            y1 = 0;
+            y2 = 0;
+        } else {
+            len = 1 / len;
+            y0 *= len;
+            y1 *= len;
+            y2 *= len;
+        }
+
+        matrix.values[0] = x0;
+        matrix.values[1] = y0;
+        matrix.values[2] = z0;
+        matrix.values[3] = 0;
+        matrix.values[4] = x1;
+        matrix.values[5] = y1;
+        matrix.values[6] = z1;
+        matrix.values[7] = 0;
+        matrix.values[8] = x2;
+        matrix.values[9] = y2;
+        matrix.values[10] = z2;
+        matrix.values[11] = 0;
+        matrix.values[12] = -(x0 * posX + x1 * posY + x2 * posZ);
+        matrix.values[13] = -(y0 * posX + y1 * posY + y2 * posZ);
+        matrix.values[14] = -(z0 * posX + z1 * posY + z2 * posZ);
+        matrix.values[15] = 1;
+    }
 }

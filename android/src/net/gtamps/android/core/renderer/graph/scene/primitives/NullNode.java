@@ -36,6 +36,10 @@ public final class NullNode extends SceneNode {
     protected void processInternal(@NotNull ProcessingState state) {
     }
 
+    @Override
+    protected void onResumeInternal(ProcessingState state) {
+    }
+
     /**
      * leere Implementierung des Bereinigungsvorganges
      *
