@@ -58,7 +58,7 @@ public class PhysicsFactory {
 
 	public static PhysicsBlueprint createPhysicsBlueprint(final Universe universe, final PhysicalProperties physprop) {
 		final PhysicsBlueprint blup = new PhysicsBlueprint(
-				universe.getEventRoot(),
+				universe,
 				universe.getPhysics().getWorld(),
 				physpropToBodyDef(physprop),
 				isDynamic(physprop)
@@ -71,40 +71,40 @@ public class PhysicsFactory {
 		if (!isDynamic(physprop)) {
 			return null;
 		}
-		return new MobilityBlueprint(universe.getEventRoot(), physpropToMobilityProp(physprop));
+		return new MobilityBlueprint(universe, physpropToMobilityProp(physprop));
 	}
 
 	private static boolean isDynamic(final PhysicalProperties physprop) {
 		switch (physprop) {
-		case Sportscar:
-		case Taxi:
-		case Human:
-		case Bullet:
-			return true;
-		case Empty:
-			return false;
-		default:
-			throw new IllegalStateException("handle all possible types");
+			case Sportscar:
+			case Taxi:
+			case Human:
+			case Bullet:
+				return true;
+			case Empty:
+				return false;
+			default:
+				throw new IllegalStateException("handle all possible types");
 		}
 	}
 
 	private static MobilityProperties physpropToMobilityProp(final PhysicalProperties physicalProperties) {
 		MobilityProperties.Type type;
 		switch (physicalProperties.TYPE) {
-		case CAR:
-			type = MobilityProperties.Type.CAR;
-			break;
-		case HUMAN:
-			type = MobilityProperties.Type.HUMAN;
-			break;
-		case BULLET:
-			type = MobilityProperties.Type.BULLET;
-			break;
-		case NONE:
-			type = MobilityProperties.Type.NONE;
-			break;
-		default:
-			throw new IllegalStateException("handle all possible types!");
+			case CAR:
+				type = MobilityProperties.Type.CAR;
+				break;
+			case HUMAN:
+				type = MobilityProperties.Type.HUMAN;
+				break;
+			case BULLET:
+				type = MobilityProperties.Type.BULLET;
+				break;
+			case NONE:
+				type = MobilityProperties.Type.NONE;
+				break;
+			default:
+				throw new IllegalStateException("handle all possible types!");
 		}
 		return new MobilityProperties(
 				physicalProperties.VELOCITY_FORCE,
@@ -122,24 +122,24 @@ public class PhysicsFactory {
 
 		final ShapeDef def;
 		switch (physicalProperties.TYPE) {
-		case CAR:
-			def = new PolygonDef();
-			((PolygonDef) def).setAsBox(3.1f, 1.55f);
-			break;
-		case HUMAN:
-			def = new CircleDef();
-			((CircleDef) def).radius = 0.8f;
-			break;
-		case BULLET:
-			def = new CircleDef();
-			((CircleDef) def).radius = 0.1f;
-			break;
-		case NONE:
-			def = null;
-			break;
-		default:
-			// shouldn't get here
-			throw new IllegalStateException("treat all possible types");
+			case CAR:
+				def = new PolygonDef();
+				((PolygonDef) def).setAsBox(3.1f, 1.55f);
+				break;
+			case HUMAN:
+				def = new CircleDef();
+				((CircleDef) def).radius = 0.8f;
+				break;
+			case BULLET:
+				def = new CircleDef();
+				((CircleDef) def).radius = 0.1f;
+				break;
+			case NONE:
+				def = null;
+				break;
+			default:
+				// shouldn't get here
+				throw new IllegalStateException("treat all possible types");
 		}
 		if (def != null) {
 			def.friction = physicalProperties.FRICTION;
@@ -156,22 +156,22 @@ public class PhysicsFactory {
 		}
 		// secondary shapes
 		switch (physicalProperties.TYPE) {
-		case CAR:
-			final CircleDef explosionSensorDef = new CircleDef();
-			explosionSensorDef.isSensor = true;
-			final float radius = 10f;
-			explosionSensorDef.localPosition = new Vec2(0, 0);
-			explosionSensorDef.radius = radius;
-			explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-			explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
-			final PolygonDef doorDef = new PolygonDef();
-			doorDef.setAsBox(1f, 2.5f);
-			doorDef.isSensor = true;
-			doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-			doorDef.userData = EventType.ENTITY_SENSE_DOOR;
-			defs.add(explosionSensorDef);
-			defs.add(doorDef);
-			break;
+			case CAR:
+				final CircleDef explosionSensorDef = new CircleDef();
+				explosionSensorDef.isSensor = true;
+				final float radius = 10f;
+				explosionSensorDef.localPosition = new Vec2(0, 0);
+				explosionSensorDef.radius = radius;
+				explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
+				explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
+				final PolygonDef doorDef = new PolygonDef();
+				doorDef.setAsBox(1f, 2.5f);
+				doorDef.isSensor = true;
+				doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
+				doorDef.userData = EventType.ENTITY_SENSE_DOOR;
+				defs.add(explosionSensorDef);
+				defs.add(doorDef);
+				break;
 		}
 		return defs;
 	}

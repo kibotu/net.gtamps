@@ -2,12 +2,12 @@ package net.gtamps.game.handler;
 
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.player.PlayerManager;
-import net.gtamps.server.gui.LogType;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 
@@ -36,133 +36,133 @@ import org.jbox2d.common.Vec2;
  * @see Entity
  * @see Player
  */
-public class DriverHandler extends Handler {
-    private static final LogType TAG = LogType.GAMEWORLD;
-    private static final int COOLDOWN_MILLIS = 500;
+public class DriverHandler extends ServersideHandler {
+	private static final LogType TAG = LogType.GAMEWORLD;
+	private static final int COOLDOWN_MILLIS = 500;
 
-    private static final Vec2 exitOffset = new Vec2(30f, 0);
-    private static final int exitRotation = 90;
+	private static final Vec2 exitOffset = new Vec2(30f, 0);
+	private static final int exitRotation = 90;
 
-    private Player driver = null;
-    private Entity driversHumanBody = null;
-    private long lastActivationMillis = 0;
-    private final EventType[] sendsUp = {EventType.PLAYER_ENTERSCAR,
-            EventType.PLAYER_EXITSCAR};
-    private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
-            EventType.ACTION_ENTEREXIT};
+	private Player driver = null;
+	private Entity driversHumanBody = null;
+	private long lastActivationMillis = 0;
+	private final EventType[] sendsUp = {EventType.PLAYER_ENTERSCAR,
+			EventType.PLAYER_EXITSCAR};
+	private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
+			EventType.ACTION_ENTEREXIT};
 
-    public DriverHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
-        super(eventRoot, Handler.Type.DRIVER, parent);
-        setReceives(receivesDown);
-        connectUpwardsActor(parent);
-    }
+	public DriverHandler(final Universe universe, final Entity parent) {
+		super(universe, Handler.Type.DRIVER, parent);
+		setReceives(receivesDown);
+		connectUpwardsActor(parent);
+	}
 
-    public boolean isAvailable() {
-        return driver == null || driver == PlayerManager.WORLD_PSEUDOPLAYER;
-    }
+	public boolean isAvailable() {
+		return driver == null || driver == PlayerManager.WORLD_PSEUDOPLAYER;
+	}
 
-    public void enter(final Player player) {
-        if (!isAvailable()) {
-            return;
-        }
-        if (!canActivate()) {
-            return;
-        }
-        if (driver != null) {
-            chuckOutCurrentDriver();
-        }
-        driversHumanBody = player.getEntity();
-        driversHumanBody.disable();
+	public void enter(final Player player) {
+		if (!isAvailable()) {
+			return;
+		}
+		if (!canActivate()) {
+			return;
+		}
+		if (driver != null) {
+			chuckOutCurrentDriver();
+		}
+		driversHumanBody = player.getEntity();
+		driversHumanBody.disable();
 
-        setDriver(player);
-        eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
-        GUILogger.i().log(TAG, player + " enters car " + getParent());
-    }
+		setDriver(player);
+		eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
+		GUILogger.i().log(TAG, player + " enters car " + getParent());
+	}
 
-    public void exit() {
-        if (!canActivate()) {
-            return;
-        }
-        final Player exDriver = driver;
-        removeDriver();
-        if (driversHumanBody != null) {
-            final int carRota = parent.rota.value();
-            final float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
-            final float carX = parent.x.value();
-            final float carY = parent.y.value();
-            final Vec2 carPos = new Vec2(carX, carY);
-            final Vec2 exitLocalVec = new Vec2((float) Math.cos(carRotaRad) * exitOffset.x, (float) Math.sin(carRotaRad) * exitOffset.y);
-            final Vec2 newPos = carPos.add(exitLocalVec);
-            driversHumanBody.x.set((int) newPos.x);
-            driversHumanBody.y.set((int) newPos.y);
-            driversHumanBody.rota.set(carRota + exitRotation);
-            driversHumanBody.enable();
-            exDriver.setEntity(driversHumanBody);
-            eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
-        }
-        { // LOGGING
-            final String logMsg = String.format("%s exits car %s", exDriver, getParent());
-            final String logMsg2 = String.format("is now %s", driversHumanBody);
-            GUILogger.i().log(TAG, logMsg);
-            GUILogger.i().log(TAG, logMsg2);
-        }
-        driversHumanBody = null;
-    }
+	public void exit() {
+		if (!canActivate()) {
+			return;
+		}
+		final Player exDriver = driver;
+		removeDriver();
+		if (driversHumanBody != null) {
+			final int carRota = parent.rota.value();
+			final float carRotaRad = PhysicsFactory.angleToPhysics(carRota);
+			final float carX = parent.x.value();
+			final float carY = parent.y.value();
+			final Vec2 carPos = new Vec2(carX, carY);
+			final Vec2 exitLocalVec = new Vec2((float) Math.cos(carRotaRad) * exitOffset.x, (float) Math.sin(carRotaRad) * exitOffset.y);
+			final Vec2 newPos = carPos.add(exitLocalVec);
+			driversHumanBody.x.set((int) newPos.x);
+			driversHumanBody.y.set((int) newPos.y);
+			driversHumanBody.rota.set(carRota + exitRotation);
+			driversHumanBody.enable();
+			exDriver.setEntity(driversHumanBody);
+			eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
+		}
+		{ // LOGGING
+			final String logMsg = String.format("%s exits car %s", exDriver, getParent());
+			final String logMsg2 = String.format("is now %s", driversHumanBody);
+			GUILogger.i().log(TAG, logMsg);
+			GUILogger.i().log(TAG, logMsg2);
+		}
+		driversHumanBody = null;
+	}
 
-    public void chuckOutCurrentDriver() {
-        exit();
-    }
+	public void chuckOutCurrentDriver() {
+		exit();
+	}
 
-    public void setDriver(final Player player) {
-        if (driver != null) {
-            removeDriver();
-        }
-        driver = player;
-        player.setEntity(getParent());
-//		hasChanged = true;
-        getParent().setChanged();
-    }
+	public void setDriver(final Player player) {
+		if (driver != null) {
+			removeDriver();
+		}
+		driver = player;
+		player.setEntity(getParent());
+		//		hasChanged = true;
+		getParent().setChanged();
+	}
 
-    public void removeDriver() {
-        driver.removeEntity();
-        driver = null;
-//		hasChanged = true;
-        getParent().setChanged();
-    }
+	public void removeDriver() {
+		driver.removeEntity();
+		driver = null;
+		//		hasChanged = true;
+		getParent().setChanged();
+	}
 
-    @Override
-    public void receiveEvent(final GameEvent event) {
-        final EventType type = event.getType();
-        switch (type) {
-            case ACTION_ENTEREXIT:
-                exit();
-                break;
-            case ENTITY_DESTROYED:
-                getParent().removeHandler(this.type);
-                break;
-        }
-    }
+	@Override
+	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
+		switch (type) {
+			case ACTION_ENTEREXIT:
+				exit();
+				break;
+			case ENTITY_DESTROYED:
+				getParent().removeHandler(this.type);
+				break;
+		}
+	}
 
-    //TODO driver property
-//	@Override
-//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-//		Element e = super.toXMLElement(baseRevision, keeper);
-//		if (e != null) {
-//			String driverStr = (driver == null) ? "none" : driver.getUid() + "";
-//			Attribute value = new Attribute(XmlElements.ATTRIB_VALUE.tagName(),
-//					driverStr);
-//			e.setAttribute(value);
-//		}
-//		return e;
-//	}
+	//TODO driver property
+	//	@Override
+	//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
+	//		Element e = super.toXMLElement(baseRevision, keeper);
+	//		if (e != null) {
+	//			String driverStr = (driver == null) ? "none" : driver.getUid() + "";
+	//			Attribute value = new Attribute(XmlElements.ATTRIB_VALUE.tagName(),
+	//					driverStr);
+	//			e.setAttribute(value);
+	//		}
+	//		return e;
+	//	}
 
-    private boolean canActivate() {
-        final long now = System.currentTimeMillis();
-        if (now - lastActivationMillis > COOLDOWN_MILLIS) {
-            lastActivationMillis = now;
-            return true;
-        }
-        return false;
-    }
+	private boolean canActivate() {
+		final long now = System.currentTimeMillis();
+		if (now - lastActivationMillis > COOLDOWN_MILLIS) {
+			lastActivationMillis = now;
+			return true;
+		}
+		return false;
+	}
 
 }

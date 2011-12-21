@@ -3,10 +3,11 @@ package net.gtamps.game.handler.blueprints;
 import java.lang.reflect.Constructor;
 import java.util.NoSuchElementException;
 
+import net.gtamps.game.IGame;
+import net.gtamps.game.handler.ServersideHandler;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
-import net.gtamps.shared.game.handler.HandlerBlueprint;
 
 /**
  * generic blueprint for handlers that do not need special initialization,
@@ -15,23 +16,23 @@ import net.gtamps.shared.game.handler.HandlerBlueprint;
  * @param <H>
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  */
-public class GenericHandlerBlueprint<H extends Handler> extends HandlerBlueprint {
+public class GenericHandlerBlueprint<H extends ServersideHandler> extends HandlerBlueprint {
 
 	private final Class<H> classObject;
 
-	public GenericHandlerBlueprint(final IGameEventDispatcher eventRoot, final Class<H> classObject, final Handler.Type type) {
-		super(eventRoot, type);
+	public GenericHandlerBlueprint(final Universe universe, final Class<H> classObject, final Handler.Type type) {
+		super(universe, type);
 		this.classObject = classObject;
 	}
 
 	@Override
-	public Handler createHandler(final Entity parent, final Integer pixX, final Integer pixY,
+	public ServersideHandler createHandler(final Entity parent, final Integer pixX, final Integer pixY,
 			final Integer deg) {
 		Constructor<H> constructor;
 		H handler;
 		try {
-			constructor = classObject.getConstructor(IGameEventDispatcher.class, Entity.class);
-			handler = constructor.newInstance(eventRoot, parent);
+			constructor = classObject.getConstructor(Universe.class, Entity.class);
+			handler = constructor.newInstance(universe, parent);
 		} catch (final SecurityException e) {
 			handler = null;
 			e.printStackTrace();
@@ -46,7 +47,7 @@ public class GenericHandlerBlueprint<H extends Handler> extends HandlerBlueprint
 
 	@Override
 	public HandlerBlueprint copy() {
-		return new GenericHandlerBlueprint<H>(eventRoot, classObject, getType());
+		return new GenericHandlerBlueprint<H>(universe, classObject, getType());
 	}
 
 }
