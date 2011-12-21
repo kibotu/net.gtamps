@@ -132,7 +132,7 @@ public class Vbo {
         positionZero();
 
         // allocate buffers
-        if(RenderCapabilities.supportsOpenGLES()) {
+        if(RenderCapabilities.supportsGLES20()) {
            allocBuffersGLES20();
         } else {
             allocateBuffersGL10(gl);

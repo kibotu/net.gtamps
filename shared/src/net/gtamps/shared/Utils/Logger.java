@@ -1,5 +1,6 @@
 package net.gtamps.shared.Utils;
 
+import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,11 @@ final public class Logger {
 
 	private static final String LINE_BREAKS = "\n\n\n\n\n";
 
-	public enum Level {
+    public static void checkGlError(Object id, String message) {
+        logger.checkGlError(id.getClass().getSimpleName(), message);
+    }
+
+    public enum Level {
 		DEBUG_LOG_GL_CALLS, DEBUG_CHECK_GL_ERROR, DEBUG, VERBOSE, INFO, WARN, ERROR, NO_LOGGING,
 	}
 

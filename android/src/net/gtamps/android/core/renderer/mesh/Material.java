@@ -16,26 +16,26 @@ public class Material {
     public static final Material CYAN = new Material(Color4.CYAN, Color4.CYAN, Color4.CYAN, Color4.CYAN, 1);
     public static final Material PURPLE = new Material(Color4.PURPLE, Color4.PURPLE, Color4.PURPLE, Color4.PURPLE, 1);
 
-    private Color4 emissive;
+    private Color4 emission;
     private Color4 ambient;
     private Color4 diffuse;
     private Color4 specular;
     private int phongExponent;
 
-    public Material(Color4 emissive, Color4 ambient, Color4 diffuse, Color4 specular, int phongExponent) {
-        this.emissive = emissive;
+    public Material(Color4 emission, Color4 ambient, Color4 diffuse, Color4 specular, int phongExponent) {
+        this.emission = emission;
         this.ambient = ambient;
         this.diffuse = diffuse;
         this.specular = specular;
         this.phongExponent = phongExponent;
     }
 
-    public Color4 getEmissive() {
-        return emissive;
+    public Color4 getEmission() {
+        return emission;
     }
 
-    public void setEmissive(Color4 emissive) {
-        this.emissive = emissive;
+    public void setEmission(Color4 emission) {
+        this.emission = emission;
     }
 
     public Color4 getAmbient() {

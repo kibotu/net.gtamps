@@ -1,5 +1,6 @@
 package net.gtamps.android.game.content.scenes;
 
+import android.opengl.GLES20;
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
@@ -7,9 +8,11 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 

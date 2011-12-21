@@ -42,8 +42,6 @@ public class GLRenderer extends BasicRenderer {
 
         glState = new ProcessingState(gl10);
 
-        // Do OpenGL settings which we are using as defaults, or which we will not be changing on-draw
-
         // Explicit depth settings
         gl10.glEnable(GL_DITHER);                // Enable dithering
         gl10.glEnable(GL_DEPTH_TEST);            // Enables Depth Testing

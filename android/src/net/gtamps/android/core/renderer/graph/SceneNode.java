@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
@@ -281,16 +282,20 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
      */
     public final void process(@NotNull ProcessingState state) {
         if (!isVisible) return;
+        
+        if(RenderCapabilities.supportsGLES20()) {
+            shade(state);
+        } else {
+            // Internen Verarbeitungsvorgang aufrufen
+            processInternal(state);
 
-        // Internen Verarbeitungsvorgang aufrufen
-        processInternal(state);
+            // Alle Kindknoten rekursiv verarbeiten
+            for (int i = 0; i < getChildCount(); ++i) {
+                childNodes.get(i).process(state);
+            }
 
-        // Alle Kindknoten rekursiv verarbeiten
-        for (int i = 0; i < getChildCount(); ++i) {
-            childNodes.get(i).process(state);
+            afterProcess(state);
         }
-
-        afterProcess(state);
     }
 
     /**

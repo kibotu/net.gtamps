@@ -1,5 +1,7 @@
 package net.gtamps.android.core.utils;
 
+import android.opengl.GLES20;
+import android.opengl.GLU;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -46,5 +48,14 @@ public enum AndroidLogger implements ILogger {
 
     @Override
     public void save(String filename) {
+    }
+
+    @Override
+    public void checkGlError(@NotNull String id, @Nullable String operation) {
+        int error;
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            e(id, operation + ": glError " + error + " " + GLU.gluErrorString(error));
+            throw new RuntimeException(operation + ": glError " + error + " " + GLU.gluErrorString(error));
+        }
     }
 }

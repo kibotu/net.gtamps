@@ -101,7 +101,12 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         // inform camera that surface has changed
         for(int i = 0; i < renderActivity.getScenes().size(); i++) {
             renderActivity.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10,0,0,width,height);
+
+            // re-allocate and re-validate hardware buffers
             renderActivity.getScenes().get(i).getScene().onResume(glState);
+
+            // re-allocate and re-validate texture
+            Registry.getTextureLibrary().invalidate();
         }
     }
 
@@ -119,7 +124,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
     }
 
     /** time at last frame */
-    private long lastFrame;
+    protected long lastFrame;
 
     /** frames per second */
     private int fps;
@@ -127,7 +132,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
     /** last fps time */
     private long lastFPS;
 
-    final private int getDelta() {
+    protected final int getDelta() {
         long time = getTime();
         int delta = (int) (time - lastFrame);
         lastFrame = time;

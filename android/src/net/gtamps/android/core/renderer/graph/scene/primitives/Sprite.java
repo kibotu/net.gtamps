@@ -66,14 +66,12 @@ public class Sprite extends RenderableNode {
 
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
-        if (mesh != null) {
-            return;
-        }
+        if (mesh != null) return;
 
         // new mesh
         this.mesh = new Mesh(4, 2);
 
-        Color4 emissive = material.getEmissive();
+        Color4 emissive = material.getEmission();
 
         // oben rechts
         mesh.addVertex(0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 0);

@@ -20,20 +20,36 @@ public class ShaderRenderer extends BasicRenderer {
 
     @Override
     public void draw(GL10 unusedGL) {
+        if(!RenderCapabilities.supportsGLES20()) return;
 
         // clear screen
         GLES20.glClearColor(0f, 0f, 0f, 1f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         // unbound last shader
-        GLES20.glUseProgram(GLES20.GL_NONE);
-        OpenGLUtils.checkGlError("glUseProgram");
+//        GLES20.glUseProgram(GLES20.GL_NONE);
+//        OpenGLUtils.checkGlError("glUseProgram");
+
+        int program = Shader.Type.PHONG.shader.getProgram();
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, lightP, 0);
+        Logger.checkGlError(this,"lightPosition");
+//        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
+//        Logger.checkGlError(this,"lightDirection");
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightColor"), 1, lightC, 0);
+        Logger.checkGlError(this,"lightColor");
 
         // draw scenes
         for(int i = 0; i < renderActivity.getScenes().size(); i++) {
+            renderActivity.getScenes().get(i).getScene().update(getDelta());
             renderActivity.getScenes().get(i).getScene().process(glState);
         }
     }
+
+    // light variables
+    // light variables
+    float[] lightP = {0, 0, 10f, 1f};
+    float[] lightC = {0.5f, 0.5f, 0.5f, 1f};
+    float[] lightDir = {0f, 0f, -1f};
 
     @Override
     public void reset(GL10 unusedGL) {

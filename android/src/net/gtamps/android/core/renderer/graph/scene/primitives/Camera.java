@@ -2,9 +2,11 @@ package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import android.opengl.GLES20;
 import android.opengl.GLU;
+import android.opengl.Matrix;
 import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Frustum;
@@ -37,6 +39,8 @@ public class Camera extends RenderableNode {
     protected Matrix4 projectionMatrix = Matrix4.createNew();
     protected Matrix4 modelViewMatrix = Matrix4.createNew();
     protected Matrix4 modelViewProjectMatrix = Matrix4.createNew();
+    protected Matrix4 normalMatrix = Matrix4.createNew();
+
 
     private boolean hasDepthTest = true;
 
@@ -200,6 +204,43 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void processInternal(@NotNull ProcessingState state) {
+        
+        if(RenderCapabilities.supportsGLES20()) {
+            processInternalGLES();
+        } else {
+            processInternalGL10(state);
+        }
+    }
+
+    private void processInternalGLES() {
+        Vector3 pos = frustum.getPosition();
+        Vector3 target = frustum.getTarget();
+        Vector3 up = frustum.getUp();
+//        Matrix.setLookAtM(modelViewMatrix.values, 0, pos.x,pos.y,pos.z, target.x,target.y, target.z, up.x,up.y,up.z);
+        Matrix4.setLookAt(modelViewMatrix,pos,target,up);
+
+        modelViewProjectMatrix = modelViewMatrix.mul(this.modelViewMatrix);
+        modelViewProjectMatrix.mulInPlace(projectionMatrix);
+//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, modelViewMatrix.values, 0, modelViewMatrix.values, 0);
+//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, projectionMatrix.values, 0, modelViewProjectMatrix.values, 0);
+
+        int program = Shader.Type.PHONG.shader.getProgram();
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "projectionMatrix"), 1, false, projectionMatrix.values, 0);
+        Logger.checkGlError(this,"projectionMatrix");
+
+        // Create the normal modelview matrix
+        // Invert + transpose of mvpmatrix
+        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
+        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);
+        Logger.checkGlError(this,"normalMatrix");
+    }
+
+    private void processInternalGL10(@NotNull ProcessingState state) {
         GL10 gl = state.getGl();
         assert gl != null;
 
@@ -234,19 +275,6 @@ public class Camera extends RenderableNode {
 
     @Override
     protected void setOptions() {
-    }
-
-    public void update(GL10 gl10) {
-        Vector3 pos = frustum.getPosition();
-        Vector3 target = frustum.getTarget();
-        Vector3 up = frustum.getUp();
-//        Matrix.setLookAtM(modelViewMatrix.values, 0, pos.x,pos.y,pos.z, target.x,target.y, target.z, up.x,up.y,up.z);
-        Matrix4.setLookAt(modelViewMatrix,pos,target,up);
-
-        modelViewProjectMatrix = modelViewMatrix.mul(this.modelViewMatrix);
-        modelViewProjectMatrix.mulInPlace(projectionMatrix);
-//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, modelViewMatrix.values, 0, modelViewMatrix.values, 0);
-//        Matrix.multiplyMM(modelViewProjectMatrix.values, 0, projectionMatrix.values, 0, modelViewProjectMatrix.values, 0);
     }
 
     /**

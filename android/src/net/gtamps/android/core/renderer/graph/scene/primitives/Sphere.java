@@ -37,7 +37,7 @@ public class Sphere extends RenderableNode {
         // new mesh
         this.mesh = new Mesh((stacks + 1) * (slices + 1), stacks * slices * 2);
 
-        Color4 emissive = material.getEmissive();
+        Color4 emissive = material.getEmission();
 
         int r, c;
 

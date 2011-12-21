@@ -44,7 +44,7 @@ public class Game implements BasicRenderActivity.IRenderActivity {
     public void onCreate() {
 
         // create world
-//        scenes.add(world);
+        scenes.add(world);
 //        world.getScene().setVisible(false);
 //        PlayerMovementListener cl = new PlayerMovementListener();
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);

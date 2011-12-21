@@ -41,4 +41,8 @@ public class JavaLogger implements ILogger {
     @Override
     public void save(String filename) {
     }
+
+    @Override
+    public void checkGlError(@NotNull String id, @Nullable String operation) {
+    }
 }

@@ -3,7 +3,6 @@ package net.gtamps.android.core.renderer;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -45,7 +44,7 @@ public class RenderCapabilities {
         return isGL10Only;
     }
 
-    public static boolean supportsGLES20() {
+    public static boolean isSupportsOpenGLES() {
         return supportsOpenGLES;
     }
 
@@ -96,7 +95,7 @@ public class RenderCapabilities {
     /**
      * Called by GLRenderer.onSurfaceCreate()
      */
-    static void setRenderCaps(GL10 gl) /* package-private*/ {
+    public static void setRenderCaps(GL10 gl) /* package-private*/ {
         IntBuffer i;
 
         // OpenGL ES version
@@ -164,17 +163,17 @@ public class RenderCapabilities {
     }
 
     /**
-	 * Detects if OpenGL ES 2.0 exists
+     * Detects if OpenGL ES 2.0 exists
      *
-	 * @return <code>true</code> if it does
-	 */
-	public static boolean detectOpenGLES20(final Context context) {
-		ActivityManager am = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		ConfigurationInfo info = am.getDeviceConfigurationInfo();
-		return supportsOpenGLES = (info.reqGlEsVersion >= 0x20000);
-	}
+     * @return <code>true</code> if it does
+     */
+    public static boolean detectOpenGLES20(final Context context) {
+        ActivityManager am = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo info = am.getDeviceConfigurationInfo();
+        return supportsOpenGLES = (info.reqGlEsVersion >= 0x20000);
+    }
 
-    public static boolean supportsOpenGLES() {
+    public static boolean supportsGLES20() {
         return supportsOpenGLES;
     }
 }
