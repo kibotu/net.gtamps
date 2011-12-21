@@ -68,6 +68,11 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
     final public void onDrawFrame(GL10 gl10) {
         if (!renderActivity.isRunning() || renderActivity.isPaused())  return;
 
+        // setup on the fly
+        for (int i = 0; i < runtimeSetupQueue.size(); i++) {
+            runtimeSetupQueue.poll().setup(glState);
+        }
+
         // get time difference since last frame
         int delta = getDelta();
 
@@ -80,11 +85,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         // render draw loop
         draw(gl10);
 
-        // setup on the fly
-        for (int i = 0; i < runtimeSetupQueue.size(); i++) {
-            runtimeSetupQueue.poll().setup(glState);
-        }
-
         // update real fps
         updateFPS();
     }
@@ -96,6 +96,10 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         Logger.i(this, "Surface changed.");
         height = height == 0 ? 1 : height;
 
+        // re-allocate and re-validate texture
+        Registry.getTextureLibrary().invalidate();
+
+        // reload shader
         Shader.load();
 
         // inform camera that surface has changed
@@ -104,9 +108,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
 
             // re-allocate and re-validate hardware buffers
             renderActivity.getScenes().get(i).getScene().onResume(glState);
-
-            // re-allocate and re-validate texture
-            Registry.getTextureLibrary().invalidate();
         }
     }
 

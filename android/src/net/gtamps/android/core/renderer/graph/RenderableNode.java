@@ -167,6 +167,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         state.getGl().glPopMatrix();
     }
 
+    @Deprecated
     private void shadeInternalWithOutVBO(@NotNull ProcessingState state) {
         if(!RenderCapabilities.supportsGLES20()) return;
         if (mesh == null) return;

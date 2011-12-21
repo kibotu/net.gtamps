@@ -10,6 +10,7 @@ import javax.microedition.khronos.opengles.GL10;
  * SceneNode, der nicht selbst rendert, sondern lediglich für Organisationszwecke verwendet wird
  */
 public final class NullNode extends SceneNode {
+
     /**
      * Leere Implementierung der Aktualisierungslogik.
      *

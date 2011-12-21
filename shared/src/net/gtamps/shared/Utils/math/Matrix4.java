@@ -1455,4 +1455,17 @@ public final class Matrix4 {
         matrix.values[14] = -(z0 * posX + z1 * posY + z2 * posZ);
         matrix.values[15] = 1;
     }
+
+    @Override
+    public String toString() {
+
+        String result = "Matrix4{";
+        for(int i = 0; i < 16; i++) {
+            if(i % 4 == 0) result += "\n";
+            result += "\t" + values[i];
+        }
+        result += '}';
+
+        return result;
+    }
 }

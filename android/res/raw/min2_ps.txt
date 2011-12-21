@@ -35,8 +35,7 @@ void main()
     // Reflect the vector. Use this or reflect(incidentV, N);
     vec3 reflectV = reflect(-L, N);
 
-    //vec4 ambientTerm = material.ambient * lightColor;
-    vec4 ambientTerm = material.ambient;
+    vec4 ambientTerm = material.ambient * lightColor;
 
     vec4 diffuseTerm = material.diffuse * max(dot(N, L), 0.0);
     vec4 specularTerm = material.specular * pow(max(dot(reflectV, E), 1.0), material.shininess);
