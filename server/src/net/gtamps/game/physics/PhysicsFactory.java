@@ -165,7 +165,7 @@ public class PhysicsFactory {
 				explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
 				explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
 				final PolygonDef doorDef = new PolygonDef();
-				doorDef.setAsBox(1f, 2.5f);
+				doorDef.setAsBox(2f, 5f);
 				doorDef.isSensor = true;
 				doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
 				doorDef.userData = EventType.ENTITY_SENSE_DOOR;
