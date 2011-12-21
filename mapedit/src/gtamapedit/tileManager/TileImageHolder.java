@@ -108,4 +108,10 @@ public class TileImageHolder{
 
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return filename;
+		
+	}
 }

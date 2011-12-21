@@ -108,8 +108,8 @@ public class ConfigMapTest {
 		configMap.select(-1);
 	}
 
-	@Test(expected=IndexOutOfBoundsException.class)
-	public void testSelectInt_whenTooLargeIndex_shouldThrowIndexOutOfBoundsException() {
+	@Test(expected=IllegalArgumentException.class)
+	public void testSelectInt_whenTooLargeIndex_shouldThrowException() {
 		assertEquals("test precondition not met; ", 0, configMap.getCount());
 		configMap.select(0);
 	}
@@ -145,18 +145,18 @@ public class ConfigMapTest {
 		configMap.entrySet().add(null);
 	}
 
-	@Test
-	public void testGetInt_shouldReturnNull() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetInt_shouldThrowException() {
 		assertEquals(null, configMap.getInt());
 	}
 
-	@Test
-	public void testGetFloat_shouldReturnNull() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetFloat_shouldThrowException() {
 		assertEquals(null, configMap.getFloat());
 	}
 
-	@Test
-	public void testGetBoolean_shouldReturnNull() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetBoolean_shouldThrowException() {
 		assertEquals(null, configMap.getBoolean());
 	}
 

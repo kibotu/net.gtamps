@@ -85,7 +85,6 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 						default:
 							g.drawImage(map[x][y].getTextureTop().getTileImage(), drawX, drawY, null);
 					}
-					
 				}
 				
 				g.setColor(Color.BLACK);
@@ -118,7 +117,7 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 		} else if(mec.getMode() == Modus.ENTITY_MODE){
 			//Graphics2D g2d = (Graphics2D) g;
 			g.setColor(new Color(0.0f,0.0f,0.0f,0.5f));
-			g.fillRect(0, 0, g.getClipBounds().width,g.getClipBounds().height);
+			g.fillRect(0, 0, map.length*tileSize,map[0].length*tileSize);
 			for(EntityPosition ep : mm.getEntityList()){
 				int es = Configuration.ENTITY_SIZE;
 				if(ep.equals(mm.getEntitySelection())){
@@ -128,6 +127,7 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 				}
 				g.drawOval((int)ep.getPosition().x-es/2, (int)ep.getPosition().y-es/2, es, es);
 				g.drawString(ep.getType().toString(), (int)ep.getPosition().x+es/2, (int)ep.getPosition().y+es/2);
+				g.drawLine((int)ep.getPosition().x, (int)ep.getPosition().y, (int)(ep.getPosition().x+Math.cos(ep.getRotationInRadiants())*es), (int)(ep.getPosition().y+Math.sin(ep.getRotationInRadiants())*es));
 			}
 		}
 		
@@ -142,13 +142,11 @@ public class MapView extends JComponent implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 

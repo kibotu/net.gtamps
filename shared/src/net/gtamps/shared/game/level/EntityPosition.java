@@ -13,6 +13,7 @@ public class EntityPosition implements Serializable {
     private static final long serialVersionUID = -893131986434637247L;
     Vector3 position;
     Type type;
+    //in degrees
     float rotation;
 
     public EntityPosition(float x, float y, float z, float rotation, Type type) {
@@ -28,4 +29,12 @@ public class EntityPosition implements Serializable {
     public Type getType() {
         return type;
     }
+
+	public void setRotation(int rotationInDegrees) {
+		this.rotation = rotationInDegrees;
+	}
+
+	public double getRotationInRadiants() {
+		return rotation*Math.PI/180;
+	}
 }

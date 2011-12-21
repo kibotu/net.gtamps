@@ -1,17 +1,18 @@
 package net.gtamps.server.xsocket;
 
-import net.gtamps.server.Connection;
-import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.gui.LogType;
-import net.gtamps.server.gui.GUILogger;
-import net.gtamps.shared.serializer.communication.ISerializer;
-import org.xsocket.connection.INonBlockingConnection;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.BufferOverflowException;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.gtamps.server.Connection;
+import net.gtamps.server.ISocketHandler;
+import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.serializer.communication.ISerializer;
+
+import org.xsocket.connection.INonBlockingConnection;
 
 /**
  * Basic connection handling: rudimentally parse incoming messages and notify
@@ -22,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocketHandler {
     private static final LogType TAG = LogType.SERVER;
 
-    private static final String PROMPT = "> ";
-    private static final String RETURN = "< ";
+    private static final String PROMPT = " ";
+    private static final String RETURN = "<< ";
 
     // This is where we will keep all active connections
     // private Set<INonBlockingConnection> sessions =
@@ -58,7 +59,6 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        // System.out.println("weird data");
         return true;
     }
 

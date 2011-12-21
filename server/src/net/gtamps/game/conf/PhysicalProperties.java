@@ -58,6 +58,7 @@ public enum PhysicalProperties {
             1.05f,    // ANGULAR DAMPING
             Type.BULLET
     ),
+   
 
     //TODO rather a workaround for non dynamic bodies.
     //but this might be a nice implementation for staying modular.
@@ -81,9 +82,9 @@ public enum PhysicalProperties {
         CAR, HUMAN, NONE, BULLET
     }
 
-    PhysicalProperties(float mass, float density, float friction, float restitution, float velocityForce,
-                       float steeringForce, float steeringRadius, float slidyness, float max_speed, float linear_damping,
-                       float angular_damping, Type type) {
+    PhysicalProperties(final float mass, final float density, final float friction, final float restitution, final float velocityForce,
+                       final float steeringForce, final float steeringRadius, final float slidyness, final float max_speed, final float linear_damping,
+                       final float angular_damping, final Type type) {
         MASS = mass; // OBSOLETE: Mass is calculated according to the density
         DENSITY = density;
         FRICTION = friction;
@@ -95,10 +96,10 @@ public enum PhysicalProperties {
         // a car running on tracks and 1f represents a
         // floating car
         MAX_SPEED = max_speed;
-        this.TYPE = type;
+        TYPE = type;
     }
 
-    PhysicalProperties(PhysicalProperties pp) {
+    PhysicalProperties(final PhysicalProperties pp) {
         MASS = pp.MASS; // OBSOLETE: Mass is calculated according to the density
         DENSITY = pp.DENSITY;
         FRICTION = pp.FRICTION;

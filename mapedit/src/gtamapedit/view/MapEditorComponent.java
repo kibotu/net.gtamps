@@ -13,7 +13,8 @@ import gtamapedit.view.map.MapElement;
 import gtamapedit.view.map.MapModel;
 import gtamapedit.view.map.MapView;
 import gtamapedit.view.menu.Menu;
-import gtamapedit.view.propertyPane.TilePropertyPane;
+import gtamapedit.view.propertyPane.PropertyPane;
+import gtamapedit.view.propertyPane.entityPanel.RotationSelector;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -43,7 +44,7 @@ import processing.core.PApplet;
 
 public class MapEditorComponent extends JComponent implements ChangeListener, ActionListener, PropertyChangeListener {
 
-	TilePropertyPane tprop;
+	PropertyPane tprop;
 	TileEditorListView telv;
 	MapView mapView;
 	MapModel mapModel;
@@ -76,7 +77,7 @@ public class MapEditorComponent extends JComponent implements ChangeListener, Ac
 
 		this.add(tileScroll, BorderLayout.WEST);
 
-		tprop = new TilePropertyPane(this);
+		tprop = new PropertyPane(this);
 		tprop.setMode(mode);
 		this.add(tprop, BorderLayout.SOUTH);
 		//UGLY:
@@ -286,6 +287,12 @@ public class MapEditorComponent extends JComponent implements ChangeListener, Ac
 				mapModel.changeSelection(ep);
 				changedMap = true;
 			}
+		}
+		if(evt.getPropertyName().equals(ControlType.ENTITY_CHANGE_ROTATION)){
+			RotationSelector rs = (RotationSelector) evt.getSource();
+			EntityPosition ep = mapModel.getEntitySelection();
+			ep.setRotation(rs.getRotationInDegrees());
+			changedMap = true;
 		}
 		
 		if (changedMap) {
