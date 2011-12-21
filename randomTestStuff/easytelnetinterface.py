@@ -95,12 +95,17 @@ for i in range(len(profiles)):
 
 password = ''
 username = input('Username (default: random):')
-if username == '':
+
+try:
+	if int(username) in range(len(profiles)):
+		print('using profile: '+profiles[int(username)][0])
+		password = profiles[int(username)][1]
+		username = profiles[int(username)][0]
+except ValueError:
+		print('ommiting profiles.')
+
+if (username == ''):
 	username = 'USER_'+random.choice(string.ascii_uppercase)+random.choice(string.ascii_uppercase)
-if int(username) in range(len(profiles)):
-	print('using profile: '+profiles[int(username)][0])
-	password = profiles[int(username)][1]
-	username = profiles[int(username)][0]
 	
 if(password==''):
 	password = input('Password (default: random):')
