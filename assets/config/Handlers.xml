@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-	
+<DEF>
+<GAME>
 	<PHYSICS>
-		<ELEMENT name="Body">
-			<ATTRIB name="posx" type="int" comment="pixels"/>
-			<ATTRIB name="posy" type="int" comment="pixels"/>
-			<ATTRIB name="angle" type="int" comment="degrees"/>
-			<ATTRIB name="isbullet" type="boolean" />
-			<ATTRIB name="linearDamping" type="float" default="0"/>
-			<ATTRIB name="angularDamping" type="float" default="0"/>
-			<LISTATTRIB name="shapes" type="Shape" />
-		</ELEMENT>
+		<TYPE name="Body" class="BodyBuilder">
+			<PARAM name="posx" type="int" comment="pixels"/>
+			<PARAM name="posy" type="int" comment="pixels"/>
+			<PARAM name="angle" type="int" comment="degrees"/>
+			<PARAM name="isbullet" type="boolean" />
+			<PARAM name="linearDamping" type="float" default="0"/>
+			<PARAM name="angularDamping" type="float" default="0"/>
+			<LISTPARAM name="shapes" type="Shape" />
+		</TYPE>
 		
-		<ELEMENT name="Shape" abstract="true">
-			<ATTRIB name="density" type="float" default="0" />
-			<ATTRIB name="friction" type="float" default="0" />
-			<ATTRIB name="restitution" type="float" default="0" />
-		</ELEMENT>
+		<TYPE name="Shape" abstract="true" class="ShapeBuilder">
+			<PARAM name="density" type="float" default="0" />
+			<PARAM name="friction" type="float" default="0" />
+			<PARAM name="restitution" type="float" default="0" />
+		</TYPE>
 		
-		<ELEMENT name="Box" extends="Shape">
-			<ATTRIB name="width" type="int" comment="pixels"/>
-			<ATTRIB name="height" type="int" comment="pixels"/>
-		</ELEMENT>
+		<TYPE name="Box" extends="Shape" class="BoxBuilder">
+			<PARAM name="width" type="int" comment="pixels"/>
+			<PARAM name="height" type="int" comment="pixels"/>
+		</TYPE>
 		
-		<ELEMENT name="Circle" extends="Shape">
-			<ATTRIB name="radius" type="int" comment="pixels" />
-		</ELEMENT>
+		<TYPE name="Circle" extends="Shape" class="CircleBuilder">
+			<PARAM name="radius" type="int" comment="pixels" />
+		</TYPE>
 	</PHYSICS>
 
 	<HANDLERS>
-		
-
 		<TYPE name="Physics" class="net.gtamps.game.handler.SimplePhysicsHandler">
 			<PARAM name="dynamic" type="boolean" default="false" />
-			<PARAM name="body" type="Body" />
+			<PARAM name="body" type="game.physics.Body" />
 		</TYPE>
 		
 		<TYPE name="Mobility" class="net.gtamps.game.handler.SimplePhysicsHandler">
@@ -52,8 +51,9 @@
 		
 		<TYPE name="DoorSensorReceiver" class="net.gtamps.game.handler.SensorDoorHandler"/>
 		
-		
-		
-		
+		<TYPE name="Drivable" class="nurbs" />
+
 	</HANDLERS>
+</GAME>
+</DEF>
 </CONFIG>
