@@ -3,13 +3,13 @@ package net.gtamps.game.handler;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.gtamps.server.gui.LogType;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 
 /**
@@ -18,35 +18,35 @@ import net.gtamps.shared.game.handler.Handler;
  *
  * @author jan, tom, til
  */
-public class SensorHandler extends Handler {
-    private static final LogType TAG = LogType.GAMEWORLD;
+public class SensorHandler extends ServersideHandler {
+	private static final LogType TAG = LogType.GAMEWORLD;
 
-    private static EventType[] sendsUp = {};
-    private static EventType[] receivesDown = {EventType.ENTITY_SENSE};
-    //EventType.ACTION_ENTEREXIT, EventType.ENTITY_DESTROYED };
+	private static EventType[] sendsUp = {};
+	private static EventType[] receivesDown = {EventType.ENTITY_SENSE};
+	//EventType.ACTION_ENTEREXIT, EventType.ENTITY_DESTROYED };
 
-    protected Set<Entity> sensed = new HashSet<Entity>();
-    protected final EventType sensorType;
-    protected final EventType triggerEvent;
+	protected Set<Entity> sensed = new HashSet<Entity>();
+	protected final EventType sensorType;
+	protected final EventType triggerEvent;
 
-    public SensorHandler(final IGameEventDispatcher eventRoot, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
-        super(eventRoot, Handler.Type.SENSOR, parent);
-        this.sensorType = sensorType;
-        this.triggerEvent = triggerEvent;
-        setReceives(receivesDown);
-        connectUpwardsActor(parent);
-    }
+	public SensorHandler(final Universe universe, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
+		super(universe, Handler.Type.SENSOR, parent);
+		this.sensorType = sensorType;
+		this.triggerEvent = triggerEvent;
+		setReceives(receivesDown);
+		connectUpwardsActor(parent);
+	}
 
-    @Override
-    public void receiveEvent(final GameEvent event) {
-        final EventType type = event.getType();
-        if (type.isType(sensorType)) {
-            sense(event);
-        } else if (type.isType(triggerEvent)) {
-            act(event);
-        }
+	@Override
+	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
+		if (type.isType(sensorType)) {
+			sense(event);
+		} else if (type.isType(triggerEvent)) {
+			act(event);
+		}
 
-/*		switch (type) {
+		/*		switch (type) {
 		case ENTITY_SENSE_BEGIN:
 		case ENTITY_SENSE_END:
 			sense(event);
@@ -62,28 +62,28 @@ public class SensorHandler extends Handler {
 			}
 			break;
 		}
-*/
-    }
+		 */
+	}
 
-    protected void act(final GameEvent event) {
-        // override this! method will be triggered by TriggerEvent events
-    }
+	protected void act(final GameEvent event) {
+		// override this! method will be triggered by TriggerEvent events
+	}
 
-    protected void sense(final GameEvent event) {
-        assert event.getType().isType(sensorType);
-        final GameObject source = event.getSource();
-        final GameObject target = event.getTarget();
-        final GameObject subject = (source == getParent()) ? target : source;
-        if (event.isBegin()) {
-            sensed.add((Entity) subject);
-        } else if (event.isEnd()) {
-            sensed.remove(subject);
-        }
-        if (sensorType.isType(EventType.ENTITY_SENSE_DOOR)) {
-            GUILogger.i().log(TAG, target + " detected door of " + source);
-        }
+	protected void sense(final GameEvent event) {
+		assert event.getType().isType(sensorType);
+		final GameObject source = event.getSource();
+		final GameObject target = event.getTarget();
+		final GameObject subject = (source == getParent()) ? target : source;
+		if (event.isBegin()) {
+			sensed.add((Entity) subject);
+		} else if (event.isEnd()) {
+			sensed.remove(subject);
+		}
+		if (sensorType.isType(EventType.ENTITY_SENSE_DOOR)) {
+			GUILogger.i().log(TAG, target + " interacted with door sensor of " + source);
+		}
 
-/*		switch (event.getType()) {
+		/*		switch (event.getType()) {
         case ENTITY_SENSE_BEGIN:
             if (this.sensorType == Type.ENTER_DOORS) {
                 Logger.i().log(TAG, getParent() + " sensed a door");
@@ -97,14 +97,14 @@ public class SensorHandler extends Handler {
             this.sensed.remove((Entity) subject);
             break;
         }
-*/
-    }
+		 */
+	}
 
-    protected void update() {
-        // nothing
-    }
+	protected void update() {
+		// nothing
+	}
 
-/*	protected void explode() {
+	/*	protected void explode() {
 		float maxdistance = 100;
 		float maximpulse = 100000;
 		PositionProperty p1 = (PositionProperty) getParent().getProperty(
@@ -134,8 +134,8 @@ public class SensorHandler extends Handler {
 			}
 		}
 	}
-*/
-/*	protected void enterdoor(Player p) {
+	 */
+	/*	protected void enterdoor(Player p) {
 		//Logger.i().log(TAG, getParent() + " looking for things to enter");
 		float minDistance = Float.POSITIVE_INFINITY;
 		Entity closest = null;
@@ -166,5 +166,5 @@ public class SensorHandler extends Handler {
 			}
 		}
 	}
-*/
+	 */
 }

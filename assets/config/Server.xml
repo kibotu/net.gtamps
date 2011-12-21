@@ -10,12 +10,16 @@
     <%ALIAS id="LineBasedTCPSocketHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
     <%ALIAS id="CompressedObjectSerializer" class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
 -->
+	<TYPE name="TelnetSockHandler" class="net.gtamps.server.xsocket.LineBasedTCPSocketHandler" />
+	<TYPE name="NormalTCPSockHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler" />
+	<TYPE name="TelnetSerializer" class="net.gtamps.server.ManualTypeSerializer" />
+	<TYPE name="CompressedObjectSerializer" class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer" />
 </DEF>
 <COMMON>
 	<SETUP>
         <GAMESERVER port="8095" protocol="tcp">
-			    <SOCKETHANDLER class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
-			    <SERIALIZER class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
+			    <SOCKETHANDLER type="TelnetSockHandler"/>
+			    <SERIALIZER type="TelnetSerializer"/>
         </GAMESERVER>
         <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
         <GUI>

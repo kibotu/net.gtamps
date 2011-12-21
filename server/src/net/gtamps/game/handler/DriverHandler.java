@@ -2,12 +2,12 @@ package net.gtamps.game.handler;
 
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.player.PlayerManager;
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 
@@ -36,7 +36,7 @@ import org.jbox2d.common.Vec2;
  * @see Entity
  * @see Player
  */
-public class DriverHandler extends Handler {
+public class DriverHandler extends ServersideHandler {
 	private static final LogType TAG = LogType.GAMEWORLD;
 	private static final int COOLDOWN_MILLIS = 500;
 
@@ -51,8 +51,8 @@ public class DriverHandler extends Handler {
 	private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
 			EventType.ACTION_ENTEREXIT};
 
-	public DriverHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
-		super(eventRoot, Handler.Type.DRIVER, parent);
+	public DriverHandler(final Universe universe, final Entity parent) {
+		super(universe, Handler.Type.DRIVER, parent);
 		setReceives(receivesDown);
 		connectUpwardsActor(parent);
 	}
