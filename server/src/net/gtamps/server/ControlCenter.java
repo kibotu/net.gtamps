@@ -170,13 +170,17 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
-		// TODO database; get real uid
 		Sendable response = null;
 		try {
-			SessionManager.instance.authenticateSession(request.sessionId, new User(99, adata.username));
+			final User user = Authenticator.instance.Register(adata.username, adata.password);
+			SessionManager.instance.authenticateSession(request.sessionId, user);
 			response = request.createResponse(SendableType.REGISTER_OK);
 		} catch (final IllegalStateException e) {
 			response = request.createResponse(SendableType.REGISTER_BAD);
+			response.data = new StringData(e.getMessage());
+		} catch (final ServerException e) {
+			response = request.createResponse(SendableType.REGISTER_BAD);
+			response.data = new StringData(e.getMessage());
 		}
 		handleResponse(response);
 	}
