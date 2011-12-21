@@ -6,6 +6,7 @@ import java.util.Map;
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.handler.DriverHandler;
 import net.gtamps.game.handler.SensorDoorHandler;
+import net.gtamps.game.handler.ShootingHandler;
 import net.gtamps.game.handler.blueprints.GenericHandlerBlueprint;
 import net.gtamps.game.handler.blueprints.HealthBlueprint;
 import net.gtamps.game.handler.blueprints.MobilityBlueprint;
@@ -44,6 +45,7 @@ public class EntityFactory {
 			physprop = PhysicalProperties.Human;
 			blup.addHandlerPrototype(new HealthBlueprint(universe.getEventRoot(), 100, 1f, 1));
 			blup.addHandlerPrototype(new GenericHandlerBlueprint<SensorDoorHandler>(universe.getEventRoot(), SensorDoorHandler.class, Handler.Type.SENSOR));
+			blup.addHandlerPrototype(new GenericHandlerBlueprint<ShootingHandler>(universe.getEventRoot(), ShootingHandler.class, Handler.Type.SHOOTING));
 		} else if (normName.equals("BULLET")) {
 			physprop = PhysicalProperties.Bullet;
 		} else {
