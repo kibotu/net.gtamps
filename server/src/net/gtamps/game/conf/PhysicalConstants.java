@@ -1,7 +1,7 @@
 package net.gtamps.game.conf;
 
 public class PhysicalConstants {
-	public static final int COLLISION_GROUP_SENSOR = -1;
+	public static final int COLLISION_GROUP_SENSOR = 1;
 	public static final int COLLISION_GROUP_MOBILE = 1;
 	public static final int COLLISION_GROUP_STATIONARY = 1;
 
