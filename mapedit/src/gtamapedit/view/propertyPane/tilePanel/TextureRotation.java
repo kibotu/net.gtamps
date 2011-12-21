@@ -1,5 +1,6 @@
-package gtamapedit.view.propertyPane.components;
+package gtamapedit.view.propertyPane.tilePanel;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import gtamapedit.view.ControlType;
@@ -38,7 +39,7 @@ public class TextureRotation extends JComponent{
 	    this.add(deg90);
 	    this.add(deg180);
 	    this.add(deg270);
-	}
+	  	}
 	public void setRotation(int rot){
 		if(rot==90){
 			deg90.doClick();

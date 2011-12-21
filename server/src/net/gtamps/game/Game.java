@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.game.player.PlayerManagerFacade;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.game.universe.UniverseFactory;
 import net.gtamps.server.SessionManager;
 import net.gtamps.server.User;
+import net.gtamps.server.gui.DebugGameBridge;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
@@ -33,7 +35,7 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final String TEST_LEVEL_PATH = "../assets/map2.map.lvl";
+    private static final String TEST_LEVEL_PATH = "../assets/map3.map.lvl";
 	private static final LogType TAG = LogType.GAMEWORLD;
     private static final long THREAD_UPDATE_SLEEP_TIME = 20;
     private static final int PHYSICS_ITERATIONS = 20;
@@ -64,6 +66,7 @@ public class Game implements IGame, Runnable {
             run = true;
             playerStorage = new PlayerManagerFacade(universe.playerManager);
             gameTime = new TimeKeeper();
+            
             start();
         } else {
             GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
@@ -101,6 +104,12 @@ public class Game implements IGame, Runnable {
     @Override
     public void run() {
         isActive = true;
+
+        if (GTAMultiplayerServer.DEBUG) {
+        	DebugGameBridge.instance.setWorld(universe.physics.getWorld());
+        }
+        
+        
 //		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
         while (run) {
             gameTime.startCycle();
@@ -109,6 +118,11 @@ public class Game implements IGame, Runnable {
             sleepIfCycleTimeRemaining();
         }
 //		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
+        
+        if (GTAMultiplayerServer.DEBUG) {
+        	DebugGameBridge.instance.setWorld(null);
+        }
+        
         isActive = false;
     }
 

@@ -1,4 +1,4 @@
-package gtamapedit.view.propertyPane.components;
+package gtamapedit.view.propertyPane.tilePanel;
 
 import gtamapedit.view.ControlType;
 import gtamapedit.view.MapEditorComponent;

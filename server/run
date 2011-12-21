@@ -1,0 +1,38 @@
+#! /bin/sh
+
+OLDDIR=`pwd`
+BASEDIR=`dirname $0`
+splash="${BASEDIR}/../assets/loading_screen.png"
+
+assert="-ea"
+
+startheap="250"
+maxheap="500"
+youngheap="125"
+
+bin="bin ../shared/bin"
+lib="libs ../shared/libs"
+
+classpath=""
+
+for path in $bin
+do
+	path=${BASEDIR}/${path}
+	classpath=`realpath ${path}`":$classpath"
+done
+
+for path in $lib
+do	
+	path=${BASEDIR}/${path}
+	classpath=`realpath ${path}`":$classpath"
+	for jarfile in `ls ${path}/*.jar`
+	do
+		classpath=`realpath .`"/${jarfile}:$classpath"
+	done
+done
+
+export CLASSPATH=$classpath
+
+cd $BASEDIR
+java $assert -showversion -server -Xms${startheap}m -Xmx${maxheap}m -Xmn${youngheap}m -splash:$splash net.gtamps.GTAMultiplayerServer
+cd $OLDDIR

@@ -1,5 +1,8 @@
 package net.gtamps.game.handler;
 
+import net.gtamps.server.gui.GUILogger;
+import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -42,42 +45,43 @@ import net.gtamps.shared.game.player.Player;
  */
 public class SensorDoorHandler extends SensorHandler {
 
-    public SensorDoorHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
-        super(eventRoot, EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
-        final EventType[] receives = {EventType.ENTITY_SENSE_DOOR,
-                EventType.ACTION_ENTEREXIT};
-        setReceives(receives);
-        connectUpwardsActor(parent);
-    }
+	public SensorDoorHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
+		super(eventRoot, EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
+		final EventType[] receives = {EventType.ENTITY_SENSE_DOOR,
+				EventType.ACTION_ENTEREXIT};
+		setReceives(receives);
+		connectUpwardsActor(parent);
+	}
 
-    @Override
-    public void act(final GameEvent event) {
-        // Logger.i().log(TAG, getParent() + " looking for things to enter");
-        final Player player = (Player) event.getSource();
-        float minDistance = Float.POSITIVE_INFINITY;
-        Entity closest = null;
-        for (final Entity e : sensed) {
-            if (e.getHandler(Handler.Type.DRIVER) == null) {
-                continue;
-            }
-            final float dx = parent.x.value() - e.x.value();
-            final float dy = parent.y.value() - e.y.value();
-            final float dist = dx * dx + dy * dy;
-            if (dist < minDistance) {
-                minDistance = dist;
-                closest = e;
-            }
-        }
-        if (closest != null) {
-            // Logger.i().log(TAG, getParent() + " trying to enter " + closest);
-            final DriverHandler driver = (DriverHandler) closest
-                    .getHandler(Handler.Type.DRIVER);
-            if (driver != null) {
-                driver.enter(player);
-            } else {
-            }
-        }
+	@Override
+	public void act(final GameEvent event) {
+		Logger.i("GAMEWORLD", getParent() + " looking for things to enter");
+		final Player player = (Player) event.getSource();
+		float minDistance = Float.POSITIVE_INFINITY;
+		Entity closest = null;
+		for (final Entity e : sensed) {
+			if (e.getHandler(Handler.Type.DRIVER) == null) {
+				continue;
+			}
+			final float dx = parent.x.value() - e.x.value();
+			final float dy = parent.y.value() - e.y.value();
+			final float dist = dx * dx + dy * dy;
+			if (dist < minDistance) {
+				minDistance = dist;
+				closest = e;
+			}
+		}
+		if (closest != null) {
+			Logger.i("GAMEWORLD", getParent() + " trying to enter " + closest);
+			final DriverHandler driver = (DriverHandler) closest
+					.getHandler(Handler.Type.DRIVER);
+			if (driver != null) {
+				driver.enter(player);
+			} else {
+				GUILogger.i().log(LogType.GAMEWORLD, "no driver handler found");
+			}
+		}
 
-    }
+	}
 
 }
