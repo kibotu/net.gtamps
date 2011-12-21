@@ -98,7 +98,7 @@ print(usage)
 s=None
 while(s==None):
 	try:
-		s = socket.create_connection(('127.0.0.1',8095))
+		s = socket.create_connection((ip,8095))
 	except socket.error:
 		print('Connection refused... retring in 5s.')
 		time.sleep(5)
