@@ -1,5 +1,6 @@
 package net.gtamps.shared.Utils.math;
 
+import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.cache.IObjectCache;
 import net.gtamps.shared.Utils.cache.ObjectFactory;
 import net.gtamps.shared.Utils.cache.ThreadLocalObjectCache;
@@ -1279,4 +1280,50 @@ public final class Matrix4 {
 		if (o instanceof Matrix4) return equals((Matrix4)o, MathUtils.DEFAULT_EPSILON);
 		return super.equals(o);
 	}
+
+    public void matrixTranslate(Matrix4 matrix, float x, float y, float z)  {
+        
+        // Translate slots.
+        matrix.values[12] = x;
+        matrix.values[13] = y;
+        matrix.values[14] = z;
+    }
+
+    public void matrixScale(Matrix4 matrix, float sx, float sy, float sz) {
+
+        // Scale slots.
+        matrix.values[0] = sx;
+        matrix.values[5] = sy;
+        matrix.values[10] = sz;
+    }
+
+    void matrixRotateX(Matrix4 matrix, float degrees)  {
+        float radians = MathUtils.deg2Rad(degrees);
+
+        // Rotate X formula.
+        matrix.values[5] = (float) Math.cos(radians);
+        matrix.values[6] = (float) -Math.sin(radians);
+        matrix.values[9] = -matrix.values[6];
+        matrix.values[10] = matrix.values[5];
+    }
+
+    void matrixRotateY(Matrix4 matrix, float degrees) {
+        float radians =  MathUtils.deg2Rad(degrees);
+
+        // Rotate Y formula.
+        matrix.values[0] = (float) Math.cos(radians);
+        matrix.values[2] = (float) Math.sin(radians);
+        matrix.values[8] = -matrix.values[2];
+        matrix.values[10] = matrix.values[0];
+    }
+
+    void matrixRotateZ(Matrix4 matrix, float degrees)  {
+        float radians = MathUtils.deg2Rad(degrees);
+
+        // Rotate Z formula.
+        matrix.values[0] = (float) Math.cos(radians);
+        matrix.values[1] = (float) Math.sin(radians);
+        matrix.values[4] = -matrix.values[1];
+        matrix.values[5] = matrix.values[0];
+    }
 }

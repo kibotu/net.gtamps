@@ -38,8 +38,6 @@ public class ShaderRenderer extends BasicRenderer {
     // light parameters
     private float[] lightPos;
     private float[] lightColor;
-    private float[] lightAmbient;
-    private float[] lightDiffuse;
 
     // angle rotation for light
     float angle = 0.0f;
@@ -135,16 +133,6 @@ public class ShaderRenderer extends BasicRenderer {
         OpenGLUtils.checkGlError("lightPos");
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightColor"), 1, lightColor, 0);
         OpenGLUtils.checkGlError("lightColor");
-
-        // material
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matAmbient"), 1, matAmbient, 0);
-        OpenGLUtils.checkGlError("matAmbient");
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matDiffuse"), 1, matDiffuse, 0);
-        OpenGLUtils.checkGlError("matDiffuse");
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matSpecular"), 1, matSpecular, 0);
-        OpenGLUtils.checkGlError("matSpecular");
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "matShininess"), matShininess);
-        OpenGLUtils.checkGlError("matShininess");
 
         // eye position
         GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "eyePos"), 1, eyePos, 0);

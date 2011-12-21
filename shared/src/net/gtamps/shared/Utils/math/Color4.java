@@ -141,8 +141,16 @@ public class Color4 implements Comparable<Color4> {
         return new Color4(Math.max(c.r, 0), Math.max(c.g, 0), Math.max(c.b, 0), Math.max(c.a, 0));
     }
 
+    private float [] array;
     public float[] asArray() {
-        return new float[]{r, g, b, a};
+        if(array == null) array = new float[] {r, g, b, a};
+        else {
+            array[0] = r;
+            array[1] = g;
+            array[2] = b;
+            array[3] = a;
+        }
+        return array;
     }
 
     public FloatBuffer asBuffer() {

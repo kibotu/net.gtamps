@@ -167,8 +167,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         state.getGl().glPopMatrix();
     }
 
-    @Override
-    public void shadeInternal(@NotNull ProcessingState state) {
+    public void shadeInternalWithOutVBO(@NotNull ProcessingState state) {
         if(!RenderCapabilities.supportsOpenGLES()) return;
         if (mesh == null) return;
         if (isDirty) onDirty(state.getGl());
@@ -202,40 +201,70 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         // Draw with indices
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, mesh.getVbo().indexBuffer);
         OpenGLUtils.checkGlError("glDrawElements");
-//
-//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
-//        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aPosition"),3, GLES20.GL_FLOAT, false, 0, 0);
-//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aPosition"));
-//        OpenGLUtils.checkGlError("aPosition");
-//
-//        // normals
-//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
-//        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aNormal"),3, GLES20.GL_FLOAT, false, 0, 0);
-//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aNormal"));
-//        OpenGLUtils.checkGlError("aNormal");
-//
-//        // colors
-////        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-////        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aColor"),3, GLES20.GL_FLOAT, false, 0, 0);
-////        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aColor"));
-////        OpenGLUtils.checkGlError("aColor");
-//
-//        // enable texturing (0f = off, 2f = enabled)
-//        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), 0f);
-//
-//        // uvs
-//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
-//        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "textureCoord"),3, GLES20.GL_FLOAT, false, 0, 0);
-//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "textureCoord"));
-//        OpenGLUtils.checkGlError("textureCoord");
-//
-//        // drawing by indices
-//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
-//        glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
-//        OpenGLUtils.checkGlError("glDrawElements");
     }
 
+    public void shadeInternalWithVBO(@NotNull ProcessingState state) {
+        if(!RenderCapabilities.supportsOpenGLES()) return;
+        if (mesh == null) return;
+        if (isDirty) onDirty(state.getGl());
 
+        int program = shader.get_program();
+
+        // vertices
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
+        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aPosition"),3, GLES20.GL_FLOAT, false, 0, 0);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aPosition"));
+        OpenGLUtils.checkGlError("aPosition");
+
+        // normals
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
+        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aNormal"),3, GLES20.GL_FLOAT, false, 0, 0);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aNormal"));
+        OpenGLUtils.checkGlError("aNormal");
+
+        // colors
+//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
+//        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aColor"),4, GLES20.GL_FLOAT, false, 0, 0);
+//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aColor"));
+//        OpenGLUtils.checkGlError("aColor");
+
+
+        // material
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matAmbient"), 1, material.getAmbient().asArray(), 0);
+        OpenGLUtils.checkGlError("matAmbient");
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matDiffuse"), 1, material.getDiffuse().asArray(), 0);
+        OpenGLUtils.checkGlError("matDiffuse");
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "matSpecular"), 1, material.getSpecular().asArray(), 0);
+        OpenGLUtils.checkGlError("matSpecular");
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "matShininess"), material.getPhongExponent());
+        OpenGLUtils.checkGlError("matShininess");
+
+        // enable texture
+        if (texturesEnabled) {
+            GLES20.glEnable(GL_TEXTURE_2D);
+            GLES20.glBindTexture(GL_TEXTURE_2D, textureId);
+        }
+
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), texturesEnabled ? 2f : 0);
+        OpenGLUtils.checkGlError("hasTexture");
+
+        // uvs
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
+        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aTextCoord"),2, GLES20.GL_FLOAT, false, 0, 0);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aTextCoord"));
+        OpenGLUtils.checkGlError("textureCoord");
+
+        // drawing by indices
+        GLES20.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
+        glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
+        OpenGLUtils.checkGlError("glDrawElements");
+    }
+
+    @Override
+    public void shadeInternal(@NotNull ProcessingState state) {
+//        shadeInternalWithOutVBO(state);
+        shadeInternalWithVBO(state);
+    }
 
     /**
      * Default rendering process.

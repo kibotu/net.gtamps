@@ -81,7 +81,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
 
         // setup on the fly
         for (int i = 0; i < runtimeSetupQueue.size(); i++) {
-            glState.setGl(gl10);
             runtimeSetupQueue.poll().setup(glState);
         }
 
@@ -98,6 +97,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {
             renderActivity.getScenes().get(i).getActiveCamera().setViewport(0, 0, width, height);
         }
+        glState.setGl(gl10);
     }
 
     final public void addToSetupQueue(@NotNull SceneNode node) {
