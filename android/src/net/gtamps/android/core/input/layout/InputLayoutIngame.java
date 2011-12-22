@@ -3,6 +3,7 @@ package net.gtamps.android.core.input.layout;
 import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
 import net.gtamps.android.core.input.touch.TouchInputButton;
+import net.gtamps.android.game.content.scenes.layouts.HudInterpreter;
 
 public class InputLayoutIngame extends AbstractInputLayout {
 
