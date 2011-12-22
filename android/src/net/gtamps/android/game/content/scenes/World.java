@@ -90,7 +90,7 @@ public class World extends EntityScene {
     }
 
     public static RenderableNode addLevel() {
-        ParsedObject parsedObject = ParsedObject.parseObject("map1_obj", R.drawable.grid, true);
+        ParsedObject parsedObject = ParsedObject.parseObject("map1map_obj", R.drawable.map1map, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
