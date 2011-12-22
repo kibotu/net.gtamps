@@ -86,6 +86,7 @@ public class EntityFactory {
 		final EntityBlueprint houseblup = getEmptyDisposableBlueprint(universe, normName);
 		houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(universe, pshape));
 		final Entity house =  houseblup.createEntity(0, 0, 0);
+		house.setSilent(true);
 		return house;
 	}
 

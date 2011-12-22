@@ -18,8 +18,8 @@
 <COMMON>
 	<SETUP>
         <GAMESERVER port="8095" protocol="tcp">
-			    <SOCKETHANDLER type="TelnetSockHandler"/>
-			    <SERIALIZER type="TelnetSerializer"/>
+			    <SOCKETHANDLER type="NormalTCPSockHandler"/>
+			    <SERIALIZER type="CompressedObjectSerializer"/>
         </GAMESERVER>
         <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
         <GUI>
