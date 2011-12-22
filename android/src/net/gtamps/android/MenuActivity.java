@@ -64,7 +64,10 @@ public class MenuActivity extends Activity implements OnClickListener {
 			setMenuMode(menuMode.CONFIGURATION);
 		}
 		if(v.equals(findViewById(R.id.menuButtonGoToMain))){
-			setMenuMode(menuMode.MAIN);
-		}
+            setMenuMode(menuMode.MAIN);
+        }
+        if(v.equals(findViewById(R.id.menuButtonQuit))){
+            finish();
+        }
 	}
 }

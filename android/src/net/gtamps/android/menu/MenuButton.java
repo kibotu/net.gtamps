@@ -26,8 +26,12 @@ public class MenuButton extends Button {
 		this.pos = new float[2];
 		this.pos[0] = 15;
 		this.pos[1] = 25;
-		String currentText = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
-		setWidth(currentText.length()*10+30);	
+
+        String currentText = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
+        float density = getContext().getApplicationContext().getResources().getDisplayMetrics().density;
+        float measuredTextWidth = getPaint().measureText(currentText,0,currentText.length());
+
+        setWidth((int) (measuredTextWidth*density));
 		setHeight(40);
 	}
 
