@@ -4,10 +4,7 @@ import android.opengl.GLES20;
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Light;
-import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.graph.scene.primitives.*;
 import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
@@ -28,7 +25,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 20, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -43,7 +40,13 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(new Cube()));
+
+        Cube cube = new Cube();
+        cube.setPosition(-1,0,0);
+        Sphere sphere = new Sphere(1,20,20);
+        sphere.setPosition(1,0,0);
+        add(new EntityView(cube));
+        add(new EntityView(sphere));
 //        add(new EntityView(getSunLight()));
     }
 

@@ -49,7 +49,7 @@ public class Cube extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
-        material = new Material(new Color4(0xff000000),new Color4(0xff110000),new Color4(0xffE75100),new Color4(0xffff5100),5);
+        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
     }
 
     @Override

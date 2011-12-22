@@ -1,6 +1,11 @@
 package net.gtamps.android.core.renderer.graph;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
+import net.gtamps.android.R;
+import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
@@ -12,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static fix.android.opengl.GLES20.glDrawElements;
 import static fix.android.opengl.GLES20.glVertexAttribPointer;
@@ -245,10 +253,21 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "material.shininess"), material.getPhongExponent());
         Logger.checkGlError(this, "material.shininess");
 
-        // enable texture
+        // bind textures
         if (texturesEnabled) {
-            GLES20.glEnable(GL_TEXTURE_2D);
-            GLES20.glBindTexture(GL_TEXTURE_2D, textureId);
+//            int[] texIDs = ob.get_texID();
+//
+//            for(int i = 0; i < _texIDs.length; i++) {
+//                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
+//                Logger.d(this, "Texture bind: " + i + " " + texIDs[i]);
+//                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texIDs[i]);
+//                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture" + (i+1)), i);
+//            }
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            Logger.d(this, "Texture bind: " + textureId);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture"),0);
         }
 
         // enable texturing
@@ -265,6 +284,67 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
         glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
         Logger.checkGlError(this,"glDrawElements");
+    }
+
+
+    /**
+     * Sets up texturing for the object
+     */
+    private void setupTextures(int resourceId) {
+        // create new texture ids if object has them
+
+        // number of textures
+//        int[] texIDs = ob.get_texID();
+//        int[] textures = new int[texIDs.length];
+//        _texIDs = new int[texIDs.length];
+//        texture file ids
+//        int[] texFiles = ob.getTexFile();
+
+        int [] textureIds = new int[1];
+//        Logger.d(this, "TEXFILES LENGTH: " + texFiles.length);
+        GLES20.glGenTextures(1, textureIds, 0);
+        textureId = textureIds[0];
+//        for(int i = 0; i < texIDs.length; i++) {
+//            texIDs[i] = textures[i];
+
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
+
+//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
+//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_GENERATE_MIPMAP_HINT, GLES20.GL_TRUE);
+//            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+//            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+
+//            // parameters
+//            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_LINEAR);
+//
+//            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_REPEAT);
+//            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_REPEAT);
+
+            InputStream is = Registry.getContext().getApplicationContext().getResources().openRawResource(resourceId);
+            Bitmap bitmap;
+            try {
+                bitmap = BitmapFactory.decodeStream(is);
+            } finally {
+                try {
+                    is.close();
+                } catch(IOException e) {
+                    Logger.printException(this,e);
+                }
+            }
+
+            // create it
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+            bitmap.recycle();
+
+//            Logger.d(this, "ATTACHING TEXTURES: Attached " + i);
+//        }
     }
 
     @Override
@@ -413,6 +493,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
+        setupTextures(R.drawable.earth);
         clearDirtyFlag();
     }
 
