@@ -1,22 +1,7 @@
-// Vertex attributes form the mesh. Transformed by the vertex shader.
-varying vec3 fcolor;
-varying vec3 normalV;
-varying vec3 eyedirV;
-varying vec3 lightdirV;
-
-// Uniform variables. Set from the application.
-uniform vec3 ka;
-uniform vec3 kd;
-uniform vec3 ks;
-uniform float ke;
-
-vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+precision mediump float;
 
 // Simple implementation of the phong illumination model.
-vec3 phong(vec3 n, vec3 v, vec3 s,
-           vec3 l,
-           vec3 ka, vec3 kd, vec3 ks, float ke)
-{
+vec3 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) {
   // Normalization is good.
   n = normalize(n);
   v = normalize(v);
@@ -40,14 +25,26 @@ vec3 phong(vec3 n, vec3 v, vec3 s,
   return color;
 }
 
-// Main entry point.
-void main() {
-  // Just return the phong model result.
-  gl_FragColor.rgb =
-    phong(normalV, eyedirV, lightdirV,
-          lightintensity,
-          ka, kd, ks, ke);
+// Vertex attributes form the mesh. Transformed by the vertex shader.
+varying vec3 fcolor;
+varying vec3 normalV;
+varying vec3 eyedirV;
+varying vec3 lightdirV;
+varying vec2 uvV;
 
-  // Make the fragment opaque (not transparent).
+struct PhongMaterial
+{
+   vec4 emission;    // Ecm
+   vec4 ambient;     // Acm
+   vec4 diffuse;     // Dcm
+   vec4 specular;    // Scm
+   float shininess;  // Srm
+};
+uniform PhongMaterial material;
+
+vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+
+void main() {
+  gl_FragColor.rgb = phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
   gl_FragColor.a = 1.0;
 }

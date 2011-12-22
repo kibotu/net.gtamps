@@ -15,7 +15,7 @@ public class Shader {
     public enum Type {
 
         //        MIN(R.raw.min_vs, R.raw.min_ps);
-        PHONG(R.raw.phong_vs, R.raw.phong_ps);
+        PHONG(R.raw.trambarend_phong_vs, R.raw.trambarend_phong_ps);
 //        GAUROUD(R.raw.gouraud_vs, R.raw.gouraud_ps),
 //        NORMAL(R.raw.normalmap_vs, R.raw.normalmap_ps);
 

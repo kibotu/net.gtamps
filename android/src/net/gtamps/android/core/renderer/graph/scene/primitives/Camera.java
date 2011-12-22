@@ -215,8 +215,8 @@ public class Camera extends RenderableNode {
 
         // Create the normal modelview matrix
         // Invert + transpose of mvpmatrix
-        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
-        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
+//        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
+//        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
 
         // send to the shader
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);

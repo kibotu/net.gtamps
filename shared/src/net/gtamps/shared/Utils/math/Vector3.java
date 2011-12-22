@@ -739,4 +739,17 @@ public final class Vector3 {
 
         temp.recycle();
     }
+
+    float [] array; 
+    
+    public float[] asArray() {
+        if(array == null) array = new float[] { x,y,z };
+        else {
+            array[0] = x;
+            array[1] = y;
+            array[2] = z;
+        }
+
+        return array;
+    }
 }

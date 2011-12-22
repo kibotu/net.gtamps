@@ -228,10 +228,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this, "vertexNormal");
 
         // colors
-//        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-//        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aColor"),4, GLES20.GL_FLOAT, false, 0, 0);
-//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aColor"));
-//        OpenGLUtils.checkGlError("aColor");
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
+        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexColor"),4, GLES20.GL_FLOAT, false, 0, 0);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexColor"));
+        Logger.checkGlError(this, "vertexColor");
 
         // material
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.emission"), 1, material.getEmission().asArray(), 0);

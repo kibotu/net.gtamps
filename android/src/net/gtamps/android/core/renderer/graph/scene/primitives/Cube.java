@@ -2,6 +2,7 @@ package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,7 @@ public class Cube extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
+        material = new Material(new Color4(0xff000000),new Color4(0xff110000),new Color4(0xffE75100),new Color4(0xffff5100),5);
     }
 
     @Override

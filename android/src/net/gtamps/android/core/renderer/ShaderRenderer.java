@@ -32,7 +32,7 @@ public class ShaderRenderer extends BasicRenderer {
         GLES20.glUseProgram(program);
         Logger.checkGlError(this,"glUseProgram");
 
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, lightP, 0);
+        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, renderActivity.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
         Logger.checkGlError(this,"lightPosition");
 //        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
 //        Logger.checkGlError(this,"lightDirection");

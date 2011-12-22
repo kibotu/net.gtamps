@@ -11,14 +11,15 @@ public class MatrixFactory {
     /**
      * Versteckter Konstruktor
      */
-    private MatrixFactory() {}
+    private MatrixFactory() {
+    }
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die X-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *    1,   0,    0, 0
@@ -45,10 +46,10 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die X-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *    1,   0,    0, 0
@@ -74,10 +75,10 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die Y-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *  cos, 0, -sin, 0
@@ -104,10 +105,10 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die Y-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *  cos, 0, -sin, 0
@@ -133,10 +134,10 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die Z-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *  cos, sin, 0, 0
@@ -163,10 +164,10 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine rechtshändige Matrix zur Rotation um die Z-Achse
-     *
+     * <p/>
      * <h3>RH-/LH-System</h3>
      * <a href="http://www.cprogramming.com/tutorial/3d/rotationMatrices.html">Rotations in Three Dimensions</a>
-     *
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *  cos, sin, 0, 0
@@ -418,6 +419,35 @@ public class MatrixFactory {
     }
 
     /**
+     * Sets Transformation Matrix.
+     *
+     * @param matrix
+     * @param scaling
+     * @param rotation
+     * @param translation
+     * @return
+     * @see <a href="http://db-in.com/blog/2011/04/cameras-on-opengl-es-2-x/">cameras-on-opengl-es-2-x</a>
+     */
+    public static Matrix4 setTransformation(@NotNull Matrix4 matrix, @NotNull Vector3 scaling, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
+        float cr = (float) Math.cos(rotation.x); // Φ
+        float sr = (float) Math.sin(rotation.x);
+
+        float cp = (float) Math.cos(rotation.y); // Θ
+        float sp = (float) Math.sin(rotation.y);
+
+        float cy = (float) Math.cos(rotation.z); // Ψ
+        float sy = (float) Math.sin(rotation.z);
+
+        return matrix.set(
+                scaling.x * cp * cy, cp * sy, -sp, translation.x,
+                sr * sp * cy - cr * sy, scaling.y * sr * sp * sy + cr * cy, sr * cp, translation.y,
+                cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, scaling.z * cr * cp, translation.z,
+                0f, 0f, 0f, 1f
+        );
+
+    }
+
+    /**
      * Bezieht eine vollständige Transformationsmatrix.
      * Die Transformationen werden in der Reihenfolge Skalierung, Rotation, Translation angewandt,
      *
@@ -507,7 +537,7 @@ public class MatrixFactory {
 
     /**
      * Erzeugt eine Skalierungsmatrix
-
+     * <p/>
      * <h3>Layout</h3>
      * <pre>
      *   fx,  0,  0, 0
