@@ -40,7 +40,6 @@ public class Camera extends RenderableNode {
     protected Matrix4 viewMatrix = Matrix4.createNew();
     protected Matrix4 normalMatrix = Matrix4.createNew();
 
-
     private boolean hasDepthTest = true;
 
     /**
@@ -199,8 +198,8 @@ public class Camera extends RenderableNode {
         Vector3 pos = frustum.getPosition();
         Vector3 target = frustum.getTarget();
         Vector3 up = frustum.getUp();
-//        Matrix4.setLookAt(viewMatrix,pos,target,up);
-        Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
+        Matrix4.setLookAt(viewMatrix,pos,target,up);
+//        Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
 
         if (hasDepthTest) {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -224,8 +223,30 @@ public class Camera extends RenderableNode {
         Logger.checkGlError(this, "normalMatrix");
 
         // eye view matrix
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "eyeViewMatrix"), 1, false, viewMatrix.values, 0);
-        Logger.checkGlError(this,"eyeViewMatrix");
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "viewMatrix"), 1, false, viewMatrix.values, 0);
+        Logger.checkGlError(this,"viewMatrix");
+    }
+
+    public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
+        viewportCoords.set(x, y, 0);
+        viewPortDimension.set(width, height, 0);
+        frustum.setAspectRatio(viewPortDimension.x / viewPortDimension.y);
+        if(RenderCapabilities.supportsGLES20()) setViewportGLES20();
+        else setViewportGL10(gl10);
+        Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
+    }
+
+    private void setViewportGLES20() {
+//        frustum.setOrthographicProjection(projectionMatrix);
+        frustum.setPerspectiveProjection(projectionMatrix);
+        GLES20.glViewport((int) viewportCoords.x, (int) viewportCoords.y,(int) dimension.x, (int) dimension.y);
+        Logger.checkGlError(this, "glViewPort");
+        setDirtyFlag();
+    }
+
+    private void setViewportGL10(GL10 gl10) {
+        gl10.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+        setDirtyFlag();
     }
 
     private void shadeInternalGL10(@NotNull ProcessingState state) {
@@ -333,6 +354,7 @@ public class Camera extends RenderableNode {
 
     public void setPosition(float x, float y, float z) {
         position.set(x,y,z);
+        frustum.setPosition(position);
     }
 
     public void setPosition(@NotNull Vector3 position) {
@@ -402,27 +424,5 @@ public class Camera extends RenderableNode {
     @Override
     public void afterProcess(ProcessingState state) {
         // do nothing
-    }
-
-    public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
-        viewportCoords.set(x, y, 0);
-        viewPortDimension.set(width, height, 0);
-        frustum.setAspectRatio(viewPortDimension.x / viewPortDimension.y);
-        if(RenderCapabilities.supportsGLES20()) setViewportGLES20();
-        else setViewportGL10(gl10);
-        Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
-    }
-
-    private void setViewportGLES20() {
-//        frustum.setOrthographicProjection(projectionMatrix);
-        frustum.setPerspectiveProjection(projectionMatrix);
-        GLES20.glViewport((int) viewportCoords.x, (int) viewportCoords.y,(int) dimension.x, (int) dimension.y);
-        Logger.checkGlError(this, "glViewPort");
-        setDirtyFlag();
-    }
-
-    private void setViewportGL10(GL10 gl10) {
-        gl10.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
-        setDirtyFlag();
     }
 }

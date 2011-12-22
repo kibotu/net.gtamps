@@ -1,6 +1,6 @@
 uniform mat4 projectionMatrix;
-uniform mat4 eyeViewMatrix;
-uniform mat4 modelViewMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
 uniform mat4 normalMatrix;
 
 // lighting
@@ -22,7 +22,7 @@ varying vec3 lightDir, eyeVec;
 void main()
 {
 	// the vertex position
-	vec4 position =  projectionMatrix * eyeViewMatrix *  modelViewMatrix * vec4(vertexPosition,1.0);
+	vec4 position =  projectionMatrix * viewMatrix *  modelMatrix * vec4(vertexPosition,1.0);
 
     // eye normal
 	esNormal = (normalMatrix * vec4(vertexNormal, 1.0)).xyz;
