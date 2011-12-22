@@ -315,19 +315,8 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
     public boolean updateOrientation() {
         if (!isDirty || frozen) return false;
 
-        // Translationsmatrix beziehen
-        //Matrix4 translation = new Matrix4();
-        //translation.toTranslation(position);
-
-        // Skalierungsmatrix beziehen
-        Matrix4 scaling = Matrix4.createNew();
-        scaling.toScaling(this.scaling);
-
-        // Rotationsmatrix beziehen
-        //Matrix4 rotation = Matrix4.getRotationEulerRPY(rotation.x, rotation.y, rotation.z);
-
         // Matrix zusammenfalten
-        orientation = MatrixFactory.getTransformation(rotation, position).mul(scaling);
+        orientation.set(MatrixFactory.getTransformation(scaling,rotation,position));
 
         // Bounding Box erzeugen
         updateBoundingBox();
@@ -335,8 +324,6 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
         // Als nicht mehr dirty markieren
         isDirty = false;
 
-        // Alles gut.
-        Matrix4.recycle(scaling);
         return true;
     }
 
