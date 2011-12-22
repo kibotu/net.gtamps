@@ -77,6 +77,7 @@ public class SensorDoorHandler extends SensorHandler {
 					.getHandler(Handler.Type.DRIVER);
 			if (driver != null) {
 				driver.enter(player);
+				sensed.clear();
 			} else {
 				GUILogger.i().log(LogType.GAMEWORLD, "no driver handler found");
 			}
