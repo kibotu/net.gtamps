@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public abstract class ViewNode {
 
 	protected static final Color DEFAULT_COLOR = Color.WHITE;
-	private static final Point ORIGIN = new Point(0,0);
+	protected static final Point ORIGIN = new Point(0,0);
 
 	private final Collection<ViewNode> children = new LinkedList<ViewNode>();
 	private ViewNode parent = null;
@@ -55,12 +55,20 @@ public abstract class ViewNode {
 		child.setParent(this);
 	}
 
+	public void clearChildren() {
+		children.clear();
+	}
+
 	public Point getPosition() {
 		return position;
 	}
 
 	public float getRotation() {
 		return rotation;
+	}
+
+	public float getScale() {
+		return scale;
 	}
 
 	public void dispose() {

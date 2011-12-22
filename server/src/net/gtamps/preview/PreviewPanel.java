@@ -145,7 +145,7 @@ public class PreviewPanel extends JPanel {
 		for (final Iterator<Body> bodyIterator = physics.bodyIterator(); bodyIterator.hasNext();) {
 			final Body body = bodyIterator.next();
 			if (isUnknown(body)) {
-				final BodyView node = new BodyView(body);
+				final BodyView node = BodyView.createBodyView(body);
 				addBody(node);
 				register(body, node);
 			}
