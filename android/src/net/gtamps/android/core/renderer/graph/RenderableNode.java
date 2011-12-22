@@ -73,7 +73,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines the current color material.
      */
-    protected Material material = Material.LIGHT_GRAY;
+    protected Material material = Material.RED;
 
     /**
      * Defines if mip maps are available.

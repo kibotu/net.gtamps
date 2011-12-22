@@ -42,4 +42,5 @@ void main()
     vec4 specularTerm = material.specular * pow(max(dot(reflectV, E), 1.0), material.shininess);
 
     gl_FragColor = ambientTerm + diffuseTerm + specularTerm;
+    //gl_FragColor = vec4(1.0,1.0,1.0,1.0);
 }

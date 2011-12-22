@@ -23,14 +23,15 @@ public class ShaderRenderer extends BasicRenderer {
         if(!RenderCapabilities.supportsGLES20()) return;
 
         // clear screen
-        GLES20.glClearColor(0f, 0f, 0f, 1f);
+        GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-        // unbound last shader
-//        GLES20.glUseProgram(GLES20.GL_NONE);
-//        OpenGLUtils.checkGlError("glUseProgram");
-
         int program = Shader.Type.PHONG.shader.getProgram();
+
+        // unbound last shader
+        GLES20.glUseProgram(program);
+        Logger.checkGlError(this,"glUseProgram");
+
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, lightP, 0);
         Logger.checkGlError(this,"lightPosition");
 //        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
@@ -62,7 +63,7 @@ public class ShaderRenderer extends BasicRenderer {
         GLES20.glDepthMask( true );
 
         // cull backface
-        GLES20.glEnable( GLES20.GL_CULL_FACE );
+        GLES20.glDisable( GLES20.GL_CULL_FACE );
         GLES20.glCullFace(GLES20.GL_BACK);
     }
 }
