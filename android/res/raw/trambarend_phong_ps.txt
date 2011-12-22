@@ -1,0 +1,53 @@
+// Vertex attributes form the mesh. Transformed by the vertex shader.
+varying vec3 fcolor;
+varying vec3 normalV;
+varying vec3 eyedirV;
+varying vec3 lightdirV;
+
+// Uniform variables. Set from the application.
+uniform vec3 ka;
+uniform vec3 kd;
+uniform vec3 ks;
+uniform float ke;
+
+vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+
+// Simple implementation of the phong illumination model.
+vec3 phong(vec3 n, vec3 v, vec3 s,
+           vec3 l,
+           vec3 ka, vec3 kd, vec3 ks, float ke)
+{
+  // Normalization is good.
+  n = normalize(n);
+  v = normalize(v);
+  s = normalize(s);
+
+  // The ambient term.
+  vec3 color = ka * l;
+
+  float cosns = dot(n, s);
+  if (cosns > 0.0) {
+    // The diffuse term.
+    color += kd * l * cosns;
+
+    // The specular term.
+    vec3 r = 2.0 * (cosns * n) - s;
+    float cosrv = dot(r, v);
+    if (cosrv > 0.0)
+      color += ks * l * pow(cosrv, ke);
+  }
+
+  return color;
+}
+
+// Main entry point.
+void main() {
+  // Just return the phong model result.
+  gl_FragColor.rgb =
+    phong(normalV, eyedirV, lightdirV,
+          lightintensity,
+          ka, kd, ks, ke);
+
+  // Make the fragment opaque (not transparent).
+  gl_FragColor.a = 1.0;
+}

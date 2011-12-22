@@ -212,8 +212,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         int program = shaderTyp.shader.getProgram();
 
         // send to the shader
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "modelViewMatrix"), 1, false, getCombinedTransformation().values, 0);
-        Logger.checkGlError(this,"modelViewMatrix");
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "viewMatrix"), 1, false, getCombinedTransformation().values, 0);
+        Logger.checkGlError(this,"viewMatrix");
 
         // vertices
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);

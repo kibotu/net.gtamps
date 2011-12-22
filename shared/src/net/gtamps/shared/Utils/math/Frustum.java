@@ -256,9 +256,9 @@ public final class Frustum {
         // http://www.lighthouse3d.com/opengl/viewfrustum/index.php?gimp
 
         // TODO: cc.set, wenn nicht null
-        this.position = position.clone();
-        target = lookAt.clone();
-        this.up = up.clone();
+        this.position = position;
+        this.target = lookAt;
+        this.up = up;
 
         // compute the Z axis of the camera referential
         // this axis points in the same direction from

@@ -37,8 +37,7 @@ public class Camera extends RenderableNode {
     private Vector3 viewPortDimension = Vector3.createNew(800,480,0);
 
     protected Matrix4 projectionMatrix = Matrix4.createNew();
-    protected Matrix4 modelViewMatrix = Matrix4.createNew();
-    protected Matrix4 modelViewProjectMatrix = Matrix4.createNew();
+    protected Matrix4 viewMatrix = Matrix4.createNew();
     protected Matrix4 normalMatrix = Matrix4.createNew();
 
 
@@ -60,8 +59,8 @@ public class Camera extends RenderableNode {
      * @param lookAt   Der Punkt, auf den die Kamera blickt
      * @param up       Der Hoch-Vektor der Kamera
      */
-    public Camera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
-        define(position, lookAt, up);
+    public Camera(@NotNull Vector3 position, @NotNull Vector3 target, @NotNull Vector3 up) {
+        define(position, target, up);
     }
 
     /**
@@ -133,17 +132,6 @@ public class Camera extends RenderableNode {
     }
 
     /**
-     * Setzt den Sichtkegel
-     *
-     * @param frustum Der Kegel
-     */
-    @Deprecated
-    public void setFrustum(@NotNull Frustum frustum) {
-        this.frustum = frustum;
-        setPosition(frustum.getPosition()); // TODO: Referenz verwenden
-    }
-
-    /**
      * Setzt die Kameraparameter
      *
      * @param position Die Position der Kamera
@@ -194,7 +182,7 @@ public class Camera extends RenderableNode {
     @Override
     protected void updateInternal(float deltat) {
         // Nur nötig, wenn Kamera animiert wird. --> Pfade setzen, ...
-//        frustum.setPosition(position);
+        frustum.setPosition(position);
     }
 
     /**
@@ -211,9 +199,8 @@ public class Camera extends RenderableNode {
         Vector3 pos = frustum.getPosition();
         Vector3 target = frustum.getTarget();
         Vector3 up = frustum.getUp();
-        Matrix4.setLookAt(modelViewMatrix,pos,target,up);
-        modelViewProjectMatrix = modelViewMatrix.mul(this.modelViewMatrix);
-        modelViewProjectMatrix.mulInPlace(projectionMatrix);
+//        Matrix4.setLookAt(viewMatrix,pos,target,up);
+        Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
 
         if (hasDepthTest) {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -225,7 +212,7 @@ public class Camera extends RenderableNode {
 
         // send to the shader
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "projectionMatrix"), 1, false, projectionMatrix.values, 0);
-        Logger.checkGlError(this,"projectionMatrix");
+        Logger.checkGlError(this, "projectionMatrix");
 
         // Create the normal modelview matrix
         // Invert + transpose of mvpmatrix
@@ -234,7 +221,11 @@ public class Camera extends RenderableNode {
 
         // send to the shader
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);
-        Logger.checkGlError(this,"normalMatrix");
+        Logger.checkGlError(this, "normalMatrix");
+
+        // eye view matrix
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "eyeViewMatrix"), 1, false, viewMatrix.values, 0);
+        Logger.checkGlError(this,"eyeViewMatrix");
     }
 
     private void shadeInternalGL10(@NotNull ProcessingState state) {
@@ -341,11 +332,11 @@ public class Camera extends RenderableNode {
     }
 
     public void setPosition(float x, float y, float z) {
-        frustum.setPosition(x, y, z);
+        position.set(x,y,z);
     }
 
     public void setPosition(@NotNull Vector3 position) {
-        frustum.setPosition(position);
+        setPosition(position.x,position.y,position.z);
     }
 
     /**

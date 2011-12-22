@@ -89,7 +89,12 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
 //            world.getActiveCamera().rotate(30,1,0,0);
 //        }
+
+        rot+=0.1f;
+        world.getScene().get(0).setRotation(rot,rot,rot);
     }
+
+    float rot = 0;
 
     private long impulse = 0;
 
