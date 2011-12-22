@@ -112,7 +112,7 @@ public class MessageHandler {
 
 		case SESSION_OK:
 			connection.currentSessionId = message.getSessionId();
-			connection.add(MessageFactory.createRegisterRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+            connection.add(MessageFactory.createLoginRequest(Config.DEFAULT_USERNAME,Config.DEFAULT_PASSWORD));
 			break;
 		case SESSION_NEED:
 			break;
@@ -159,13 +159,14 @@ public class MessageHandler {
 		case LOGIN_NEED:
 			break;
 		case LOGIN_BAD:
+            connection.add(MessageFactory.createRegisterRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
 			break;
 		case LOGIN_ERROR:
-            Logger.toast(this, "LOGIN_ERROR");
+            Logger.toast(this, "LOGIN_ERROR: most likely password or username wrong.");
 			break;
 
 		case REGISTER_OK:
-			connection.add(MessageFactory.createLoginRequest("username", "password"));
+            connection.add(MessageFactory.createJoinRequest());
 			break;
 		case REGISTER_NEED:
 			break;

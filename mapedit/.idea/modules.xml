@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/dxf/processing-dxf.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/dxf/processing-dxf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/net/processing-net.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/net/processing-net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/opengl/processing-opengl.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/opengl/processing-opengl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/pdf/processing-pdf.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/pdf/processing-pdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/serial/processing-serial.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/serial/processing-serial.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/video/processing-video.iml" filepath="$PROJECT_DIR$/libs/processing-1.5.1/modes/java/libraries/video/processing-video.iml" />
+    </modules>
+  </component>
+</project>
+

@@ -24,7 +24,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 50, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -90,7 +90,7 @@ public class World extends EntityScene {
     }
 
     public static RenderableNode addLevel() {
-        ParsedObject parsedObject = ParsedObject.parseObject("map1_obj", R.drawable.grid, true);
+        ParsedObject parsedObject = ParsedObject.parseObject("map1map_obj", R.drawable.map1map, true);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);

@@ -67,8 +67,8 @@ final public class Config {
     public static final int MAX_SOCKET_TIMEOUT = 14000;
     public static final int SERVER_ANGLE_TO_NATIVE = 270;
     public static final long HUD_INPUT_MESSAGE_TIMOUT = 90;
-    public static String DEFAULT_USERNAME = ""+ Math.random()*64;
-    public static final String DEFAULT_PASSWORD = ""+ Math.random()*64;
+    public static String DEFAULT_USERNAME = "blub";
+    public static final String DEFAULT_PASSWORD = "blub";
 
     private Config() {
     }
