@@ -212,7 +212,7 @@ public class Camera extends RenderableNode {
         GL10 gl = state.getGl();
         assert gl != null;
 
-        gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+        gl.glViewport((int)viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         GLU.gluPerspective(gl, getHorizontalFieldOfViewEffective(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());

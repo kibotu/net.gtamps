@@ -86,7 +86,7 @@ public class Game implements IRenderActivity {
 
         if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+30);
+            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+70);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }

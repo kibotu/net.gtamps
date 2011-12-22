@@ -25,22 +25,20 @@ public class HudInterpreter extends InputInterpreter {
         if(actionType.equals(ActionType.PLAYER_MOVEMENT)){
 
             // accelerate
-            if(y < 0.30f){
+            if(y < 0.20f){
                 eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, new FloatData((0.30f-y)*2f));
             }
-
             // decelerate
-            if(y > 0.60f){
+            else if(y > 0.80f){
                 eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, new FloatData((y-0.30f)*2f));
             }
 
             // left
-            if(x > 0.30f){
+            if(x < 0.20f){
                 eventDispatcher.dispatch(SendableType.ACTION_LEFT, new FloatData((0.60f-x)*2f));
             }
-
             // right
-            if(x < 0.60f){
+            else if(x > 0.80f){
                 eventDispatcher.dispatch(SendableType.ACTION_RIGHT, new FloatData((x-0.60f)*2f));
             }
         }
