@@ -35,310 +35,310 @@ import net.gtamps.shared.serializer.communication.data.UpdateData;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-    private static final String TEST_LEVEL_PATH = "../assets/map3.map.lvl";
+	private static final String TEST_LEVEL_PATH = "../assets/map3.map.lvl";
 	private static final LogType TAG = LogType.GAMEWORLD;
-    private static final long THREAD_UPDATE_SLEEP_TIME = 20;
-    private static final int PHYSICS_ITERATIONS = 20;
+	private static final long THREAD_UPDATE_SLEEP_TIME = 20;
+	private static final int PHYSICS_ITERATIONS = 20;
 
-    private static volatile int instanceCounter = 0;
+	private static volatile int instanceCounter = 0;
 
-    private final int id;
-    private final Thread thread;
-    private final BlockingQueue<Sendable> requestQueue = new LinkedBlockingQueue<Sendable>();
-    private final BlockingQueue<Sendable> commandQueue = new LinkedBlockingQueue<Sendable>();
-    private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
+	private final int id;
+	private final Thread thread;
+	private final BlockingQueue<Sendable> requestQueue = new LinkedBlockingQueue<Sendable>();
+	private final BlockingQueue<Sendable> commandQueue = new LinkedBlockingQueue<Sendable>();
+	private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
 
-    private volatile boolean run;
-    private volatile boolean isActive;
+	private volatile boolean run;
+	private volatile boolean isActive;
 
-    private final Universe universe;
-    private final PlayerManagerFacade playerStorage;
-    private final TimeKeeper gameTime;
+	private final Universe universe;
+	private final PlayerManagerFacade playerStorage;
+	private final TimeKeeper gameTime;
 
-    public Game(final String mapPath) {
-        id = ++Game.instanceCounter;
-        final String name = "Game " + id;
-        thread = new Thread(this, name);
-//        universe = UniverseFactory.loadMap(mapPath);
-        universe = UniverseFactory.loadWorldFromLevel(mapPath);
-        if (universe != null) {
-            GUILogger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
-            run = true;
-            playerStorage = new PlayerManagerFacade(universe.playerManager);
-            gameTime = new TimeKeeper();
-            
-            start();
-        } else {
-            GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
-            run = false;
-            playerStorage = null;
-            gameTime = null;
-        }
-    }
+	public Game(final String mapPath) {
+		id = ++Game.instanceCounter;
+		final String name = "Game " + id;
+		thread = new Thread(this, name);
+		//        universe = UniverseFactory.loadMap(mapPath);
+		universe = UniverseFactory.loadWorldFromLevel(mapPath);
+		if (universe != null) {
+			GUILogger.i().log(LogType.GAMEWORLD, "Starting new Game: " + universe.getName());
+			run = true;
+			playerStorage = new PlayerManagerFacade(universe.playerManager);
+			gameTime = new TimeKeeper();
 
-    public Game() {
-        this(TEST_LEVEL_PATH);
-    }
+			start();
+		} else {
+			GUILogger.i().log(LogType.GAMEWORLD, "Game not loaded");
+			run = false;
+			playerStorage = null;
+			gameTime = null;
+		}
+	}
 
-    @Override
-    public long getId() {
-        return id;
-    }
+	public Game() {
+		this(TEST_LEVEL_PATH);
+	}
 
-    @Override
-    public String getName() {
-        return universe.getName();
-    }
+	@Override
+	public long getId() {
+		return id;
+	}
 
-    @Override
-    public void start() {
-        thread.start();
-    }
+	@Override
+	public String getName() {
+		return universe.getName();
+	}
 
-    @Override
-    public void hardstop() {
-        run = false;
-        thread.interrupt();
-    }
+	@Override
+	public void start() {
+		thread.start();
+	}
 
-    @Override
-    public void run() {
-        isActive = true;
+	@Override
+	public void hardstop() {
+		run = false;
+		thread.interrupt();
+	}
 
-        if (GTAMultiplayerServer.DEBUG) {
-        	DebugGameBridge.instance.setWorld(universe.physics.getWorld());
-        }
-        
-        
-//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
-        while (run) {
-            gameTime.startCycle();
-            doCycle();
-            gameTime.endCycle();
-            sleepIfCycleTimeRemaining();
-        }
-//		world.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
-        
-        if (GTAMultiplayerServer.DEBUG) {
-        	DebugGameBridge.instance.setWorld(null);
-        }
-        
-        isActive = false;
-    }
+	@Override
+	public void run() {
+		isActive = true;
 
-    private void doCycle() {
-        universe.updateRevision(gameTime.getTotalDurationMillis());
-        universe.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
-        //TODO
-		universe.eventManager.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
-
-        //for fps debugging
-//		lastUpdate += timeElapsedInSeceonds;
-//		updates++;
-//		if(lastUpdate>5f){
-//			Logger.i().log(LogType.PHYSICS, "Physics fps: "+((updates/lastUpdate)));
-//			lastUpdate = 0f;
-//			updates = 0;
-//		}
-
-        processCommandQueue();
-        processRequestQueue();
-    }
-
-    private void sleepIfCycleTimeRemaining() {
-        final long millisRemaining = THREAD_UPDATE_SLEEP_TIME - gameTime.getLastActiveDurationMillis();
-        try {
-            if (millisRemaining > 0) {
-                Thread.sleep(millisRemaining);
-            }
-        } catch (final InterruptedException e) {
-            // reset interrupted status?
-            //Thread.currentThread().interrupt();
-        }
-    }
+		if (GTAMultiplayerServer.DEBUG) {
+			DebugGameBridge.instance.setWorld(universe.physics.getWorld());
+		}
 
 
-    @Override
-    public boolean isActive() {
-        return isActive;
-    }
+		//		universe.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
+		while (run) {
+			gameTime.startCycle();
+			doCycle();
+			gameTime.endCycle();
+			sleepIfCycleTimeRemaining();
+		}
+		//		universe.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
+
+		if (GTAMultiplayerServer.DEBUG) {
+			DebugGameBridge.instance.setWorld(null);
+		}
+
+		isActive = false;
+	}
+
+	private void doCycle() {
+		universe.updateRevision(gameTime.getTotalDurationMillis());
+		universe.physics.step(gameTime.getLastCycleDurationSeconds(), PHYSICS_ITERATIONS);
+		//TODO
+		universe.dispatchEvent(new GameEvent(EventType.SESSION_UPDATE, NullGameObject.DUMMY));
+
+		//for fps debugging
+		//		lastUpdate += timeElapsedInSeceonds;
+		//		updates++;
+		//		if(lastUpdate>5f){
+		//			Logger.i().log(LogType.PHYSICS, "Physics fps: "+((updates/lastUpdate)));
+		//			lastUpdate = 0f;
+		//			updates = 0;
+		//		}
+
+		processCommandQueue();
+		processRequestQueue();
+	}
+
+	private void sleepIfCycleTimeRemaining() {
+		final long millisRemaining = THREAD_UPDATE_SLEEP_TIME - gameTime.getLastActiveDurationMillis();
+		try {
+			if (millisRemaining > 0) {
+				Thread.sleep(millisRemaining);
+			}
+		} catch (final InterruptedException e) {
+			// reset interrupted status?
+			//Thread.currentThread().interrupt();
+		}
+	}
 
 
-    @Override
-    public void handleSendable(final Sendable sendable) {
-        if (sendable == null) {
-            throw new IllegalArgumentException("'r' must not be null");
-        }
-        switch (sendable.type) {
-            case ACTION_ACCELERATE:
-            case ACTION_DECELERATE:
-            case ACTION_ENTEREXIT:
-            case ACTION_LEFT:
-            case ACTION_RIGHT:
-            case ACTION_SHOOT:
-            case ACTION_SUICIDE:
-                commandQueue.add(sendable);
-                break;
-            case GETMAPDATA:
-            case GETPLAYER:
-            case GETUPDATE:
-            case JOIN:
-            case LEAVE:
-                requestQueue.add(sendable);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void drainResponseQueue(final Collection<Sendable> target) {
-        responseQueue.drainTo(target);
-    }
-
-    private void processCommandQueue() {
-        final List<Sendable> commandPairs = new LinkedList<Sendable>();
-        commandQueue.drainTo(commandPairs);
-        for (final Sendable sendable : commandPairs) {
-            command(sendable);
-        }
-        commandPairs.clear();
-    }
-
-    private void processRequestQueue() {
-        final List<Sendable> requestPairs = new LinkedList<Sendable>();
-        requestQueue.drainTo(requestPairs);
-        for (final Sendable sendable : requestPairs) {
-            final Sendable response = processRequest(sendable);
-            handleResponse(response);
-        }
-        requestPairs.clear();
-    }
-
-    private Sendable processRequest(final Sendable request) {
-        Sendable response = null;
-        if (!(request.type.equals(SendableType.JOIN) || SessionManager.instance.isPlaying(request.sessionId))) {
-            return request.createResponse(request.type.getNeedResponse());
-        }
-        switch (request.type) {
-            case JOIN:
-                response = join(request);
-                break;
-            case GETMAPDATA:
-//					response = getMapData(session, request);
-                break;
-            case GETPLAYER:
-                response = getPlayer(request);
-                break;
-            case GETUPDATE:
-                response = getUpdate(request);
-                break;
-            case LEAVE:
-                response = leave(request);
-                break;
-            default:
-                break;
-
-        }
-        return response;
-    }
+	@Override
+	public boolean isActive() {
+		return isActive;
+	}
 
 
-    private void handleResponse(final Sendable r) {
-        assert r != null;
-        responseQueue.add(r);
-    }
+	@Override
+	public void handleSendable(final Sendable sendable) {
+		if (sendable == null) {
+			throw new IllegalArgumentException("'r' must not be null");
+		}
+		switch (sendable.type) {
+			case ACTION_ACCELERATE:
+			case ACTION_DECELERATE:
+			case ACTION_ENTEREXIT:
+			case ACTION_LEFT:
+			case ACTION_RIGHT:
+			case ACTION_SHOOT:
+			case ACTION_SUICIDE:
+				commandQueue.add(sendable);
+				break;
+			case GETMAPDATA:
+			case GETPLAYER:
+			case GETUPDATE:
+			case JOIN:
+			case LEAVE:
+				requestQueue.add(sendable);
+				break;
+			default:
+				break;
+		}
+	}
 
-    private void command(final Sendable cmd) {
-        final User user = SessionManager.instance.getUserForSession(cmd.sessionId);
-        final Player player = playerStorage.getPlayerForUser(user);
-        if (player == null) {
-            return;
-        }
-        EventType type = null;
-        switch (cmd.type) {
-            case ACTION_ACCELERATE:
-                type = EventType.ACTION_ACCELERATE;
-                break;
-            case ACTION_DECELERATE:
-                type = EventType.ACTION_DECELERATE;
-                break;
-            case ACTION_LEFT:
-                type = EventType.ACTION_TURNLEFT;
-                break;
-            case ACTION_RIGHT:
-                type = EventType.ACTION_TURNRIGHT;
-                break;
-            case ACTION_ENTEREXIT:
-                type = EventType.ACTION_ENTEREXIT;
-                GUILogger.i().log(TAG, "ENTER/EXIT received");
-                break;
-            case ACTION_SHOOT:
-                type = EventType.ACTION_SHOOT;
-                break;
-            case ACTION_HANDBRAKE:
-                type = EventType.ACTION_HANDBRAKE;
-                break;
-            case ACTION_SUICIDE:
-                type = EventType.ACTION_SUICIDE;
-        }
-        if (type != null) {
-            universe.eventManager.dispatchEvent(new GameEvent(type, player));
-        }
-    }
+	@Override
+	public void drainResponseQueue(final Collection<Sendable> target) {
+		responseQueue.drainTo(target);
+	}
+
+	private void processCommandQueue() {
+		final List<Sendable> commandPairs = new LinkedList<Sendable>();
+		commandQueue.drainTo(commandPairs);
+		for (final Sendable sendable : commandPairs) {
+			command(sendable);
+		}
+		commandPairs.clear();
+	}
+
+	private void processRequestQueue() {
+		final List<Sendable> requestPairs = new LinkedList<Sendable>();
+		requestQueue.drainTo(requestPairs);
+		for (final Sendable sendable : requestPairs) {
+			final Sendable response = processRequest(sendable);
+			handleResponse(response);
+		}
+		requestPairs.clear();
+	}
+
+	private Sendable processRequest(final Sendable request) {
+		Sendable response = null;
+		if (!(request.type.equals(SendableType.JOIN) || SessionManager.instance.isPlaying(request.sessionId))) {
+			return request.createResponse(request.type.getNeedResponse());
+		}
+		switch (request.type) {
+			case JOIN:
+				response = join(request);
+				break;
+			case GETMAPDATA:
+				//					response = getMapData(session, request);
+				break;
+			case GETPLAYER:
+				response = getPlayer(request);
+				break;
+			case GETUPDATE:
+				response = getUpdate(request);
+				break;
+			case LEAVE:
+				response = leave(request);
+				break;
+			default:
+				break;
+
+		}
+		return response;
+	}
 
 
-    private Sendable join(final Sendable sendable) {
-        assert sendable.type.equals(SendableType.JOIN);
-        final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-        final Player player = playerStorage.joinUser(user);
-        if (player == null) {
-            final Sendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
-            joinError.data = new StringData("no spawnpoint found");
-            return joinError;
-        }
-        SessionManager.instance.joinSession(sendable.sessionId, this);
-        return sendable.createResponse(SendableType.JOIN_OK);
-    }
+	private void handleResponse(final Sendable r) {
+		assert r != null;
+		responseQueue.add(r);
+	}
 
-    private Sendable leave(final Sendable sendable) {
-        assert sendable.type.equals(SendableType.LEAVE);
-        final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-        playerStorage.leaveUser(user);
-        SessionManager.instance.leaveSession(sendable.sessionId);
-        return sendable.createResponse(SendableType.LEAVE_OK);
-    }
+	private void command(final Sendable cmd) {
+		final User user = SessionManager.instance.getUserForSession(cmd.sessionId);
+		final Player player = playerStorage.getPlayerForUser(user);
+		if (player == null) {
+			return;
+		}
+		EventType type = null;
+		switch (cmd.type) {
+			case ACTION_ACCELERATE:
+				type = EventType.ACTION_ACCELERATE;
+				break;
+			case ACTION_DECELERATE:
+				type = EventType.ACTION_DECELERATE;
+				break;
+			case ACTION_LEFT:
+				type = EventType.ACTION_TURNLEFT;
+				break;
+			case ACTION_RIGHT:
+				type = EventType.ACTION_TURNRIGHT;
+				break;
+			case ACTION_ENTEREXIT:
+				type = EventType.ACTION_ENTEREXIT;
+				GUILogger.i().log(TAG, "ENTER/EXIT received");
+				break;
+			case ACTION_SHOOT:
+				type = EventType.ACTION_SHOOT;
+				break;
+			case ACTION_HANDBRAKE:
+				type = EventType.ACTION_HANDBRAKE;
+				break;
+			case ACTION_SUICIDE:
+				type = EventType.ACTION_SUICIDE;
+		}
+		if (type != null) {
+			universe.dispatchEvent(new GameEvent(type, player));
+		}
+	}
 
-    private Sendable getPlayer(final Sendable request) {
-        assert request.type.equals(SendableType.GETPLAYER);
-        final User user = SessionManager.instance.getUserForSession(request.sessionId);
-        final Player player = playerStorage.getPlayerForUser(user);
-        if (player == null) {
-            return request.createResponse(SendableType.GETPLAYER_NEED);
-        }
-        final Sendable response = request.createResponse(SendableType.GETPLAYER_OK);
-        response.data = new PlayerData(player);
-        return response;
-    }
+
+	private Sendable join(final Sendable sendable) {
+		assert sendable.type.equals(SendableType.JOIN);
+		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
+		final Player player = playerStorage.joinUser(user);
+		if (player == null) {
+			final Sendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
+			joinError.data = new StringData("no spawnpoint found");
+			return joinError;
+		}
+		SessionManager.instance.joinSession(sendable.sessionId, this);
+		return sendable.createResponse(SendableType.JOIN_OK);
+	}
+
+	private Sendable leave(final Sendable sendable) {
+		assert sendable.type.equals(SendableType.LEAVE);
+		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
+		playerStorage.leaveUser(user);
+		SessionManager.instance.leaveSession(sendable.sessionId);
+		return sendable.createResponse(SendableType.LEAVE_OK);
+	}
+
+	private Sendable getPlayer(final Sendable request) {
+		assert request.type.equals(SendableType.GETPLAYER);
+		final User user = SessionManager.instance.getUserForSession(request.sessionId);
+		final Player player = playerStorage.getPlayerForUser(user);
+		if (player == null) {
+			return request.createResponse(SendableType.GETPLAYER_NEED);
+		}
+		final Sendable response = request.createResponse(SendableType.GETPLAYER_OK);
+		response.data = new PlayerData(player);
+		return response;
+	}
 
 
-    private Sendable getUpdate(final Sendable sendable) {
-        assert sendable.type.equals(SendableType.GETUPDATE);
-        final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
-        final Player player = playerStorage.getPlayerForUser(user);
-        if (player == null) {
-            return sendable.createResponse(SendableType.GETPLAYER_NEED);
-        }
-        final long baseRevision = ((RevisionData) sendable.data).revisionId;
-        final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
-        final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
-        final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
-        update.gameObjects = new ArrayList<GameObject>();
-        update.gameObjects.addAll(entities);
-        update.gameObjects.addAll(events);
-        final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
-        updateResponse.data = update;
-        return updateResponse;
-    }
+	private Sendable getUpdate(final Sendable sendable) {
+		assert sendable.type.equals(SendableType.GETUPDATE);
+		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
+		final Player player = playerStorage.getPlayerForUser(user);
+		if (player == null) {
+			return sendable.createResponse(SendableType.GETPLAYER_NEED);
+		}
+		final long baseRevision = ((RevisionData) sendable.data).revisionId;
+		final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
+		final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
+		final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
+		update.gameObjects = new ArrayList<GameObject>();
+		update.gameObjects.addAll(entities);
+		update.gameObjects.addAll(events);
+		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
+		updateResponse.data = update;
+		return updateResponse;
+	}
 
 }

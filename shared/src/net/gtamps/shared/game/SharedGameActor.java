@@ -105,7 +105,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 		{
 			if (other == this) {
 				final String msg = "Trying to connect a gameActor to itself. " +
-				"This is not allowed.";
+						"This is not allowed.";
 				throw new IllegalArgumentException(msg);
 			}
 		}
@@ -193,7 +193,9 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	 */
 	@Override
 	public void dispatchEvent(final GameEvent event) {
-		eventDispatcher.dispatchEvent(event);
+		if (isEnabled()) {
+			eventDispatcher.dispatchEvent(event);
+		}
 	}
 
 	@Override

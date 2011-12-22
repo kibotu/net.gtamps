@@ -1,12 +1,12 @@
 package net.gtamps.game.handler;
 
+import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 
@@ -45,8 +45,8 @@ import net.gtamps.shared.game.player.Player;
  */
 public class SensorDoorHandler extends SensorHandler {
 
-	public SensorDoorHandler(final IGameEventDispatcher eventRoot, final Entity parent) {
-		super(eventRoot, EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
+	public SensorDoorHandler(final Universe universe, final Entity parent) {
+		super(universe, EventType.ENTITY_SENSE_DOOR, EventType.ACTION_ENTEREXIT, parent);
 		final EventType[] receives = {EventType.ENTITY_SENSE_DOOR,
 				EventType.ACTION_ENTEREXIT};
 		setReceives(receives);
