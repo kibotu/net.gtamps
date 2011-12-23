@@ -48,7 +48,7 @@ public class EntityView implements IDirty {
         // position
         object3d.setPosition(entity.x.value() * Config.PIXEL_TO_NATIVE, entity.y.value() * Config.PIXEL_TO_NATIVE, entity.z.value() * Config.PIXEL_TO_NATIVE);
         // scaling
-        object3d.setScaling(1, 1, 1);
+//        object3d.setScaling(1, 1, 1);
 //        rotation
         object3d.setRotation(0, 0, entity.rota.value()+Config.SERVER_ANGLE_TO_NATIVE);
 

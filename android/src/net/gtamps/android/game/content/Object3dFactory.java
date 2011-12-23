@@ -106,7 +106,7 @@ final public class Object3dFactory {
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
-        parsedChild.setScaling(5, 5, 5);
+        parsedChild.setScaling(20, 20, 20);
         return parsedObject;
     }
 
