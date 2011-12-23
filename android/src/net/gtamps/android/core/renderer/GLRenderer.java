@@ -1,6 +1,8 @@
 package net.gtamps.android.core.renderer;
 
+import android.graphics.Bitmap;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
@@ -35,6 +37,51 @@ public class GLRenderer extends BasicRenderer {
             if(scene.isDirty()) scene.onDirty();
             scene.getScene().render(glState);
         }
+    }
+
+    @Override
+    public int allocTexture(Bitmap texture, boolean generateMipMap) {
+
+        GL11 gl = glState.getGl11();
+
+        int glTextureId = newTextureID();
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, glTextureId);
+
+        if (generateMipMap && gl instanceof GL11) {
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST);
+            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
+        } else {
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
+        }
+
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+        gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+
+        // 'upload' to gpu
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture, 0);
+
+        Logger.i(this, "[w:" + texture.getWidth() + "|h:" + texture.getHeight() + "|id:" + glTextureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
+
+        //Clean up
+        texture.recycle();
+
+        return glTextureId;
+    }
+
+    @Override
+    public int newTextureID() {
+        final int[] temp = new int[1];
+        glState.getGl().glGenTextures(1, temp, 0);
+        return temp[0];
+    }
+
+    @Override
+    public void deleteTexture(int ... textureId) {
+        glState.getGl().glDeleteTextures(textureId.length, textureId, 0);
     }
 
     @Override

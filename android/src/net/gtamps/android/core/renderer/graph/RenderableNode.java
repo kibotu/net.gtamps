@@ -9,6 +9,7 @@ import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
+import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.Logger;
@@ -81,7 +82,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines the current color material.
      */
-    protected Material material = Material.RED;
+    protected Material material = Material.DARK_GRAY;
 
     /**
      * Defines if mip maps are available.
@@ -287,67 +288,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this,"glDrawElements");
     }
 
-
-    /**
-     * Sets up texturing for the object
-     */
-    public void setupTextures(int resourceId) {
-        // create new texture ids if object has them
-
-        // number of textures
-//        int[] texIDs = ob.get_texID();
-//        int[] textures = new int[texIDs.length];
-//        _texIDs = new int[texIDs.length];
-//        texture file ids
-//        int[] texFiles = ob.getTexFile();
-
-        int [] textureIds = new int[1];
-//        Logger.d(this, "TEXFILES LENGTH: " + texFiles.length);
-        GLES20.glGenTextures(1, textureIds, 0);
-        textureId = textureIds[0];
-//        for(int i = 0; i < texIDs.length; i++) {
-//            texIDs[i] = textures[i];
-
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-
-
-//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
-//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_GENERATE_MIPMAP_HINT, GLES20.GL_TRUE);
-//            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-//            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
-
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
-
-//            // parameters
-//            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_LINEAR);
-//
-//            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_REPEAT);
-//            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_REPEAT);
-
-            InputStream is = Registry.getContext().getApplicationContext().getResources().openRawResource(resourceId);
-            Bitmap bitmap;
-            try {
-                bitmap = BitmapFactory.decodeStream(is);
-            } finally {
-                try {
-                    is.close();
-                } catch(IOException e) {
-                    Logger.printException(this,e);
-                }
-            }
-
-            // create it
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-            bitmap.recycle();
-
-//            Logger.d(this, "ATTACHING TEXTURES: Attached " + i);
-//        }
-    }
-
     @Override
     public void shadeInternal(@NotNull ProcessingState state) {
 //        shadeInternalWithOutVBO(state);
@@ -494,7 +434,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
-        if(textureResourceId != 0) setupTextures(textureResourceId);
+        if(textureResourceId != 0) textureId = Registry.getTextureLibrary().loadTexture(textureResourceId,false);
         clearDirtyFlag();
     }
 

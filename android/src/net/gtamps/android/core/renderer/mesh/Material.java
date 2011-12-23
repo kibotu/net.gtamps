@@ -37,15 +37,20 @@ public class Material {
     }
 
     public Color4 getEmission() {
-        return emission;
+        return emission == null ? Color4.TRANSPARENT : emission;
     }
 
     public void setEmission(Color4 emission) {
         this.emission = emission;
     }
 
+    public void setEmission(float r, float g, float b, int a) {
+        if(emission == null) emission = new Color4(r,g,b,a);
+        emission.setAll(r,g,b,a);
+    }
+
     public Color4 getAmbient() {
-        return ambient;
+        return ambient == null ? Color4.TRANSPARENT : ambient;
     }
 
     public void setAmbient(Color4 ambient) {
@@ -53,7 +58,7 @@ public class Material {
     }
 
     public Color4 getDiffuse() {
-        return diffuse;
+        return diffuse == null ? Color4.TRANSPARENT : diffuse;
     }
 
     public void setDiffuse(Color4 diffuse) {
@@ -61,7 +66,7 @@ public class Material {
     }
 
     public Color4 getSpecular() {
-        return specular;
+        return specular == null ? Color4.TRANSPARENT : specular;
     }
 
     public void setSpecular(Color4 specular) {

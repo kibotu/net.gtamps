@@ -1,6 +1,9 @@
 package net.gtamps.android.core.renderer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
@@ -10,6 +13,9 @@ import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 public class ShaderRenderer extends BasicRenderer {
@@ -44,6 +50,38 @@ public class ShaderRenderer extends BasicRenderer {
             renderActivity.getScenes().get(i).getScene().update(getDelta());
             renderActivity.getScenes().get(i).getScene().process(glState);
         }
+    }
+
+    @Override
+    public int allocTexture(Bitmap texture, boolean generateMipMap) {
+
+        int textureId = newTextureID();
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
+
+        Logger.i(this, "[w:" + texture.getWidth() + "|h:" + texture.getHeight() + "|id:" + textureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
+
+        texture.recycle();
+
+        return textureId;
+    }
+
+    @Override
+    public int newTextureID() {
+        int [] textureIds = new int[1];
+        GLES20.glGenTextures(1, textureIds, 0);
+        return textureIds[0];
+    }
+
+    @Override
+    public void deleteTexture(int ... textureIds) {
+        GLES20.glDeleteTextures(textureIds.length, textureIds, 0);
     }
 
     // light variables

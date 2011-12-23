@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer;
 
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
@@ -165,4 +166,28 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer{
             Logger.printException(this,e);
         }
     }
+
+    /**
+     * Uploads a texture to hardware.
+     *
+     * @param texture
+     * @param generateMipMap
+     * @return textureId
+     */
+    public abstract int allocTexture(Bitmap texture, boolean generateMipMap);
+
+    /**
+     * Returns a new generated valid Texture id.
+     *
+     * @param gl
+     * @return generatedId
+     */
+    public abstract int newTextureID();
+
+    /**
+     * Deletes a texture by id.
+     *
+     * @param gl
+     */
+    public abstract void deleteTexture(int ... textureIds);
 }

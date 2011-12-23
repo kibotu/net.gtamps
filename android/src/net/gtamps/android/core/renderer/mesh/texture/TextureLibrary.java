@@ -89,40 +89,10 @@ public class TextureLibrary {
             bitmap = BitmapFactory.decodeResource(Registry.getContext().getResources(), textureResourceId, sBitmapOptions);
         }
 
-        int id = alloc(bitmap, generateMipMap);
+        int id = Registry.getRenderer().allocTexture(bitmap, generateMipMap);
         textureResourceIds.put("" + textureResourceId, id);
 
         return id;
-    }
-
-    private int alloc(Bitmap bitmap, boolean generateMipMap) {
-
-        int glTextureId = newTextureID(gl);
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, glTextureId);
-
-        if (generateMipMap && gl instanceof GL11) {
-            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST_MIPMAP_NEAREST);
-            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_TRUE);
-        } else {
-            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-            gl.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_GENERATE_MIPMAP, GL11.GL_FALSE);
-        }
-
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
-        gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
-
-        // 'upload' to gpu
-        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-
-        Logger.i(this, "[w:" + bitmap.getWidth() + "|h:" + bitmap.getHeight() + "|id:" + glTextureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
-
-        //Clean up
-        bitmap.recycle();
-
-        return glTextureId;
     }
 
     /**
@@ -131,24 +101,6 @@ public class TextureLibrary {
     public void clear() {
         textureResourceIds.clear();
         textureCoordinatesResourceIds.clear();
-    }
-
-    /**
-     * Returns a new generated valid Texture id.
-     *
-     * @param gl
-     * @return generatedId
-     */
-    private static int newTextureID(final GL10 gl) {
-        final int[] temp = new int[1];
-        gl.glGenTextures(1, temp, 0);
-        return temp[0];
-    }
-
-    private void deleteTexture(int textureId) {
-        int[] a = new int[1];
-        a[0] = textureId;
-        gl.glDeleteTextures(1, a, 0);
     }
 
     public String getNewAtlasId() {
@@ -160,7 +112,7 @@ public class TextureLibrary {
     }
 
     public int addTexture(Bitmap texture, String atlasId, boolean generateMipMap) {
-        int textureId = alloc(texture, generateMipMap);
+        int textureId = Registry.getRenderer().allocTexture(texture, generateMipMap);
         textureResourceIds.put(atlasId, textureId);
         return textureId;
     }

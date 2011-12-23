@@ -77,6 +77,7 @@ public class ParseObjectData {
                 Color4 newColor = new Color4(255, 255, 0, 255);
                 if (material != null && material.getDiffuse() != null) {
                     newColor.setAll(material.getDiffuse());
+                    obj.setMaterial(material);
                 }
 
                 if (hasBitmaps && (ba != null)) {
