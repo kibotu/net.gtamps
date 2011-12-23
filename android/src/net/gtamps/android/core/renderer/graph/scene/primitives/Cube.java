@@ -49,7 +49,8 @@ public class Cube extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
-        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
+//        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
+        material = Material.WHITE;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class Cube extends RenderableNode {
 
         this.mesh = new Mesh(24, 12);
 
-        final float c = 0.5f;
+        final float c = 1f;
         Color4 emissive = material.getEmission();
 
         mesh.addVertex(c, -c, -c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);

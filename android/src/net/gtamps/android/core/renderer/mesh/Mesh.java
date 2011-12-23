@@ -57,14 +57,14 @@ public class Mesh {
     public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv) {
         vertices.addVertex(point, normal, color, uv);
     }
-
+    
     public void setup(GL10 gl) {
         if(vbo.isAllocated()) return;
         vbo.set(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
         vbo.allocBuffers(gl);
     }
 
-    public void addAll(Vertex... vertices) {
+    public void addVertex(Vertex... vertices) {
         this.vertices.addAll(vertices);
     }
 

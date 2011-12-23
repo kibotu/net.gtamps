@@ -27,7 +27,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 25, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -44,13 +44,21 @@ public class World extends EntityScene {
 
 
         Cube cube = new Cube();
-        cube.setPosition(-1,0,0);
+        cube.setPosition(-3,0,0);
         cube.setTextureResourceId(R.drawable.crate);
         Sphere sphere = new Sphere(1,20,20);
-        sphere.setPosition(1,0,0);
+        sphere.setPosition(3,0,0);
         sphere.setTextureResourceId(R.drawable.earth);
+        Torus torus = new Torus();
+        torus.setPosition(3,3,0);
+        torus.setTextureResourceId(R.drawable.crate);
+        Cylinder cylinder = new Cylinder();
+        cylinder.setPosition(-3,3,0);
+        cylinder.setTextureResourceId(R.drawable.crate);
+        add(new EntityView(torus));
         add(new EntityView(cube));
         add(new EntityView(sphere));
+        add(new EntityView(cylinder));
 //        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
 //        add(new EntityView(getSunLight()));
     }
