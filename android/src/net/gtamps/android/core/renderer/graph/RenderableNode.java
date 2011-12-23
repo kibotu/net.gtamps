@@ -94,6 +94,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected int textureBufferOffsetId = 0;
     private boolean useSharedTextureCoordBuffer = false;
     private Shader.Type shaderTyp = Shader.Type.PHONG;
+    private int textureResourceId = 0;
 
     public Shader.Type getShader() {
         return shaderTyp;
@@ -254,7 +255,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this, "material.shininess");
 
         // bind textures
-        if (texturesEnabled) {
+//        if (texturesEnabled) {
 //            int[] texIDs = ob.get_texID();
 //
 //            for(int i = 0; i < _texIDs.length; i++) {
@@ -264,11 +265,11 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture" + (i+1)), i);
 //            }
 
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            Logger.d(this, "Texture bind: " + textureId);
+//            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+//            Logger.d(this, "Texture bind: " + textureId);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture"),0);
-        }
+//        }
 
         // enable texturing
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), texturesEnabled ? 2f : 0f);
@@ -493,7 +494,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
-        setupTextures(R.drawable.earth);
+        if(textureResourceId != 0) setupTextures(textureResourceId);
         clearDirtyFlag();
     }
 
@@ -792,5 +793,11 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected void onResumeInternal(ProcessingState state) {
         if(mesh == null) return;
         mesh.invalidate();
+    }
+
+
+    public void setTextureResourceId(int resourceId) {
+        textureResourceId = resourceId;
+        setDirtyFlag();
     }
 }
