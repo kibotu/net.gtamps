@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer.mesh.parser;
 import android.graphics.Bitmap;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
@@ -33,7 +34,10 @@ public class ObjParser extends AParser implements IParser {
     private final String MATERIAL_LIB = "mtllib";
     private final String USE_MATERIAL = "usemtl";
     private final String NEW_MATERIAL = "newmtl";
+    private final String AMBIENT_COLOR = "Ka";
     private final String DIFFUSE_COLOR = "Kd";
+    private final String SPECULAR_COLOR = "Ks";
+    private final String SPECULAR_EXPONENT = "Ni";
     private final String DIFFUSE_TEX_MAP = "map_Kd";
 
     /**
@@ -174,12 +178,16 @@ public class ObjParser extends AParser implements IParser {
                 if (type.equals(NEW_MATERIAL)) {
                     if (parts.length > 1) {
                         currentMaterial = parts[1];
-                        materialMap.put(currentMaterial, new Material(
-                                currentMaterial));
+                        materialMap.put(currentMaterial, new Material(currentMaterial));
                     }
+                } else if (type.equals(AMBIENT_COLOR)) {
+                    materialMap.get(currentMaterial).setAmbient(Float.parseFloat(parts[1]) , Float.parseFloat(parts[2]), Float.parseFloat(parts[3]) , 1);
                 } else if (type.equals(DIFFUSE_COLOR) && !type.equals(DIFFUSE_TEX_MAP)) {
-                    Color4 diffuseColor = new Color4(Float.parseFloat(parts[1]) , Float.parseFloat(parts[2]), Float.parseFloat(parts[3]) , 1);
-                    materialMap.get(currentMaterial).diffuseColor = diffuseColor;
+                    materialMap.get(currentMaterial).setDiffuse(Float.parseFloat(parts[1]) , Float.parseFloat(parts[2]), Float.parseFloat(parts[3]) , 1);
+                } else if (type.equals(SPECULAR_COLOR)) {
+                    materialMap.get(currentMaterial).setSpecular(Float.parseFloat(parts[1]) , Float.parseFloat(parts[2]), Float.parseFloat(parts[3]) , 1);
+                } else if (type.equals(SPECULAR_EXPONENT)) {
+                    materialMap.get(currentMaterial).setPhongExponent((int)Float.parseFloat(parts[1]));
                 } else if (type.equals(DIFFUSE_TEX_MAP)) {
                     if (parts.length > 1) {
                         materialMap.get(currentMaterial).diffuseTextureMap = parts[1];

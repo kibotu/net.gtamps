@@ -16,11 +16,17 @@ public class Material {
     public static final Material CYAN = new Material(Color4.CYAN, Color4.CYAN, Color4.CYAN, Color4.CYAN, 1);
     public static final Material PURPLE = new Material(Color4.PURPLE, Color4.PURPLE, Color4.PURPLE, Color4.PURPLE, 1);
 
+    private String name;
     private Color4 emission;
     private Color4 ambient;
     private Color4 diffuse;
     private Color4 specular;
     private int phongExponent;
+    public String diffuseTextureMap;
+
+    public Material(String name) {
+        this.name = name;
+    }
 
     public Material(Color4 emission, Color4 ambient, Color4 diffuse, Color4 specular, int phongExponent) {
         this.emission = emission;
@@ -68,5 +74,20 @@ public class Material {
 
     public void setPhongExponent(int phongExponent) {
         this.phongExponent = phongExponent;
+    }
+
+    public void setAmbient(float r, float g, float b, int a) {
+        if(ambient == null) ambient = new Color4(r,g,b,a);
+        ambient.setAll(r,g,b,a);
+    }
+
+    public void setDiffuse(float r, float g, float b, int a) {
+        if(diffuse == null) diffuse = new Color4(r,g,b,a);
+        diffuse.setAll(r,g,b,a);
+    }
+
+    public void setSpecular(float r, float g, float b, int a) {
+        if(specular == null) specular = new Color4(r,g,b,a);
+        specular.setAll(r,g,b,a);
     }
 }

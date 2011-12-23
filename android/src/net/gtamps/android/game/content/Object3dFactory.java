@@ -112,7 +112,7 @@ final public class Object3dFactory {
 
     private static RenderableNode createCarCamaro() {
         Logger.v(TAG, "Create camaro.");
-        RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, true);
+        RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);

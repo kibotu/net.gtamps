@@ -34,7 +34,7 @@ public class ParsedObject extends RenderableNode {
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
         if(RenderCapabilities.supportsGLES20()) {
-            ((ParsedObject) parsedObject.get(0)).setupTextures(textureResourceId);
+            ((ParsedObject) parsedObject.get(0)).setTextureId(textureResourceId);
         } else {
             ((ParsedObject) parsedObject.get(0)).setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId, generateMipMap));
         }

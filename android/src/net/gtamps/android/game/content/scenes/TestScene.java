@@ -1,26 +1,21 @@
 package net.gtamps.android.game.content.scenes;
 
-import android.opengl.GLES20;
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.scene.primitives.*;
-import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.android.game.content.Object3dFactory;
 import net.gtamps.shared.Config;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
-import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class World extends EntityScene {
+public class TestScene extends EntityScene {
 
     private EntityView activeView;
     public final PlayerManager playerManager;
 
-    public World() {
+    public TestScene() {
         playerManager = new PlayerManager();
     }
 
@@ -31,9 +26,9 @@ public class World extends EntityScene {
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
-        activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
+//        activeView = new EntityView(new Entity(Entity.Type.CAR_RIVIERA));
 //        activeView.getObject3d().add(getSpotLight());
-        add(activeView);
+//        add(activeView);
 //        EntityView camaro = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
 //        camaro.getObject3d().setPosition(-3, 0, 0);
 //        add(camaro);
@@ -42,6 +37,23 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
+
+        Cube cube = new Cube();
+        cube.setPosition(-3,0,0);
+        cube.setTextureResourceId(R.drawable.crate);
+        Sphere sphere = new Sphere(1,20,20);
+        sphere.setPosition(3,0,0);
+        sphere.setTextureResourceId(R.drawable.earth);
+        Torus torus = new Torus();
+        torus.setPosition(3,3,0);
+        torus.setTextureResourceId(R.drawable.crate);
+        Cylinder cylinder = new Cylinder();
+        cylinder.setPosition(-3,3,0);
+        cylinder.setTextureResourceId(R.drawable.crate);
+        add(new EntityView(torus));
+        add(new EntityView(cube));
+        add(new EntityView(sphere));
+        add(new EntityView(cylinder));
 //        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
 //        add(new EntityView(getSunLight()));
     }
