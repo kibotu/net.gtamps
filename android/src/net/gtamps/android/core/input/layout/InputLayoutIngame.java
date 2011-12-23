@@ -10,7 +10,7 @@ public class InputLayoutIngame extends AbstractInputLayout {
     public InputLayoutIngame() {
 
         InputInterpreter playerMovement = new HudInterpreter(ActionType.PLAYER_MOVEMENT);
-        TouchInputButton movementButton = new TouchInputButton(0.20f, 0f, 0.6f, 1f);
+        TouchInputButton movementButton = new TouchInputButton(0.25f, 0f, 0.7f, 1f);
         addButton(movementButton, playerMovement);
 
         InputInterpreter playerShoot = new HudInterpreter(ActionType.PLAYER_SHOOT);

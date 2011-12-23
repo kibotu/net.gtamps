@@ -85,14 +85,12 @@ public class Game implements IRenderActivity {
         }
 
         if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+70);
+            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+150);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }
-
-    private long impulse = 0;
-
 
     /**
      * Setzt den neuen Zoomfaktor anhand der Zoomwerte des Inputs
