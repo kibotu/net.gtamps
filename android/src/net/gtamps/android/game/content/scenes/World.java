@@ -8,9 +8,11 @@ import net.gtamps.android.core.renderer.graph.scene.primitives.*;
 import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.android.game.content.Object3dFactory;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class World extends EntityScene {
@@ -42,11 +44,12 @@ public class World extends EntityScene {
 
 
         Cube cube = new Cube();
-        cube.setPosition(-1,0,0);
+        cube.setPosition(-4,0,0);
         Sphere sphere = new Sphere(1,20,20);
-        sphere.setPosition(1,0,0);
-        add(new EntityView(cube));
-        add(new EntityView(sphere));
+        sphere.setPosition(4,0,0);
+//        add(new EntityView(cube));
+//        add(new EntityView(sphere));
+        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
 //        add(new EntityView(getSunLight()));
     }
 

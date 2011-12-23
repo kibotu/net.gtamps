@@ -121,7 +121,7 @@ final public class Object3dFactory {
         parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(true);
+        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 

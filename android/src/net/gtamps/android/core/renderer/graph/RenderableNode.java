@@ -290,7 +290,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Sets up texturing for the object
      */
-    private void setupTextures(int resourceId) {
+    public void setupTextures(int resourceId) {
         // create new texture ids if object has them
 
         // number of textures
