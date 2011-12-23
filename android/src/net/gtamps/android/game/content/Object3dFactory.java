@@ -5,6 +5,7 @@ import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -81,14 +82,14 @@ final public class Object3dFactory {
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
-//        parsedChild.setMaterial(Material.RED);
+        parsedChild.setMaterial(Material.RED);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
-        parsedChild.setScaling(0.3f, 0.3f, 0.3f);
+//        parsedChild.setScaling(0.3f, 0.3f, 0.3f);
 
 
         return parsedObject;
@@ -156,6 +157,16 @@ final public class Object3dFactory {
 
     private static RenderableNode createHuman() {
         Logger.v(TAG, "Create human.");
-        return createCarRiveria();
+        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
+        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(true);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(true);
+        parsedChild.enableDoubleSided(false);
+        parsedChild.enableLighting(false);
+        parsedChild.enableAlpha(false);
+        parsedChild.enableMipMap(false);
+        return parsedObject;
     }
 }
