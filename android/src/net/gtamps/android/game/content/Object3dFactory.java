@@ -95,18 +95,17 @@ final public class Object3dFactory {
     }
 
     private static RenderableNode createCarRiveria() {
-        Logger.v(TAG, "Create riveria.");
-        RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, true);
+        Logger.v(TAG, "Create riviera.");
+        RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(true);
+        parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
-        parsedChild.enableAlpha(true);
-        parsedChild.enableMipMap(true);
-        parsedChild.setScaling(5, 5, 5);
+        parsedChild.enableAlpha(false);
+        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 
