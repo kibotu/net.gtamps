@@ -1,0 +1,44 @@
+precision mediump float;
+
+varying vec3 v_Normal;
+varying vec3 esNormal;
+varying vec2 v_TextCoord;
+varying vec4 v_Color;
+
+// light
+uniform vec4 lightPos;
+uniform vec4 lightColor;
+
+struct PhongMaterial
+{
+   vec4 emission;    // Ecm
+   vec4 ambient;     // Acm
+   vec4 diffuse;     // Dcm
+   vec4 specular;    // Scm
+   float shininess;  // Srm
+};
+uniform PhongMaterial material;
+
+// eye pos
+uniform vec3 eyePos;
+
+// from vertex s
+varying vec3 lightDir, eyeVec;
+
+void main()
+{
+    vec3 N = normalize(esNormal);
+    vec3 E = normalize(eyeVec);
+
+    vec3 L = normalize(lightDir);
+
+    // Reflect the vector. Use this or reflect(incidentV, N);
+    vec3 reflectV = reflect(-L, N);
+
+    vec4 ambientTerm = material.ambient * lightColor;
+
+    vec4 diffuseTerm = material.diffuse * max(dot(N, L), 0.0);
+    vec4 specularTerm = material.specular * pow(max(dot(reflectV, E), 1.0), material.shininess);
+
+    gl_FragColor = ambientTerm + diffuseTerm + specularTerm;
+}

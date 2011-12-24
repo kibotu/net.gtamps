@@ -20,6 +20,6 @@ public class InputLayoutIngame extends AbstractInputLayout {
         InputInterpreter playerEnterExit = new HudInterpreter(ActionType.PLAYER_ENTER_CAR);
         TouchInputButton enterExitButton = new TouchInputButton(0.76f, 0f, 0.24f, 1f);
         addButton(enterExitButton, playerEnterExit);
-        
-	}
+
+    }
 }

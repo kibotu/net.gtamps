@@ -30,11 +30,11 @@ public class EntityPosition implements Serializable {
         return type;
     }
 
-	public void setRotation(int rotationInDegrees) {
-		this.rotation = rotationInDegrees;
-	}
+    public void setRotation(int rotationInDegrees) {
+        this.rotation = rotationInDegrees;
+    }
 
-	public double getRotationInRadiants() {
-		return rotation*Math.PI/180;
-	}
+    public double getRotationInRadiants() {
+        return rotation * Math.PI / 180;
+    }
 }

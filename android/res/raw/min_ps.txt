@@ -1,0 +1,11 @@
+precision mediump float;
+
+const vec4 c_color1 = vec4(1.0,0.0,0.0,1.0);
+const vec4 c_color2 = vec4(1.0,1.0,0.0,1.0);
+varying vec2 v_TextCoord;
+
+void main()
+{
+    if(mod(v_TextCoord.x, 0.05) >= 0.025) gl_FragColor = c_color1;
+    else gl_FragColor = c_color2;
+}

@@ -1,6 +1,8 @@
 package net.gtamps.server.gui;
 
 import net.gtamps.shared.Utils.ILogger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GUILoggerToGeneralAdapter implements ILogger {
 	
@@ -61,5 +63,10 @@ public class GUILoggerToGeneralAdapter implements ILogger {
 	public void save(final String filename) {
 		throw new UnsupportedOperationException(guiLogger.getClass().getCanonicalName() + "does not support saving");
 	}
+
+    @Override
+    public void checkGlError(@NotNull String id, @Nullable String message) {
+        e(id,message);
+    }
 
 }

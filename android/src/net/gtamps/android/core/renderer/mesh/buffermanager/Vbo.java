@@ -1,5 +1,7 @@
 package net.gtamps.android.core.renderer.mesh.buffermanager;
 
+import android.opengl.GLES20;
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.Logger;
 
@@ -18,10 +20,10 @@ public class Vbo {
     public int textureCoordinateBufferId;
 
     public FloatBuffer vertexBuffer;
-    public ShortBuffer indexBuffer;
     public FloatBuffer normalBuffer;
     public FloatBuffer colorBuffer;
     public FloatBuffer textureCoordinateBuffer;
+    public ShortBuffer indexBuffer;
 
     private boolean isAllocated;
 
@@ -36,14 +38,48 @@ public class Vbo {
         if (textureCoordinateBuffer != null) textureCoordinateBuffer.position(0);
     }
 
-    public void allocBuffers(GL10 gl) {
+    private void allocBuffersGLES20() {
+        // get buffer ids
+        final int[] buffer = new int[5];
+        GLES20.glGenBuffers(5, buffer, 0);
+        vertexBufferId = buffer[0];
+        indexBufferId = buffer[1];
+        normalBufferId = buffer[2];
+        colorBufferId = buffer[3];
+        textureCoordinateBufferId = buffer[4];
 
-        if (isAllocated) {
-            return;
+        // bind vertex buffer
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferId);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GLES20.GL_STATIC_DRAW);
+
+        // bind index buffer
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GLES20.GL_STATIC_DRAW);
+
+        // bind normal buffer
+        if (normalBuffer != null) {
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, normalBufferId);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GLES20.GL_STATIC_DRAW);
         }
 
-        positionZero();
+        // bind color buffer
+        if (colorBuffer != null) {
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, colorBufferId);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, colorBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, colorBuffer, GLES20.GL_STATIC_DRAW);
+        }
 
+        // bind uv buffer
+        if (textureCoordinateBuffer != null) {
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureCoordinateBufferId);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, textureCoordinateBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, textureCoordinateBuffer, GLES20.GL_STATIC_DRAW);
+        }
+
+        // deselect buffers
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    private void allocateBuffersGL10(GL10 gl) {
         // OpenGL 1.1-Instanz beziehen
         final GL11 gl11 = (GL11) gl;
 
@@ -85,9 +121,28 @@ public class Vbo {
         // deselect buffers
         gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
         gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
 
+    public void allocBuffers(GL10 gl) {
+
+        // don't allocate twice
+        if (isAllocated) return;
+
+        // set buffer pointer to position 0
+        positionZero();
+
+        // allocate buffers
+        if (RenderCapabilities.supportsGLES20()) {
+            allocBuffersGLES20();
+        } else {
+            allocateBuffersGL10(gl);
+        }
+
+        // set true if everything went well
         isAllocated = true;
-        Logger.i(this, toString());
+
+        // verbose message
+        Logger.v(this, toString());
     }
 
     public boolean isAllocated() {
@@ -161,5 +216,9 @@ public class Vbo {
         textureCoordinateBufferId = vbo.textureCoordinateBufferId;
         isAllocated = true;
         return this;
+    }
+
+    public void invalidate() {
+        isAllocated = false;
     }
 }

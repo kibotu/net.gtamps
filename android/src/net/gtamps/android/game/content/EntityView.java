@@ -50,7 +50,7 @@ public class EntityView implements IDirty {
         // scaling
 //        object3d.setScaling(1, 1, 1);
 //        rotation
-        object3d.setRotation(0, 0, entity.rota.value()+Config.SERVER_ANGLE_TO_NATIVE);
+        object3d.setRotation(0, 0, entity.rota.value() + Config.SERVER_ANGLE_TO_NATIVE);
 
         clearDirtyFlag();
     }

@@ -1,0 +1,40 @@
+// Uniform variables. Set from the application.
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix; // The inverse camera transform.
+uniform mat4 projectionMatrix;
+uniform vec3 lightPosition;
+
+// Vertex attributes form the mesh.
+attribute vec3 vertexPosition;
+attribute vec3 vertexNormal;
+attribute vec3 vertexColor;
+attribute vec2 vertexUv;
+
+// Output for the fragment shader.
+varying vec3 fcolor;
+varying vec3 normalV;
+varying vec3 eyedirV;
+varying vec3 lightdirV;
+varying vec2 uvV;
+
+// The main entry point.
+void main() {
+  // Pass the color to the fragment shader unchanged.
+  fcolor = vertexColor;
+
+  // position
+  vec4 position =  viewMatrix *  modelMatrix * vec4(vertexPosition, 1);
+
+  // Transform to camera coordinates.
+  normalV = (viewMatrix * modelMatrix * vec4(vertexNormal, 0.0)).xyz;
+
+  // Calculate values in camera coordinates.
+  eyedirV = -position.xyz;
+  lightdirV = lightPosition - position.xyz;
+
+  // Transform the vertex position to NDC.
+  gl_Position = projectionMatrix * position;
+
+  // uv
+  uvV = vertexUv;
+}

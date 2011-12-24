@@ -24,13 +24,14 @@ public class RenderState {
 
     public enum BlendState {
         OFF(GL_ONE, GL_ONE),
-        ADDITIVE(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA),
-        PREMULT_ALPHA(GL_ONE,GL_ONE_MINUS_SRC_ALPHA),
+        ADDITIVE(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA),
+        PREMULT_ALPHA(GL_ONE, GL_ONE_MINUS_SRC_ALPHA),
         MODULATE(GL_DST_COLOR, GL_ZERO),
         MODULATE_X2(GL_DST_COLOR, GL_SRC_COLOR);
         public final int sfactor;
         public final int dfactor;
-        private BlendState (int sfactor,  int dfactor) {
+
+        private BlendState(int sfactor, int dfactor) {
             this.sfactor = sfactor;
             this.dfactor = dfactor;
         }
@@ -41,9 +42,11 @@ public class RenderState {
         SMOOTH(GL_SMOOTH);
 
         private final int value;
-        private Shader (int value) {
+
+        private Shader(int value) {
             this.value = value;
         }
+
         public int getValue() {
             return value;
         }
@@ -60,13 +63,15 @@ public class RenderState {
         GL_TRIANGLE_FAN(GL11.GL_TRIANGLE_FAN);
 
         // opengl 2.0
-    //    GL_QUADS(GL11.GL_QUADS),
-    //    GL_QUAD_STRIP(GL11.GL_QUAD_STRIP),
-    //    GL_POLYGON(GL11.GL_POLYGON);
+        //    GL_QUADS(GL11.GL_QUADS),
+        //    GL_QUAD_STRIP(GL11.GL_QUAD_STRIP),
+        //    GL_POLYGON(GL11.GL_POLYGON);
         private final int value;
+
         private DrawingStyle(int value) {
             this.value = value;
         }
+
         public int getValue() {
             return value;
         }

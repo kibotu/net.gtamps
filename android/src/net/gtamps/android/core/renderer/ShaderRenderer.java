@@ -1,56 +1,97 @@
 package net.gtamps.android.core.renderer;
 
+import android.graphics.Bitmap;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.Logger;
 
-import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class ShaderRenderer implements GLSurfaceView.Renderer  {
+public class ShaderRenderer extends BasicRenderer {
 
-    // shader constants
-	private final int GOURAUD_SHADER = 0;
-	private final int PHONG_SHADER = 1;
-	private final int NORMALMAP_SHADER = 2;
+    public ShaderRenderer(IRenderActivity renderActivity) {
+        super(renderActivity);
+    }
 
     @Override
-    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        // initialize shaders
-//        try {
-//            _shaders[GOURAUD_SHADER] = new Shader(vShaders[GOURAUD_SHADER], fShaders[GOURAUD_SHADER], mContext, false, 0); // gouraud
-//            _shaders[PHONG_SHADER] = new Shader(vShaders[PHONG_SHADER], fShaders[PHONG_SHADER], mContext, false, 0); // phong
-//            _shaders[NORMALMAP_SHADER] = new Shader(vShaders[NORMALMAP_SHADER], fShaders[NORMALMAP_SHADER], mContext, false, 0); // normal map
-//        } catch (Exception e) {
-//            Log.d("SHADER 0 SETUP", e.getLocalizedMessage());
-//        }
+    public void draw(GL10 unusedGL) {
+        if (!RenderCapabilities.supportsGLES20()) return;
+
+        // clear screen
+        GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1f);
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+
+        int program = Shader.Type.PHONG.shader.getProgram();
+
+        // unbound last shader
+        GLES20.glUseProgram(program);
+        Logger.checkGlError(this, "glUseProgram");
+
+        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, renderActivity.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
+        Logger.checkGlError(this, "lightPosition");
+//        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
+//        Logger.checkGlError(this,"lightDirection");
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightColor"), 1, lightC, 0);
+        Logger.checkGlError(this, "lightColor");
+
+        // draw scenes
+        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
+            renderActivity.getScenes().get(i).getScene().update(getDelta());
+            renderActivity.getScenes().get(i).getScene().process(glState);
+        }
+    }
+
+    @Override
+    public int allocTexture(Bitmap texture, boolean generateMipMap) {
+
+        int textureId = newTextureID();
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
+
+        Logger.i(this, "[w:" + texture.getWidth() + "|h:" + texture.getHeight() + "|id:" + textureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
+
+        texture.recycle();
+
+        return textureId;
+    }
+
+    @Override
+    public int newTextureID() {
+        int[] textureIds = new int[1];
+        GLES20.glGenTextures(1, textureIds, 0);
+        return textureIds[0];
+    }
+
+    @Override
+    public void deleteTexture(int... textureIds) {
+        GLES20.glDeleteTextures(textureIds.length, textureIds, 0);
+    }
+
+    // light variables
+    // light variables
+    float[] lightP = {0, 0, 10f, 1f};
+    float[] lightC = {0.5f, 0.5f, 0.5f, 1f};
+    float[] lightDir = {0f, 0f, -1f};
+
+    @Override
+    public void reset(GL10 unusedGL) {
+        glState.setGl(unusedGL);
+        Shader.load();
 
         //GLES20.glEnable   ( GLES20.GL_DEPTH_TEST );
-		GLES20.glClearDepthf(1.0f);
-		GLES20.glDepthFunc( GLES20.GL_LEQUAL );
-		GLES20.glDepthMask( true );
+        GLES20.glClearDepthf(1.0f);
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        GLES20.glDepthMask(true);
 
-		// cull backface
-		GLES20.glEnable( GLES20.GL_CULL_FACE );
-		GLES20.glCullFace(GLES20.GL_BACK);
-
+        // cull backface
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        GLES20.glCullFace(GLES20.GL_BACK);
     }
-
-    public void onSurfaceChanged(GL10 gl10, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
-		float ratio = (float) width / height;
-//		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 0.5f, 10);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl10) {
-    }
-
-	private void checkGlError(String op) {
-		int error;
-		while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Logger.e(this, op + ": glError " + error);
-			throw new RuntimeException(op + ": glError " + error);
-		}
-	}
 }

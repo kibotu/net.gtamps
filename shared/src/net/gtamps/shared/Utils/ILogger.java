@@ -39,4 +39,6 @@ public interface ILogger {
      * SAVE TO FILE *
      */
     public void save(String filename);
+
+    void checkGlError(@NotNull String id, @Nullable String operation);
 }

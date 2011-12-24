@@ -28,101 +28,101 @@ import net.gtamps.shared.game.GameObject;
  */
 public class GameEvent extends GameObject {
 
-	/**
-	 * signals the beginning of an ongoing event
-	 */
-	public static final String BEGIN_VALUE = "BEGIN";
-	/**
-	 * signals that an ongoing event has finished
-	 */
-	public static final String END_VALUE = "END";
-	private static final long serialVersionUID = 4026988656700611249L;
+    /**
+     * signals the beginning of an ongoing event
+     */
+    public static final String BEGIN_VALUE = "BEGIN";
+    /**
+     * signals that an ongoing event has finished
+     */
+    public static final String END_VALUE = "END";
+    private static final long serialVersionUID = 4026988656700611249L;
 
-	protected final EventType type;
-	protected final GameObject source;
-	protected final GameObject target;
-	protected final String value;
+    protected final EventType type;
+    protected final GameObject source;
+    protected final GameObject target;
+    protected final String value;
 
-	/**
-	 * @param type   use an unambiguous type here, that is, one without
-	 *               {@link EventType#hasSubtypes() subtypes}
-	 * @param source
-	 * @param target
-	 * @param value
-	 */
-	public GameEvent(final EventType type, final GameObject source, final GameObject target, String value) {
-		super(type.name());
-		if (source == null) {
-			throw new IllegalArgumentException("'source' must not be null");
-		}
-		if (target == null) {
-			throw new IllegalArgumentException("'target' must not be null");
-		}
-		if (type.hasSubtypes()) {
-			throw new IllegalArgumentException("'type' is ambiguous! use an EventType without subtypes.");
-		}
-		value = value == null ? "" : value;
-		this.type = type;
-		this.source = source;
-		this.target = target;
-		this.value = value;
-	}
+    /**
+     * @param type   use an unambiguous type here, that is, one without
+     *               {@link EventType#hasSubtypes() subtypes}
+     * @param source
+     * @param target
+     * @param value
+     */
+    public GameEvent(final EventType type, final GameObject source, final GameObject target, String value) {
+        super(type.name());
+        if (source == null) {
+            throw new IllegalArgumentException("'source' must not be null");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("'target' must not be null");
+        }
+        if (type.hasSubtypes()) {
+            throw new IllegalArgumentException("'type' is ambiguous! use an EventType without subtypes.");
+        }
+        value = value == null ? "" : value;
+        this.type = type;
+        this.source = source;
+        this.target = target;
+        this.value = value;
+    }
 
-	public GameEvent(final EventType type, final GameObject source, final GameObject target) {
-		this(type, source, target, null);
-	}
+    public GameEvent(final EventType type, final GameObject source, final GameObject target) {
+        this(type, source, target, null);
+    }
 
-	/**
-	 * Creates a new game event originating from source. As per definition,
-	 * since no target is being specified, the source will also act as the target.
-	 *
-	 * @param type
-	 * @param source
-	 */
-	public GameEvent(final EventType type, final GameObject source) {
-		this(type, source, source);
-	}
+    /**
+     * Creates a new game event originating from source. As per definition,
+     * since no target is being specified, the source will also act as the target.
+     *
+     * @param type
+     * @param source
+     */
+    public GameEvent(final EventType type, final GameObject source) {
+        this(type, source, source);
+    }
 
-	public EventType getType() {
-		return this.type;
-	}
+    public EventType getType() {
+        return this.type;
+    }
 
-	/**
-	 * @return if this gameEvent has no source, this will return the
-	 *         same uid as {@link #getTargetUid()}
-	 */
-	public int getSourceUid() {
-		return this.source.getUid();
-	}
+    /**
+     * @return if this gameEvent has no source, this will return the
+     *         same uid as {@link #getTargetUid()}
+     */
+    public int getSourceUid() {
+        return this.source.getUid();
+    }
 
-	public int getTargetUid() {
-		return this.target.getUid();
-	}
+    public int getTargetUid() {
+        return this.target.getUid();
+    }
 
-	public GameObject getSource() {
-		return this.source;
-	}
+    public GameObject getSource() {
+        return this.source;
+    }
 
-	public GameObject getTarget() {
-		return this.target;
-	}
+    public GameObject getTarget() {
+        return this.target;
+    }
 
-	public boolean isBegin() {
-		return this.value.equals(BEGIN_VALUE);
-	}
+    public boolean isBegin() {
+        return this.value.equals(BEGIN_VALUE);
+    }
 
-	public boolean isEnd() {
-		return this.value.equals(END_VALUE);
-	}
+    public boolean isEnd() {
+        return this.value.equals(END_VALUE);
+    }
 
-	@Override
-	public boolean hasChanged() {
-		return false;
-	}
+    @Override
+    public boolean hasChanged() {
+        return false;
+    }
 
-	@Override
-	public String toString() {
-		return super.toString() + (value != null ? value.toString() : "");
-	}
+    @Override
+    public String toString() {
+        return super.toString() + (value != null ? value.toString() : "");
+    }
 
 }

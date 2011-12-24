@@ -1,21 +1,16 @@
 package net.gtamps.android.core.renderer.graph.scene;
 
-import net.gtamps.android.core.renderer.graph.IProcessable;
-import net.gtamps.android.core.renderer.graph.IUpdatableLogic;
-import net.gtamps.android.core.renderer.graph.ProcessingState;
-import net.gtamps.android.core.renderer.graph.SceneNode;
+import net.gtamps.android.core.renderer.graph.*;
 import net.gtamps.android.core.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.core.renderer.graph.scene.primitives.NullNode;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * Der Szenengraph
  */
-public class SceneGraph implements IUpdatableLogic, IProcessable {
+public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
 
     /**
      * Der Wurzelknoten
@@ -67,9 +62,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
      * @param gl Die OpenGL-Instanz
      * @see #process(ProcessingState)
      */
-    public void render(@NotNull GL10 gl) {
-        state.reset();
-        state.setGl(gl);
+    public void render(ProcessingState state) {
         process(state);
         if (isDirty) {
             state.getGl().glClearColor(background.r, background.g, background.b, background.a);
@@ -206,6 +199,15 @@ public class SceneGraph implements IUpdatableLogic, IProcessable {
 
     public void setBackground(Color4 color) {
         this.background = color;
+    }
+
+    @Override
+    public void shade(@NotNull ProcessingState state) {
+        rootNode.shade(state);
+    }
+
+    public void onResume(@NotNull ProcessingState state) {
+        rootNode.onResume(state);
     }
 }
 
