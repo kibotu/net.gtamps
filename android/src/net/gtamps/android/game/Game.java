@@ -92,15 +92,13 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 
         rot+=0.02f;
         world.getScene().get(0).setRotation(rot,rot,rot);
-        world.getScene().get(1).setRotation(-rot,rot,rot);
-        world.getScene().get(2).setRotation(rot,-rot,rot);
-        world.getScene().get(3).setRotation(rot,-rot,-rot);
+//        world.getScene().get(1).setRotation(-rot,rot,rot);
+//        world.getScene().get(2).setRotation(rot,-rot,rot);
+//        world.getScene().get(3).setRotation(rot,-rot,-rot);
     }
 
     float rot = 0;
-
     private long impulse = 0;
-
 
     /**
      * Setzt den neuen Zoomfaktor anhand der Zoomwerte des Inputs
