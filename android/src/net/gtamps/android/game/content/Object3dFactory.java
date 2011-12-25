@@ -157,15 +157,17 @@ final public class Object3dFactory {
 
     private static RenderableNode createHuman() {
         Logger.v(TAG, "Create human.");
-        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
-        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
-        parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(true);
-        parsedChild.enableNormals(true);
-        parsedChild.enableTextures(true);
-        parsedChild.enableLighting(false);
-        parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(false);
-        return parsedObject;
+
+//        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
+//        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+//        parsedChild.enableColorMaterialEnabled(true);
+//        parsedChild.enableVertexColors(true);
+//        parsedChild.enableNormals(true);
+//        parsedChild.enableTextures(true);
+//        parsedChild.enableLighting(false);
+//        parsedChild.enableAlpha(false);
+//        parsedChild.enableMipMap(false);
+//        return parsedObject;
+        return createCarCamaro();
     }
 }
