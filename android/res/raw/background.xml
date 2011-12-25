@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <texture>
-  <dimension width="1024" height="1024" normalized="true" />
-  <img x="0" y="0" w="1" h="1" />
-  <animation type="idle" indices="0" />
+    <dimension width="1024" height="1024" normalized="true"/>
+    <img x="0" y="0" w="1" h="1"/>
+    <animation type="idle" indices="0"/>
 </texture>
 

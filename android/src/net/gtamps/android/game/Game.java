@@ -2,7 +2,6 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.net.MessageHandler;
-import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.IRenderActivity;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.scenes.Hud;
@@ -39,7 +38,7 @@ public class Game implements IRenderActivity {
         world = new World();
         menu = new Menu();
         connection = ConnectionManager.INSTANCE;
-        this.messageHandler = new MessageHandler(connection,world);
+        this.messageHandler = new MessageHandler(connection, world);
     }
 
     public void onCreate() {
@@ -51,21 +50,19 @@ public class Game implements IRenderActivity {
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
 
         // hud
-        scenes.add(hud);
+//        scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
 //        menu.getScene().setVisible(false);
 
-//        connect
+        // connect
         connection.checkConnection();
-//
+
         Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
         connection.start();
         connection.add(MessageFactory.createSessionRequest());
     }
-
-//    int menuloop = 0;
 
     @Override
     public void onDrawFrame() {
@@ -84,10 +81,10 @@ public class Game implements IRenderActivity {
             }
         }
 
-        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
-            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
+        if (world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+//            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+150);
+            world.getActiveCamera().setPosition(temp.x, temp.y, temp.z + 150);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }

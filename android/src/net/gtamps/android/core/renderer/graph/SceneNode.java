@@ -1,5 +1,6 @@
 package net.gtamps.android.core.renderer.graph;
 
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author sunside
  */
-public abstract class SceneNode extends ObjectWithOrientation implements IProcessable, IUpdatableLogic, ICleanable {
+public abstract class SceneNode extends ObjectWithOrientation implements IProcessable, IShadeable, IUpdatableLogic, ICleanable {
 
     /**
      * Die kombinierte Transformationsmatrix aller Elternelemente
@@ -260,6 +261,18 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
      */
     protected abstract void updateInternal(float deltat);
 
+    public final void shade(@NotNull ProcessingState state) {
+        if (!isVisible) return;
+
+        shadeInternal(state);
+
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).shade(state);
+        }
+    }
+
+    protected abstract void shadeInternal(@NotNull ProcessingState state);
+
     /**
      * Verarbeitet den Knoten und alle Kindknoten
      *
@@ -268,15 +281,19 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
     public final void process(@NotNull ProcessingState state) {
         if (!isVisible) return;
 
-        // Internen Verarbeitungsvorgang aufrufen
-        processInternal(state);
+        if (RenderCapabilities.supportsGLES20()) {
+            shade(state);
+        } else {
+            // Internen Verarbeitungsvorgang aufrufen
+            processInternal(state);
 
-        // Alle Kindknoten rekursiv verarbeiten
-        for (int i = 0; i < getChildCount(); ++i) {
-            childNodes.get(i).process(state);
+            // Alle Kindknoten rekursiv verarbeiten
+            for (int i = 0; i < getChildCount(); ++i) {
+                childNodes.get(i).process(state);
+            }
+
+            afterProcess(state);
         }
-
-        afterProcess(state);
     }
 
     /**
@@ -306,6 +323,15 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
             childNodes.get(i).cleanup(state);
         }
     }
+
+    public final void onResume(@NotNull ProcessingState state) {
+        onResumeInternal(state);
+        for (int i = 0; i < getChildCount(); ++i) {
+            childNodes.get(i).onResume(state);
+        }
+    }
+
+    protected abstract void onResumeInternal(ProcessingState state);
 
     /**
      * Spezifische Implementierung des Bereinigungsvorganges

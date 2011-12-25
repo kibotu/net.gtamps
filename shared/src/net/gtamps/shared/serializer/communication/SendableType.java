@@ -74,23 +74,25 @@ public enum SendableType {
 
     byte currentIdCounter = 1;
     byte binaryTypeId;
-    private SendableType(){
-    	this.binaryTypeId = currentIdCounter;
-    	currentIdCounter++;
+
+    private SendableType() {
+        this.binaryTypeId = currentIdCounter;
+        currentIdCounter++;
     }
-    
+
     public byte getBinaryTypeId() {
-		return binaryTypeId;
-	}
-    public static SendableType getTypeByBinaryTypeId(byte typeid){
-    	for(SendableType st : SendableType.values()){
-    		if(st.getBinaryTypeId()==typeid){
-    			return st;
-    		}
-    	}
-    	return null;
+        return binaryTypeId;
     }
-    
+
+    public static SendableType getTypeByBinaryTypeId(byte typeid) {
+        for (SendableType st : SendableType.values()) {
+            if (st.getBinaryTypeId() == typeid) {
+                return st;
+            }
+        }
+        return null;
+    }
+
     public SendableType getOKResponse() {
         SendableType type = null;
         switch (this) {

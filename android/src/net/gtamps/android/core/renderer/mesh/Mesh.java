@@ -58,12 +58,12 @@ public class Mesh {
     }
 
     public void setup(GL10 gl) {
-        if(vbo.isAllocated()) return;
+        if (vbo.isAllocated()) return;
         vbo.set(vertices.getVertices().getBuffer(), faces.getBuffer(), vertices.getNormals().getBuffer(), vertices.getColors().getBuffer(), vertices.getUvs().getFloatBuffer());
         vbo.allocBuffers(gl);
     }
 
-    public void addAll(Vertex... vertices) {
+    public void addVertex(Vertex... vertices) {
         this.vertices.addAll(vertices);
     }
 
@@ -93,5 +93,9 @@ public class Mesh {
         result = 31 * result + faces.hashCode();
         result = 31 * result + vbo.hashCode();
         return result;
+    }
+
+    public void invalidate() {
+        vbo.invalidate();
     }
 }

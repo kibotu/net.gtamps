@@ -10,6 +10,13 @@ import javax.microedition.khronos.opengles.GL11;
  */
 public class ProcessingState {
 
+    public ProcessingState() {
+    }
+
+    public ProcessingState(GL10 gl) {
+        this.gl = gl;
+    }
+
     /**
      * Die OpenGL-Instanz
      */

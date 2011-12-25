@@ -1,13 +1,9 @@
 package net.gtamps.shared.game.level;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.io.StreamCorruptedException;
-import java.util.LinkedList;
-
 import net.gtamps.shared.Utils.Logger;
+
+import java.io.*;
+import java.util.LinkedList;
 
 public class Level implements Serializable {
     /**
@@ -22,15 +18,15 @@ public class Level implements Serializable {
     String levelName = "";
     private String OBJMap = "";
 
-    public Level(int widthInPixelCoordinates, int heightInPixelCoordinates){
-    	this.LevelWidthInPixelCoord = widthInPixelCoordinates;
-    	this.LevelHeightInPixelCoord = heightInPixelCoordinates;
+    public Level(int widthInPixelCoordinates, int heightInPixelCoordinates) {
+        this.LevelWidthInPixelCoord = widthInPixelCoordinates;
+        this.LevelHeightInPixelCoord = heightInPixelCoordinates;
     }
-    
 
-	public LinkedList<PhysicalShape> getPhysicalShapes() {
-		return physicalShapes;
-	}
+
+    public LinkedList<PhysicalShape> getPhysicalShapes() {
+        return physicalShapes;
+    }
 
     public LinkedList<EntityPosition> getEntityPositions() {
         return entityPositions;
@@ -41,19 +37,21 @@ public class Level implements Serializable {
     }
 
     public int getHeightInPixelCoord() {
-		return LevelHeightInPixelCoord;
-	}
+        return LevelHeightInPixelCoord;
+    }
+
     public int getWidthInPixelCoord() {
-		return LevelWidthInPixelCoord;
-	}
+        return LevelWidthInPixelCoord;
+    }
 
-	public void setWidthInPixelCoord(final int levelWidthInPixelCoord) {
-		LevelWidthInPixelCoord = levelWidthInPixelCoord;
-	}
+    public void setWidthInPixelCoord(final int levelWidthInPixelCoord) {
+        LevelWidthInPixelCoord = levelWidthInPixelCoord;
+    }
 
-	public void setHeightInPixelCoord(final int levelHeightInPixelCoord) {
-		LevelHeightInPixelCoord = levelHeightInPixelCoord;
-	}
+    public void setHeightInPixelCoord(final int levelHeightInPixelCoord) {
+        LevelHeightInPixelCoord = levelHeightInPixelCoord;
+    }
+
     public static Level loadLevel(final InputStream is) {
         ObjectInputStream in;
         try {
@@ -73,7 +71,7 @@ public class Level implements Serializable {
         }
     }
 
-	public String getName() {
-		return levelName;
-	}
+    public String getName() {
+        return levelName;
+    }
 }

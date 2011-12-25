@@ -1,5 +1,7 @@
 package net.gtamps.android.core.utils;
 
+import android.opengl.GLES20;
+import android.opengl.GLU;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,8 +26,8 @@ public enum AndroidLogger implements ILogger {
 
     private final static Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            if(msg.arg1 == 1) {
-                Toast t =  Toast.makeText(Registry.getContext().getApplicationContext(),""+msg.obj, Toast.LENGTH_LONG);
+            if (msg.arg1 == 1) {
+                Toast t = Toast.makeText(Registry.getContext().getApplicationContext(), "" + msg.obj, Toast.LENGTH_LONG);
                 t.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
                 t.show();
             }
@@ -59,5 +61,14 @@ public enum AndroidLogger implements ILogger {
 
     @Override
     public void save(String filename) {
+    }
+
+    @Override
+    public void checkGlError(@NotNull String id, @Nullable String operation) {
+        int error;
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            e(id, operation + ": glError " + error + " " + GLU.gluErrorString(error));
+            throw new RuntimeException(operation + ": glError " + error + " " + GLU.gluErrorString(error));
+        }
     }
 }

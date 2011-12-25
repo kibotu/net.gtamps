@@ -7,25 +7,25 @@ import net.gtamps.android.core.input.touch.TouchInputWindow;
 
 import java.util.LinkedList;
 
-public abstract class AbstractInputLayout{
-	private TouchInputWindow touchWindow = new TouchInputWindow();
-	private InputEventDispatcher inputEventDispatcher;
-	private LinkedList<InputInterpreter> inputInterpreters = new LinkedList<InputInterpreter>();
-		
-	public TouchInputWindow getTouchWindow() {
-		return touchWindow;
-	}
+public abstract class AbstractInputLayout {
+    private TouchInputWindow touchWindow = new TouchInputWindow();
+    private InputEventDispatcher inputEventDispatcher;
+    private LinkedList<InputInterpreter> inputInterpreters = new LinkedList<InputInterpreter>();
 
-	public void setInputEventDispatcher(InputEventDispatcher inputEventDispatcher){
-		this.inputEventDispatcher = inputEventDispatcher;
-		for(InputInterpreter iip : inputInterpreters){
-			iip.setEventDispatcher(inputEventDispatcher);
-		}
-	}
-	
-	public void addButton(TouchInputButton touchInputButton, InputInterpreter inputInterpreter){
-		inputInterpreters.add(inputInterpreter);
-		this.touchWindow.addButton(touchInputButton, inputInterpreter);
-	}
-	
+    public TouchInputWindow getTouchWindow() {
+        return touchWindow;
+    }
+
+    public void setInputEventDispatcher(InputEventDispatcher inputEventDispatcher) {
+        this.inputEventDispatcher = inputEventDispatcher;
+        for (InputInterpreter iip : inputInterpreters) {
+            iip.setEventDispatcher(inputEventDispatcher);
+        }
+    }
+
+    public void addButton(TouchInputButton touchInputButton, InputInterpreter inputInterpreter) {
+        inputInterpreters.add(inputInterpreter);
+        this.touchWindow.addButton(touchInputButton, inputInterpreter);
+    }
+
 }

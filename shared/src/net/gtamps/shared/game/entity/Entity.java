@@ -11,145 +11,145 @@ import java.util.Map;
 
 public class Entity extends SharedGameActor {
 
-	@SuppressWarnings("unused")
-	private static final String TAG = Entity.class.getSimpleName();
+    @SuppressWarnings("unused")
+    private static final String TAG = Entity.class.getSimpleName();
 
-	private static final long serialVersionUID = -5466989016443709708L;
+    private static final long serialVersionUID = -5466989016443709708L;
 
-	static public enum Type {
-		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, SPHERE;
-	}
+    static public enum Type {
+        CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, SPHERE;
+    }
 
-	//TODO: use!
-	public static String normalizeName(final String name) {
-		return name.toUpperCase();
-	}
+    //TODO: use!
+    public static String normalizeName(final String name) {
+        return name.toUpperCase();
+    }
 
-	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
+    //public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
 
-	//	protected Map<Property.Type,Property> properties;
-	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final IProperty<Integer> x;
-	public final IProperty<Integer> y;
-	public final IProperty<Integer> z;
-	/**
-	 * rotation about z
-	 */
-	public final IProperty<Integer> rota;
-	public final IProperty<Integer> playerProperty;
-	public final Type type;
+    //	protected Map<Property.Type,Property> properties;
+    protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
+    public final IProperty<Integer> x;
+    public final IProperty<Integer> y;
+    public final IProperty<Integer> z;
+    /**
+     * rotation about z
+     */
+    public final IProperty<Integer> rota;
+    public final IProperty<Integer> playerProperty;
+    public final Type type;
 
-	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
+    //TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
-	public Entity(final Type type) {
-		super(type.name().toLowerCase());
-		this.type = type;
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
-	}
+    public Entity(final Type type) {
+        super(type.name().toLowerCase());
+        this.type = type;
+        x = this.useProperty("posx", 0);
+        y = this.useProperty("posy", 0);
+        z = this.useProperty("posz", 0);
+        rota = this.useProperty("rota", 0);
+        //        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+        playerProperty = this.useProperty("player", Player.INVALID_UID);
+    }
 
-	public Entity(final String name) {
-		super(name);
-		this.type = getType(name);
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
-	}
+    public Entity(final String name) {
+        super(name);
+        this.type = getType(name);
+        x = this.useProperty("posx", 0);
+        y = this.useProperty("posy", 0);
+        z = this.useProperty("posz", 0);
+        rota = this.useProperty("rota", 0);
+        //        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
+        playerProperty = this.useProperty("player", Player.INVALID_UID);
+    }
 
-	private Type getType(final String name) {
-		try {
-			return Type.valueOf(name.toUpperCase());
-		} catch (final IllegalArgumentException e) {
-			return Type.PLACEHOLDER;
-		}
-	}
+    private Type getType(final String name) {
+        try {
+            return Type.valueOf(name.toUpperCase());
+        } catch (final IllegalArgumentException e) {
+            return Type.PLACEHOLDER;
+        }
+    }
 
-	@Override
-	public void receiveEvent(final GameEvent event) {
-		if (isEnabled()) {
-			dispatchEvent(event);
-		}
-	}
+    @Override
+    public void receiveEvent(final GameEvent event) {
+        if (isEnabled()) {
+            dispatchEvent(event);
+        }
+    }
 
-	public void setOwner(final Player p) {
-		if (p == null) {
-			throw new IllegalArgumentException("'p' must not be null");
-		}
-		System.out.println("entity owner set to: " + p);
-		this.playerProperty.set(p.getUid());
-	}
+    public void setOwner(final Player p) {
+        if (p == null) {
+            throw new IllegalArgumentException("'p' must not be null");
+        }
+        System.out.println("entity owner set to: " + p);
+        this.playerProperty.set(p.getUid());
+    }
 
-	public void removeOwner() {
-		playerProperty.set(Player.INVALID_UID);
-	}
+    public void removeOwner() {
+        playerProperty.set(Player.INVALID_UID);
+    }
 
-	public int getOwnerUid() {
-		return this.playerProperty.value();
-	}
+    public int getOwnerUid() {
+        return this.playerProperty.value();
+    }
 
-	public void setHandler(final Handler handler) {
-		if (handler == null) {
-			throw new IllegalArgumentException("'handler' must not be null");
-		}
-		this.handlers.put(handler.getName(), handler);
-	}
+    public void setHandler(final Handler handler) {
+        if (handler == null) {
+            throw new IllegalArgumentException("'handler' must not be null");
+        }
+        this.handlers.put(handler.getName(), handler);
+    }
 
-	public Handler removeHandler(final Handler.Type type) {
-		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.remove(name);
-		return handler;
-	}
+    public Handler removeHandler(final Handler.Type type) {
+        final String name = type.name().toLowerCase();
+        final Handler handler = this.handlers.remove(name);
+        return handler;
+    }
 
-	public Handler getHandler(final Handler.Type type) {
-		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.get(name);
-		return handler;
-	}
+    public Handler getHandler(final Handler.Type type) {
+        final String name = type.name().toLowerCase();
+        final Handler handler = this.handlers.get(name);
+        return handler;
+    }
 
-	@Override
-	public void enable() {
-		super.enable();
-		for (final Handler h : handlers.values()) {
-			h.enable();
-		}
-		//FIXME
-		//ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
-		//		if (ap != null) {
-		//			ap.enable();
-		//		}
-	}
+    @Override
+    public void enable() {
+        super.enable();
+        for (final Handler h : handlers.values()) {
+            h.enable();
+        }
+        //FIXME
+        //ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
+        //		if (ap != null) {
+        //			ap.enable();
+        //		}
+    }
 
-	@Override
-	public void disable() {
-		super.disable();
-		for (final Handler h : handlers.values()) {
-			h.disable();
-		}
-		//FIXME
-		//ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
-		//		if (ap != null) {
-		//			ap.disable();
-		//		}
-	}
+    @Override
+    public void disable() {
+        super.disable();
+        for (final Handler h : handlers.values()) {
+            h.disable();
+        }
+        //FIXME
+        //ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
+        //		if (ap != null) {
+        //			ap.disable();
+        //		}
+    }
 
-	@Override
-	public String toString() {
-		String s = super.toString();
-		s += String.format("x:%d y:%d r:%d", this.x.value(), this.y.value(), this.rota.value());
-		return s;
-	}
+    @Override
+    public String toString() {
+        String s = super.toString();
+        s += String.format("x:%d y:%d r:%d", this.x.value(), this.y.value(), this.rota.value());
+        return s;
+    }
 
-	public void destroy() {
-		// TODO Auto-generated method stub
-		this.disable();
+    public void destroy() {
+        // TODO Auto-generated method stub
+        this.disable();
 
-	}
+    }
 
 }

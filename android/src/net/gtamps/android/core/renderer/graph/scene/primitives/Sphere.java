@@ -2,6 +2,7 @@ package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -37,7 +38,7 @@ public class Sphere extends RenderableNode {
         // new mesh
         this.mesh = new Mesh((stacks + 1) * (slices + 1), stacks * slices * 2);
 
-        Color4 emissive = material.getEmissive();
+        Color4 emissive = material.getEmission();
 
         int r, c;
 
@@ -112,6 +113,8 @@ public class Sphere extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
+//        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),4);
+        material = Material.WHITE;
     }
 
     @Override

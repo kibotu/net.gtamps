@@ -37,18 +37,18 @@ public class Stack<E> extends ArrayList<E> {
     public boolean empty() {
         return size() == 0;
     }
-    
+
     /**
      * peek & equality test without worrying about empty stack
-     * 
+     *
      * @param element
-     * @return	<tt>true</tt> if there's an item on top of the stack with item.equals(element)
+     * @return    <tt>true</tt> if there's an item on top of the stack with item.equals(element)
      */
     public boolean topIs(final E element) {
-    	if (empty() || !peek().equals(element)) {
-    		return false;
-    	}
-    	return true;
+        if (empty() || !peek().equals(element)) {
+            return false;
+        }
+        return true;
     }
 
     public E peek() throws EmptyStackException {

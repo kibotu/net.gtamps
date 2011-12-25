@@ -11,16 +11,16 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	net.gtamps.shared.SharedObjectTest.class,
-	net.gtamps.shared.game.handler.HandlerTest.class,
-	net.gtamps.shared.configuration.ConfigMapTest.class,
-	net.gtamps.shared.configuration.ProtectedMergeStrategyTest.class,
-	net.gtamps.shared.configuration.ConfigListBuilderTest.class,
-	net.gtamps.shared.configuration.ConfigSourceTest.class,
-	net.gtamps.shared.configuration.ConfigBuilderTest.class,
-	net.gtamps.shared.configuration.ConfigMapBuilderTest.class,
-	net.gtamps.shared.configuration.MergeConfigurationTest.class,
-	net.gtamps.shared.configuration.conversion.XMLConfigLoaderTest.class,
+        net.gtamps.shared.SharedObjectTest.class,
+        net.gtamps.shared.game.handler.HandlerTest.class,
+        net.gtamps.shared.configuration.ConfigMapTest.class,
+        net.gtamps.shared.configuration.ProtectedMergeStrategyTest.class,
+        net.gtamps.shared.configuration.ConfigListBuilderTest.class,
+        net.gtamps.shared.configuration.ConfigSourceTest.class,
+        net.gtamps.shared.configuration.ConfigBuilderTest.class,
+        net.gtamps.shared.configuration.ConfigMapBuilderTest.class,
+        net.gtamps.shared.configuration.MergeConfigurationTest.class,
+        net.gtamps.shared.configuration.conversion.XMLConfigLoaderTest.class,
 
 })
 public class TestAll {

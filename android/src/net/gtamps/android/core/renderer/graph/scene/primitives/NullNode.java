@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * SceneNode, der nicht selbst rendert, sondern lediglich für Organisationszwecke verwendet wird
  */
 public final class NullNode extends SceneNode {
+
     /**
      * Leere Implementierung der Aktualisierungslogik.
      *
@@ -15,6 +16,10 @@ public final class NullNode extends SceneNode {
      */
     @Override
     protected void updateInternal(float deltat) {
+    }
+
+    @Override
+    protected void shadeInternal(@NotNull ProcessingState state) {
     }
 
     @Override
@@ -28,6 +33,10 @@ public final class NullNode extends SceneNode {
      */
     @Override
     protected void processInternal(@NotNull ProcessingState state) {
+    }
+
+    @Override
+    protected void onResumeInternal(ProcessingState state) {
     }
 
     /**

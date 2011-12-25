@@ -26,62 +26,62 @@ package net.gtamps.shared.Utils.math;
  */
 public class FloatMath {
 
-	/**
-	 * Prevents instantiation.
-	 */
-	private FloatMath() {
-	}
+    /**
+     * Prevents instantiation.
+     */
+    private FloatMath() {
+    }
 
-	/**
-	 * Returns the float conversion of the most positive (i.e. closest to
-	 * positive infinity) integer value which is less than the argument.
-	 *
-	 * @param value to be converted
-	 * @return the floor of value
-	 */
-	public static float floor(float value) {
-		return (float) Math.floor((double) value);
-	}
+    /**
+     * Returns the float conversion of the most positive (i.e. closest to
+     * positive infinity) integer value which is less than the argument.
+     *
+     * @param value to be converted
+     * @return the floor of value
+     */
+    public static float floor(float value) {
+        return (float) Math.floor((double) value);
+    }
 
-	/**
-	 * Returns the float conversion of the most negative (i.e. closest to
-	 * negative infinity) integer value which is greater than the argument.
-	 *
-	 * @param value to be converted
-	 * @return the ceiling of value
-	 */
-	public static float ceil(float value) {
-		return (float) Math.ceil((double) value);
-	}
+    /**
+     * Returns the float conversion of the most negative (i.e. closest to
+     * negative infinity) integer value which is greater than the argument.
+     *
+     * @param value to be converted
+     * @return the ceiling of value
+     */
+    public static float ceil(float value) {
+        return (float) Math.ceil((double) value);
+    }
 
-	/**
-	 * Returns the closest float approximation of the sine of the argument.
-	 *
-	 * @param angle to compute the cosine of, in radians
-	 * @return the sine of angle
-	 */
-	public static float sin(float angle) {
-		return (float) Math.sin((double) angle);
-	}
+    /**
+     * Returns the closest float approximation of the sine of the argument.
+     *
+     * @param angle to compute the cosine of, in radians
+     * @return the sine of angle
+     */
+    public static float sin(float angle) {
+        return (float) Math.sin((double) angle);
+    }
 
-	/**
-	 * Returns the closest float approximation of the cosine of the argument.
-	 *
-	 * @param angle to compute the cosine of, in radians
-	 * @return the cosine of angle
-	 */
-	public static float cos(float angle) {
-		return (float) Math.cos((double) angle);
-	}
+    /**
+     * Returns the closest float approximation of the cosine of the argument.
+     *
+     * @param angle to compute the cosine of, in radians
+     * @return the cosine of angle
+     */
+    public static float cos(float angle) {
+        return (float) Math.cos((double) angle);
+    }
 
-	/**
-	 * Returns the closest float approximation of the square root of the
-	 * argument.
-	 *
-	 * @param value to compute sqrt of
-	 * @return the square root of value
-	 */
-	public static float sqrt(float value) {
-		return (float) Math.sqrt((double) value);
-	}
+    /**
+     * Returns the closest float approximation of the square root of the
+     * argument.
+     *
+     * @param value to compute sqrt of
+     * @return the square root of value
+     */
+    public static float sqrt(float value) {
+        return (float) Math.sqrt((double) value);
+    }
 }

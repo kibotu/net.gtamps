@@ -25,7 +25,7 @@ final public class Object3dFactory {
 
     public static RenderableNode create(Entity.Type type) {
 
-        if(cache.containsKey(type)) {
+        if (cache.containsKey(type)) {
 //            return cache.get(type).getStatic();
         }
 
@@ -70,7 +70,7 @@ final public class Object3dFactory {
                 break;
         }
 
-        cache.put(type,node);
+        cache.put(type, node);
 
         return node;
     }
@@ -95,14 +95,14 @@ final public class Object3dFactory {
     }
 
     private static RenderableNode createCarRiveria() {
-        Logger.v(TAG, "Create riveria.");
-        RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, true);
+        Logger.v(TAG, "Create riviera.");
+        RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(true);
+        parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(true);
         parsedChild.enableMipMap(true);
@@ -112,7 +112,7 @@ final public class Object3dFactory {
 
     private static RenderableNode createCarCamaro() {
         Logger.v(TAG, "Create camaro.");
-        RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, true);
+        RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
@@ -157,6 +157,17 @@ final public class Object3dFactory {
 
     private static RenderableNode createHuman() {
         Logger.v(TAG, "Create human.");
-        return  createCarRiveria();
+
+//        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
+//        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+//        parsedChild.enableColorMaterialEnabled(true);
+//        parsedChild.enableVertexColors(true);
+//        parsedChild.enableNormals(true);
+//        parsedChild.enableTextures(true);
+//        parsedChild.enableLighting(false);
+//        parsedChild.enableAlpha(false);
+//        parsedChild.enableMipMap(false);
+//        return parsedObject;
+        return createCarCamaro();
     }
 }

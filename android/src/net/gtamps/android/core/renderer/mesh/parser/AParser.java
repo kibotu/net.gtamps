@@ -3,10 +3,10 @@ package net.gtamps.android.core.renderer.mesh.parser;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import net.gtamps.android.core.renderer.Registry;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import java.io.FileNotFoundException;
@@ -342,16 +342,6 @@ public abstract class AParser implements IParser {
 
         public String getId() {
             return atlasId;
-        }
-    }
-
-    protected class Material {
-        public String name;
-        public String diffuseTextureMap;
-        public Color4 diffuseColor;
-
-        public Material(String name) {
-            this.name = name;
         }
     }
 }

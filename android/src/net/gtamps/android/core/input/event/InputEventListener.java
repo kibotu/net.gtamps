@@ -4,5 +4,5 @@ import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 
 public abstract interface InputEventListener {
-	public void onSendableRetrieve(SendableType sendableType, ISendableData sendableData);
+    public void onSendableRetrieve(SendableType sendableType, ISendableData sendableData);
 }

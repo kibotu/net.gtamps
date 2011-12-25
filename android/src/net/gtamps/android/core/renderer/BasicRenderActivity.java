@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.core.utils.AndroidLogger;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
-
-import java.util.ArrayList;
 
 /**
  * @see <a href="http://developer.android.com/images/activity_lifecycle.png">Activity LifeCycle</a>
@@ -28,11 +25,8 @@ public abstract class BasicRenderActivity extends Activity {
         Logger.I(this, "Application created.");
     }
 
-    protected void onCreateSetContentView() {
-        setContentView(view);
-    }
-
     protected void glSurfaceViewConfig() {
+
         // transparent: scene.background = color4.transparent
         // manifest theme:translucent
 //        view.setEGLConfigChooser(8,8,8,8, 16, 0);
@@ -41,11 +35,6 @@ public abstract class BasicRenderActivity extends Activity {
 
         // !!!!!!! took me ages to find, but there are smooth images available now ^_^
         view.getHolder().setFormat(PixelFormat.RGBA_8888);
-
-        // OpenGLES2 support?
-		if (RenderCapabilities.detectOpenGLES20(this)) {
-//			view.setEGLContextClientVersion(2);
-        }
 
 //	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0)
