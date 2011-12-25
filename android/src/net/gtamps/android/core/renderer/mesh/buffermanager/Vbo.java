@@ -142,7 +142,7 @@ public class Vbo {
         isAllocated = true;
 
         // verbose message
-        Logger.v(this, toString());
+//        Logger.v(this, toString());
     }
 
     public boolean isAllocated() {

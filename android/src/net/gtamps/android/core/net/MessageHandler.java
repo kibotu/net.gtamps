@@ -33,7 +33,7 @@ public class MessageHandler {
     public void handleMessage(Sendable sendable, Message message) {
 
         Logger.i(this, "Handles message.");
-        Logger.i(this, sendable);
+//        Logger.i(this, sendable);
 
         switch (sendable.type) {
             case GETUPDATE_OK:
@@ -193,7 +193,7 @@ public class MessageHandler {
             // add to setup
             Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
 
-            Logger.i(this, "Add new entity " + serverEntity.getUid());
+//            Logger.i(this, "Add new entity " + serverEntity.getUid());
         } else {
             // update
             entityView.update(serverEntity);

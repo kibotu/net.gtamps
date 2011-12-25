@@ -32,9 +32,10 @@ public class Hud extends BasicScene implements InputEventListener {
     public void onCreate() {
 
         // setup camera
-        Camera camera = new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
+//        Camera camera = new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
-        camera.enableDepthTest(false);
+//        camera.enableDepthTest(false);
 
         // add ring
         ring = new AnimatedSprite();
@@ -89,8 +90,8 @@ public class Hud extends BasicScene implements InputEventListener {
 
     @Override
     public void onDirty() {
-
         // set resolution
+        Logger.I(this, "layout update");
         layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
         clearDirtyFlag();
     }

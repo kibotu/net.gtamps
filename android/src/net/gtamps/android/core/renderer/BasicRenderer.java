@@ -3,6 +3,7 @@ package net.gtamps.android.core.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.SceneNode;
 import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
@@ -74,6 +75,9 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         limitFrameRate(delta);
 
         // activity draw loop
+        for(int i = 0; i < renderActivity.getScenes().size(); i++) {
+            if(renderActivity.getScenes().get(i).isDirty()) renderActivity.getScenes().get(i).onDirty();
+        }
         renderActivity.onDrawFrame();
 
         // render draw loop
@@ -102,6 +106,8 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
             // re-allocate and re-validate hardware buffers
             renderActivity.getScenes().get(i).getScene().onResume(glState);
+
+            renderActivity.getScenes().get(i).onDirty();
         }
     }
 
