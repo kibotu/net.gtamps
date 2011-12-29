@@ -56,7 +56,6 @@ public class Torus extends RenderableNode {
         if (mesh != null) return;
         this.mesh = new Mesh(segmentsW * segmentsH * 2 * 3, segmentsW * segmentsH * 2);
 
-        final float c = 0.5f;
         Color4 emissive = material.getEmission();
 
         float r1 = largeRadius;

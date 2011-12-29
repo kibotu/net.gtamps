@@ -31,6 +31,10 @@ public class Sphere extends RenderableNode {
         super(sphere);
     }
 
+    public Sphere() {
+        this(1,20,20);
+    }
+
     @Override
     protected void setupInternal(@NotNull ProcessingState state) {
         if (mesh != null) return;

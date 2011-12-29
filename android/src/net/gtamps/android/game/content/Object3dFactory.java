@@ -128,57 +128,48 @@ final public class Object3dFactory {
     }
 
     private static RenderableNode createCube() {
-        Logger.v(TAG, "Create cube.");
         return new Cube();
     }
 
     private static RenderableNode createSphere() {
-        Logger.v(TAG, "Create sphere.");
-        return new Sphere(1, 20, 10);
+        return new Sphere();
     }
 
     private static RenderableNode createTorus() {
-        Logger.v(TAG, "Create Torus.");
         return new Torus();
     }
 
     private static RenderableNode createCylinder() {
-        Logger.v(TAG, "Create Cylinder.");
         return new Cylinder();
     }
 
     private static RenderableNode createWayPoint() {
-        Logger.v(TAG, "Create way point.");
         return createCube();
     }
 
     private static RenderableNode createBullet() {
-        Logger.v(TAG, "Create bullet.");
         return createCube();
     }
 
     private static RenderableNode createSpawnPoint() {
-        Logger.v(TAG, "Create spawnpoint.");
         return createCube();
     }
 
     private static RenderableNode createHouse() {
-        Logger.v(TAG, "Create house.");
         return createCube();
     }
 
     private static RenderableNode createHuman() {
-        Logger.v(TAG, "Create human.");
 
-        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
-        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
-        parsedChild.enableColorMaterialEnabled(true);
-        parsedChild.enableVertexColors(true);
-        parsedChild.enableNormals(true);
-        parsedChild.enableTextures(true);
-        parsedChild.enableDoubleSided(false);
-        parsedChild.enableLighting(false);
-        parsedChild.enableAlpha(false);
+//        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
+//        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+//        parsedChild.enableColorMaterialEnabled(true);
+//        parsedChild.enableVertexColors(true);
+//        parsedChild.enableNormals(true);
+//        parsedChild.enableTextures(true);
+//        parsedChild.enableDoubleSided(false);
+//        parsedChild.enableLighting(false);
+//        parsedChild.enableAlpha(false);
 //        return parsedObject;
         return createCarCamaro();
     }
