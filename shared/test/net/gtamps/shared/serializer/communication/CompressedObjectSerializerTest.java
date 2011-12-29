@@ -33,7 +33,9 @@ public class CompressedObjectSerializerTest {
 		System.out.println("Compressed Output Length:   "+serializedMessage.length+" Bytes");
 		Message ma = cos.deserializeMessage(serializedMessage);
 		
-		assertEquals(m,ma);
+		assertEquals(m.sendables.get(0).type,ma.sendables.get(0).type);
+		assertEquals(((FloatData)m.sendables.get(0).data).value,((FloatData)ma.sendables.get(0).data).value,0.0);
+
 	}
 	
 	@Test
