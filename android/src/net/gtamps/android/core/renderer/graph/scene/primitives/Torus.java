@@ -136,6 +136,6 @@ public class Torus extends RenderableNode {
 //        setLineSmoothing(true);
 //        enableMipMap(false);
 //        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),4);
-        material = Material.WHITE;
+//        material = Material.WHITE;
     }
 }

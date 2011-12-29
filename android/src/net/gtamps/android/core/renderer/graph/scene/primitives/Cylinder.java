@@ -6,10 +6,7 @@ import net.gtamps.android.core.renderer.mesh.Face;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.android.core.renderer.mesh.Uv;
-import net.gtamps.shared.Utils.math.Color4;
-import net.gtamps.shared.Utils.math.Matrix4;
-import net.gtamps.shared.Utils.math.MatrixFactory;
-import net.gtamps.shared.Utils.math.Vector3;
+import net.gtamps.shared.Utils.math.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -29,7 +26,7 @@ public class Cylinder extends RenderableNode {
     }
 
     public Cylinder() {
-        this(20,1,0.9f,2);
+        this(20,1,0.5f,3);
     }
 
     @Override
@@ -58,7 +55,6 @@ public class Cylinder extends RenderableNode {
         if(mesh != null) return;
         this.mesh = new Mesh(segments * 4, segments * 8);
 
-        final float c = 0.5f;
         Color4 emissive = material.getEmission();
 
         addHorizontalSurface(false, height / +2);
@@ -84,14 +80,14 @@ public class Cylinder extends RenderableNode {
 //        setLineSmoothing(true);
 //        enableMipMap(false);
 //        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),4);
-        material = Material.WHITE;
+//        material = Material.WHITE;
     }
 
 
     private void addHorizontalSurface(boolean isTopSide, float zOffset) {
 
         int indexOffset = mesh.vertices.size();
-        float step = (float)((360.0 / segments) * Math.PI / 180);
+        float step = MathUtils.deg2Rad(360f / segments);
 
         // vertices
 
@@ -137,7 +133,7 @@ public class Cylinder extends RenderableNode {
 
     private void addVerticalSurface(boolean isOuter)
     {
-        int off = (int)(mesh.vertices.size() / 2);
+        int off = (int) ((float)mesh.vertices.size() / 2);
 
         for (int i = 0; i < segments - 1; i++)
         {

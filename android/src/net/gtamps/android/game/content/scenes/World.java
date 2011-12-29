@@ -41,11 +41,9 @@ public class World extends EntityScene {
 //        EntityView riviera = new EntityView(new Entity(Entity.Type.CAR_CHEVROLET_CORVETTE));
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
-
-        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
-//        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
-//        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
-//        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
+        activeView = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
+        add(activeView);
+        add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));
     }
 

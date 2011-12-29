@@ -2,9 +2,7 @@ package net.gtamps.android.game.content;
 
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
-import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
+import net.gtamps.android.core.renderer.graph.scene.primitives.*;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
@@ -63,6 +61,12 @@ final public class Object3dFactory {
             case SPHERE:
                 node = createSphere();
                 break;
+            case CYLINDER:
+                node = createCylinder();
+                break;
+            case TORUS:
+                node = createTorus();
+                break;
             case PLACEHOLDER:
                 node = createCube();
                 break;
@@ -82,16 +86,13 @@ final public class Object3dFactory {
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
-        parsedChild.setMaterial(Material.RED);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
-//        parsedChild.setScaling(0.3f, 0.3f, 0.3f);
-
-
+        parsedChild.setScaling(0.3f, 0.3f, 0.3f);
         return parsedObject;
     }
 
@@ -107,6 +108,7 @@ final public class Object3dFactory {
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(false);
+        parsedChild.setScaling(5,5,5);
         return parsedObject;
     }
 
@@ -133,6 +135,16 @@ final public class Object3dFactory {
     private static RenderableNode createSphere() {
         Logger.v(TAG, "Create sphere.");
         return new Sphere(1, 20, 10);
+    }
+
+    private static RenderableNode createTorus() {
+        Logger.v(TAG, "Create Torus.");
+        return new Torus();
+    }
+
+    private static RenderableNode createCylinder() {
+        Logger.v(TAG, "Create Cylinder.");
+        return new Cylinder();
     }
 
     private static RenderableNode createWayPoint() {
