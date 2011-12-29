@@ -34,6 +34,10 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     @Override
     final public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         Logger.I(this, "Surface created.");
+
+        // get opengl context
+        glState = new ProcessingState(gl10);
+
         Registry.setTextureLibrary(new TextureLibrary(gl10));
 
         // get mobile capabilities
@@ -52,12 +56,12 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         // log how much memory is available
         Utils.logAvailableMemory();
 
-        reset(gl10);
+        reset();
         getDelta(); // call once before loop to initialise lastFrame
         lastFPS = getTime(); // call before loop to initialise fps timer
     }
 
-    protected abstract void reset(GL10 gl10);
+    protected abstract void reset();
 
     @Override
     final public void onDrawFrame(GL10 gl10) {

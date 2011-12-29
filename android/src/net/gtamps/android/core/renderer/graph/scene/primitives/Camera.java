@@ -190,7 +190,7 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void updateInternal(float deltat) {
-        // Nur nötig, wenn Kamera animiert wird. --> Pfade setzen, ...
+        // Nur nötig, wenn Kamera animiert wird. --> Pfade setviewzen, ...
         frustum.setPosition(position);
     }
 
@@ -240,7 +240,7 @@ public class Camera extends RenderableNode {
     public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
         viewportCoords.set(x, y, 0);
         viewPortDimension.set(width, height, 0);
-        frustum.setAspectRatio(viewPortDimension.x / viewPortDimension.y);
+        frustum.setAspectRatio(viewPortDimension.x/viewPortDimension.y);
         if (RenderCapabilities.supportsGLES20()) setViewportGLES20();
         else setViewportGL10(gl10);
         Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
@@ -259,8 +259,7 @@ public class Camera extends RenderableNode {
         setDirtyFlag();
     }
 
-    private void shadeInternalGL10(@NotNull ProcessingState state) {
-        GL10 gl = state.getGl();
+    private void shadeInternalGL10(@NotNull GL10 gl) {
         assert gl != null;
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -274,6 +273,10 @@ public class Camera extends RenderableNode {
         } else {
             gl.glDisable(GL10.GL_DEPTH_TEST);
         }
+    }
+
+    private void shadeInternalGL10(@NotNull ProcessingState state) {
+        shadeInternalGL10(state.getGl());
     }
 
     @Override
@@ -292,6 +295,7 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+        shadeInternalGL10(gl);
     }
 
     @Override

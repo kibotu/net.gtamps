@@ -23,7 +23,6 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
     public static InputEngineController getInstance() {
         if (instance == null) {
             instance = new InputEngineController();
-            instance.setLayout(new DummyLayout());
         }
         return instance;
     }

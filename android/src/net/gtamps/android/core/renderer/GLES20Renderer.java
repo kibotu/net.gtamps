@@ -8,9 +8,9 @@ import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class ShaderRenderer extends BasicRenderer {
+public class GLES20Renderer extends BasicRenderer {
 
-    public ShaderRenderer(IRenderActivity renderActivity) {
+    public GLES20Renderer(IRenderActivity renderActivity) {
         super(renderActivity);
     }
 
@@ -81,8 +81,7 @@ public class ShaderRenderer extends BasicRenderer {
     float[] lightDir = {0f, 0f, -1f};
 
     @Override
-    public void reset(GL10 unusedGL) {
-        glState.setGl(unusedGL);
+    public void reset() {
         Shader.load();
 
         //GLES20.glEnable   ( GLES20.GL_DEPTH_TEST );

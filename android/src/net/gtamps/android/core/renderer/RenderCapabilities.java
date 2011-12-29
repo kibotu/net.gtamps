@@ -22,7 +22,7 @@ public class RenderCapabilities {
 
     private static float openGLVersion;
     private static boolean isGL10Only;
-    private static boolean supportsOpenGLES;
+    public static boolean supportsOpenGLES;
     private static int maxTextureUnits;
     private static int maxTextureSize;
     private static int aliasedPointSizeMin;
@@ -93,7 +93,7 @@ public class RenderCapabilities {
     }
 
     /**
-     * Called by GLRenderer.onSurfaceCreate()
+     * Called by GL10Renderer.onSurfaceCreate()
      */
     public static void setRenderCaps(GL10 gl) /* package-private*/ {
         IntBuffer i;
