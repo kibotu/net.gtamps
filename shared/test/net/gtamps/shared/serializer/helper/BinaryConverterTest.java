@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class BinaryPrimitiveConverterTest {
+public class BinaryConverterTest {
 
 	@Test
 	public void testFloatToBytes() {
@@ -14,7 +14,7 @@ public class BinaryPrimitiveConverterTest {
 		for (int input = -10000; input < 10000; input += 1344) {
 			float floatinput = (float)(input+0.234234);
 //			System.out.println("input "+floatinput);
-			BinaryPrimitiveConverter.floatToBytes(floatinput, b, inputpointer);
+			BinaryConverter.floatToBytes(floatinput, b, inputpointer);
 //			 for(int j=0; j<b.length; j++){
 //			 System.out.println("b"+j+": "+Integer.toBinaryString(b[j]));
 //			 System.out.println("b"+j+": "+b[j]);
@@ -22,7 +22,7 @@ public class BinaryPrimitiveConverterTest {
 			 
 //			 System.out.println("end: "+BinaryPrimitiveConverter.byteToFloat(b));
 			
-			assertEquals(floatinput, BinaryPrimitiveConverter.byteToFloat(b, outputpointer),0.0f);
+			assertEquals(floatinput, BinaryConverter.byteToFloat(b, outputpointer),0.0f);
 		}
 	}
 
@@ -33,14 +33,14 @@ public class BinaryPrimitiveConverterTest {
 		ArrayPointer outputpointer = new ArrayPointer();
 		for (int input = -10000; input < 10000; input += 1344) {
 			// System.out.println("input "+input);
-			BinaryPrimitiveConverter.intToBytes(input, b, inputpointer);
+			BinaryConverter.intToBytes(input, b, inputpointer);
 			// for(int j=0; j<b.length; j++){
 			// System.out.println("b"+j+": "+Integer.toBinaryString(b[j]));
 			// System.out.println("b"+j+": "+b[j]);
 			// }
 			// System.out.println("end: "+Integer.toBinaryString(BinaryPrimitiveConverter.byteToInt(b)));
 			// System.out.println("end: "+BinaryPrimitiveConverter.byteToInt(b));
-			assertEquals(input, BinaryPrimitiveConverter.byteToInt(b, outputpointer));
+			assertEquals(input, BinaryConverter.byteToInt(b, outputpointer));
 		}
 	}
 
@@ -51,14 +51,14 @@ public class BinaryPrimitiveConverterTest {
 		ArrayPointer outputpointer = new ArrayPointer();
 		for (int input = -10000; input < 10000; input += 1344) {
 			// System.out.println("input "+input);
-			BinaryPrimitiveConverter.longToBytes(input, b, inputpointer);
+			BinaryConverter.longToBytes(input, b, inputpointer);
 			// for(int j=0; j<b.length; j++){
 			// System.out.println("b"+j+": "+Integer.toBinaryString(b[j]));
 			// System.out.println("b"+j+": "+b[j]);
 			// }
 			// System.out.println("end: "+Integer.toBinaryString(BinaryPrimitiveConverter.byteToInt(b)));
 			// System.out.println("end: "+BinaryPrimitiveConverter.byteToInt(b));
-			assertEquals(input, BinaryPrimitiveConverter.byteTolong(b, outputpointer));
+			assertEquals(input, BinaryConverter.byteTolong(b, outputpointer));
 		}
 	}
 	
@@ -68,13 +68,13 @@ public class BinaryPrimitiveConverterTest {
 		ArrayPointer inputpointer = new ArrayPointer();
 		ArrayPointer outputpointer = new ArrayPointer();
 		byte[] b = new byte[2048];
-		BinaryPrimitiveConverter.stringToByte(s, b, inputpointer);
+		BinaryConverter.stringToByte(s, b, inputpointer);
 //		for (int j = 0; j < b.length; j++) {
 //			System.out.println("b" + j + ": " + Integer.toBinaryString(b[j]));
 //			System.out.println("b" + j + ": " + b[j]);
 //		}
 //		System.out.println(BinaryPrimitiveConverter.byteToCharArray(b));
-		assertEquals(s, BinaryPrimitiveConverter.byteToString(b, outputpointer));
+		assertEquals(s, BinaryConverter.byteToString(b, outputpointer));
 	}
 
 }
