@@ -31,7 +31,7 @@ public final class MapEntry<V extends AbstractSendableData<?>> extends AbstractS
 		return this;
 	}
 
-	String key() {
+	public String key() {
 		return key;
 	}
 
