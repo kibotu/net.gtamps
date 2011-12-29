@@ -260,11 +260,11 @@ public class Camera extends RenderableNode {
     }
 
     private void shadeInternalGL10(@NotNull GL10 gl) {
-        assert gl != null;
+        gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         GLU.gluPerspective(gl, getHorizontalFieldOfViewEffective(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());
-        GLU.gluLookAt(gl, frustum.getPosition().x, frustum.getPosition().y, frustum.getPosition().z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
+        GLU.gluLookAt(gl, position.x, position.y, position.z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
@@ -288,6 +288,8 @@ public class Camera extends RenderableNode {
         }
     }
 
+    private ProcessingState glState = new ProcessingState();
+
     /**
      * Spezifische Implementierung des Rendervorganges
      *
@@ -295,7 +297,8 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
-        shadeInternalGL10(gl);
+        glState.setGl(gl);
+        shadeInternal(glState);
     }
 
     @Override

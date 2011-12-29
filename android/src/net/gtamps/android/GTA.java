@@ -23,11 +23,11 @@ public class GTA extends BasicRenderActivity {
         BasicRenderer renderer;
 
         // detect if OpenGL ES 2.0 support exists
-        if (!RenderCapabilities.detectOpenGLES20(this)) {
+//        if (RenderCapabilities.detectOpenGLES20(this)) {
+        if (RenderCapabilities.supportsOpenGLES = false) {
             view.setEGLContextClientVersion(2);
             renderer = new GLES20Renderer(game);
         } else {
-            RenderCapabilities.supportsOpenGLES = false;
             renderer = new GL10Renderer(game);
         }
 

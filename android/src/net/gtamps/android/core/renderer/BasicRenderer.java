@@ -102,7 +102,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         Registry.getTextureLibrary().invalidate();
 
         // reload shader
-        Shader.load();
+        if(RenderCapabilities.supportsGLES20()) Shader.load();
 
         // inform camera that surface has changed
         for (int i = 0; i < renderActivity.getScenes().size(); i++) {

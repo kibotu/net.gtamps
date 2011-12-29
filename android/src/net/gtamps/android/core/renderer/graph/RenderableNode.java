@@ -146,7 +146,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         // Model view aktivieren
         gl.glPushMatrix();
 
-        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
 
         // Objekt verschieben
         gl.glTranslatef(position.x, position.y, position.z);
@@ -294,7 +294,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (isDirty) onDirty(gl);
 
         // shading
-//        gl.glShadeModel(renderState.shader.getValue());
+        gl.glShadeModel(renderState.shader.getValue());
 
         // enable color materials
         if (colorMaterialEnabled) {

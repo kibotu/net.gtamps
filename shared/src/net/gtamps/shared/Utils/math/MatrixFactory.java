@@ -439,9 +439,9 @@ public class MatrixFactory {
         float sy = (float) Math.sin(rotation.z);
 
         return matrix.set(
-                scaling.x * cp * cy, cp * sy, -sp, 0,
-                sr * sp * cy - cr * sy, scaling.y * sr * sp * sy + cr * cy, sr * cp, 0,
-                cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, scaling.z * cr * cp, 0,
+                scaling.x * (cp * cy), cp * sy, -sp, 0,
+                sr * sp * cy - cr * sy, scaling.y * (sr * sp * sy + cr * cy), sr * cp, 0,
+                cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, scaling.z * (cr * cp), 0,
                 translation.x, translation.y, translation.z, 1f
         );
 
