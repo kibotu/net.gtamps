@@ -83,13 +83,13 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //            }
 //        }
 
-        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
-            Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+50);
-            Vector3 pos = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setTarget(pos.x,pos.y,pos.z);
+//        if(world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+//            Vector3 temp = world.getActiveView().getObject3d().getPosition();
+//            world.getActiveCamera().setPosition(temp.x,temp.y,temp.z+50);
+//            Vector3 pos = world.getActiveView().getObject3d().getPosition();
+//            world.getActiveCamera().setTarget(pos.x,pos.y,pos.z);
 //            world.getActiveCamera().rotate(30,1,0,0);
-        }
+//        }
 
 //        rot+=0.02f;
 //        world.getScene().get(0).setRotation(rot,rot,rot);
