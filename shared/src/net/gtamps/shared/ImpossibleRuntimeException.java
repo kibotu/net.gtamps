@@ -45,11 +45,5 @@ public class ImpossibleRuntimeException extends BaseRuntimeException {
 		super(impossibleMsg + message, cause);
 	}
 
-	/**
-	 * @see ImpossibleRuntimeException
-	 */
-	public ImpossibleRuntimeException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
-		super(impossibleMsg + message, cause, enableSuppression, writableStackTrace);
-	}
 
 }

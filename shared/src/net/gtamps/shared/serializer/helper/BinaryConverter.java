@@ -2,7 +2,7 @@ package net.gtamps.shared.serializer.helper;
 
 import java.nio.charset.Charset;
 
-public class BinaryPrimitiveConverter {
+public class BinaryConverter {
 
 	private static final Charset charset = Charset.forName("UTF-8");
 
@@ -52,7 +52,7 @@ public class BinaryPrimitiveConverter {
 	}
 
 	public static void stringToByte(final String s, byte[] modifyBytes, ArrayPointer p) {
-		byte[] byteString = s.getBytes(charset);
+		byte[] byteString = s.getBytes();
 		intToBytes(byteString.length, modifyBytes, p);
 
 		for (int i = 0; i < byteString.length; i++) {
@@ -63,8 +63,21 @@ public class BinaryPrimitiveConverter {
 
 	public static String byteToString(byte[] modifyBytes, ArrayPointer p) {
 		int length = byteToInt(modifyBytes, p);
-		String s = new String(modifyBytes, p.pos(), length, charset);
+		String s = new String(modifyBytes, p.pos(), length);
 		p.inc(length);
 		return s;
+	}
+
+	public static void booleanToByte(Boolean b, byte[] buf, ArrayPointer ps) {
+		if(b){
+			buf[ps.pos()] = 1; 
+		} else {
+			buf[ps.pos()] = 0;
+		}
+		ps.inc(1);
+	}
+	public static boolean byteToBoolean(byte[] buf, ArrayPointer p){
+		p.inc(1);
+		return (buf[p.pos()-1] == 1); 
 	}
 }
