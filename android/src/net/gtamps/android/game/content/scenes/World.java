@@ -27,7 +27,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 150, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 15, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -43,7 +43,7 @@ public class World extends EntityScene {
 //        add(riviera);
         activeView = new EntityView(new Entity(Entity.Type.CAR_CAMARO));
         add(activeView);
-        add(new EntityView(addPlane()));
+//        add(new EntityView(addPlane()));
 //        add(new EntityView(getSunLight()));
     }
 

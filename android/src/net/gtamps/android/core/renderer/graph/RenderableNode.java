@@ -1,15 +1,10 @@
 package net.gtamps.android.core.renderer.graph;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
-import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.Registry;
 import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
-import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.Logger;
@@ -18,9 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 import static fix.android.opengl.GLES20.glDrawElements;
 import static fix.android.opengl.GLES20.glVertexAttribPointer;
@@ -52,7 +44,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines if the node has textures.
      */
-    private boolean texturesEnabled = false;
+    private boolean hasTextures = false;
 
     /**
      * Defines if the node has normals.
@@ -256,7 +248,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this, "material.shininess");
 
         // bind textures
-//        if (texturesEnabled) {
+//        if (hasTextures) {
 //            int[] texIDs = ob.get_texID();
 //
 //            for(int i = 0; i < _texIDs.length; i++) {
@@ -268,13 +260,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
 //            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 //            Logger.d(this, "Texture bind: " + textureId);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture"),0);
-//        }
-
-        // enable texturing
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), texturesEnabled ? 2f : 0f);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), hasTextures ? 2 : 0);
         Logger.checkGlError(this,"hasTexture");
+        GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
 
         // uvs
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
@@ -354,7 +343,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable texture
-        if (texturesEnabled) {
+        if (hasTextures) {
             gl.glEnable(GL_TEXTURE_2D);
 
             // TODO find way to use active texture instead of bind texture
@@ -492,8 +481,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      *
      * @return <code>true</code> if it has uvs.
      */
-    final public boolean isTexturesEnabled() {
-        return texturesEnabled;
+    final public boolean isHasTextures() {
+        return hasTextures;
     }
 
     /**
@@ -502,7 +491,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      * @param texturesEnabled
      */
     final public void enableTextures(boolean texturesEnabled) {
-        this.texturesEnabled = texturesEnabled;
+        this.hasTextures = texturesEnabled;
     }
 
     /**
