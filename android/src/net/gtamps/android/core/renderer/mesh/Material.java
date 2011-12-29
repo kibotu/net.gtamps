@@ -4,6 +4,7 @@ import net.gtamps.shared.Utils.math.Color4;
 
 public class Material {
 
+    public static final Material DEFAULT = new Material(new Color4(0xff000000),new Color4(0xff333333),new Color4(0xff666666),new Color4(0xff777777),5);
     public static final Material WHITE = new Material(Color4.WHITE, Color4.WHITE, Color4.WHITE, Color4.WHITE, 1);
     public static final Material RED = new Material(Color4.RED, Color4.RED, Color4.RED, Color4.RED, 1);
     public static final Material GREEN = new Material(Color4.GREEN, Color4.GREEN, Color4.GREEN, Color4.GREEN, 1);

@@ -2,9 +2,8 @@ package net.gtamps.android.game.content;
 
 import net.gtamps.android.R;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Cube;
-import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
-import net.gtamps.android.core.renderer.graph.scene.primitives.Sphere;
+import net.gtamps.android.core.renderer.graph.scene.primitives.*;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -62,6 +61,12 @@ final public class Object3dFactory {
             case SPHERE:
                 node = createSphere();
                 break;
+            case CYLINDER:
+                node = createCylinder();
+                break;
+            case TORUS:
+                node = createTorus();
+                break;
             case PLACEHOLDER:
                 node = createCube();
                 break;
@@ -81,7 +86,6 @@ final public class Object3dFactory {
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
         parsedChild.enableVertexColors(true);
-//        parsedChild.setMaterial(Material.RED);
         parsedChild.enableNormals(true);
         parsedChild.enableTextures(false);
         parsedChild.enableDoubleSided(true);
@@ -89,13 +93,11 @@ final public class Object3dFactory {
         parsedChild.enableAlpha(false);
         parsedChild.enableMipMap(true);
         parsedChild.setScaling(0.3f, 0.3f, 0.3f);
-
-
         return parsedObject;
     }
 
     private static RenderableNode createCarRiveria() {
-//        Logger.v(TAG, "Create riviera.");
+        Logger.v(TAG, "Create riviera.");
         RenderableNode parsedObject = ParsedObject.parseObject("riviera_obj", R.drawable.riviera, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
@@ -104,14 +106,14 @@ final public class Object3dFactory {
         parsedChild.enableTextures(true);
         parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
-        parsedChild.enableAlpha(true);
-        parsedChild.enableMipMap(true);
-        parsedChild.setScaling(20, 20, 20);
+        parsedChild.enableAlpha(false);
+        parsedChild.enableMipMap(false);
+        parsedChild.setScaling(5,5,5);
         return parsedObject;
     }
 
     private static RenderableNode createCarCamaro() {
-//        Logger.v(TAG, "Create camaro.");
+        Logger.v(TAG, "Create camaro.");
         RenderableNode parsedObject = ParsedObject.parseObject("camaro_obj", R.drawable.camaro, false);
         RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
         parsedChild.enableColorMaterialEnabled(true);
@@ -121,52 +123,62 @@ final public class Object3dFactory {
         parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(true);
+        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 
     private static RenderableNode createCube() {
-//        Logger.v(TAG, "Create cube.");
+        Logger.v(TAG, "Create cube.");
         return new Cube();
     }
 
     private static RenderableNode createSphere() {
-//        Logger.v(TAG, "Create sphere.");
+        Logger.v(TAG, "Create sphere.");
         return new Sphere(1, 20, 10);
     }
 
+    private static RenderableNode createTorus() {
+        Logger.v(TAG, "Create Torus.");
+        return new Torus();
+    }
+
+    private static RenderableNode createCylinder() {
+        Logger.v(TAG, "Create Cylinder.");
+        return new Cylinder();
+    }
+
     private static RenderableNode createWayPoint() {
-//        Logger.v(TAG, "Create way point.");
+        Logger.v(TAG, "Create way point.");
         return createCube();
     }
 
     private static RenderableNode createBullet() {
-//        Logger.v(TAG, "Create bullet.");
+        Logger.v(TAG, "Create bullet.");
         return createCube();
     }
 
     private static RenderableNode createSpawnPoint() {
-//        Logger.v(TAG, "Create spawnpoint.");
+        Logger.v(TAG, "Create spawnpoint.");
         return createCube();
     }
 
     private static RenderableNode createHouse() {
-//        Logger.v(TAG, "Create house.");
+        Logger.v(TAG, "Create house.");
         return createCube();
     }
 
     private static RenderableNode createHuman() {
-//        Logger.v(TAG, "Create human.");
+        Logger.v(TAG, "Create human.");
 
-//        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
-//        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
-//        parsedChild.enableColorMaterialEnabled(true);
-//        parsedChild.enableVertexColors(true);
-//        parsedChild.enableNormals(true);
-//        parsedChild.enableTextures(true);
-//        parsedChild.enableLighting(false);
-//        parsedChild.enableAlpha(false);
-//        parsedChild.enableMipMap(false);
+        RenderableNode parsedObject = ParsedObject.parseObject("figure_obj", R.drawable.placeholder, false);
+        RenderableNode parsedChild = (RenderableNode) parsedObject.get(0);
+        parsedChild.enableColorMaterialEnabled(true);
+        parsedChild.enableVertexColors(true);
+        parsedChild.enableNormals(true);
+        parsedChild.enableTextures(true);
+        parsedChild.enableDoubleSided(false);
+        parsedChild.enableLighting(false);
+        parsedChild.enableAlpha(false);
 //        return parsedObject;
         return createCarCamaro();
     }

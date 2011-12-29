@@ -338,6 +338,10 @@ public class Camera extends RenderableNode {
     public void setTarget(@NotNull Vector3 point) {
         frustum.setTarget(point);
     }
+    
+    public void setTarget(float x, float y, float z) {
+        frustum.setTarget(x,y,z);
+    }
 
     /**
      * Liefert den Sichtpunkt der Kamera absolut, ohne die Position zu verändern

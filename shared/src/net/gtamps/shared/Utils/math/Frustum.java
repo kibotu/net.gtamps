@@ -411,4 +411,8 @@ public final class Frustum {
     public void setOrthographicProjection(Matrix4 projectionMatrix) {
         Matrix4.setOrthographicProjection(projectionMatrix, -getAspectRatio(), getAspectRatio(), -1, 1, getNearDistance(), getFarDistance());
     }
+
+    public void setTarget(float x, float y, float z) {
+        target.set(x,y,z);
+    }
 }

@@ -50,7 +50,7 @@ public class Game implements IRenderActivity {
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
 
         // hud
-        scenes.add(hud);
+//        scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
