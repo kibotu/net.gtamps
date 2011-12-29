@@ -1,66 +1,70 @@
 package net.gtamps.shared.serializer.helper;
 
+import java.nio.charset.Charset;
+
 public class BinaryPrimitiveConverter {
 
-	public static byte[] intToBytes(final int i) {
-		final byte[] b = new byte[Integer.SIZE / 8];
+	private static final Charset charset = Charset.forName("UTF-8");
+
+	public static void intToBytes(final int i, byte[] modifyBytes, ArrayPointer p) {
+		// final byte[] b = new byte[Integer.SIZE / 8];
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
-			b[j] = 0;
-			b[j] |= ((i >> (8 * (Integer.SIZE / 8 - j - 1)) & 0xff));
+			modifyBytes[j + p.pos()] = 0;
+			modifyBytes[j + p.pos()] |= ((i >> (8 * (Integer.SIZE / 8 - j - 1)) & 0xff));
 		}
-		return b;
+		p.inc(Integer.SIZE / 8);
 	}
 
-	public static int byteToInt(final byte[] b) {
+	public static int byteToInt(final byte[] b, ArrayPointer p) {
 		int i = 0;
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			i = i << 8;
-			i |= (b[j] & 0xff);
+			i |= (b[j + p.pos()] & 0xff);
 		}
+		p.inc(Integer.SIZE / 8);
 		return i;
 	}
 
-	public static float byteToFloat(final byte[] b) {
-		return Float.intBitsToFloat(byteToInt(b));
+	public static float byteToFloat(final byte[] b, ArrayPointer p) {
+		return Float.intBitsToFloat(byteToInt(b, p));
 	}
 
-	public static byte[] floatToBytes(final float f) {
-		return intToBytes(Float.floatToIntBits(f));
+	public static void floatToBytes(final float f, byte[] modifyBytes, ArrayPointer p) {
+		intToBytes(Float.floatToIntBits(f), modifyBytes, p);
 	}
 
-	public static byte[] longToBytes(final long l) {
-		final byte[] b = new byte[Long.SIZE / 8];
+	public static void longToBytes(final long l, byte[] modifyBytes, ArrayPointer p) {
 		for (int j = 0; j < Long.SIZE / 8; j++) {
-			b[j] = 0;
-			b[j] |= ((l >> (8 * (Long.SIZE / 8 - j - 1)) & 0xff));
+			modifyBytes[j + p.pos()] = 0;
+			modifyBytes[j + p.pos()] |= ((l >> (8 * (Long.SIZE / 8 - j - 1)) & 0xff));
 		}
-		return b;
+		p.inc(Long.SIZE / 8);
 	}
 
-	public static long byteTolong(final byte[] b) {
+	public static long byteTolong(byte[] b, ArrayPointer p) {
 		long l = 0;
 		for (int j = 0; j < Long.SIZE / 8; j++) {
 			l = l << 8;
-			l |= (b[j] & 0xff);
+			l |= (b[j + p.pos()] & 0xff);
 		}
+		p.inc(Long.SIZE / 8);
 		return l;
 	}
 
-	public static byte[] charArrayToByte(final char[] c) {
-		byte[] b = new byte[c.length*Character.SIZE/8];
-		for (int i = 0; i < c.length; i++) {
-			b[i*2] = (byte) (c[i] & 0xff);
-			b[i*2+1] = (byte) ((c[i] & 0xff00) >> 8);
+	public static void stringToByte(final String s, byte[] modifyBytes, ArrayPointer p) {
+		byte[] byteString = s.getBytes(charset);
+		intToBytes(byteString.length, modifyBytes, p);
+
+		for (int i = 0; i < byteString.length; i++) {
+			modifyBytes[i + p.pos()] = byteString[i];
 		}
-		return b;
+		p.inc(byteString.length);
 	}
-	public static char[] byteToCharArray(final byte[] b){
-		char[] c = new char[b.length/2];
-		for(int i=0; i<c.length; i++){
-			c[i] |= (char) (b[i*2+1]);
-			c[i] =  (char) (c[i]<<8);
-			c[i] |= (char) (b[i*2] & 0xff);
-		}
-		return c;
+
+	public static String byteToString(byte[] modifyBytes, ArrayPointer p) {
+		int length = byteToInt(modifyBytes, p);
+		String s = new String(modifyBytes, p.pos(), length, charset);
+		p.inc(length);
+		return s;
 	}
 }
