@@ -3,10 +3,13 @@ package net.gtamps.android.core.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import net.gtamps.android.core.renderer.mesh.texture.TextureLibrary;
 import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
+import java.util.HashMap;
+import java.util.List;
 
 public class GLES20Renderer extends BasicRenderer {
 
@@ -62,6 +65,17 @@ public class GLES20Renderer extends BasicRenderer {
         return textureId;
     }
 
+    private void generateMipMap() {
+        HashMap<String, Integer> map = Registry.getTextureLibrary().getTextureResourceIds();
+        for(int i = 0; i < map.size(); i++){
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, map.get(i));
+            GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+            Logger.checkGlError(this, "generate MipMap");
+        }
+
+    }
+
     @Override
     public int newTextureID() {
         int[] textureIds = new int[1];
@@ -74,7 +88,6 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glDeleteTextures(textureIds.length, textureIds, 0);
     }
 
-    // light variables
     // light variables
     float[] lightP = {0, 0, 10f, 1f};
     float[] lightC = {0.5f, 0.5f, 0.5f, 1f};

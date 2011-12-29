@@ -34,6 +34,8 @@ public class MenuActivity extends Activity implements OnClickListener {
         ((Button) findViewById(R.id.menuButtonQuit)).setOnClickListener(this);
         ((Button) findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
 
+        startGame();
+
     }
 
     private void startGame() {
