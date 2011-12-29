@@ -30,7 +30,6 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 
 	public NewSendable(final SendableType type, final int id, final AbstractSendableData<?> data) {
-		super(NewSendable.class);
 		this.type = type;
 		this.data = data;
 		this.id = id;

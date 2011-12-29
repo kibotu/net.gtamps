@@ -6,8 +6,6 @@ public abstract class AbstractSendableData<DataType extends AbstractSendableData
 
 	private static final long serialVersionUID = 7512510685123238578L;
 
-	AbstractSendableData(final Class<? extends AbstractSendableData<?>> type) {
-		super(type);
+	AbstractSendableData() {
 	}
-
 }

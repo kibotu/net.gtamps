@@ -12,12 +12,7 @@ import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.Propertay;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
-import net.gtamps.shared.serializer.communication.ISerializer;
-import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.MessageDeserializationException;
-import net.gtamps.shared.serializer.communication.Sendable;
-import net.gtamps.shared.serializer.communication.SendableDeserializationException;
-import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.*;
 import net.gtamps.shared.serializer.communication.data.AuthentificationData;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
@@ -197,7 +192,7 @@ public class ManualTypeSerializer implements ISerializer {
 			throw new MessageDeserializationException(e);
 		} catch (final NoSuchElementException e) {
 			throw new MessageDeserializationException(e);
-		} catch (final SendableDeserializationException e) {
+		} catch (final SendableSerializationException e) {
 			GUILogger.getInstance().log(TAG, "MessageDeserializationException");
 			throw new MessageDeserializationException(e);
 		}
@@ -239,13 +234,13 @@ public class ManualTypeSerializer implements ISerializer {
 				}
 				s = new Sendable(type, id, data);
 			} catch (final InputMismatchException e) {
-				throw new SendableDeserializationException(e.getMessage(), e);
+				throw new SendableSerializationException(e.getMessage(), e);
 			} catch (final NoSuchElementException e) {
-				throw new SendableDeserializationException(e.getMessage(), e);
+				throw new SendableSerializationException(e.getMessage(), e);
 			} catch (final IllegalArgumentException e) {
-				throw new SendableDeserializationException(e.getMessage(), e);
+				throw new SendableSerializationException(e.getMessage(), e);
 			}
-		} catch (final SendableDeserializationException e) {
+		} catch (final SendableSerializationException e) {
 			id = (id == null) ? -1 : id;
 			s = new Sendable(SendableType.BAD_SENDABLE, id, null);
 			s.data = new StringData(e.getMessage());

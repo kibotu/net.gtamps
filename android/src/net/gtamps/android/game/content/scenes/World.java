@@ -100,9 +100,9 @@ public class World extends EntityScene {
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedObject.setScaling(Config.PIXEL_TO_NATIVE + 0.1f, Config.PIXEL_TO_NATIVE+ 0.1f, Config.PIXEL_TO_NATIVE);
+        parsedObject.setScaling((Config.PIXEL_TO_NATIVE + 0.1f)*-1, Config.PIXEL_TO_NATIVE+ 0.1f, Config.PIXEL_TO_NATIVE);
 //        parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
-        parsedObject.setPosition(-(1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, -(1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, 0);
+        parsedObject.setPosition(0,- (1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, 0);
         parsedChild.setRotation(0,0, MathUtils.deg2Rad(180));
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
         parsedChild.enableMipMap(false);
