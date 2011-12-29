@@ -8,6 +8,7 @@ import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,10 +52,19 @@ public class GLES20Renderer extends BasicRenderer {
         int textureId = newTextureID();
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
 
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+        if (generateMipMap) {
+            GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_GENERATE_MIPMAP_HINT, GLES20.GL_TRUE);
+        } else {
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_GENERATE_MIPMAP_HINT, GLES20.GL_FALSE);
+        }
+
+        GLES20.glTexParameterf(GL10.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+
+        GLES20.glTexParameterf(GL10.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
 
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
 
@@ -63,17 +73,6 @@ public class GLES20Renderer extends BasicRenderer {
         texture.recycle();
 
         return textureId;
-    }
-
-    private void generateMipMap() {
-        HashMap<String, Integer> map = Registry.getTextureLibrary().getTextureResourceIds();
-        for(int i = 0; i < map.size(); i++){
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, map.get(i));
-            GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-            Logger.checkGlError(this, "generate MipMap");
-        }
-
     }
 
     @Override
