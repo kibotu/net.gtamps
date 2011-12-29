@@ -6,8 +6,11 @@ import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.graph.scene.primitives.*;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.android.game.content.Object3dFactory;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.cache.ObjectFactory;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class TestScene extends EntityScene {
@@ -39,22 +42,27 @@ public class TestScene extends EntityScene {
 
 
         Cube cube = new Cube();
-        cube.setPosition(-3,0,0);
+        cube.setPosition(-3,-3,0);
         cube.setTextureResourceId(R.drawable.crate);
+        cube.enableMipMap(true);
         Sphere sphere = new Sphere(1,20,20);
-        sphere.setPosition(3,0,0);
+        sphere.setPosition(3,-3,0);
         sphere.setTextureResourceId(R.drawable.earth);
+        sphere.enableMipMap(true);
         Torus torus = new Torus();
         torus.setPosition(3,3,0);
         torus.setTextureResourceId(R.drawable.crate);
+        torus.enableMipMap(true);
         Cylinder cylinder = new Cylinder();
         cylinder.setPosition(-3,3,0);
         cylinder.setTextureResourceId(R.drawable.crate);
+        cylinder.enableMipMap(true);
         add(new EntityView(torus));
         add(new EntityView(cube));
         add(new EntityView(sphere));
         add(new EntityView(cylinder));
-//        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
+
+        add(new EntityView(Object3dFactory.create(Entity.Type.CAR_CAMARO)));
 //        add(new EntityView(getSunLight()));
     }
 

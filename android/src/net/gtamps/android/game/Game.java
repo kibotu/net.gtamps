@@ -6,6 +6,7 @@ import net.gtamps.android.core.renderer.BasicRenderActivity;
 import net.gtamps.android.core.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
+import net.gtamps.android.game.content.scenes.TestScene;
 import net.gtamps.android.game.content.scenes.World;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -41,10 +42,12 @@ public class Game implements BasicRenderActivity.IRenderActivity {
         this.messageHandler = new MessageHandler(connection,world);
     }
 
+    BasicScene testscene = new TestScene();
+
     public void onCreate() {
 
         // create world
-        scenes.add(world);
+        scenes.add(testscene);
 //        world.getScene().setVisible(false);
 //        PlayerMovementListener cl = new PlayerMovementListener();
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
@@ -92,10 +95,12 @@ public class Game implements BasicRenderActivity.IRenderActivity {
 //        }
 
         rot+=0.02f;
-        world.getScene().get(0).setRotation(rot,rot,rot);
-//        world.getScene().get(1).setRotation(-rot,rot,rot);
-//        world.getScene().get(2).setRotation(rot,-rot,rot);
-//        world.getScene().get(3).setRotation(rot,-rot,-rot);
+        testscene.getScene().get(0).setRotation(rot,rot,rot);
+        testscene.getScene().get(1).setRotation(-rot,rot,rot);
+        testscene.getScene().get(2).setRotation(rot,-rot,rot);
+        testscene.getScene().get(3).setRotation(rot,-rot,-rot);
+
+        testscene.getScene().get(4).setRotation(rot,-rot,-rot);
     }
 
     float rot = 0;
