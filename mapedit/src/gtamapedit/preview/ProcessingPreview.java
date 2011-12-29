@@ -1,5 +1,6 @@
 package gtamapedit.preview;
 
+import gtamapedit.conf.Configuration;
 import gtamapedit.file.MapFile;
 import gtamapedit.file.MapFileTileElement;
 import processing.core.*;
@@ -27,7 +28,7 @@ public class ProcessingPreview extends PApplet {
 			for (int y = 0; y < mapXSize; y++) {
 				if (MapReference.getMapFile().getRawData()[x][y].getTextureTop() != null && 
 						MapReference.getMapFile().getRawData()[x][y].getTextureTop() != "") {
-					tex[x][y] = loadImage("/home/tom/studium/mmp2/mapedit/tile_images/"
+					tex[x][y] = loadImage(Configuration.getTileImagePath()
 							+ MapReference.getMapFile().getRawData()[x][y].getTextureTop());
 				}
 			}

@@ -262,8 +262,6 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
     protected abstract void updateInternal(float deltat);
 
     public final void shade(@NotNull ProcessingState state) {
-        if (!isVisible) return;
-
         shadeInternal(state);
 
         for (int i = 0; i < getChildCount(); ++i) {
@@ -280,7 +278,6 @@ public abstract class SceneNode extends ObjectWithOrientation implements IProces
      */
     public final void process(@NotNull ProcessingState state) {
         if (!isVisible) return;
-
         if (RenderCapabilities.supportsGLES20()) {
             shade(state);
         } else {

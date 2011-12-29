@@ -50,7 +50,7 @@ public class Game implements IRenderActivity {
 //        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(cl);
 
         // hud
-        scenes.add(hud);
+//        scenes.add(hud);
 //        hud.getScene().setVisible(false);
 
 //        scenes.add(menu);
@@ -82,9 +82,9 @@ public class Game implements IRenderActivity {
         }
 
         if (world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
-//            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
+            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
-            world.getActiveCamera().setPosition(temp.x, temp.y, temp.z + 150);
+            world.getActiveCamera().setPosition(temp.x, temp.y, temp.z + 300);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
         }
     }

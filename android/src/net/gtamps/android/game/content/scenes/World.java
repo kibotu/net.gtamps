@@ -24,7 +24,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 150, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 200, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -99,8 +99,8 @@ public class World extends EntityScene {
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
-        parsedObject.setPosition(-128 / 2, -128 / 2, 0);
+        parsedObject.setScaling(Config.PIXEL_TO_NATIVE+0.05f, Config.PIXEL_TO_NATIVE+0.05f, Config.PIXEL_TO_NATIVE+0.05f);
+//        parsedObject.setPosition(-128 / 2, -128 / 2, 0);
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
         parsedChild.enableMipMap(false);
         return parsedObject;
