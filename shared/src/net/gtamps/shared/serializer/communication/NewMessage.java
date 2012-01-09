@@ -23,7 +23,7 @@ public class NewMessage extends AbstractSendable<NewMessage> {//extends SharedOb
 	//	}
 
 	public NewMessage() {
-		super(NewMessage.class);
+		super();
 	}
 
 	public NewMessage addSendable(final ListNode<NewSendable> sendable) {

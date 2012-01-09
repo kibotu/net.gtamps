@@ -9,7 +9,7 @@ public final class MapEntry<V extends AbstractSendableData<?>> extends AbstractS
 
 	@SuppressWarnings("unchecked")
 	public MapEntry() {
-		super((Class<? extends AbstractSendableData<?>>) MapEntry.class);
+		super();
 	}
 
 	public MapEntry<V> set(final String key, final V value) {

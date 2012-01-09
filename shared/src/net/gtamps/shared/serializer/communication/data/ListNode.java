@@ -40,7 +40,7 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 
 	@SuppressWarnings("unchecked")
 	ListNode(final T value) {
-		super( (Class<? extends AbstractSendableData<?>>) ListNode.class);
+		super();
 		set(value);
 	}
 

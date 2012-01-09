@@ -38,7 +38,7 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 
 
 	public DataMap() {
-		super(DataMap.class);
+		super();
 	}
 
 
