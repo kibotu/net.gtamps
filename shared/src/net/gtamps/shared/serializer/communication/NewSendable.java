@@ -20,6 +20,10 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 	@Nullable
 	public transient String sessionId = null;
 
+	public NewSendable() {
+		super(NewSendable.class);
+	}
+
 	public NewSendable(final SendableType type) {
 		this(type, null);
 	}

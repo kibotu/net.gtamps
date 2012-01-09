@@ -5,11 +5,10 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 
-import net.gtamps.shared.Utils.cache.IObjectCache;
 import net.gtamps.shared.Utils.cache.ObjectFactory;
-import net.gtamps.shared.Utils.cache.ThreadLocalObjectCache;
 import net.gtamps.shared.Utils.cache.TypableObjectCacheFactory;
 import net.gtamps.shared.Utils.cache.annotations.ReturnsCachedValue;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
 import org.junit.Before;
@@ -28,12 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class SendableProviderTest {
 
-	private final TypableObjectCacheFactory cacheFactory = new TypableObjectCacheFactory() {
-		@Override
-		public <T> IObjectCache<T> createObjectCache(final Class<T> type) {
-			return new ThreadLocalObjectCache<T>( createTypedObjectFactory(type) );
-		}
-	};
+	private final TypableObjectCacheFactory cacheFactory = new SendableCacheFactory();
 
 	private SendableProvider sdb;
 
@@ -82,8 +76,8 @@ public class SendableProviderTest {
 	@Test
 	public void testGetDataMap() {
 		final DataMap map = sdb.getDataMap()
-		.add(sdb.getMapEntry().setKey("lala").setValue(sdb.getValue(true)))
-		.add(sdb.getMapEntry().setKey("lulu").setValue(sdb.getValue(5)));
+				.add(sdb.getMapEntry().setKey("lala").setValue(sdb.getValue(true)))
+				.add(sdb.getMapEntry().setKey("lulu").setValue(sdb.getValue(5)));
 		System.out.println(map);
 		map.recycle();
 	}

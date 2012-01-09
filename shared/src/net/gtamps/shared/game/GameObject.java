@@ -46,11 +46,15 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	/**
 	 * @param name default is {@value #DEFAULT_NAME}
 	 */
-	public GameObject(String name) {
+	public GameObject(final String name) {
+		this(name, INVALID_UID);
+	}
+
+	public GameObject(String name, final int uid) {
 		if (name == null) {
 			name = DEFAULT_NAME;
 		}
-		this.uid = UIDGenerator.getNewUID();
+		this.uid = (uid == INVALID_UID) ? UIDGenerator.getNewUID() : uid;
 		this.name = name;
 	}
 

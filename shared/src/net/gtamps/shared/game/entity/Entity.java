@@ -53,7 +53,11 @@ public class Entity extends SharedGameActor {
 	}
 
 	public Entity(final String name) {
-		super(name);
+		this(name, INVALID_UID);
+	}
+
+	public Entity(final String name, final int uid) {
+		super(name, uid);
 		this.type = getType(name);
 		x = this.useProperty("posx", 0);
 		y = this.useProperty("posy", 0);
