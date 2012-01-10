@@ -1,5 +1,6 @@
 package net.gtamps.android.renderer.graph.scene;
 
+import net.gtamps.android.renderer.Registry;
 import net.gtamps.android.renderer.graph.*;
 import net.gtamps.android.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.renderer.graph.scene.primitives.NullNode;
@@ -64,10 +65,6 @@ public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
      */
     public void render(ProcessingState state) {
         process(state);
-        if (isDirty) {
-            state.getGl().glClearColor(background.r, background.g, background.b, background.a);
-            isDirty = false;
-        }
     }
 
     /**
@@ -77,6 +74,7 @@ public class SceneGraph implements IUpdatableLogic, IProcessable, IShadeable {
      */
     @Override
     public void process(@NotNull ProcessingState state) {
+        Registry.getRenderer().clearScreen(background);
         if (activeCamera != null) {
             activeCamera.setVisible(true);
             activeCamera.process(state);

@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.Color4;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.nio.ByteBuffer;
@@ -18,10 +19,6 @@ public class GLES20Renderer extends BasicRenderer {
     @Override
     public void draw(GL10 unusedGL) {
         if (!RenderCapabilities.supportsGLES20()) return;
-
-        // clear screen
-        GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1f);
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         int program = Shader.Type.PHONG.shader.getProgram();
 
@@ -232,6 +229,12 @@ public class GLES20Renderer extends BasicRenderer {
     @Override
     public void deleteTexture(int... textureIds) {
         GLES20.glDeleteTextures(textureIds.length, textureIds, 0);
+    }
+
+    @Override
+    public void clearScreen(Color4 bgcolor) {
+        GLES20.glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
     }
 
     // light variables

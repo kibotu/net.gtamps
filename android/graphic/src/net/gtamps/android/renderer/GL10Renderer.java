@@ -5,6 +5,7 @@ import android.opengl.GLUtils;
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.Color4;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -19,10 +20,6 @@ public class GL10Renderer extends BasicRenderer {
 
     @Override
     public void draw(GL10 gl10) {
-
-        // clear screen
-        gl10.glClearColor(.0f, .0f, .0f, 1.0f);
-        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
 
         // draw
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
@@ -77,6 +74,13 @@ public class GL10Renderer extends BasicRenderer {
     @Override
     public void deleteTexture(int... textureId) {
         glState.getGl().glDeleteTextures(textureId.length, textureId, 0);
+    }
+
+    @Override
+    public void clearScreen(Color4 bgcolor) {
+        GL10 gl10 = glState.getGl();
+        gl10.glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
+        gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
     }
 
     @Override

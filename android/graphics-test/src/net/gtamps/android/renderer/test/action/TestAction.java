@@ -1,7 +1,10 @@
-package net.gtamps.android.renderer.test;
+package net.gtamps.android.renderer.test.action;
 
 import net.gtamps.android.renderer.RenderAction;
+import net.gtamps.android.renderer.RenderCapabilities;
 import net.gtamps.android.renderer.graph.scene.BasicScene;
+import net.gtamps.android.renderer.test.scene.World;
+import net.gtamps.shared.Utils.Logger;
 
 public class TestAction extends RenderAction {
 

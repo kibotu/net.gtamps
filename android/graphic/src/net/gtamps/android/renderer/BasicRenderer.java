@@ -10,6 +10,7 @@ import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.android.renderer.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -198,4 +199,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      * @param gl
      */
     public abstract void deleteTexture(int... textureIds);
+
+    public abstract void clearScreen(Color4 bgcolor);
 }

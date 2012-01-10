@@ -1,7 +1,8 @@
-package net.gtamps.android.renderer.test;
+package net.gtamps.android.renderer.test.scene;
 
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.android.renderer.graph.scene.primitives.*;
+import net.gtamps.android.renderer.test.R;
 import net.gtamps.shared.Utils.math.Color4;
 
 public class World extends BasicScene {
@@ -16,11 +17,11 @@ public class World extends BasicScene {
         setBackground(Color4.DARK_GRAY);
 
         Cube cube = new Cube();
-        cube.setPosition(-3, 0, 0);
+        cube.setPosition(-3, -3, 0);
         cube.setTextureResourceId(R.drawable.crate);
 
         Sphere sphere = new Sphere(1, 20, 20);
-        sphere.setPosition(3, 0, 0);
+        sphere.setPosition(3, -3, 0);
         sphere.setTextureResourceId(R.drawable.earth);
 
         Torus torus = new Torus();
