@@ -157,7 +157,14 @@ public final class SendableFactory {
 			if (o instanceof Map) {
 				data = createDataMap((Map<String, Object>) o);
 			} else if (o instanceof List) {
-				data = this.<ListNode<?>> createList((List<Object>) o);
+
+
+                /**
+                 * TODO FIX ME! DOESN'T WORK ON ANDROID Q_Q
+                 */
+
+//				data = this.<ListNode<?>> createList((List<Object>) o);
+                data = null;
 			} else {
 				data = createValue(o);
 			}
