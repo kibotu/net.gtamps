@@ -69,9 +69,10 @@ public class Cylinder extends RenderableNode {
         enableVertexColors(true);
         enableNormals(true);
         enableTextures(false);
-        enableDoubleSided(true);
-        enableLighting(false);
+        enableDoubleSided(false);
+        enableLighting(true);
         enableAlpha(true);
+        enableMipMap(true);
 
 //        getRenderState().drawingStyle = RenderState.DrawingStyle.GL_POINTS; // default anyway
 //        setPointSize(3);

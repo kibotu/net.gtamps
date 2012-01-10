@@ -36,6 +36,8 @@ varying vec3 lightdirV;
 varying vec2 uvV;
 uniform sampler2D colorMap;
 
+uniform int hasLighting;
+
 struct PhongMaterial
 {
    vec4 emission;    // Ecm
@@ -50,7 +52,9 @@ vec3 lightintensity = vec3(0.9, 0.9, 0.9);
 
 void main() {
 
-  gl_FragColor =  texture2D(colorMap, uvV) * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
-  //gl_FragColor =  phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
+  vec4 texColor = texture2D(colorMap, uvV);
+
+  gl_FragColor =  hasLighting == 2 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
+    //gl_FragColor =  phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
   //gl_FragColor =  texture2D(colorMap, uvV);
 }

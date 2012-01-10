@@ -1,62 +1,18 @@
 package net.gtamps.android.renderer.graph.scene.primitives;
 
 import net.gtamps.android.renderer.graph.ProcessingState;
-import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
 
-import javax.microedition.khronos.opengles.GL10;
+public class SkyBox extends Cube{
 
-public class Cube extends RenderableNode {
-
-    public Cube(float width, float height, float depth) {
-        dimension.set(width, height, depth);
+    public SkyBox() {
+        this(1,1,1);
     }
 
-    public Cube(Cube other) {
-        this.mesh = new Mesh(other.mesh);
-        this.dimension.set(other.dimension);
-        this.scaling.set(other.scaling);
-    }
-
-    public Cube() {
-        this(1, 1, 1);
-    }
-
-    @Override
-    protected void renderInternal(@NotNull GL10 gl) {
-    }
-
-    @Override
-    public RenderableNode getStatic() {
-        return new Cube(this);
-    }
-
-    @Override
-    protected void setOptions() {
-        enableColorMaterialEnabled(true);
-        enableVertexColors(true);
-        enableNormals(true);
-        enableTextures(true);
-        enableDoubleSided(true);
-        enableLighting(true);
-        enableAlpha(true);
-//        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
-//        setPointSize(3);
-//        setPointSmoothing(true);
-//        setLineWidth(1);
-//        setLineSmoothing(true);
-        enableMipMap(true);
-//        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
-    }
-
-    @Override
-    protected void updateInternal(float deltat) {
-    }
-
-    @Override
-    protected void cleanupInternal(@NotNull ProcessingState state) {
+    public SkyBox(float width, float height, float depth) {
+        super(width,height,depth);
     }
 
     @Override
@@ -104,9 +60,5 @@ public class Cube extends RenderableNode {
         mesh.faces.add(16, 18, 19);
         mesh.faces.add(20, 21, 22);
         mesh.faces.add(20, 22, 23);
-    }
-
-    @Override
-    public void onDirty() {
     }
 }

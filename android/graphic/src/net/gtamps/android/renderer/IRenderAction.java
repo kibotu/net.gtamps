@@ -40,4 +40,6 @@ interface IRenderAction {
     public void pause();
 
     public void resume();
+
+    void start();
 }
