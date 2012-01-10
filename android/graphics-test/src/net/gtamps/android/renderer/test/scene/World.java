@@ -32,10 +32,16 @@ public class World extends BasicScene {
         cylinder.setPosition(-3, 3, 0);
         cylinder.setTextureResourceId(R.drawable.crate);
 
+        SkyBox skyBox = new SkyBox();
+        skyBox.setScaling(3,3,3);
+        skyBox.enableLighting(false);
+
         add(torus);
         add(cube);
         add(sphere);
         add(cylinder);
+//        add(skyBox);
+
     }
 
     @Override

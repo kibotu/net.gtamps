@@ -252,7 +252,7 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glDepthMask(true);
 
         // cull backface
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glCullFace(GLES20.GL_BACK);
     }
 }

@@ -265,6 +265,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this,"hasTexture");
         GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
 
+        // uses lightning
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasLighting"), lightingEnabled ? 2 : 0);
+        Logger.checkGlError(this,"hasLighting");
+
         // uvs
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
         glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexUv"), 2, GLES20.GL_FLOAT, false, 0, 0);
