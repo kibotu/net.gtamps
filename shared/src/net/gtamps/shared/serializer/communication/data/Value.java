@@ -20,7 +20,8 @@ public final class Value<T> extends AbstractSendableData<Value<T>> {
 	 * @param value
 	 * @throws IllegalArgumentException	if T (= value.getClass()is not
 	 */
-	public Value() {
+	public Value(/*final Class<T> valueType*/) {
+		super();
 		//		validate(valueType);
 	}
 

@@ -6,7 +6,7 @@ public class BinaryConverter {
 
 	private static final Charset charset = Charset.forName("UTF-8");
 
-	public static void intToBytes(final int i, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeIntToBytes(final int i, byte[] modifyBytes, ArrayPointer p) {
 		// final byte[] b = new byte[Integer.SIZE / 8];
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			modifyBytes[j + p.pos()] = 0;
@@ -15,7 +15,7 @@ public class BinaryConverter {
 		p.inc(Integer.SIZE / 8);
 	}
 
-	public static int byteToInt(final byte[] b, ArrayPointer p) {
+	public static int readIntFromBytes(final byte[] b, ArrayPointer p) {
 		int i = 0;
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			i = i << 8;
@@ -25,15 +25,15 @@ public class BinaryConverter {
 		return i;
 	}
 
-	public static float byteToFloat(final byte[] b, ArrayPointer p) {
-		return Float.intBitsToFloat(byteToInt(b, p));
+	public static float readFloatFromBytes(final byte[] b, ArrayPointer p) {
+		return Float.intBitsToFloat(readIntFromBytes(b, p));
 	}
 
-	public static void floatToBytes(final float f, byte[] modifyBytes, ArrayPointer p) {
-		intToBytes(Float.floatToIntBits(f), modifyBytes, p);
+	public static void writeFloatToBytes(final float f, byte[] modifyBytes, ArrayPointer p) {
+		writeIntToBytes(Float.floatToIntBits(f), modifyBytes, p);
 	}
 
-	public static void longToBytes(final long l, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeLongToBytes(final long l, byte[] modifyBytes, ArrayPointer p) {
 		for (int j = 0; j < Long.SIZE / 8; j++) {
 			modifyBytes[j + p.pos()] = 0;
 			modifyBytes[j + p.pos()] |= ((l >> (8 * (Long.SIZE / 8 - j - 1)) & 0xff));
@@ -41,7 +41,7 @@ public class BinaryConverter {
 		p.inc(Long.SIZE / 8);
 	}
 
-	public static long byteTolong(byte[] b, ArrayPointer p) {
+	public static long readLongFromBytes(byte[] b, ArrayPointer p) {
 		long l = 0;
 		for (int j = 0; j < Long.SIZE / 8; j++) {
 			l = l << 8;
@@ -51,9 +51,9 @@ public class BinaryConverter {
 		return l;
 	}
 
-	public static void stringToByte(final String s, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeStringToBytes(final String s, byte[] modifyBytes, ArrayPointer p) {
 		byte[] byteString = s.getBytes();
-		intToBytes(byteString.length, modifyBytes, p);
+		writeIntToBytes(byteString.length, modifyBytes, p);
 
 		for (int i = 0; i < byteString.length; i++) {
 			modifyBytes[i + p.pos()] = byteString[i];
@@ -61,14 +61,14 @@ public class BinaryConverter {
 		p.inc(byteString.length);
 	}
 
-	public static String byteToString(byte[] modifyBytes, ArrayPointer p) {
-		int length = byteToInt(modifyBytes, p);
+	public static String readStringFromBytes(byte[] modifyBytes, ArrayPointer p) {
+		int length = readIntFromBytes(modifyBytes, p);
 		String s = new String(modifyBytes, p.pos(), length);
 		p.inc(length);
 		return s;
 	}
 
-	public static void booleanToByte(Boolean b, byte[] buf, ArrayPointer ps) {
+	public static void writeBooleanToBytes(Boolean b, byte[] buf, ArrayPointer ps) {
 		if(b){
 			buf[ps.pos()] = 1; 
 		} else {
@@ -76,8 +76,17 @@ public class BinaryConverter {
 		}
 		ps.inc(1);
 	}
-	public static boolean byteToBoolean(byte[] buf, ArrayPointer p){
+	public static boolean readBooleanFromBytes(byte[] buf, ArrayPointer p){
 		p.inc(1);
 		return (buf[p.pos()-1] == 1); 
+	}
+	public static byte readByteFromBytes(byte[] buf, ArrayPointer p){
+		p.inc(1);
+		return buf[p.pos()-1];
+	}
+	
+	public static void writeByteToBytes(Byte b, byte[] buf, ArrayPointer ps) {
+		buf[ps.pos()] = b; 
+		ps.inc(1);
 	}
 }

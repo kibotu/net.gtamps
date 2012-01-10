@@ -35,6 +35,12 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 	};
 
 	public ListNode() {
+		this(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	ListNode(final T value) {
+		super();
 		set(value);
 	}
 
