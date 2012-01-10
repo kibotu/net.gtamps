@@ -1,5 +1,6 @@
 package net.gtamps.android.renderer;
 
+import android.os.SystemClock;
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 
 import java.util.ArrayList;
@@ -9,11 +10,11 @@ public abstract class RenderAction implements IRenderAction {
     protected boolean isRunning;
     protected boolean isPaused;
     protected final ArrayList<BasicScene> scenes;
+    protected long startTime;
 
     public RenderAction() {
         scenes = new ArrayList<BasicScene>();
-        isRunning = true;
-        isPaused = false;
+        start();
     }
 
     @Override
@@ -45,5 +46,11 @@ public abstract class RenderAction implements IRenderAction {
     @Override
     public void resume() {
         isPaused = false;
+    }
+
+    @Override
+    public void start() {
+        isRunning = true;
+        startTime = SystemClock.elapsedRealtime();
     }
 }

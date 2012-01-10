@@ -93,48 +93,4 @@ public class Game extends RenderAction {
     private void setZoomByDistance(float distance) {
         scenes.get(0).getActiveCamera().setZoomFactor(scenes.get(0).getActiveCamera().getZoomFactor() + distance * 0.01f);
     }
-
-    /**
-     * Defines if the game is running.
-     *
-     * @return <code>true</code> if is running.
-     */
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    @Override
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    @Override
-    public ArrayList<BasicScene> getScenes() {
-        return scenes;
-    }
-
-    /**
-     * Starts the game.
-     */
-    public void start() {
-        isRunning = true;
-        startTime = SystemClock.elapsedRealtime();
-    }
-
-    /**
-     * Ends the game.
-     */
-    public void stop() {
-        isRunning = false;
-    }
-
-    @Override
-    public void pause() {
-        isPaused = true;
-    }
-
-    @Override
-    public void resume() {
-        isPaused = false;
-    }
 }
