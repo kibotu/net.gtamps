@@ -13,8 +13,8 @@ import static javax.microedition.khronos.opengles.GL10.GL_PERSPECTIVE_CORRECTION
 
 public class GL10Renderer extends BasicRenderer {
 
-    public GL10Renderer(IRenderActivity renderActivity) {
-        super(renderActivity);
+    public GL10Renderer(IRenderAction renderAction) {
+        super(renderAction);
     }
 
     @Override
@@ -25,8 +25,8 @@ public class GL10Renderer extends BasicRenderer {
         gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
 
         // draw
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            BasicScene scene = renderActivity.getScenes().get(i);
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            BasicScene scene = renderAction.getScenes().get(i);
             if (scene.isDirty()) scene.onDirty();
             scene.getScene().render(glState);
         }

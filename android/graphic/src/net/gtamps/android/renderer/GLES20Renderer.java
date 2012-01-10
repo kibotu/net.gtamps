@@ -11,8 +11,8 @@ import java.nio.ByteBuffer;
 
 public class GLES20Renderer extends BasicRenderer {
 
-    public GLES20Renderer(IRenderActivity renderActivity) {
-        super(renderActivity);
+    public GLES20Renderer(IRenderAction renderAction) {
+        super(renderAction);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glUseProgram(program);
         Logger.checkGlError(this, "glUseProgram");
 
-        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, renderActivity.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
+        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, renderAction.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
         Logger.checkGlError(this, "lightPosition");
 //        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
 //        Logger.checkGlError(this,"lightDirection");
@@ -37,9 +37,9 @@ public class GLES20Renderer extends BasicRenderer {
         Logger.checkGlError(this, "lightColor");
 
         // draw scenes
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).getScene().update(getDelta());
-            renderActivity.getScenes().get(i).getScene().process(glState);
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).getScene().update(getDelta());
+            renderAction.getScenes().get(i).getScene().process(glState);
         }
     }
 

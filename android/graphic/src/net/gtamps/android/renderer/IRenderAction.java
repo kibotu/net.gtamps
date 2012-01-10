@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Defines an life cycle for an activity.
  */
-public interface IRenderActivity {
+interface IRenderAction {
 
     /**
      * Called when renderer is created.
@@ -34,4 +34,10 @@ public interface IRenderActivity {
     public boolean isPaused();
 
     public ArrayList<BasicScene> getScenes();
+
+    public void stop();
+
+    public void pause();
+
+    public void resume();
 }

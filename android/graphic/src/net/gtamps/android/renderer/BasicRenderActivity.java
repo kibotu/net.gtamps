@@ -14,7 +14,7 @@ import net.gtamps.shared.Utils.Logger;
 public abstract class BasicRenderActivity extends Activity {
 
     protected GLSurfaceView view;
-
+    protected IRenderAction renderAction;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,38 @@ public abstract class BasicRenderActivity extends Activity {
         // enable log
         Logger.setLogger(AndroidLogger.INSTANCE);
         Logger.I(this, "Application created.");
+    }
+
+    protected void setRenderAction(IRenderAction renderAction) {
+
+        view = new GLSurfaceView(this);
+        this.renderAction = renderAction;
+
+        BasicRenderer renderer;
+
+        // detect if OpenGL ES 2.0 support exists
+        if (RenderCapabilities.detectOpenGLES20(this)) {
+//        if (RenderCapabilities.supportsOpenGLES = false) {
+            view.setEGLContextClientVersion(2);
+            renderer = new GLES20Renderer(renderAction);
+        } else {
+            renderer = new GL10Renderer(renderAction);
+        }
+
+        // set view render configurations
+        glSurfaceViewConfig();
+        view.setRenderer(renderer);
+        setContentView(view);
+        setRenderContinuously(true);
+
+        // touchable
+        view.setFocusableInTouchMode(true);
+        view.setFocusable(true);
+        view.setKeepScreenOn(true);
+
+        // add as global variable
+        Registry.setContext(this);
+        Registry.setRenderer(renderer);
     }
 
     protected void glSurfaceViewConfig() {
@@ -77,6 +109,9 @@ public abstract class BasicRenderActivity extends Activity {
 
     @Override
     public void onDestroy() {
+
+        if (renderAction != null) renderAction.stop();
+
         super.onDestroy();
         Logger.I(this, "Application destroyed.");
     }
