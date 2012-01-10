@@ -109,6 +109,7 @@ public class Sphere extends RenderableNode {
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);
+        enableMipMap(true);
 
 //        getRenderState().drawingStyle = RenderState.DrawingStyle.GL_POINTS; // default anyway
 //        setPointSize(3);
