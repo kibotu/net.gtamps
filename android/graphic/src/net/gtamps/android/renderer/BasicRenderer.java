@@ -18,14 +18,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
-    protected IRenderActivity renderActivity;
+    protected IRenderAction renderAction;
     protected ProcessingState glState;
 
     private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
-    public BasicRenderer(IRenderActivity renderActivity) {
+    public BasicRenderer(IRenderAction renderAction) {
         Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
-        this.renderActivity = renderActivity;
+        this.renderAction = renderAction;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
         glState = new ProcessingState();
     }
@@ -43,9 +43,9 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         RenderCapabilities.setRenderCaps(gl10);
 
         // activity on create
-        renderActivity.onCreate();
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).onCreate();
+        renderAction.onCreate();
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).onCreate();
         }
 
         // last best gc call
@@ -64,7 +64,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     @Override
     final public void onDrawFrame(GL10 gl10) {
-        if (!renderActivity.isRunning() || renderActivity.isPaused()) return;
+        if (!renderAction.isRunning() || renderAction.isPaused()) return;
 
         // setup on the fly
         for (int i = 0; i < runtimeSetupQueue.size(); i++) {
@@ -78,10 +78,10 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         limitFrameRate(delta);
 
         // activity draw loop
-        for(int i = 0; i < renderActivity.getScenes().size(); i++) {
-            if(renderActivity.getScenes().get(i).isDirty()) renderActivity.getScenes().get(i).onDirty();
+        for(int i = 0; i < renderAction.getScenes().size(); i++) {
+            if(renderAction.getScenes().get(i).isDirty()) renderAction.getScenes().get(i).onDirty();
         }
-        renderActivity.onDrawFrame();
+        renderAction.onDrawFrame();
 
         // render draw loop
         draw(gl10);
@@ -104,13 +104,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         if(RenderCapabilities.supportsGLES20()) Shader.load();
 
         // inform camera that surface has changed
-        for (int i = 0; i < renderActivity.getScenes().size(); i++) {
-            renderActivity.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
 
             // re-allocate and re-validate hardware buffers
-            renderActivity.getScenes().get(i).getScene().onResume(glState);
+            renderAction.getScenes().get(i).getScene().onResume(glState);
 
-            renderActivity.getScenes().get(i).onDirty();
+            renderAction.getScenes().get(i).onDirty();
         }
     }
 

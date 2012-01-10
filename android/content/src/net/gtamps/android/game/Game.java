@@ -2,7 +2,7 @@ package net.gtamps.android.game;
 
 import android.os.SystemClock;
 import net.gtamps.android.core.net.MessageHandler;
-import net.gtamps.android.renderer.IRenderActivity;
+import net.gtamps.android.renderer.RenderAction;
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
@@ -16,13 +16,10 @@ import net.gtamps.shared.serializer.communication.MessageFactory;
 
 import java.util.ArrayList;
 
-public class Game implements IRenderActivity {
+public class Game extends RenderAction {
 
-    private boolean isRunning;
-    private boolean isPaused;
     private long startTime;
     private long finalDelta;
-    private final ArrayList<BasicScene> scenes;
     private boolean isDragging = false;
     private final Hud hud;
     private final World world;
@@ -31,9 +28,7 @@ public class Game implements IRenderActivity {
     private final MessageHandler messageHandler;
 
     public Game() {
-        isRunning = true;
-        isPaused = false;
-        scenes = new ArrayList<BasicScene>();
+        super();
         hud = new Hud();
         world = new World();
         menu = new Menu();
@@ -131,5 +126,15 @@ public class Game implements IRenderActivity {
      */
     public void stop() {
         isRunning = false;
+    }
+
+    @Override
+    public void pause() {
+        isPaused = true;
+    }
+
+    @Override
+    public void resume() {
+        isPaused = false;
     }
 }
