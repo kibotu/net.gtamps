@@ -18,6 +18,4 @@ public class BaseException extends Exception {
 	public BaseException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
-
-
 }

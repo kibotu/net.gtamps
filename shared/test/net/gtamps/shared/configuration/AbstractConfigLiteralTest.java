@@ -1,145 +1,150 @@
 package net.gtamps.shared.configuration;
 
-import static org.junit.Assert.*;
-import java.util.Iterator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractConfigLiteralTest {
 
-	/** mock implementation */
-	private class MockAbstractConfigLiteral extends AbstractConfigLiteral<Integer> {
-		MockAbstractConfigLiteral(final Integer value, final AbstractConfigSource source) {
-			super(value, source);
-		}
-		@Override
-		public Class<?> getType() {
-			return java.lang.Object.class;
-		}
-		@Override
-		public AbstractConfigLiteral<Integer> clone() {
-			return new MockAbstractConfigLiteral(value, source);
-		}
-	}
+    /**
+     * mock implementation
+     */
+    private class MockAbstractConfigLiteral extends AbstractConfigLiteral<Integer> {
+        MockAbstractConfigLiteral(final Integer value, final AbstractConfigSource source) {
+            super(value, source);
+        }
 
-	@Mock
-	private AbstractConfigSource source;
+        @Override
+        public Class<?> getType() {
+            return java.lang.Object.class;
+        }
 
-	private final Integer value = 99;
-	private AbstractConfigLiteral abstractConfigLiteral;
+        @Override
+        public AbstractConfigLiteral<Integer> clone() {
+            return new MockAbstractConfigLiteral(value, source);
+        }
+    }
 
-	@Before
-	public void createAbstractConfigLiteral() throws Exception {
-		abstractConfigLiteral = new MockAbstractConfigLiteral(value, source);
-	}
+    @Mock
+    private AbstractConfigSource source;
 
-	@Test
-	public void testHashCode_whenSameValue_shouldReturnSameHash() {
-		assertNotSame("test precondition violated: mock implementation clone() must return different object",
-				abstractConfigLiteral, abstractConfigLiteral.clone());
+    private final Integer value = 99;
+    private AbstractConfigLiteral abstractConfigLiteral;
 
-		final AbstractConfigLiteral<?> same = abstractConfigLiteral.clone();
+    @Before
+    public void createAbstractConfigLiteral() throws Exception {
+        abstractConfigLiteral = new MockAbstractConfigLiteral(value, source);
+    }
 
-		assertEquals(abstractConfigLiteral.hashCode(), same.hashCode());
-	}
+    @Test
+    public void testHashCode_whenSameValue_shouldReturnSameHash() {
+        assertNotSame("test precondition violated: mock implementation clone() must return different object",
+                abstractConfigLiteral, abstractConfigLiteral.clone());
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testAbstractConfigLiteral_whenSourceNull_expectException() {
-		new MockAbstractConfigLiteral(value, null);
-	}
+        final AbstractConfigLiteral<?> same = abstractConfigLiteral.clone();
 
-	@Test
-	public void testGetSource_shouldReturnSourceInConstructor() {
-		assertSame(source, abstractConfigLiteral.getSource());
-	}
+        assertEquals(abstractConfigLiteral.hashCode(), same.hashCode());
+    }
 
-	@Test
-	public void testGetKeys_shouldReturnSingletonCollectionContaining0() {
-		assertEquals(1, abstractConfigLiteral.getKeys().size());
-		assertEquals("0", abstractConfigLiteral.getKeys().iterator().next());
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testAbstractConfigLiteral_whenSourceNull_expectException() {
+        new MockAbstractConfigLiteral(value, null);
+    }
 
-	@Test
-	public void testGetCount_shouldReturn1() {
-		assertEquals(1, abstractConfigLiteral.getCount());
-	}
+    @Test
+    public void testGetSource_shouldReturnSourceInConstructor() {
+        assertSame(source, abstractConfigLiteral.getSource());
+    }
 
-	@Test
-	public void testSelectString_when0_shouldReturnSelf() {
-		assertEquals(abstractConfigLiteral, abstractConfigLiteral.select("0"));
-	}
+    @Test
+    public void testGetKeys_shouldReturnSingletonCollectionContaining0() {
+        assertEquals(1, abstractConfigLiteral.getKeys().size());
+        assertEquals("0", abstractConfigLiteral.getKeys().iterator().next());
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testSelectString_whenNot0_expectException() {
-		abstractConfigLiteral.select("x");
-	}
+    @Test
+    public void testGetCount_shouldReturn1() {
+        assertEquals(1, abstractConfigLiteral.getCount());
+    }
 
-	@Test
-	public void testSelectInt_when0_shouldReturnSelf() {
-		assertEquals(abstractConfigLiteral, abstractConfigLiteral.select(0));
-	}
+    @Test
+    public void testSelectString_when0_shouldReturnSelf() {
+        assertEquals(abstractConfigLiteral, abstractConfigLiteral.select("0"));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testSelectInt_whenNot0_expectException() {
-		abstractConfigLiteral.select(1);
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testSelectString_whenNot0_expectException() {
+        abstractConfigLiteral.select("x");
+    }
 
-	@Test
-	public void testGetString_whenNullValue_shouldNotReturnNull() {
-		assertNotNull(new MockAbstractConfigLiteral(null, source).getString());
-	}
+    @Test
+    public void testSelectInt_when0_shouldReturnSelf() {
+        assertEquals(abstractConfigLiteral, abstractConfigLiteral.select(0));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetInt_expectException() {
-		abstractConfigLiteral.getInt();
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testSelectInt_whenNot0_expectException() {
+        abstractConfigLiteral.select(1);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetFloat_expectException() {
-		abstractConfigLiteral.getFloat();
-	}
+    @Test
+    public void testGetString_whenNullValue_shouldNotReturnNull() {
+        assertNotNull(new MockAbstractConfigLiteral(null, source).getString());
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetBoolean_expectException() {
-		abstractConfigLiteral.getBoolean();
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetInt_expectException() {
+        abstractConfigLiteral.getInt();
+    }
 
-	@Test
-	public void testIterator_shouldReturnIteratorContainingOnlySelf() {
-		final Iterator<?> iter = abstractConfigLiteral.iterator();
-		assertTrue(iter.hasNext());
-		assertEquals(abstractConfigLiteral, iter.next());
-		assertFalse(iter.hasNext());
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetFloat_expectException() {
+        abstractConfigLiteral.getFloat();
+    }
 
-	@Test
-	public void testEqualsObject_whenSame_shouldReturnTrue() {
-		assertTrue(abstractConfigLiteral.equals(abstractConfigLiteral));
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetBoolean_expectException() {
+        abstractConfigLiteral.getBoolean();
+    }
 
-	@Test
-	public void testEqualsObject_whenEqualValue_shouldReturnTrue() {
-		assertTrue(abstractConfigLiteral.equals(new MockAbstractConfigLiteral(value, source)));
-	}
+    @Test
+    public void testIterator_shouldReturnIteratorContainingOnlySelf() {
+        final Iterator<?> iter = abstractConfigLiteral.iterator();
+        assertTrue(iter.hasNext());
+        assertEquals(abstractConfigLiteral, iter.next());
+        assertFalse(iter.hasNext());
+    }
 
-	@Test
-	public void testEqualsObject_whenDifferentValue_shouldReturnFalse() {
-		assertFalse(abstractConfigLiteral.equals(new MockAbstractConfigLiteral(value+1, source)));
-	}
+    @Test
+    public void testEqualsObject_whenSame_shouldReturnTrue() {
+        assertTrue(abstractConfigLiteral.equals(abstractConfigLiteral));
+    }
 
-	@Test
-	public void testEqualsObject_whenDifferentType_shouldReturnFalse() {
-		assertFalse(abstractConfigLiteral.equals(new Object()));
-	}
+    @Test
+    public void testEqualsObject_whenEqualValue_shouldReturnTrue() {
+        assertTrue(abstractConfigLiteral.equals(new MockAbstractConfigLiteral(value, source)));
+    }
 
-	@Test
-	public void testEqualsObject_whenNull_shouldReturnFalse() {
-		assertFalse(abstractConfigLiteral.equals(null));
-	}
+    @Test
+    public void testEqualsObject_whenDifferentValue_shouldReturnFalse() {
+        assertFalse(abstractConfigLiteral.equals(new MockAbstractConfigLiteral(value + 1, source)));
+    }
+
+    @Test
+    public void testEqualsObject_whenDifferentType_shouldReturnFalse() {
+        assertFalse(abstractConfigLiteral.equals(new Object()));
+    }
+
+    @Test
+    public void testEqualsObject_whenNull_shouldReturnFalse() {
+        assertFalse(abstractConfigLiteral.equals(null));
+    }
 
 }

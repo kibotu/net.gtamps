@@ -2,6 +2,7 @@ package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,7 @@ public class Cube extends RenderableNode {
     }
 
     public Cube() {
-        this(1,1,1);
+        this(1, 1, 1);
     }
 
     @Override
@@ -48,6 +49,7 @@ public class Cube extends RenderableNode {
 //        setLineWidth(1);
 //        setLineSmoothing(true);
 //        enableMipMap(false);
+//        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
     }
 
     @Override
@@ -63,8 +65,8 @@ public class Cube extends RenderableNode {
         if (mesh != null) return;
         this.mesh = new Mesh(24, 12);
 
-        final float c = 0.5f;
-        Color4 emissive = material.getEmissive();
+        final float c = 1f;
+        Color4 emissive = material.getEmission();
 
         mesh.addVertex(c, -c, -c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
         mesh.addVertex(c, -c, c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, 0);

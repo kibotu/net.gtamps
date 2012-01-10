@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Configuration {
-	private static String tileImagePath = new File("").getAbsolutePath()+"/tile_images";
+	private static String tileImagePath = new File("").getAbsolutePath()+"/tile_images/";
 	private static String savePath = new File("").getAbsolutePath()+"/map1.map";
 	private static String levelSavePath = new File("..").getAbsolutePath()+"/assets/map1.map.lvl";
 	private static int maxFloors = 10;

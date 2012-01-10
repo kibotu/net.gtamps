@@ -3,11 +3,9 @@ package net.gtamps.android;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.core.input.InputEngineController;
-import net.gtamps.android.core.input.layout.InputLayoutIngame;
-import net.gtamps.android.core.renderer.BasicRenderActivity;
-import net.gtamps.android.core.renderer.Registry;
-import net.gtamps.android.core.renderer.Renderer;
+import net.gtamps.android.core.renderer.*;
 import net.gtamps.android.game.Game;
+import net.gtamps.shared.Config;
 
 public class GTA extends BasicRenderActivity {
 
@@ -20,28 +18,40 @@ public class GTA extends BasicRenderActivity {
         super.onCreate(savedInstanceState);
 
         game = new Game();
-        Registry.setContext(this);
-        Renderer renderer = new Renderer(game);
-        Registry.setRenderer(renderer);
-
         view = new GLSurfaceView(this);
+
+        BasicRenderer renderer;
+
+        // detect if OpenGL ES 2.0 support exists
+        if (RenderCapabilities.detectOpenGLES20(this)) {
+//        if (RenderCapabilities.supportsOpenGLES = false) {
+            view.setEGLContextClientVersion(2);
+            renderer = new GLES20Renderer(game);
+        } else {
+            renderer = new GL10Renderer(game);
+        }
+
+        // set view render configurations
         glSurfaceViewConfig();
         view.setRenderer(renderer);
-        setRenderContinuously(true);
-        onCreateSetContentView();
+        setContentView(view);
+        setRenderContinuously(Config.renderContinuously);
 
-        view.setFocusable(true);
+        // touchable
         view.setFocusableInTouchMode(true);
+        view.setFocusable(true);
         view.setKeepScreenOn(true);
-
         view.setOnTouchListener(InputEngineController.getInstance());
-        InputEngineController.getInstance().setLayout(new InputLayoutIngame());
-//        view.setOnTouchListener(InputEngine.getInstance());
+        view.setOnKeyListener(InputEngineController.getInstance());
+
+        // add as global variable
+        Registry.setContext(this);
+        Registry.setRenderer(renderer);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         game.stop();
+        super.onDestroy();
     }
 }

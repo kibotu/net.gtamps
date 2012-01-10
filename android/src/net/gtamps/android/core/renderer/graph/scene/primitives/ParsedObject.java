@@ -1,6 +1,7 @@
 package net.gtamps.android.core.renderer.graph.scene.primitives;
 
 import net.gtamps.android.core.renderer.Registry;
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
 import net.gtamps.android.core.renderer.mesh.Mesh;
@@ -32,7 +33,12 @@ public class ParsedObject extends RenderableNode {
         IParser objParser = Parser.createParser(Parser.Type.OBJ, Config.PACKAGE_NAME + objname, generateMipMap);
         objParser.parse();
         ParsedObject parsedObject = objParser.getParsedObject();
-        ((ParsedObject) parsedObject.get(0)).setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId, generateMipMap));
+        if (RenderCapabilities.supportsGLES20()) {
+            ((ParsedObject) parsedObject.get(0)).setTextureResourceId(textureResourceId);
+        } else {
+            ((ParsedObject) parsedObject.get(0)).setTextureId(Registry.getTextureLibrary().loadTexture(textureResourceId, generateMipMap));
+        }
+
         return parsedObject;
     }
 

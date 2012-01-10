@@ -88,7 +88,7 @@ public class Light extends RenderableNode {
         material.getAmbient().setAll(128, 128, 128, 255);
         material.getDiffuse().setAll(255, 255, 255, 255);
         material.getSpecular().setAll(0, 0, 0, 255);
-        material.getEmissive().setAll(0, 0, 0, 255);
+        material.getEmission().setAll(0, 0, 0, 255);
         direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
         spotCutoffAngle = 180;
         spotExponent = 0;
@@ -115,7 +115,7 @@ public class Light extends RenderableNode {
     }
 
     @Override
-    protected void render(GL11 gl) {
+    public void render(GL11 gl) {
 
         GL11 gl11 = (GL11) gl;
 

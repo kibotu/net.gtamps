@@ -13,7 +13,7 @@ attribute vec3 aNormal;
 // texture variables
 uniform float hasTexture;
 varying float tex;
-attribute vec2 textureCoord;
+attribute vec2 aTextCoord;
 varying vec2 tCoord;
 
 // lighting
@@ -35,7 +35,7 @@ void main() {
 
 	// pass on texture variables
 	tex = hasTexture;
-	tCoord = textureCoord;
+	tCoord = aTextCoord;
 	
 	vec4 nm = normalMatrix * vec4(aNormal, 1.0);
 	

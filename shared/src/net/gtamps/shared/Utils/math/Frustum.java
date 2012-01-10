@@ -249,21 +249,20 @@ public final class Frustum {
      * Setzt die Kameraparameter
      *
      * @param position Die Position der Kamera
-     * @param lookAt   Der Punkt, auf den die Kamera blickt
+     * @param target   Der Punkt, auf den die Kamera blickt
      * @param up       Der Hoch-Vektor der Kamera
      */
-    public void setCamera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
+    public void setCamera(@NotNull Vector3 position, @NotNull Vector3 target, @NotNull Vector3 up) {
         // http://www.lighthouse3d.com/opengl/viewfrustum/index.php?gimp
 
-        // TODO: cc.set, wenn nicht null
-        this.position = position.clone();
-        target = lookAt.clone();
-        this.up = up.clone();
+        this.position = position;
+        this.target = target;
+        this.up = up;
 
         // compute the Z axis of the camera referential
         // this axis points in the same direction from
         // the looking direction
-        zAxis = lookAt.sub(position);
+        zAxis = target.sub(position);
         zAxis.normalize();
 
         // X axis of camera with given "up" vector and Z axis
@@ -403,5 +402,17 @@ public final class Frustum {
     @NotNull
     public Vector3 getUp() {
         return up;
+    }
+
+    public void setPerspectiveProjection(Matrix4 matrix) {
+        Matrix4.setPerspectiveProjection(matrix, getHorizontalFieldOfViewEffective(), getNearDistance(), getFarDistance(), getAspectRatio());
+    }
+
+    public void setOrthographicProjection(Matrix4 projectionMatrix) {
+        Matrix4.setOrthographicProjection(projectionMatrix, -getAspectRatio(), getAspectRatio(), -1, 1, getNearDistance(), getFarDistance());
+    }
+
+    public void setTarget(float x, float y, float z) {
+        target.set(x,y,z);
     }
 }

@@ -5,7 +5,6 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.CompressedObjectSerializer;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.ObjectSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -42,20 +41,20 @@ public enum ConnectionManager implements IMessageManager {
     public Message poll() {
         Message message = inbox.poll();
         currentSessionId = message.getSessionId();
-      //remove string allocations
-    	if(Config.LOG_LEVEL != Logger.Level.NO_LOGGING){
-    		Logger.i(this, "inbox poll: " + message.toString());
-    	}
+        //remove string allocations
+        if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
+            Logger.i(this, "inbox poll: " + message.toString());
+        }
         return message;
     }
 
     @Override
     public boolean add(@NotNull Message message) {
         message.setSessionId(currentSessionId);
-      //remove string allocations
-    	if(Config.LOG_LEVEL != Logger.Level.NO_LOGGING){
-    		Logger.i(this, "outbox add: " + message.toString());
-    	}
+        //remove string allocations
+        if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
+            Logger.i(this, "outbox add: " + message.toString());
+        }
         return outbox.add(message);
     }
 
@@ -105,9 +104,9 @@ public enum ConnectionManager implements IMessageManager {
     public void checkConnection() {
         if (!isConnected()) {
             int i = 0;
-            while (!connect(Config.IPS.get(i),Config.SERVER_DEFAULT_PORT)) {
+            while (!connect(Config.IPS.get(i), Config.SERVER_DEFAULT_PORT)) {
                 Logger.I(this, "Connecting to " + Config.IPS.get(i) + ":" + Config.SERVER_DEFAULT_PORT);
-                if(i < Config.IPS.size()-1) {
+                if (i < Config.IPS.size() - 1) {
                     i++;
                 } else {
                     return;

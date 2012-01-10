@@ -20,9 +20,9 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 	@Nullable
 	public transient String sessionId = null;
 
-	public NewSendable() {
-		super();
-	}
+    @Deprecated
+    public NewSendable() {
+    }
 
 	public NewSendable(final SendableType type) {
 		this(type, null);
@@ -34,7 +34,6 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 
 	public NewSendable(final SendableType type, final int id, final AbstractSendableData<?> data) {
-		super();
 		this.type = type;
 		this.data = data;
 		this.id = id;

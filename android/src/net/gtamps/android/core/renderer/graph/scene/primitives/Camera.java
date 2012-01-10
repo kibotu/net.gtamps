@@ -1,11 +1,15 @@
 package net.gtamps.android.core.renderer.graph.scene.primitives;
 
+import android.opengl.GLES20;
 import android.opengl.GLU;
+import net.gtamps.android.core.renderer.RenderCapabilities;
 import net.gtamps.android.core.renderer.graph.ProcessingState;
 import net.gtamps.android.core.renderer.graph.RenderableNode;
+import net.gtamps.android.core.renderer.shader.Shader;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +20,6 @@ import javax.microedition.khronos.opengles.GL10;
  * Kameraknoten
  */
 public class Camera extends RenderableNode {
-
 
     /**
      * Der Sichtkegel
@@ -29,6 +32,12 @@ public class Camera extends RenderableNode {
      */
     @NotNull
     private Vector3 viewportCoords = Vector3.createNew(0, 0, 0);
+
+    private Vector3 viewPortDimension = Vector3.createNew(800, 480, 0);
+
+    protected Matrix4 projectionMatrix = Matrix4.createNew();
+    protected Matrix4 viewMatrix = Matrix4.createNew();
+    protected Matrix4 normalMatrix = Matrix4.createNew();
 
     private boolean hasDepthTest = true;
 
@@ -48,8 +57,8 @@ public class Camera extends RenderableNode {
      * @param lookAt   Der Punkt, auf den die Kamera blickt
      * @param up       Der Hoch-Vektor der Kamera
      */
-    public Camera(@NotNull Vector3 position, @NotNull Vector3 lookAt, @NotNull Vector3 up) {
-        define(position, lookAt, up);
+    public Camera(@NotNull Vector3 position, @NotNull Vector3 target, @NotNull Vector3 up) {
+        define(position, target, up);
     }
 
     /**
@@ -70,23 +79,6 @@ public class Camera extends RenderableNode {
         define(positionX, positionY, positionZ,
                 eyeX, eyeY, eyeZ,
                 upX, upY, upZ);
-    }
-
-    /**
-     * Setzt den Viewport
-     *
-     * @param x      X-Koordinate in px
-     * @param y      Y-Koordinate in px
-     * @param width  Breite in px
-     * @param height Höhe in px
-     */
-    public void setViewport(float x, float y, float width, float height) {
-        viewportCoords.set(x, y, 0);
-        dimension.set(width, height, 0);
-        // TODO: FUCK YOU 4/3 Aspect!!!!! Wir haben doch 800/480 = ~16:10 (1.6666)
-        frustum.setAspectRatio(width / height);
-        Logger.i(this, "[height:" + height + "|width:" + width + "|aspect:" + frustum.getAspectRatio() + "]");
-
     }
 
     /**
@@ -198,8 +190,8 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void updateInternal(float deltat) {
-        // Nur nötig, wenn Kamera animiert wird. --> Pfade setzen, ...
-//        frustum.setPosition(position);
+        // Nur nötig, wenn Kamera animiert wird. --> Pfade setviewzen, ...
+        frustum.setPosition(position);
     }
 
     /**
@@ -209,14 +201,70 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void processInternal(@NotNull ProcessingState state) {
-        GL10 gl = state.getGl();
-        assert gl != null;
+    }
 
-        gl.glViewport((int)viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+    private void shadeInternalGLES20() {
+
+        Vector3 pos = frustum.getPosition();
+        Vector3 target = frustum.getTarget();
+        Vector3 up = frustum.getUp();
+        Matrix4.setLookAt(viewMatrix, pos, target, up);
+//        Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
+
+        if (hasDepthTest) {
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        } else {
+            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        }
+
+        int program = Shader.Type.PHONG.shader.getProgram();
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "projectionMatrix"), 1, false, projectionMatrix.values, 0);
+        Logger.checkGlError(this, "projectionMatrix");
+
+        // Create the normal modelview matrix
+        // Invert + transpose of mvpmatrix
+//        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
+//        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);
+        Logger.checkGlError(this, "normalMatrix");
+
+        // eye view matrix
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "viewMatrix"), 1, false, viewMatrix.values, 0);
+        Logger.checkGlError(this, "viewMatrix");
+    }
+
+    public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
+        viewportCoords.set(x, y, 0);
+        viewPortDimension.set(width, height, 0);
+        frustum.setAspectRatio(viewPortDimension.x/viewPortDimension.y);
+        if (RenderCapabilities.supportsGLES20()) setViewportGLES20();
+        else setViewportGL10(gl10);
+        Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
+    }
+
+    private void setViewportGLES20() {
+//        frustum.setOrthographicProjection(projectionMatrix);
+        frustum.setPerspectiveProjection(projectionMatrix);
+        GLES20.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+        Logger.checkGlError(this, "glViewPort");
+        setDirtyFlag();
+    }
+
+    private void setViewportGL10(GL10 gl10) {
+        gl10.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+        setDirtyFlag();
+    }
+
+    private void shadeInternalGL10(@NotNull GL10 gl) {
+        gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
         GLU.gluPerspective(gl, getHorizontalFieldOfViewEffective(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());
-        GLU.gluLookAt(gl, frustum.getPosition().x, frustum.getPosition().y, frustum.getPosition().z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
+        GLU.gluLookAt(gl, position.x, position.y, position.z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
@@ -227,6 +275,21 @@ public class Camera extends RenderableNode {
         }
     }
 
+    private void shadeInternalGL10(@NotNull ProcessingState state) {
+        shadeInternalGL10(state.getGl());
+    }
+
+    @Override
+    public void shadeInternal(@NotNull ProcessingState state) {
+        if (RenderCapabilities.supportsGLES20()) {
+            shadeInternalGLES20();
+        } else {
+            shadeInternalGL10(state);
+        }
+    }
+
+    private ProcessingState glState = new ProcessingState();
+
     /**
      * Spezifische Implementierung des Rendervorganges
      *
@@ -234,6 +297,8 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void renderInternal(@NotNull GL10 gl) {
+        glState.setGl(gl);
+        shadeInternal(glState);
     }
 
     @Override
@@ -273,6 +338,10 @@ public class Camera extends RenderableNode {
     public void setTarget(@NotNull Vector3 point) {
         frustum.setTarget(point);
     }
+    
+    public void setTarget(float x, float y, float z) {
+        frustum.setTarget(x,y,z);
+    }
 
     /**
      * Liefert den Sichtpunkt der Kamera absolut, ohne die Position zu verändern
@@ -305,11 +374,12 @@ public class Camera extends RenderableNode {
     }
 
     public void setPosition(float x, float y, float z) {
-        frustum.setPosition(x, y, z);
+        position.set(x, y, z);
+        frustum.setPosition(position);
     }
 
     public void setPosition(@NotNull Vector3 position) {
-        frustum.setPosition(position);
+        setPosition(position.x, position.y, position.z);
     }
 
     /**

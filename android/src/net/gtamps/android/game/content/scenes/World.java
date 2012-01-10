@@ -10,6 +10,7 @@ import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.MathUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class World extends EntityScene {
@@ -24,7 +25,7 @@ public class World extends EntityScene {
     @Override
     public void onCreate() {
 
-        Camera camera = new Camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
+        Camera camera = new Camera(0, 0, 200, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         setBackground(Color4.DARK_GRAY);
 //
@@ -99,11 +100,12 @@ public class World extends EntityScene {
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
-        parsedObject.setPosition(-128/2, -128/2, 0);
-        //parsedObject.setRotation(0,0,0);
+        parsedObject.setScaling((Config.PIXEL_TO_NATIVE + 0.1f)*-1, Config.PIXEL_TO_NATIVE+ 0.1f, Config.PIXEL_TO_NATIVE);
+//        parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
+        parsedObject.setPosition(0,- (1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, 0);
+        parsedChild.setRotation(0,0, MathUtils.deg2Rad(180));
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
-        parsedChild.enableMipMap(true);
+        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 

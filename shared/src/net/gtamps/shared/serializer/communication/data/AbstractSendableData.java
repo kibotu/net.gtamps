@@ -9,5 +9,4 @@ public abstract class AbstractSendableData<DataType extends AbstractSendableData
 	AbstractSendableData() {
 		super();
 	}
-
 }

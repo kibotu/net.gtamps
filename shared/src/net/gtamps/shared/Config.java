@@ -16,7 +16,7 @@ final public class Config {
      */
     public static boolean renderContinuously = true;
     public static boolean ENABLE_FRAME_LIMITER = true;
-    public static final long FPS = 1000 / 30;
+    public static final long FPS = 1000 / 60;
     public static final boolean DISPLAY_FRAME_RATE = false;
     public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE = 0.3f;
 
@@ -46,6 +46,7 @@ final public class Config {
     static {
         IPS = new ArrayList<String>(10);
         IPS.add("192.168.1.27");
+        IPS.add("192.168.214.1");
         IPS.add("192.168.1.51");
         IPS.add("192.168.38.1");
         IPS.add("192.168.178.23");

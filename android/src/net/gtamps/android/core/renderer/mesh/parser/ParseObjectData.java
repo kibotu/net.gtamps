@@ -2,9 +2,9 @@ package net.gtamps.android.core.renderer.mesh.parser;
 
 import net.gtamps.android.core.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.core.renderer.mesh.Face;
+import net.gtamps.android.core.renderer.mesh.Material;
 import net.gtamps.android.core.renderer.mesh.Uv;
 import net.gtamps.android.core.renderer.mesh.parser.AParser.BitmapAsset;
-import net.gtamps.android.core.renderer.mesh.parser.AParser.Material;
 import net.gtamps.android.core.renderer.mesh.parser.AParser.TextureAtlas;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -75,11 +75,9 @@ public class ParseObjectData {
                 Material material = materialMap.get(face.materialKey);
 
                 Color4 newColor = new Color4(255, 255, 0, 255);
-                if (material != null && material.diffuseColor != null) {
-                    newColor.r = material.diffuseColor.r;
-                    newColor.g = material.diffuseColor.g;
-                    newColor.b = material.diffuseColor.b;
-                    newColor.a = material.diffuseColor.a;
+                if (material != null && material.getDiffuse() != null) {
+                    newColor.setAll(material.getDiffuse());
+                    obj.setMaterial(material);
                 }
 
                 if (hasBitmaps && (ba != null)) {

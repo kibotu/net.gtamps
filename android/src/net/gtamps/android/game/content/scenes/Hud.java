@@ -30,9 +30,9 @@ public class Hud extends BasicScene implements InputEventListener {
 
     @Override
     public void onCreate() {
-
         // setup camera
         Camera camera = new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
+//        Camera camera = new Camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         camera.enableDepthTest(false);
 
@@ -73,9 +73,9 @@ public class Hud extends BasicScene implements InputEventListener {
 //			sendableType.equals(SendableType.ACTION_SHOOT) 
 //
 //		) {
-			message = MessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
-			message.addSendable(new Sendable(sendableType, data));
-			ConnectionManager.INSTANCE.add(message);
+        message = MessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+        message.addSendable(new Sendable(sendableType, data));
+        ConnectionManager.INSTANCE.add(message);
 //		}
     }
 
@@ -89,9 +89,8 @@ public class Hud extends BasicScene implements InputEventListener {
 
     @Override
     public void onDirty() {
-
         // set resolution
-        layout.getTouchWindow().setResolution((int)getScene().getActiveCamera().getDimension().x,(int)getScene().getActiveCamera().getDimension().y);
+        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
         clearDirtyFlag();
     }
 }
