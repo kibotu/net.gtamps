@@ -16,7 +16,7 @@ public class TestAction extends RenderAction {
         scenes.add(world);
     }
 
-    float i = 0;
+    float rot = 0;
     
     @Override
     public void onDrawFrame() {
@@ -24,7 +24,9 @@ public class TestAction extends RenderAction {
             return;
         }
 
-        i+=0.01f;
-        scenes.get(0).getScene().get(0).setRotation(i,i,i);
+        rot+=0.01f;
+        for(int i = 0; i < scenes.get(0).getScene().getChildCount(); i++) {
+            scenes.get(0).getScene().get(i).setRotation(rot,rot,rot);
+        }
     }
 }

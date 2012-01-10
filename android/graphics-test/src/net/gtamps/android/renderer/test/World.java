@@ -18,15 +18,19 @@ public class World extends BasicScene {
         Cube cube = new Cube();
         cube.setPosition(-3, 0, 0);
         cube.setTextureResourceId(R.drawable.crate);
+
         Sphere sphere = new Sphere(1, 20, 20);
         sphere.setPosition(3, 0, 0);
         sphere.setTextureResourceId(R.drawable.earth);
+
         Torus torus = new Torus();
         torus.setPosition(3, 3, 0);
         torus.setTextureResourceId(R.drawable.crate);
+
         Cylinder cylinder = new Cylinder();
         cylinder.setPosition(-3, 3, 0);
         cylinder.setTextureResourceId(R.drawable.crate);
+
         add(torus);
         add(cube);
         add(sphere);
