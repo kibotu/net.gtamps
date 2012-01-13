@@ -161,25 +161,6 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	// 		from the lazy initialization of ProxyProperties
 
 	/**
-	 * Like {@link #useProperty(String, Object)}, but the IProperty returned will not be
-	 * initialized until it is first used.
-	 * <p/>
-	 * <strong>Note:</strong> Due to this lazy initialization technique, currently
-	 * {@link #useProperty(String, Object) useProperty(...)}'s Exceptions might
-	 * get thrown upon the first use of a ProxyProperty obtained through this
-	 * method.
-	 *
-	 * @param <T>   the type of the property
-	 * @param name  the name of the property; not <code>null</code>
-	 * @param value the property's initial value; not <code>null</code>
-	 * @return a property of the specified type, linked to this gameObject
-	 * @see #useProperty(String, Object)
-	 */
-	public final <T> IProperty<T> useLazyProperty(@NotNull final String name, @NotNull final T value) throws NoSuchElementException {
-		return new ProxyProperty<T>(this, name, value);
-	}
-
-	/**
 	 * updates the value of a property, creating it first if necessary
 	 * 
 	 * @param name	the name of the property to be updated; not <code>null</code>
