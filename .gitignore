@@ -16,6 +16,7 @@ dynamic.xml
 .classpath
 proguard.cfg
 default.properties
+local.properties
 *.class
 .metadata
 *.dex
