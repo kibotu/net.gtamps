@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="annotations">
+    <archive path="D:/Dropbox/mmp2/shared/libs/annotations.jar" />
+  </library>
+  <library name="jdom-1.1.1-android-fork">
+    <archive path="D:/Dropbox/mmp2/shared/libs/jdom-1.1.1-android-fork.jar" />
+  </library>
+  <library name="junit-4.8">
+    <archive path="D:/Dropbox/mmp2/shared/libs/junit-4.8.jar" />
+  </library>
+  <library name="mockito-all-1.8.5">
+    <archive path="D:/Dropbox/mmp2/shared/libs/mockito-all-1.8.5.jar" />
+  </library>
+  <library name="processing">
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/ant-launcher.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/ant.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/antlr.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/core.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/ecj.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/jna.jar" />
+    <archive path="D:/Dropbox/other frameworks/processing-1.5.1/lib/pde.jar" />
+  </library>
+</eclipse-userlibraries>
+
