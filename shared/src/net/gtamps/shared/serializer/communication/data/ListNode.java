@@ -206,4 +206,10 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		}
 	}
 
+	public class EOF {
+		//Fake class for serialization
+	}
+	public class Header {
+
+	}
 }
