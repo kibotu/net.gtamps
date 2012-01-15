@@ -1,12 +1,16 @@
 package net.gtamps.shared.serializer.communication.data;
 
 import static org.junit.Assert.*;
+import java.util.Collections;
+import java.util.List;
+
 import net.gtamps.shared.Utils.cache.TypableObjectCacheFactory;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SendableDataHelperTest {
@@ -50,23 +54,23 @@ public class SendableDataHelperTest {
 		assertEquals(newX, (int) sameEntity.x.value());
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public final void testUpdateGameobject_whenInvalidData_expectException() {
-		fail("Not yet implemented"); // TODO
+		SendableDataHelper.updateGameobject(differentEntity, null);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public final void testUpdateGameobject_whenObjectNotMatching_expectException() {
-		fail("Not yet implemented"); // TODO
+		// setup
+		final DataMap updateData = SendableDataHelper.toSendableData(someEntity, provider);
+
+		// run
+		SendableDataHelper.updateGameobject(differentEntity, updateData);
 	}
 
+	@Ignore
 	@Test
 	public final void testToEntity_whenValidData_shouldCreateEntity() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testToEntity_whenInvalidData_expectException() {
 		fail("Not yet implemented"); // TODO
 	}
 
@@ -76,8 +80,28 @@ public class SendableDataHelperTest {
 	}
 
 	@Test
+	public final void testToSendableDataListOfTSendableProvider_shouldReturnListNode() {
+		// setup
+		final List<Entity> testlist = Collections.singletonList(someEntity);
+
+		// run
+		final AbstractSendableData<?> testee = SendableDataHelper.toSendableData(testlist, provider); 
+
+		// assert
+		assertEquals(ListNode.class, testee.getClass());
+	}
+
+
+	@Test
 	public final void testToSendableDataListOfTSendableProvider_whenEmptyList_shouldReturnEmptyListData() {
-		fail("Not yet implemented"); // TODO
+		// setup
+		final List<Entity> testlist = Collections.emptyList();
+
+		// run
+		final ListNode<?> testee = (ListNode<?>) SendableDataHelper.toSendableData(testlist, provider); 
+
+		// assert
+		assertTrue(testee.isEmpty());
 	}
 
 	@Test
