@@ -75,5 +75,5 @@ in between standard targets -->
              - customize to your needs.
     -->
     <setup/>
-
+	<import file="${sdk.dir}/tools/ant/build.xml" />
 </project>

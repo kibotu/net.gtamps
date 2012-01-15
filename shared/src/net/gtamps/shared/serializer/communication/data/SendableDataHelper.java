@@ -10,14 +10,13 @@ import net.gtamps.shared.serializer.communication.SendableProvider;
 
 public class SendableDataHelper {
 
-	private static final String OBJECT_TYPE = "OBJECT_TYPE";
-	private static final String OBJECT_DATA = "OBJECT_DATA";
 	private static final String PROPERTY_VALUE = "PROPERTY_VALUE";
 	private static final String PROPERTY_NAME = "PROPERTY_NAME";
 	private static final String GAMEOBJECT_ID = "GAMEOBJECT_ID";
 	private static final String GAMEOBJECT_NAME = "GAMEOBJECT_NAME";
 	private static final String GAMEOBJECT_REVISION = "GAMEOBJECT_REVISION";
 	private static final String GAMEOBJECT_PROPERTIES = "GAMEOBJECT_PROPERTIES";
+	private static final String GAMEOBJECT_TYPE = "GAMEOBJECT_TYPE";
 
 	public static <T extends GameObject> void updateGameobject(final T gob, final DataMap updateData) {
 		Validate.notNull(gob);
@@ -106,15 +105,12 @@ public class SendableDataHelper {
 	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
 		Validate.notNull(e);
 		Validate.notNull(provider);
-		final DataMap outerMap = provider.getDataMap();
 		final DataMap data = initSendableDataForGameObject(e, provider);
 
 		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
-		final MapEntry<DataMap> dataEntry = provider.getMapEntry(OBJECT_DATA, data);
-		outerMap.add(typeEntry);
-		outerMap.add(dataEntry);
+		data.add(typeEntry);
 
-		return outerMap;
+		return data;
 	}
 
 	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
@@ -171,7 +167,7 @@ public class SendableDataHelper {
 	private static <T extends GameObject> MapEntry<Value<String>> createTypeEntry(final T o, final SendableProvider provider) {
 		final Class<?> type = o.getClass();
 		final Value<String> typeValue = provider.getValue(type.getSimpleName());
-		final MapEntry<Value<String>> entry = provider.getMapEntry(OBJECT_TYPE, typeValue);
+		final MapEntry<Value<String>> entry = provider.getMapEntry(GAMEOBJECT_TYPE, typeValue);
 		return entry;
 	}
 
