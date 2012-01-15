@@ -3,30 +3,38 @@ package net.gtamps.shared.serializer.communication.data;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.serializer.communication.AbstractSendable;
 
 public final class ListNode<T extends AbstractSendable<T>> extends AbstractSendableData<ListNode<T>> implements Iterable<T>{
-	//	public static final ListNode<?> EMPTY = new ListNode();
+	@SuppressWarnings("rawtypes")
+	private static final ListNode<?> EMPTY = new ListNode();
 	private static final long serialVersionUID = 408802690961330006L;
 	private static final String errorIteratorNotResetMsg = "iterator is not ininitial state; call resetIterator() first.";
+
+	@SuppressWarnings("unchecked")
+	public static final <T extends AbstractSendable<T>> ListNode<T> emptyList() {
+		return (ListNode<T>) EMPTY;
+	}
 
 	//	private transient final IObjectCache<ListNode<T>> cache;
 
 	private T value;
 	private ListNode<T> next;
-	private transient ListNode<T> iteratorCurrentElement;
+	private transient ListNode<T> iteratorNextElement;
 	private transient final Iterator<T> iterator = new Iterator<T>() {
 		@Override
 		public boolean hasNext() {
-			return iteratorCurrentElement.next != null;
+			return !(iteratorNextElement == null || iteratorNextElement.isEmpty());
 		}
 		@Override
 		public T next() {
-			if (iteratorCurrentElement.next == null) {
+			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			iteratorCurrentElement = iteratorCurrentElement.next;
-			return iteratorCurrentElement.value;
+			final T value = iteratorNextElement.value;
+			iteratorNextElement = iteratorNextElement.next;
+			return value;
 		}
 		@Override
 		public void remove() {
@@ -38,14 +46,18 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 		this(null);
 	}
 
-	@SuppressWarnings("unchecked")
 	ListNode(final T value) {
 		super();
 		set(value);
 	}
 
+	public boolean isEmpty() {
+		return this.equals(emptyList());
+	}
+
 	public ListNode<T> append(final ListNode<T> newNode) throws IllegalStateException {
-		if (next == null) {
+		if (next == null || next.isEmpty()) {
+			newNode.next = emptyList();
 			next = newNode;
 		} else {
 			next.append(newNode);
@@ -103,10 +115,15 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 	}
 
 	public void resetIterator() {
-		iteratorCurrentElement = this;
+		iteratorNextElement = this;
 	}
 
+	/**
+	 * @param value	not <code>null</code>
+	 * @return
+	 */
 	public ListNode<T> set(final T value) {
+		Validate.notNull(value);
 		this.value = value;
 		return this;
 	}
@@ -126,7 +143,7 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 	}
 
 	void unlink() {
-		iteratorCurrentElement = null;
+		iteratorNextElement = null;
 		value = null;
 		if (next != null) {
 			next.unlink();
@@ -135,7 +152,7 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 	}
 
 	private void ensureIteratorReset() {
-		if (iteratorCurrentElement != this) {
+		if (iteratorNextElement != this) {
 			throw new IllegalStateException(errorIteratorNotResetMsg);
 		}
 
