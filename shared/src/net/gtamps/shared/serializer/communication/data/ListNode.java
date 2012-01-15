@@ -6,6 +6,9 @@ import java.util.NoSuchElementException;
 import net.gtamps.shared.serializer.communication.AbstractSendable;
 
 public final class ListNode<T extends AbstractSendable<T>> extends AbstractSendableData<ListNode<T>> implements Iterable<T>{
+
+	
+
 	//	public static final ListNode<?> EMPTY = new ListNode();
 	private static final long serialVersionUID = 408802690961330006L;
 	private static final String errorIteratorNotResetMsg = "iterator is not ininitial state; call resetIterator() first.";
@@ -160,4 +163,10 @@ public final class ListNode<T extends AbstractSendable<T>> extends AbstractSenda
 		unlink();
 	}
 
+	public class EOF {
+		//Fake class for serialization
+	}
+	public class Header {
+
+	}
 }
