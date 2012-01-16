@@ -62,4 +62,34 @@ public class CompressedObjectSerializer implements ISerializer {
         return message;
     }
 
+    @Override
+    public byte[] serializeMessage(NewMessage message) {
+        try {
+            byteOutputStream = new ByteArrayOutputStream();
+            deflaterOutputStream = new GZIPOutputStream(byteOutputStream, bufferSize);
+            objectOutputStream = new ObjectOutputStream(deflaterOutputStream);
+            objectOutputStream.writeObject(message);
+            deflaterOutputStream.finish();
+        } catch (final IOException e) {
+            Logger.printException(this, e);
+        }
+
+        return byteOutputStream.toByteArray();    }
+
+    @Override
+    public NewMessage deserializeNewMessage(byte[] bytes) {
+        NewMessage message = null;
+        try {
+            byteInputStream = new ByteArrayInputStream(bytes);
+            inflaterInputStream = new GZIPInputStream(byteInputStream, bufferSize);
+            objectInputStream = new ObjectInputStream(inflaterInputStream);
+            message = (NewMessage) objectInputStream.readObject();
+        } catch (final IOException e) {
+            Logger.printException(this, e);
+        } catch (final ClassNotFoundException e) {
+            Logger.printException(this, e);
+        }
+        return message;
+    }
+
 }

@@ -44,4 +44,31 @@ public class ObjectSerializer implements ISerializer {
         return message;
     }
 
+    @Override
+    public byte[] serializeMessage(NewMessage message) {
+        try {
+            byteOutputStream = new ByteArrayOutputStream();
+            objectOutputStream = new ObjectOutputStream(byteOutputStream);
+            objectOutputStream.writeObject(message);
+        } catch (IOException e) {
+            Logger.printException(this, e);
+        }
+        return byteOutputStream.toByteArray();
+    }
+
+    @Override
+    public NewMessage deserializeNewMessage(byte[] bytes) {
+        NewMessage message = null;
+        try {
+            byteInputStream = new ByteArrayInputStream(bytes);
+            objectInputStream = new ObjectInputStream(byteInputStream);
+            message = (NewMessage) objectInputStream.readObject();
+        } catch (IOException e) {
+            Logger.printException(this, e);
+        } catch (ClassNotFoundException e) {
+            Logger.printException(this, e);
+        }
+        return message;
+    }
+
 }
