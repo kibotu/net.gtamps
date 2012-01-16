@@ -18,6 +18,35 @@ public class SendableDataHelper {
 	private static final String GAMEOBJECT_PROPERTIES = "GAMEOBJECT_PROPERTIES";
 	private static final String GAMEOBJECT_TYPE = "GAMEOBJECT_TYPE";
 
+	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
+		Validate.notNull(e);
+		Validate.notNull(provider);
+		final DataMap data = initSendableDataForGameObject(e, provider);
+
+		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
+		data.add(typeEntry);
+
+		return data;
+	}
+
+	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
+		Validate.notNull(c);
+		Validate.notNull(provider);
+		ListNode<DataMap> list = ListNode.emptyList();
+		final int size = c.size();
+		for (int i = 0; i < size; i++) {
+			final T element = c.get(i);
+			if (element == null) {
+				//TODO warn? exception?
+				continue;
+			}
+			final DataMap data = toSendableData(element, provider);
+			final ListNode<DataMap> newNode = provider.getListNode(data);
+			list = list.append(newNode);
+		}
+		return list;
+	}
+
 	public static <T extends GameObject> void updateGameobject(final T gob, final DataMap updateData) {
 		Validate.notNull(gob);
 		Validate.notNull(updateData);
@@ -37,7 +66,7 @@ public class SendableDataHelper {
 
 	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
 		ListNode<DataMap> properties = getGameObjectProperties(updateData);
-		while (properties != null) {
+		while (!properties.isEmpty()) {
 			final DataMap propertyMap = properties.value();
 			updateProperty(gob, propertyMap);
 			properties = properties.next();
@@ -102,30 +131,6 @@ public class SendableDataHelper {
 		return (ListNode<DataMap>) map.get(GAMEOBJECT_PROPERTIES);
 	}
 
-	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
-		Validate.notNull(e);
-		Validate.notNull(provider);
-		final DataMap data = initSendableDataForGameObject(e, provider);
-
-		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
-		data.add(typeEntry);
-
-		return data;
-	}
-
-	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
-		Validate.notNull(c);
-		Validate.notNull(provider);
-		final ListNode<DataMap> list = (ListNode<DataMap>) provider.getListNode();
-		final int size = c.size();
-		for (int i = 0; i < size; i++) {
-			final T element = c.get(i);
-			final DataMap data = toSendableData(element, provider);
-			final ListNode<DataMap> newNode = provider.getListNode(data);
-			list.append(newNode);
-		}
-		return list.next() == null ? list : list.next();
-	}
 
 	private static DataMap toSendableData(final IProperty<?> p, final SendableProvider provider) {
 		final DataMap dataMap = provider.getDataMap();
