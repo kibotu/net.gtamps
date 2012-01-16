@@ -8,15 +8,22 @@ package net.gtamps.shared.Utils;
  */
 public class UIDGenerator {
 
-    public static final int INVALID_UID = -1;
+	public static final int START_UID = 0;
+	public static final int INVALID_UID = START_UID - 1;
 
-    @SuppressWarnings("unused")
-    private static final String TAG = "StaticUIDGenerator";
-    private static int nextUID = 0;
+	@SuppressWarnings("unused")
+	private static final String TAG = "StaticUIDGenerator";
+	private static int nextUID = 0;
 
-    public static int getNewUID() {
-        if (nextUID == Integer.MAX_VALUE)
-            throw new IllegalStateException("UID pool depleted");
-        return nextUID++;
-    }
+	public static int getNewUID() {
+		if (!isValid(nextUID)) {
+			throw new IllegalStateException("UID pool depleted");
+		}
+		return nextUID++;
+	}
+
+	public static boolean isValid(final int uid) {
+		return uid >= START_UID;
+	}
+
 }

@@ -10,14 +10,42 @@ import net.gtamps.shared.serializer.communication.SendableProvider;
 
 public class SendableDataHelper {
 
-	private static final String OBJECT_TYPE = "OBJECT_TYPE";
-	private static final String OBJECT_DATA = "OBJECT_DATA";
 	private static final String PROPERTY_VALUE = "PROPERTY_VALUE";
 	private static final String PROPERTY_NAME = "PROPERTY_NAME";
 	private static final String GAMEOBJECT_ID = "GAMEOBJECT_ID";
 	private static final String GAMEOBJECT_NAME = "GAMEOBJECT_NAME";
 	private static final String GAMEOBJECT_REVISION = "GAMEOBJECT_REVISION";
 	private static final String GAMEOBJECT_PROPERTIES = "GAMEOBJECT_PROPERTIES";
+	private static final String GAMEOBJECT_TYPE = "GAMEOBJECT_TYPE";
+
+	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
+		Validate.notNull(e);
+		Validate.notNull(provider);
+		final DataMap data = initSendableDataForGameObject(e, provider);
+
+		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
+		data.add(typeEntry);
+
+		return data;
+	}
+
+	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
+		Validate.notNull(c);
+		Validate.notNull(provider);
+		ListNode<DataMap> list = ListNode.emptyList();
+		final int size = c.size();
+		for (int i = 0; i < size; i++) {
+			final T element = c.get(i);
+			if (element == null) {
+				//TODO warn? exception?
+				continue;
+			}
+			final DataMap data = toSendableData(element, provider);
+			final ListNode<DataMap> newNode = provider.getListNode(data);
+			list = list.append(newNode);
+		}
+		return list;
+	}
 
 	public static <T extends GameObject> void updateGameobject(final T gob, final DataMap updateData) {
 		Validate.notNull(gob);
@@ -36,39 +64,15 @@ public class SendableDataHelper {
 		return e;
 	}
 
-	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
-		ListNode<DataMap> properties = getGameObjectProperties(updateData);
-		while (properties != null) {
-			final DataMap propertyMap = properties.value();
-			updateProperty(gob, propertyMap);
-			properties = properties.next();
-		}
-	}
-
-	private static <T extends GameObject> void updateProperty(final T gob, final DataMap propertyData) {
-		final Value<String> nameValue = (Value<String>) propertyData.get(PROPERTY_NAME);
-		final String name = nameValue.get();
-		final Value<?> valueValue = (Value<?>) propertyData.get(PROPERTY_VALUE);
-		final Object value = valueValue.get();
-		gob.updateProperty(name, value);
-	}
-
-	private static <T extends GameObject> void validateMatches(final T gob, final DataMap updateData) throws IllegalArgumentException {
-		final int dataUid = getGameObjectUid(updateData);
-		if (dataUid != gob.getUid()) {
-			throw new IllegalArgumentException("uid in updateData does not match GameObject uid");
-		}
+	public static int getGameObjectUid(final DataMap map) {
+		final Value<Integer> idValue = (Value<Integer>) map.get(GAMEOBJECT_ID);
+		return idValue.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectUid(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<Integer> idValue = provider.getValue(gob.getUid());
 		final MapEntry<Value<Integer>> entry = provider.getMapEntry(GAMEOBJECT_ID, idValue);
 		map.add(entry);
-	}
-
-	private static int getGameObjectUid(final DataMap map) {
-		final Value<Integer> idValue = (Value<Integer>) map.get(GAMEOBJECT_ID);
-		return idValue.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectName(final T gob, final DataMap map, final SendableProvider provider) {
@@ -103,33 +107,30 @@ public class SendableDataHelper {
 		return (ListNode<DataMap>) map.get(GAMEOBJECT_PROPERTIES);
 	}
 
-	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
-		Validate.notNull(e);
-		Validate.notNull(provider);
-		final DataMap outerMap = provider.getDataMap();
-		final DataMap data = initSendableDataForGameObject(e, provider);
-
-		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
-		final MapEntry<DataMap> dataEntry = provider.getMapEntry(OBJECT_DATA, data);
-		outerMap.add(typeEntry);
-		outerMap.add(dataEntry);
-
-		return outerMap;
-	}
-
-	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
-		Validate.notNull(c);
-		Validate.notNull(provider);
-		final ListNode<DataMap> list = (ListNode<DataMap>) provider.getListNode();
-		final int size = c.size();
-		for (int i = 0; i < size; i++) {
-			final T element = c.get(i);
-			final DataMap data = toSendableData(element, provider);
-			final ListNode<DataMap> newNode = provider.getListNode(data);
-			list.append(newNode);
+	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
+		ListNode<DataMap> properties = getGameObjectProperties(updateData);
+		while (!properties.isEmpty()) {
+			final DataMap propertyMap = properties.value();
+			updateProperty(gob, propertyMap);
+			properties = properties.next();
 		}
-		return list.next() == null ? list : list.next();
 	}
+
+	private static <T extends GameObject> void updateProperty(final T gob, final DataMap propertyData) {
+		final Value<String> nameValue = (Value<String>) propertyData.get(PROPERTY_NAME);
+		final String name = nameValue.get();
+		final Value<?> valueValue = (Value<?>) propertyData.get(PROPERTY_VALUE);
+		final Object value = valueValue.get();
+		gob.updateProperty(name, value);
+	}
+
+	private static <T extends GameObject> void validateMatches(final T gob, final DataMap updateData) throws IllegalArgumentException {
+		final int dataUid = getGameObjectUid(updateData);
+		if (dataUid != gob.getUid()) {
+			throw new IllegalArgumentException("uid in updateData does not match GameObject uid");
+		}
+	}
+
 
 	private static DataMap toSendableData(final IProperty<?> p, final SendableProvider provider) {
 		final DataMap dataMap = provider.getDataMap();
@@ -171,7 +172,7 @@ public class SendableDataHelper {
 	private static <T extends GameObject> MapEntry<Value<String>> createTypeEntry(final T o, final SendableProvider provider) {
 		final Class<?> type = o.getClass();
 		final Value<String> typeValue = provider.getValue(type.getSimpleName());
-		final MapEntry<Value<String>> entry = provider.getMapEntry(OBJECT_TYPE, typeValue);
+		final MapEntry<Value<String>> entry = provider.getMapEntry(GAMEOBJECT_TYPE, typeValue);
 		return entry;
 	}
 
