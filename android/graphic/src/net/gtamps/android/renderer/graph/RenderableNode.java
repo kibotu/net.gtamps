@@ -5,6 +5,7 @@ import net.gtamps.android.renderer.Registry;
 import net.gtamps.android.renderer.RenderCapabilities;
 import net.gtamps.android.renderer.mesh.Material;
 import net.gtamps.android.renderer.mesh.Mesh;
+import net.gtamps.android.renderer.mesh.texture.TextureSample;
 import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.Logger;
@@ -13,6 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static fix.android.opengl.GLES20.glDrawElements;
 import static fix.android.opengl.GLES20.glVertexAttribPointer;
@@ -82,12 +86,21 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     private boolean hasMipMap = false;
 
     // TODO clean this up
-    protected int textureId = 0;
+    @Deprecated protected int textureId = 0;
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
     private boolean useSharedTextureCoordBuffer = false;
     private Shader.Type shaderTyp = Shader.Type.PHONG;
-    private int textureResourceId = 0;
+    @Deprecated private int textureResourceId = 0;
+    
+    private ArrayList<TextureSample> textureSamples;
+    
+    public void addTexture(TextureSample textureSample) {
+        if(textureSamples == null) textureSamples = new ArrayList<TextureSample>();
+        hasTextures = true;
+        textureSamples.add(textureSample);
+        setDirtyFlag();
+    }
 
     public Shader.Type getShader() {
         return shaderTyp;
@@ -247,23 +260,23 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "material.shininess"), material.getPhongExponent());
         Logger.checkGlError(this, "material.shininess");
 
-        // bind textures
-//        if (hasTextures) {
-//            int[] texIDs = ob.get_texID();
-//
-//            for(int i = 0; i < _texIDs.length; i++) {
-//                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
-//                Logger.d(this, "Texture bind: " + i + " " + texIDs[i]);
-//                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texIDs[i]);
-//                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "texture" + (i+1)), i);
-//            }
-
-//            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-//            Logger.d(this, "Texture bind: " + textureId);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), hasTextures ? 2 : 0);
-        Logger.checkGlError(this,"hasTexture");
-        GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
+        // multiple textures
+        if(hasTextures) {
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), 2);
+            Logger.checkGlError(this,"hasTexture");
+            for(int i = 0; i < textureSamples.size(); i++) {
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + textureSamples.get(i).activeTextureId);
+//                Logger.i(this, "active texture" + GLES20.GL_TEXTURE0 + textureSamples.get(i).activeTextureId);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureSamples.get(i).textureId);
+//                Logger.i(this, "textureID" + textureSamples.get(i).textureId);
+                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSamples.get(i).type.name()), 0);
+//                Logger.i(this, "name: "+  textureSamples.get(i).type.name());
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, textureSamples.get(i).hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
+            }
+        } else {
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), 0);
+            Logger.checkGlError(this,"hasTexture");
+        }
 
         // uses lightning
         GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasLighting"), lightingEnabled ? 2 : 0);
@@ -279,6 +292,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
         glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
         Logger.checkGlError(this,"glDrawElements");
+
+        // unbind to avoid accidental manipulation
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
     @Override
@@ -427,7 +443,12 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
-        if (textureResourceId != 0) textureId = Registry.getTextureLibrary().loadTexture(textureResourceId, false);
+//        if (textureResourceId != 0) textureId = Registry.getTextureLibrary().loadTexture(textureResourceId, false);
+        if(textureSamples != null) {
+            for(int i = 0; i < textureSamples.size(); i++) {
+                textureSamples.get(i).allocate();
+            }
+        }
         clearDirtyFlag();
     }
 
@@ -726,9 +747,12 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected void onResumeInternal(ProcessingState state) {
         if (mesh == null) return;
         mesh.invalidate();
+        for(int i = 0; i < textureSamples.size(); i++) {
+            textureSamples.get(0).invalidate();
+        }
     }
 
-
+    @Deprecated
     public void setTextureResourceId(int resourceId) {
         textureResourceId = resourceId;
         setDirtyFlag();

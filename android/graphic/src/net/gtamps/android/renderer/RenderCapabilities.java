@@ -3,6 +3,7 @@ package net.gtamps.android.renderer;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.opengl.GLES20;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -49,7 +50,7 @@ public class RenderCapabilities {
     }
 
     public static int maxTextureUnits() {
-        return maxTextureUnits;
+        return supportsGLES20() ? 8 : maxTextureUnits;
     }
 
     public static int getMaxTextureSize() {
@@ -89,7 +90,7 @@ public class RenderCapabilities {
     }
 
     public static int maxLights() {
-        return maxLights;
+        return supportsGLES20() ? 8 : maxLights;
     }
 
     /**
@@ -155,7 +156,7 @@ public class RenderCapabilities {
             gl.glGetIntegerv(GL_MAX_LIGHTS, i);
             maxLights = i.get(0);
         }
-
+        
         Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion + " (" + (supportsOpenGLES ? "With " : "Without ") + "OpenGLES20 support.)");
         if (openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + maxTextureUnits);
         Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + maxTextureSize);

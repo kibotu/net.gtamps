@@ -1,14 +1,41 @@
 precision mediump float;
 
+// Vertex attributes form the mesh. Transformed by the vertex shader.
+varying vec3 fcolor;
+varying vec3 normalV;
+varying vec3 eyedirV;
+varying vec3 lightdirV;
+varying vec2 uvV;
+uniform sampler2D colorMap;
+uniform sampler2D alphaMap;
+uniform sampler2D normalMap;
+uniform sampler2D specularMap;
+
+uniform int hasLighting;
+
+struct PhongMaterial
+{
+   vec4 emission;    // Ecm
+   vec4 ambient;     // Acm
+   vec4 diffuse;     // Dcm
+   vec4 specular;    // Scm
+   float shininess;  // Srm
+};
+uniform PhongMaterial material;
+
+vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+
 // Simple implementation of the phong illumination model.
 vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) {
 
-  //if(dot(v,n) < 0.0) return vec4(0,0,0,0); // back-face
+  if(dot(v,n) < 0.0) return vec4(0,0,0,0); // back-face
 
   // Normalization is good.
   n = normalize(n);
+  //n = normalize(texture2D(normalMap, uvV).xyz*n);
   v = normalize(v);
   s = normalize(s);
+  //s = normalize(texture2D(specularMap, uvV).xyz*s);
 
   // The ambient term.
   vec3 color = ka * l;
@@ -28,33 +55,18 @@ vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) 
   return vec4(color,1.0);
 }
 
-// Vertex attributes form the mesh. Transformed by the vertex shader.
-varying vec3 fcolor;
-varying vec3 normalV;
-varying vec3 eyedirV;
-varying vec3 lightdirV;
-varying vec2 uvV;
-uniform sampler2D colorMap;
-
-uniform int hasLighting;
-
-struct PhongMaterial
-{
-   vec4 emission;    // Ecm
-   vec4 ambient;     // Acm
-   vec4 diffuse;     // Dcm
-   vec4 specular;    // Scm
-   float shininess;  // Srm
-};
-uniform PhongMaterial material;
-
-vec3 lightintensity = vec3(0.9, 0.9, 0.9);
-
 void main() {
 
-  vec4 texColor = texture2D(colorMap, uvV);
+  // color map
+  vec3 texColor = texture2D(colorMap, uvV).rgb;
 
-  gl_FragColor =  hasLighting == 2 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
-    //gl_FragColor =  phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
-  //gl_FragColor =  texture2D(colorMap, uvV);
+  // alpha map
+  float c = texture2D(alphaMap, uvV).r;
+
+  // mix day + cloud colors
+  c = pow(c,0.35);
+  vec4 finalColor = vec4((1.0-c)*texColor + c * vec3(1,1,1),1.0);
+  finalColor = texture2D(alphaMap, uvV);
+
+  gl_FragColor =  hasLighting == 2 ? finalColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : finalColor;
 }
