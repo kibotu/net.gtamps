@@ -64,39 +64,15 @@ public class SendableDataHelper {
 		return e;
 	}
 
-	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
-		ListNode<DataMap> properties = getGameObjectProperties(updateData);
-		while (!properties.isEmpty()) {
-			final DataMap propertyMap = properties.value();
-			updateProperty(gob, propertyMap);
-			properties = properties.next();
-		}
-	}
-
-	private static <T extends GameObject> void updateProperty(final T gob, final DataMap propertyData) {
-		final Value<String> nameValue = (Value<String>) propertyData.get(PROPERTY_NAME);
-		final String name = nameValue.get();
-		final Value<?> valueValue = (Value<?>) propertyData.get(PROPERTY_VALUE);
-		final Object value = valueValue.get();
-		gob.updateProperty(name, value);
-	}
-
-	private static <T extends GameObject> void validateMatches(final T gob, final DataMap updateData) throws IllegalArgumentException {
-		final int dataUid = getGameObjectUid(updateData);
-		if (dataUid != gob.getUid()) {
-			throw new IllegalArgumentException("uid in updateData does not match GameObject uid");
-		}
+	public static int getGameObjectUid(final DataMap map) {
+		final Value<Integer> idValue = (Value<Integer>) map.get(GAMEOBJECT_ID);
+		return idValue.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectUid(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<Integer> idValue = provider.getValue(gob.getUid());
 		final MapEntry<Value<Integer>> entry = provider.getMapEntry(GAMEOBJECT_ID, idValue);
 		map.add(entry);
-	}
-
-	private static int getGameObjectUid(final DataMap map) {
-		final Value<Integer> idValue = (Value<Integer>) map.get(GAMEOBJECT_ID);
-		return idValue.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectName(final T gob, final DataMap map, final SendableProvider provider) {
@@ -129,6 +105,30 @@ public class SendableDataHelper {
 
 	private static ListNode<DataMap> getGameObjectProperties(final DataMap map) {
 		return (ListNode<DataMap>) map.get(GAMEOBJECT_PROPERTIES);
+	}
+
+	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
+		ListNode<DataMap> properties = getGameObjectProperties(updateData);
+		while (!properties.isEmpty()) {
+			final DataMap propertyMap = properties.value();
+			updateProperty(gob, propertyMap);
+			properties = properties.next();
+		}
+	}
+
+	private static <T extends GameObject> void updateProperty(final T gob, final DataMap propertyData) {
+		final Value<String> nameValue = (Value<String>) propertyData.get(PROPERTY_NAME);
+		final String name = nameValue.get();
+		final Value<?> valueValue = (Value<?>) propertyData.get(PROPERTY_VALUE);
+		final Object value = valueValue.get();
+		gob.updateProperty(name, value);
+	}
+
+	private static <T extends GameObject> void validateMatches(final T gob, final DataMap updateData) throws IllegalArgumentException {
+		final int dataUid = getGameObjectUid(updateData);
+		if (dataUid != gob.getUid()) {
+			throw new IllegalArgumentException("uid in updateData does not match GameObject uid");
+		}
 	}
 
 
