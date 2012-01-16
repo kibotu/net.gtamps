@@ -129,6 +129,10 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 			table[i].recycle();
 		}
 	}
+	
+	public class EOF{
+		//Fake class for Binary Object Serializer
+	}
 
 
 }
