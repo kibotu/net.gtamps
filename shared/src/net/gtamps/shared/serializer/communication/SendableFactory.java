@@ -189,9 +189,9 @@ public final class SendableFactory {
 		if (length == 0) {
 			return null;
 		}
-		final ListNode<T> dataList = (ListNode<T>) createSendableData(list.get(0));
+		ListNode<T> dataList = (ListNode<T>) createSendableData(list.get(0));
 		for (int i = 1; i < length; i++) {
-			dataList.append((ListNode<T>) createSendableData(list.get(0)));
+			dataList = dataList.append((ListNode<T>) createSendableData(list.get(0)));
 		}
 		return dataList;
 	}

@@ -330,11 +330,11 @@ public class Game implements IGame, Runnable {
 		}
 		final NewSendable response = request.createResponse(SendableType.GETPLAYER_OK);
 
-		final DataMap playerData = new DataMap();
+		final DataMap playerData = sendableProvider.getDataMap();
 		final DataMap playerMap = SendableDataConverter.toSendableData(player, sendableProvider);
-
-
-		//				response.data = new PlayerData(player);
+		final MapEntry<DataMap> playerEntry = sendableProvider.getMapEntry(StringConstants.PLAYER_DATA, playerMap);
+		playerData.add(playerEntry);
+		response.data = playerData;
 		return response;
 	}
 
