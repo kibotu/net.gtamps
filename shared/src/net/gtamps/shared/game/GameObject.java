@@ -45,6 +45,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	private Map<String, IProperty<?>> properties = null;
 	private final Map<String, IProperty<?>> inactiveProperties = null;
 
+
 	GameObject() {
 	}
 
@@ -60,7 +61,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 			name = DEFAULT_NAME;
 		}
 		this.uid = (uid == INVALID_UID) ? UIDGenerator.getNewUID() : uid;
-		this.name = name;
+		setName(name);
 	}
 
 	public int getUid() {
@@ -235,7 +236,6 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	}
 
 	void setName(final String name) {
-		ensureMutable();
 		Validate.notEmpty(name);
 		this.name = name;
 	}
@@ -292,10 +292,10 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		if (this.properties == null) {
 			this.properties = new HashMap<String, IProperty<?>>();
 		}
-		if (this.properties.containsKey(p.name)) {
+		if (this.properties.containsKey(p.getName())) {
 			throw new IllegalArgumentException("Property exists already: " + p);
 		}
-		this.properties.put(p.name, p);
+		this.properties.put(p.getName(), p);
 	}
 
 	private void removeProperty(final String name) {

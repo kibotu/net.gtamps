@@ -48,11 +48,10 @@ public class GameObjectCache<T extends GameObject> {
 		return cache.hasElements();
 	}
 
-	public T getOrCreate(final int uid, final String name) {
+	public T getOrCreate(final int uid) {
 		final T element = cache.getOrCreate();
 		element.setMutable(true);
 		element.setUid(uid);
-		element.setName(name);
 		element.setMutable(false);
 		return element;
 	}

@@ -17,7 +17,7 @@ public class Entity extends SharedGameActor {
 	private static final long serialVersionUID = -5466989016443709708L;
 
 	static public enum Type {
-		UNKNOWN, CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
+		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
 	}
 
 	//TODO: use!
@@ -41,7 +41,7 @@ public class Entity extends SharedGameActor {
 
 	public Entity() {
 		super();
-		this.type = Type.UNKNOWN;
+		this.type = Type.PLACEHOLDER;
 	}
 
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
