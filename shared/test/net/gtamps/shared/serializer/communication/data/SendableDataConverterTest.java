@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class SendableDataHelperTest {
+public class SendableDataConverterTest {
 
 	private static final int ENTITY_UID_2 = 2;
 	private static final int ENTITY_UID_1 = 1;
@@ -48,10 +48,10 @@ public class SendableDataHelperTest {
 		// setup
 		final int newX = someEntity.x.value() + 1;
 		someEntity.x.set(newX);
-		final DataMap updateData = SendableDataHelper.toSendableData(someEntity, provider);
+		final DataMap updateData = SendableDataConverter.toSendableData(someEntity, provider);
 
 		// run
-		SendableDataHelper.updateGameobject(sameEntity, updateData);
+		SendableDataConverter.updateGameobject(sameEntity, updateData);
 
 		//assert
 		assertEquals(newX, (int) sameEntity.x.value());
@@ -59,16 +59,16 @@ public class SendableDataHelperTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testUpdateGameobject_whenInvalidData_expectException() {
-		SendableDataHelper.updateGameobject(differentEntity, null);
+		SendableDataConverter.updateGameobject(differentEntity, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testUpdateGameobject_whenObjectNotMatching_expectException() {
 		// setup
-		final DataMap updateData = SendableDataHelper.toSendableData(someEntity, provider);
+		final DataMap updateData = SendableDataConverter.toSendableData(someEntity, provider);
 
 		// run
-		SendableDataHelper.updateGameobject(differentEntity, updateData);
+		SendableDataConverter.updateGameobject(differentEntity, updateData);
 	}
 
 	@Ignore
@@ -79,12 +79,12 @@ public class SendableDataHelperTest {
 
 	@Test(expected =IllegalArgumentException.class)
 	public final void testToSendableDataTSendableProvider_whenNullElement_expectException() {
-		SendableDataHelper.toSendableData((GameObject) null, provider);
+		SendableDataConverter.toSendableData((GameObject) null, provider);
 	}
 
 	@Test(expected =IllegalArgumentException.class)
 	public final void testToSendableDataTSendableProvider_whenNullProvider_expectException() {
-		SendableDataHelper.toSendableData(someEntity, null);
+		SendableDataConverter.toSendableData(someEntity, null);
 	}
 
 	@Test
@@ -94,12 +94,12 @@ public class SendableDataHelperTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testToSendableDataListOfTSendableProvider_whenNullList_expectException() {
-		SendableDataHelper.toSendableData((List<GameObject>)null, provider);
+		SendableDataConverter.toSendableData((List<GameObject>)null, provider);
 	}	
 
 	@Test(expected = IllegalArgumentException.class)
 	public final void testToSendableDataListOfTSendableProvider_whenNullProvider_expectException() {
-		SendableDataHelper.toSendableData(Collections.<GameObject>emptyList(), null);
+		SendableDataConverter.toSendableData(Collections.<GameObject>emptyList(), null);
 	}	
 
 	@Test
@@ -108,7 +108,7 @@ public class SendableDataHelperTest {
 		final List<Entity> testlist = Collections.singletonList(someEntity);
 
 		// run
-		final AbstractSendableData<?> testee = SendableDataHelper.toSendableData(testlist, provider); 
+		final AbstractSendableData<?> testee = SendableDataConverter.toSendableData(testlist, provider); 
 
 		// assert
 		assertEquals(ListNode.class, testee.getClass());
@@ -121,7 +121,7 @@ public class SendableDataHelperTest {
 		final List<Entity> testlist = Collections.emptyList();
 
 		// run
-		final ListNode<?> testee = (ListNode<?>) SendableDataHelper.toSendableData(testlist, provider); 
+		final ListNode<?> testee = (ListNode<?>) SendableDataConverter.toSendableData(testlist, provider); 
 
 		// assert
 		assertTrue(testee.isEmpty());
@@ -131,12 +131,12 @@ public class SendableDataHelperTest {
 	public final void testToSendableDataListOfTSendableProvider_whenNonEmptyList_shouldReturnSameSizeListData() {
 		final List<Entity> testlist = Arrays.asList(new Entity[]{someEntity, differentEntity});
 
-		final ListNode<DataMap> testee = (ListNode<DataMap>) SendableDataHelper.toSendableData(testlist, provider);
+		final ListNode<DataMap> testee = (ListNode<DataMap>) SendableDataConverter.toSendableData(testlist, provider);
 
 		try {
 			int i = 0;
 			for (final DataMap map: testee) {
-				assertEquals(testlist.get(i).getUid(), SendableDataHelper.getGameObjectUid(map));
+				assertEquals(testlist.get(i).getUid(), SendableDataConverter.getGameObjectUid(map));
 				i++;
 			}
 			if (i < testlist.size()) {

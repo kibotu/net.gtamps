@@ -8,7 +8,7 @@ import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
-public class SendableDataHelper {
+public class SendableDataConverter {
 
 	private static final String PROPERTY_VALUE = "PROPERTY_VALUE";
 	private static final String PROPERTY_NAME = "PROPERTY_NAME";
