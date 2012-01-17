@@ -5,7 +5,7 @@ public interface ISerializer {
 
     public Message deserializeMessage(byte[] bytes);
 
-	byte[] serializeMessage(NewMessage m);
+	byte[] serializeNewMessage(NewMessage m);
 
 	public NewMessage deserializeNewMessage(byte[] bytes);
 }

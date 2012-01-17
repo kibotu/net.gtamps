@@ -16,13 +16,52 @@ import org.junit.Test;
 public class BinaryObjectSerializerTest {
 
 	@Test
-	public void testSerializeMessage() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDeserializeMessage() {
-		fail("Not yet implemented");
+	public void testSerializeNewMessage() {
+		BinaryObjectSerializer bos = new BinaryObjectSerializer();
+		
+		NewMessage nm = new NewMessage();
+		
+		NewSendable ns = new NewSendable(SendableType.ACTION_ACCELERATE);
+		ns.sessionId = "qwertzui";
+		DataMap dm = new DataMap();
+		MapEntry<AbstractSendableData<?>> me1 = new MapEntry<AbstractSendableData<?>>();
+		Value<Float> v = new Value<Float>();
+		v.set(23456f);
+		me1.set("zahl1", v);
+		dm.add(me1);
+		MapEntry<AbstractSendableData<?>> me2 = new MapEntry<AbstractSendableData<?>>();
+		Value<String> str = new Value<String>();
+		str.set("bu bu ba!");
+		me2.set("string1", str);
+		dm.add(me2);
+		ns.data = dm;
+		
+		NewSendable ns2 = new NewSendable(SendableType.GETMAPDATA);
+		ns2.sessionId = "qwertzuiasdasd";
+		DataMap dm2 = new DataMap();
+		MapEntry<AbstractSendableData<?>> me21 = new MapEntry<AbstractSendableData<?>>();
+		Value<Float> v2 = new Value<Float>();
+		v2.set(23456f);
+		me21.set("zahl12", v2);
+		dm2.add(me21);
+		MapEntry<AbstractSendableData<?>> me22 = new MapEntry<AbstractSendableData<?>>();
+		Value<String> str2 = new Value<String>();
+		str2.set("bu bu ba!");
+		me22.set("string1", str2);
+		dm2.add(me22);
+		ns2.data = dm2;
+		
+		ListNode<NewSendable> ln = new ListNode<NewSendable>();
+		ln.set(ns);
+		ListNode<NewSendable> ln2 = new ListNode<NewSendable>();
+		ln2.set(ns2);
+		ln.append(ln2);
+		
+		nm.sendables = ln;
+		nm.setSessionId("MY MESSAGE SESSION ID");
+		
+		byte[] serializedmessage = bos.serializeNewMessage(nm);
+		assertEquals(nm, bos.deserializeNewMessage(serializedmessage));
 	}
 
 	@Test
@@ -44,7 +83,32 @@ public class BinaryObjectSerializerTest {
 
 	@Test
 	public void testSerialzeSendable() {
-		fail("Not yet implemented");
+		BinaryObjectSerializer bos = new BinaryObjectSerializer();
+		byte[] buf = new byte[1024];
+
+		ArrayPointer ps = new ArrayPointer();
+		ArrayPointer pd = new ArrayPointer();
+		
+		NewSendable ns = new NewSendable(SendableType.ACTION_ACCELERATE);
+		ns.sessionId = "qwertzui";
+		
+		DataMap dm = new DataMap();
+		MapEntry<AbstractSendableData<?>> me1 = new MapEntry<AbstractSendableData<?>>();
+		Value<Float> v = new Value<Float>();
+		v.set(23456f);
+		me1.set("zahl1", v);
+		dm.add(me1);
+		MapEntry<AbstractSendableData<?>> me2 = new MapEntry<AbstractSendableData<?>>();
+		Value<String> str = new Value<String>();
+		str.set("bu bu ba!");
+		me2.set("string1", str);
+		dm.add(me2);
+		
+		ns.data = dm;
+		
+		bos.serialzeSendable(ns, buf, ps);
+//		writeBufferToStOut(buf, ps.pos());
+		assertEquals(ns, bos.deserializeSendable(buf, pd));
 	}
 
 	@Test
@@ -97,8 +161,7 @@ public class BinaryObjectSerializerTest {
 			
 			assertEquals(out, tv);
 		}
-		System.out.println("Write Pointer at: "+ps.pos());
-		System.out.println("Read Pointer at: "+pd.pos());
+		assertEquals(ps.pos(),pd.pos());
 	}
 
 	@Test
@@ -125,10 +188,16 @@ public class BinaryObjectSerializerTest {
 		
 		bos.serializeDataMap(dm, buf, ps);
 		assertEquals(dm, bos.deserializeDataMap(buf, pd));
+		assertEquals(ps.pos(), pd.pos());
 	}
 
 	@Test
 	public void testSerializeListNode() {
+		testSerializeListNodeFloats();
+		testSerializeListNodeStrings();
+	}
+	
+	public void testSerializeListNodeFloats() {
 		// init
 		BinaryObjectSerializer bos = new BinaryObjectSerializer();
 		byte[] buf = new byte[1024];
@@ -142,21 +211,54 @@ public class BinaryObjectSerializerTest {
 		v.set(23456f);
 		listNode.set(v);
 		
-		/*ListNode<Value<Float>> l2 = new ListNode<Value<Float>>();
+		ListNode<Value<Float>> l2 = new ListNode<Value<Float>>();
 		Value<Float> v2 = new Value<Float>();
 		v2.set(56789f);
 		l2.set(v2);
 		
 		listNode.append(l2);
-		*/
+		
 		bos.serializeListNode(listNode, buf, ps);
 		
-		//jump over header
-		//pd.set(1);
-		System.out.println("Write Pointer at: "+ps.pos());
+		//check if serialization was successful
+		assertEquals(listNode, bos.deserializeListNode(buf, pd));
+		//check if pointers have wrote and read the same amount of bytes
+		assertEquals(ps.pos(), pd.pos());
+	}
+	
+	public void testSerializeListNodeStrings() {
+		// init
+		BinaryObjectSerializer bos = new BinaryObjectSerializer();
+		byte[] buf = new byte[1024];
+
+		ArrayPointer ps = new ArrayPointer();
+		ArrayPointer pd = new ArrayPointer();
+		
+		//create list nodes
+		ListNode<Value<String>> listNode = new ListNode<Value<String>>();
+		Value<String> v = new Value<String>();
+		v.set("erster string");
+		listNode.set(v);
+		
+		ListNode<Value<String>> l2 = new ListNode<Value<String>>();
+		Value<String> v2 = new Value<String>();
+		v2.set("zweiter string");
+		l2.set(v2);
+		
+		listNode.append(l2);
+		
+		bos.serializeListNode(listNode, buf, ps);
 		
 		assertEquals(listNode, bos.deserializeListNode(buf, pd));
-		System.out.println("Read Pointer at: "+pd.pos());
+		//check if pointers have wrote and read the same amount of bytes
+		assertEquals(ps.pos(), pd.pos());
+	}
+	
+	private void writeBufferToStOut(byte[] bytes, int bytecount){
+		for(int i=0; i<bytecount; i++){
+			System.out.print(bytes[i]+" ");
+		}
+		System.out.println("");
 	}
 
 }

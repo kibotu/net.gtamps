@@ -65,16 +65,19 @@ public class BinaryConverterTest {
 	@Test
 	public void testCharArrayToBytes() {
 		String s = "eabcæ?ß";
+		String s2 = "oiausd";
 		ArrayPointer inputpointer = new ArrayPointer();
 		ArrayPointer outputpointer = new ArrayPointer();
 		byte[] b = new byte[2048];
 		BinaryConverter.writeStringToBytes(s, b, inputpointer);
+		BinaryConverter.writeStringToBytes(s2, b, inputpointer);
 //		for (int j = 0; j < b.length; j++) {
 //			System.out.println("b" + j + ": " + Integer.toBinaryString(b[j]));
 //			System.out.println("b" + j + ": " + b[j]);
 //		}
 //		System.out.println(BinaryPrimitiveConverter.byteToCharArray(b));
 		assertEquals(s, BinaryConverter.readStringFromBytes(b, outputpointer));
+		assertEquals(s2, BinaryConverter.readStringFromBytes(b, outputpointer));
 	}
 
 }

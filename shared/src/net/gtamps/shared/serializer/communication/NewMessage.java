@@ -57,15 +57,34 @@ public class NewMessage extends AbstractSendable<NewMessage> {//extends SharedOb
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		// TODO Auto-generated method stub
-		return false;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sendables == null) ? 0 : sendables.hashCode());
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		return result;
 	}
 
 	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NewMessage other = (NewMessage) obj;
+		if (sendables == null) {
+			if (other.sendables != null)
+				return false;
+		} else if (!sendables.equals(other.sendables))
+			return false;
+		if (sessionId == null) {
+			if (other.sessionId != null)
+				return false;
+		} else if (!sessionId.equals(other.sessionId))
+			return false;
+		return true;
 	}
 
 	@Override
