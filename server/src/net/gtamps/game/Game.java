@@ -21,12 +21,8 @@ import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.PlayerData;
-import net.gtamps.shared.serializer.communication.data.RevisionData;
-import net.gtamps.shared.serializer.communication.data.StringData;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
 
 
 /**
@@ -44,9 +40,9 @@ public class Game implements IGame, Runnable {
 
 	private final int id;
 	private final Thread thread;
-	private final BlockingQueue<Sendable> requestQueue = new LinkedBlockingQueue<Sendable>();
-	private final BlockingQueue<Sendable> commandQueue = new LinkedBlockingQueue<Sendable>();
-	private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
+	private final BlockingQueue<NewSendable> requestQueue = new LinkedBlockingQueue<NewSendable>();
+	private final BlockingQueue<NewSendable> commandQueue = new LinkedBlockingQueue<NewSendable>();
+	private final BlockingQueue<NewSendable> responseQueue = new LinkedBlockingQueue<NewSendable>();
 
 	private volatile boolean run;
 	private volatile boolean isActive;
@@ -165,7 +161,7 @@ public class Game implements IGame, Runnable {
 
 
 	@Override
-	public void handleSendable(final Sendable sendable) {
+	public void handleSendable(final NewSendable sendable) {
 		if (sendable == null) {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
@@ -192,31 +188,31 @@ public class Game implements IGame, Runnable {
 	}
 
 	@Override
-	public void drainResponseQueue(final Collection<Sendable> target) {
+	public void drainResponseQueue(final Collection<NewSendable> target) {
 		responseQueue.drainTo(target);
 	}
 
 	private void processCommandQueue() {
-		final List<Sendable> commandPairs = new LinkedList<Sendable>();
+		final List<NewSendable> commandPairs = new LinkedList<NewSendable>();
 		commandQueue.drainTo(commandPairs);
-		for (final Sendable sendable : commandPairs) {
+		for (final NewSendable sendable : commandPairs) {
 			command(sendable);
 		}
 		commandPairs.clear();
 	}
 
 	private void processRequestQueue() {
-		final List<Sendable> requestPairs = new LinkedList<Sendable>();
+		final List<NewSendable> requestPairs = new LinkedList<NewSendable>();
 		requestQueue.drainTo(requestPairs);
-		for (final Sendable sendable : requestPairs) {
-			final Sendable response = processRequest(sendable);
+		for (final NewSendable sendable : requestPairs) {
+			final NewSendable response = processRequest(sendable);
 			handleResponse(response);
 		}
 		requestPairs.clear();
 	}
 
-	private Sendable processRequest(final Sendable request) {
-		Sendable response = null;
+	private NewSendable processRequest(final NewSendable request) {
+		NewSendable response = null;
 		if (!(request.type.equals(SendableType.JOIN) || SessionManager.instance.isPlaying(request.sessionId))) {
 			return request.createResponse(request.type.getNeedResponse());
 		}
@@ -244,12 +240,12 @@ public class Game implements IGame, Runnable {
 	}
 
 
-	private void handleResponse(final Sendable r) {
+	private void handleResponse(final NewSendable r) {
 		assert r != null;
 		responseQueue.add(r);
 	}
 
-	private void command(final Sendable cmd) {
+	private void command(final NewSendable cmd) {
 		final User user = SessionManager.instance.getUserForSession(cmd.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
 		if (player == null) {
@@ -288,12 +284,12 @@ public class Game implements IGame, Runnable {
 	}
 
 
-	private Sendable join(final Sendable sendable) {
+	private NewSendable join(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.JOIN);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		final Player player = playerStorage.joinUser(user);
 		if (player == null) {
-			final Sendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
+			final NewSendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
 			joinError.data = new StringData("no spawnpoint found");
 			return joinError;
 		}
@@ -301,7 +297,7 @@ public class Game implements IGame, Runnable {
 		return sendable.createResponse(SendableType.JOIN_OK);
 	}
 
-	private Sendable leave(final Sendable sendable) {
+	private NewSendable leave(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.LEAVE);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		playerStorage.leaveUser(user);
@@ -309,20 +305,20 @@ public class Game implements IGame, Runnable {
 		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
 
-	private Sendable getPlayer(final Sendable request) {
+	private NewSendable getPlayer(final NewSendable request) {
 		assert request.type.equals(SendableType.GETPLAYER);
 		final User user = SessionManager.instance.getUserForSession(request.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
 		if (player == null) {
 			return request.createResponse(SendableType.GETPLAYER_NEED);
 		}
-		final Sendable response = request.createResponse(SendableType.GETPLAYER_OK);
+		final NewSendable response = request.createResponse(SendableType.GETPLAYER_OK);
 		response.data = new PlayerData(player);
 		return response;
 	}
 
 
-	private Sendable getUpdate(final Sendable sendable) {
+	private NewSendable getUpdate(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.GETUPDATE);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
@@ -336,7 +332,7 @@ public class Game implements IGame, Runnable {
 		update.gameObjects = new ArrayList<GameObject>();
 		update.gameObjects.addAll(entities);
 		update.gameObjects.addAll(events);
-		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
+		final NewSendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = update;
 		return updateResponse;
 	}

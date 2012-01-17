@@ -111,23 +111,23 @@ public final class SendableFactory {
 				;
 	}
 
-	public NewSendable createResponseOK(final Sendable request, final Object data) {
+	public NewSendable createResponseOK(final NewSendable request, final Object data) {
 		return createResponse("OK", request, data);
 	}
 
-	public NewSendable createResponseNeed(final Sendable request, final String message) {
+	public NewSendable createResponseNeed(final NewSendable request, final String message) {
 		return createResponse("NEED", request, message);
 	}
 
-	public NewSendable createResponseBad(final Sendable request, final String message) {
+	public NewSendable createResponseBad(final NewSendable request, final String message) {
 		return createResponse("BAD", request, message);
 	}
 
-	public NewSendable createResponseError(final Sendable request, final String message) {
+	public NewSendable createResponseError(final NewSendable request, final String message) {
 		return createResponse("ERROR", request, message);
 	}
 
-	private NewSendable createResponse(final String responseCode, final Sendable request, final Object data) {
+	private NewSendable createResponse(final String responseCode, final NewSendable request, final Object data) {
 		final SendableType type = findResponseType(responseCode, request);
 		return createSendable(type)
 				.setId(request.id)
@@ -135,7 +135,7 @@ public final class SendableFactory {
 				;
 	}
 
-	private SendableType findResponseType(final String responseCode, final Sendable request) throws IllegalArgumentException {
+	private SendableType findResponseType(final String responseCode, final NewSendable request) throws IllegalArgumentException {
 		try {
 			return SendableType.valueOf(request.type.name() + "_" + responseCode);
 		} catch (final IllegalArgumentException e) {
@@ -159,12 +159,12 @@ public final class SendableFactory {
 			} else if (o instanceof List) {
 
 
-                /**
-                 * TODO FIX ME! DOESN'T WORK ON ANDROID Q_Q
-                 */
+				/**
+				 * TODO FIX ME! DOESN'T WORK ON ANDROID Q_Q
+				 */
 
-//				data = this.<ListNode<?>> createList((List<Object>) o);
-                data = null;
+				//				data = this.<ListNode<?>> createList((List<Object>) o);
+				data = null;
 			} else {
 				data = createValue(o);
 			}

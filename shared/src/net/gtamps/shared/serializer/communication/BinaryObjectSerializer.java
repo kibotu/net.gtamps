@@ -18,7 +18,7 @@ import net.gtamps.shared.serializer.helper.BinaryConverter;
 public class BinaryObjectSerializer implements ISerializer {
 
 	private final int BUFFER_SIZE = 2048;
-	private byte[] buf = new byte[BUFFER_SIZE];
+	private final byte[] buf = new byte[BUFFER_SIZE];
 
 	/*
 	 * This array represents the "headers" of all byte wise serialized objects
@@ -53,7 +53,7 @@ public class BinaryObjectSerializer implements ISerializer {
 	 * be resolved to bytes for serialization. Must be called before any action
 	 * Occurs
 	 */
-	
+
 	private void init() {
 		if (classByteLookup == null) {
 			classByteLookup = new HashMap<Class<?>, Byte>();
@@ -74,30 +74,32 @@ public class BinaryObjectSerializer implements ISerializer {
 	// remove me, I'm just mocking the way.
 	ListNode<NewSendable> mockList = new ListNode<NewSendable>();
 
+	@Override
 	public byte[] serializeNewMessage(final NewMessage m) {
-		ArrayPointer ps = new ArrayPointer();
-		
+		final ArrayPointer ps = new ArrayPointer();
+
 		serializeListNode(m.sendables, buf, ps);
-		
+
 		BinaryConverter.writeStringToBytes(m.getSessionId(), buf, ps);
-		
-		
+
+
 		return buf;
 	}
 
+	@Override
 	public NewMessage deserializeNewMessage(final byte[] bytes) {
-		ArrayPointer pd = new ArrayPointer();																												
+		final ArrayPointer pd = new ArrayPointer();																												
 		final NewMessage m = new NewMessage();
-		
+
 		m.sendables = (ListNode<NewSendable>) deserializeListNode( bytes, pd);
-		
+
 		m.setSessionId(BinaryConverter.readStringFromBytes(bytes, pd));
-		
+
 		return m;
 	}
-	
-	protected AbstractSendable deserializeAbstractSendable(byte[] bytes, ArrayPointer pd) {
-		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
+
+	protected AbstractSendable deserializeAbstractSendable(final byte[] bytes, final ArrayPointer pd) {
+		final Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		if(classByte[b] == NewSendable.class){
 			return deserializeSendable( bytes, pd);
 		} else if(classByte[b] == ListNode.class){
@@ -111,11 +113,11 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
-	
-	protected void serialzeAbstractSendable(AbstractSendable<?> s, byte[] bytes, ArrayPointer ps) {
+
+	protected void serialzeAbstractSendable(final AbstractSendable<?> s, final byte[] bytes, final ArrayPointer ps) {
 		if (s.getClass() == NewSendable.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(NewSendable.class), bytes, ps);
-			NewSendable ns = (NewSendable) s;
+			final NewSendable ns = (NewSendable) s;
 			serialzeSendable(ns, bytes, ps);
 		} else if (s.getClass() == ListNode.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.class), bytes, ps);
@@ -131,12 +133,12 @@ public class BinaryObjectSerializer implements ISerializer {
 					+ " can not be Serialized by BinaryObjectSerializer!");
 		}
 	}
-	
-	protected NewSendable deserializeSendable( byte[] bytes, ArrayPointer pd) {
+
+	protected NewSendable deserializeSendable( final byte[] bytes, final ArrayPointer pd) {
 		//read sendable header
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		//TODO Enum should be send in a more intelligent manner...
-		NewSendable ns = new NewSendable(SendableType.valueOf(BinaryConverter.readStringFromBytes(bytes, pd)));
+		final NewSendable ns = new NewSendable(SendableType.valueOf(BinaryConverter.readStringFromBytes(bytes, pd)));
 		//read session id
 		ns.sessionId = BinaryConverter.readStringFromBytes(bytes, pd);
 		//read sendable id
@@ -156,8 +158,8 @@ public class BinaryObjectSerializer implements ISerializer {
 			throw new SendableSerializationException("Can't deserialize this mess. (the bad byte was "+b+")");
 		}
 	}
-	
-	protected void serialzeSendable(NewSendable ns, byte[] bytes, ArrayPointer ps) {
+
+	protected void serialzeSendable(final NewSendable ns, final byte[] bytes, final ArrayPointer ps) {
 		//write sendable header
 		BinaryConverter.writeByteToBytes(classByteLookup.get(NewSendable.class), bytes, ps);
 		//TODO Enum should be send in a more intelligent manner...
@@ -178,7 +180,7 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
-	protected void serializeValue(Value<?> data, byte[] bytes, ArrayPointer ps) {
+	protected void serializeValue(final Value<?> data, final byte[] bytes, final ArrayPointer ps) {
 		if (data.get().getClass() == Integer.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Integer.class), bytes, ps);
 			BinaryConverter.writeIntToBytes((Integer) data.get(), bytes, ps);
@@ -203,54 +205,54 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
-	protected Value<?> deserializeValue(byte[] bytes, ArrayPointer p) {
-		
-		
+	protected Value<?> deserializeValue(final byte[] bytes, final ArrayPointer p) {
+
+
 		//FIXME do not allocate new Values!
-		
-		Class<?> valueClass = classByte[BinaryConverter.readByteFromBytes(bytes, p)];
+
+		final Class<?> valueClass = classByte[BinaryConverter.readByteFromBytes(bytes, p)];
 		if (valueClass == Integer.class) {
-			Value<Integer> v = new Value<Integer>();
+			final Value<Integer> v = new Value<Integer>();
 			v.set(BinaryConverter.readIntFromBytes(bytes, p));
 			return v;
 		} else if (valueClass == Long.class) {
-			Value<Long> v = new Value<Long>();
+			final Value<Long> v = new Value<Long>();
 			v.set(BinaryConverter.readLongFromBytes(bytes, p));
 			return v;
 		}else 
-		if (valueClass == Float.class) {
-			Value<Float> v = new Value<Float>();
-			v.set(BinaryConverter.readFloatFromBytes(bytes, p));
-			return v;
-		}else 
-		if (valueClass == Byte.class) {
-			Value<Byte> v = new Value<Byte>();
-			v.set(BinaryConverter.readByteFromBytes(bytes, p));
-			return v;
-		}else 
-		if (valueClass == Boolean.class) {
-			Value<Boolean> v = new Value<Boolean>();
-			v.set(BinaryConverter.readBooleanFromBytes(bytes, p));
-			return v;
-		}else 
-		if (valueClass == String.class) {
-			Value<String> v = new Value<String>();
-			v.set(BinaryConverter.readStringFromBytes(bytes, p));
-			return v;
-		}else {
-			throw new SendableSerializationException(valueClass+" cant be deserialized!");
-		}
+			if (valueClass == Float.class) {
+				final Value<Float> v = new Value<Float>();
+				v.set(BinaryConverter.readFloatFromBytes(bytes, p));
+				return v;
+			}else 
+				if (valueClass == Byte.class) {
+					final Value<Byte> v = new Value<Byte>();
+					v.set(BinaryConverter.readByteFromBytes(bytes, p));
+					return v;
+				}else 
+					if (valueClass == Boolean.class) {
+						final Value<Boolean> v = new Value<Boolean>();
+						v.set(BinaryConverter.readBooleanFromBytes(bytes, p));
+						return v;
+					}else 
+						if (valueClass == String.class) {
+							final Value<String> v = new Value<String>();
+							v.set(BinaryConverter.readStringFromBytes(bytes, p));
+							return v;
+						}else {
+							throw new SendableSerializationException(valueClass+" cant be deserialized!");
+						}
 	}
-	
-	protected DataMap deserializeDataMap(byte[] bytes, ArrayPointer pd) {
-		
+
+	protected DataMap deserializeDataMap(final byte[] bytes, final ArrayPointer pd) {
+
 		//read data map header
-		Byte dmhead = BinaryConverter.readByteFromBytes(bytes, pd);
-		
-		DataMap dm = new DataMap();
+		final Byte dmhead = BinaryConverter.readByteFromBytes(bytes, pd);
+
+		final DataMap dm = new DataMap();
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while(classByte[b] == MapEntry.class){
-			MapEntry<AbstractSendableData<?>> me = new MapEntry<AbstractSendableData<?>>();
+			final MapEntry<AbstractSendableData<?>> me = new MapEntry<AbstractSendableData<?>>();
 			me.setKey(BinaryConverter.readStringFromBytes(bytes, pd));
 			me.setValue((AbstractSendableData<?>)deserializeAbstractSendable(bytes, pd));
 			dm.add(me);
@@ -262,12 +264,12 @@ public class BinaryObjectSerializer implements ISerializer {
 		return dm;
 	}
 
-	protected void serializeDataMap(DataMap data, byte[] bytes, ArrayPointer ps2) {
+	protected void serializeDataMap(final DataMap data, final byte[] bytes, final ArrayPointer ps2) {
 		//write data map header
 		BinaryConverter.writeByteToBytes(classByteLookup.get(DataMap.class), bytes, ps2);
-		
+
 		//FIXME remove iterator: use counter instead to avoid Iterator allocations
-		for (MapEntry<? extends AbstractSendableData<?>> me : data) {
+		for (final MapEntry<? extends AbstractSendableData<?>> me : data) {
 			//write header per mapEntry
 			BinaryConverter.writeByteToBytes(classByteLookup.get(MapEntry.class), bytes, ps2);
 			BinaryConverter.writeStringToBytes(me.key(), bytes, ps2);
@@ -275,61 +277,48 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 		BinaryConverter.writeByteToBytes(classByteLookup.get(DataMap.EOF.class), bytes, ps2);
 	}
-	
-	protected ListNode<? extends AbstractSendable<?>> deserializeListNode(byte[] bytes, ArrayPointer pd) {
+
+	protected ListNode<? extends AbstractSendable<?>> deserializeListNode(final byte[] bytes, final ArrayPointer pd) {
 		//TODO avoid allocations
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
-//		System.out.println(classByte[b]);
-		Byte classB = BinaryConverter.readByteFromBytes(bytes, pd);
-//		System.out.println(classByte[classB]);
-		
-		SendableCacheFactory scf = new SendableCacheFactory();
-		SendableProvider sp = new SendableProvider(scf);
-		
-		
+		//		System.out.println(classByte[b]);
+		final Byte classB = BinaryConverter.readByteFromBytes(bytes, pd);
+		//		System.out.println(classByte[classB]);
+
+		final SendableCacheFactory scf = new SendableCacheFactory();
+		final SendableProvider sp = new SendableProvider(scf);
+
+
 		//read first header
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
-		ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
-		
+		final ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
+
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == ListNode.Header.class){		
 			System.out.println(b);
 			rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes,pd)));
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
-		
+
 		if(classByte[b] != ListNode.EOF.class){
 			throw new SendableSerializationException("ListNode ended unexpectedly with byte "+b+"! That's disgusting.");
 		}
 		return rootNode;
 	}
-	
-	protected void serializeListNode(ListNode<? extends AbstractSendable<?>> l, byte[] bytes, ArrayPointer p) {
+
+	protected void serializeListNode(final ListNode<? extends AbstractSendable<?>> l, final byte[] bytes, final ArrayPointer p) {
 		//write header
 		BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.class), bytes, p);
 		BinaryConverter.writeByteToBytes(classByteLookup.get(l.value().getClass()), bytes, p);
-		
-		
+
+
 		l.resetIterator();
-		for (AbstractSendable<?> as : l) {
+		for (final AbstractSendable<?> as : l) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.Header.class), bytes, p);
 			serialzeAbstractSendable(as, bytes, p);
 		}
 		BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.EOF.class), bytes, p);
 	}
-
-	@Override
-	public byte[] serializeMessage(Message m) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Message deserializeMessage(byte[] bytes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 
 }

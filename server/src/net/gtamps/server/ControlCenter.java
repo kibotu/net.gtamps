@@ -13,11 +13,9 @@ import net.gtamps.game.IGame;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameData;
-import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.AuthentificationData;
-import net.gtamps.shared.serializer.communication.data.StringData;
 
 public final class ControlCenter implements Runnable, IMessageHandler {
 	private static final LogType TAG = LogType.SERVER;
@@ -25,9 +23,9 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 
-	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
+	public final BlockingQueue<NewMessage> inbox = new LinkedBlockingQueue<NewMessage>();
+	public final BlockingQueue<NewMessage> outbox = new LinkedBlockingQueue<NewMessage>();
+	public final BlockingQueue<NewSendable> responsebox = new LinkedBlockingQueue<NewSendable>();
 
 	private final Map<Long, IGame> gameThreads = new HashMap<Long, IGame>();
 
@@ -60,10 +58,9 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
 	 */
 	@Override
-	public void receiveMessage(final Connection<?> c, final Message msg) {
+	public void receiveMessage(final Connection<?> c, final NewMessage msg) {
 		if (msg != null) {
 			GUILogger.getInstance().log(TAG, msg.toString());
 			String sessionId;
@@ -79,7 +76,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 
-	public void handleResponse(final Sendable response) {
+	public void handleResponse(final NewSendable response) {
 		if (response != null) {
 			responsebox.add(response);
 		}
@@ -96,11 +93,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	private void processInbox() {
-		final List<Message> workingCopy = new LinkedList<Message>();
+		final List<NewMessage> workingCopy = new LinkedList<NewMessage>();
 		inbox.drainTo(workingCopy);
-		for (final Message msg : workingCopy) {
+		for (final NewMessage msg : workingCopy) {
 			final String msgSessid = msg.getSessionId();
-			for (final Sendable i : msg.sendables) {
+			for (final NewSendable i : msg.sendables) {
 				assert msgSessid.equals(i.sessionId);
 				handleSendable(i);
 			}
@@ -109,11 +106,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	private void processResponsebox() {
-		final List<Sendable> workingCopy = new LinkedList<Sendable>();
+		final List<NewSendable> workingCopy = new LinkedList<NewSendable>();
 		//responsebox.drainTo(workingCopy);
 		responsebox.drainTo(workingCopy);
 		game.drainResponseQueue(workingCopy);
-		for (final Sendable response : workingCopy) {
+		for (final NewSendable response : workingCopy) {
 			sendInMessage(response);
 		}
 		workingCopy.clear();
@@ -123,7 +120,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	}
 
-	private void handleSendable(final Sendable request) {
+	private void handleSendable(final NewSendable request) {
 		switch (request.type) {
 			case SESSION:
 				handleSession(request);
@@ -157,20 +154,20 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 
-	private void handleSession(final Sendable s) {
-		final Sendable response = s.createResponse(SendableType.SESSION_OK);
+	private void handleSession(final NewSendable s) {
+		final NewSendable response = s.createResponse(SendableType.SESSION_OK);
 		response.data = new StringData(s.sessionId);
 		handleResponse(response);
 	}
 
-	private void handleRegister(final Sendable request) {
+	private void handleRegister(final NewSendable request) {
 		final AuthentificationData adata = (AuthentificationData) request.data;
 		if (adata == null || adata.username == null || adata.username.length() == 0 ||
 				adata.password == null || adata.password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
-		Sendable response = null;
+		NewSendable response = null;
 		try {
 			final User user = Authenticator.instance.Register(adata.username, adata.password);
 			SessionManager.instance.authenticateSession(request.sessionId, user);
@@ -186,7 +183,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 
-	private void handleLogin(final Sendable request) {
+	private void handleLogin(final NewSendable request) {
 		if (SessionManager.instance.isAuthenticated(request.sessionId)) {
 			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
@@ -197,7 +194,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
 			return;
 		}
-		Sendable response = null;
+		NewSendable response = null;
 		try {
 			final User debugUser = Authenticator.instance.Login(adata.username, adata.password);
 			SessionManager.instance.authenticateSession(request.sessionId, debugUser);
@@ -216,7 +213,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 
-	private void handleAuthenticatedRequest(final Sendable request) {
+	private void handleAuthenticatedRequest(final NewSendable request) {
 		if (!SessionManager.instance.isAuthenticated(request.sessionId)) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
@@ -225,7 +222,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 
-	private void handlePlayingRequest(final Sendable request) {
+	private void handlePlayingRequest(final NewSendable request) {
 		if (!SessionManager.instance.isPlaying(request.sessionId)) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
@@ -234,8 +231,8 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 
-	private void sendInMessage(final Sendable response) {
-		final Message msg = new Message();
+	private void sendInMessage(final NewSendable response) {
+		final NewMessage msg = new NewMessage();
 		msg.setSessionId(response.sessionId);
 		msg.addSendable(response);
 		SessionManager.instance.sendMessage(msg);

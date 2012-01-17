@@ -1,7 +1,7 @@
 package net.gtamps.server;
 
 import net.gtamps.shared.serializer.communication.ISerializer;
-import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.NewMessage;
 
 /**
  * immutable!
@@ -29,9 +29,9 @@ public final class Connection<H extends ISocketHandler> {
 		this.isActive = true;
 	}
 
-	public void send(final Message msg) {
+	public void send(final NewMessage msg) {
 		if(this.isActive){
-			final byte[] bytes = serializer.serializeMessage(msg);
+			final byte[] bytes = serializer.serializeNewMessage(msg);
 			socketHandler.send(id, bytes);
 		} else {
 			System.out.println("Handle of client request on closed connection, on ID: "+id);
@@ -42,7 +42,7 @@ public final class Connection<H extends ISocketHandler> {
 		if (bytes == null) {
 			throw new IllegalArgumentException("'bytes' must not be null");
 		}
-		final Message m = serializer.deserializeMessage(bytes);
+		final NewMessage m = serializer.deserializeNewMessage(bytes);
 		controlCenter.receiveMessage(this, m);
 	}
 

@@ -1,9 +1,11 @@
 package net.gtamps.android.core.net;
 
-import net.gtamps.android.renderer.Registry;
+import java.util.List;
+
 import net.gtamps.android.core.sound.SoundEngine;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.World;
+import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.GameObject;
@@ -11,17 +13,21 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.ConnectionManager;
-import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageFactory;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableFactory;
+import net.gtamps.shared.serializer.communication.StringConstants;
+import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
-import org.jetbrains.annotations.NotNull;
+import net.gtamps.shared.serializer.communication.data.Value;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageHandler {
 
+	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
     private ConnectionManager connection;
     private World world;
 
@@ -30,7 +36,7 @@ public class MessageHandler {
         this.world = world;
     }
 
-    public void handleMessage(Sendable sendable, Message message) {
+    public void handleMessage(NewSendable sendable, NewMessage message) {
 
         Logger.i(this, "Handles message.");
 //        Logger.i(this, sendable);
@@ -42,13 +48,10 @@ public class MessageHandler {
                 if (sendable.data == null)
                     break;
 
-                // not an update
-                if (!(sendable.data instanceof UpdateData))
-                    break;
-
                 // update revision id
-                UpdateData updateData = ((UpdateData) sendable.data);
-                connection.currentRevId = updateData.revId;
+                
+                DataMap updateData = (DataMap) sendable.data;
+                connection.currentRevId = ((Value<Long>)updateData.get(StringConstants.UPDATE_REVSION)).get();
 
                 // parse all transmitted entities
                 List<GameObject> gameObjects = updateData.gameObjects;
