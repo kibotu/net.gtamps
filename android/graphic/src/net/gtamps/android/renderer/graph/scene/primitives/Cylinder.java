@@ -68,7 +68,7 @@ public class Cylinder extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(false);
+//        enableTextures(false);
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);

@@ -6,10 +6,12 @@ varying vec3 normalV;
 varying vec3 eyedirV;
 varying vec3 lightdirV;
 varying vec2 uvV;
+
 uniform sampler2D colorMap;
 uniform sampler2D alphaMap;
 uniform sampler2D normalMap;
 uniform sampler2D specularMap;
+uniform sampler2D color2Map;
 
 uniform int hasLighting;
 
@@ -55,6 +57,18 @@ vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) 
   return vec4(color,1.0);
 }
 
+vec4 daynight(vec3 light_dir, vec3 normal) {
+
+    vec4 texel0, texel1, resultColor;
+
+    float alpha = clamp(8.0 * max(0.0, dot(light_dir,  normal)), 0.0, 1.0);
+
+    texel0 = texture2D(colorMap, uvV);
+    texel1 = texture2D(color2Map, uvV);
+
+    return  mix(texel0, texel1, alpha);
+}
+
 void main() {
 
   // color map
@@ -64,9 +78,9 @@ void main() {
   float c = texture2D(alphaMap, uvV).r;
 
   // mix day + cloud colors
-  c = pow(c,0.35);
+  c = pow(c,0.80);
   vec4 finalColor = vec4((1.0-c)*texColor + c * vec3(1,1,1),1.0);
-  finalColor = texture2D(alphaMap, uvV);
+  //finalColor = daynight(lightdirV,normalV);
 
   gl_FragColor =  hasLighting == 2 ? finalColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : finalColor;
 }

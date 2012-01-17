@@ -83,7 +83,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     /**
      * Defines if mip maps are available.
      */
-    private boolean hasMipMap = false;
+    @Deprecated private boolean hasMipMap = false;
 
     // TODO clean this up
     @Deprecated protected int textureId = 0;
@@ -206,8 +206,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 //        OpenGLUtils.checkGlError("aColor");
 
         // enable texturing
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), 0f);
-        Logger.checkGlError(this, "hasTexture");
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTextures"), 0f);
+        Logger.checkGlError(this, "hasTextures");
 
         // uvs
         GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aTextCoord"), 2, GLES20.GL_FLOAT, false, 0, mesh.getVbo().textureCoordinateBuffer);
@@ -261,21 +261,18 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         Logger.checkGlError(this, "material.shininess");
 
         // multiple textures
-        if(hasTextures) {
-            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), 2);
-            Logger.checkGlError(this,"hasTexture");
+        if(textureSamples != null) {
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 2);
+            Logger.checkGlError(this,"hasTextures");
             for(int i = 0; i < textureSamples.size(); i++) {
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + textureSamples.get(i).activeTextureId);
-//                Logger.i(this, "active texture" + GLES20.GL_TEXTURE0 + textureSamples.get(i).activeTextureId);
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureSamples.get(i).textureId);
-//                Logger.i(this, "textureID" + textureSamples.get(i).textureId);
-                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSamples.get(i).type.name()), 0);
-//                Logger.i(this, "name: "+  textureSamples.get(i).type.name());
+                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSamples.get(i).type.name()), i);
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, textureSamples.get(i).hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
             }
         } else {
-            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), 0);
-            Logger.checkGlError(this,"hasTexture");
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 0);
+            Logger.checkGlError(this,"hasTextures");
         }
 
         // uses lightning
@@ -443,7 +440,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
-//        if (textureResourceId != 0) textureId = Registry.getTextureLibrary().loadTexture(textureResourceId, false);
         if(textureSamples != null) {
             for(int i = 0; i < textureSamples.size(); i++) {
                 textureSamples.get(i).allocate();
@@ -506,7 +502,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      *
      * @return <code>true</code> if it has uvs.
      */
-    final public boolean isHasTextures() {
+    final public boolean hasTextures() {
         return hasTextures;
     }
 
@@ -747,6 +743,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
     protected void onResumeInternal(ProcessingState state) {
         if (mesh == null) return;
         mesh.invalidate();
+        if(textureSamples == null) return;
         for(int i = 0; i < textureSamples.size(); i++) {
             textureSamples.get(0).invalidate();
         }

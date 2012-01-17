@@ -26,13 +26,6 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glUseProgram(program);
         Logger.checkGlError(this, "glUseProgram");
 
-        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, renderAction.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
-        Logger.checkGlError(this, "lightPosition");
-//        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
-//        Logger.checkGlError(this,"lightDirection");
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightColor"), 1, lightC, 0);
-        Logger.checkGlError(this, "lightColor");
-
         // draw scenes
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
             renderAction.getScenes().get(i).getScene().update(getDelta());
@@ -51,7 +44,7 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
         GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-        Logger.i(this, "[w:" + texture.getWidth() + "|h:" + texture.getHeight() + "|id:" + textureId + "|hasMipMap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
+        Logger.i(this, "[w:" + texture.getWidth() + "|h:" + texture.getHeight() + "|id:" + textureId + "|mimap=" + generateMipMap + "] Bitmap atlas successfully allocated.");
         texture.recycle();
         return textureId;
     }
@@ -236,11 +229,6 @@ public class GLES20Renderer extends BasicRenderer {
         GLES20.glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
     }
-
-    // light variables
-    float[] lightP = {0, 0, 10f, 1f};
-    float[] lightC = {0.5f, 0.5f, 0.5f, 1f};
-    float[] lightDir = {0f, 0f, -1f};
 
     @Override
     public void reset() {

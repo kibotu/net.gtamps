@@ -98,7 +98,7 @@ public class Sprite extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(true);
+//        enableTextures(true);
         enableDoubleSided(false);
         enableLighting(false);
         enableAlpha(true);

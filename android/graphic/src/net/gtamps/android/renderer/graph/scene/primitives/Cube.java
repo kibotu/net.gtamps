@@ -38,7 +38,7 @@ public class Cube extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(true);
+//        enableTextures(true);
         enableDoubleSided(true);
         enableLighting(true);
         enableAlpha(true);

@@ -105,7 +105,7 @@ public class Sphere extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(false);
+//        enableTextures(true);
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);
