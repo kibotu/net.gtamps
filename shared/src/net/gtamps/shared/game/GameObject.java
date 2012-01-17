@@ -36,12 +36,17 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "GameObject";
 
-	protected final int uid;
+	protected int uid;
 	protected String name;
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
+	private boolean mutable = false;
 	private Map<String, IProperty<?>> properties = null;
+	private final Map<String, IProperty<?>> inactiveProperties = null;
+
+	GameObject() {
+	}
 
 	/**
 	 * @param name default is {@value #DEFAULT_NAME}
@@ -219,6 +224,37 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		return true;
 	}
 
+
+	void setMutable(final boolean value) {
+		this.mutable = value;
+	}
+
+	void setUid(final int uid) {
+		ensureMutable();
+		this.uid = uid;
+	}
+
+	void setName(final String name) {
+		ensureMutable();
+		Validate.notEmpty(name);
+		this.name = name;
+	}
+
+	private void ensureMutable() throws IllegalStateException {
+		if (!mutable) {
+			throw new IllegalStateException("trying to alter fixed attribute in immutable state");
+		}
+	}
+
+	void setRevision(final long revision) {
+		this.revision = revision;
+	}
+
+	void deactivateAllProperties() {
+		inactiveProperties.putAll(properties);
+		properties.clear();
+	}
+
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private <T> Propertay<T> instantiateProperty(final String name, final T value) {
 		Constructor<Propertay> c;
@@ -266,13 +302,32 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		this.properties.remove(name);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> Propertay<T> getProperty(final String name) {
+		Propertay<T> p = getActiveProperty(name);
+		if (p == null) {
+			p = getInactiveProperty(name);
+		}
+		return p;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Propertay<T> getActiveProperty(final String name) {
 		if (this.properties == null) {
 			return null;
 		}
 		final Propertay<?> p = (Propertay<?>) this.properties.get(name);
 		return (Propertay<T>) p;
 	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Propertay<T> getInactiveProperty(final String name) {
+		if (this.inactiveProperties == null) {
+			return null;
+		}
+		final Propertay<?> p = (Propertay<?>) this.inactiveProperties.get(name);
+		return (Propertay<T>) p;
+	}
+
+
 
 }
