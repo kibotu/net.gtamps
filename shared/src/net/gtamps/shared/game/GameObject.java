@@ -240,7 +240,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		this.name = name;
 	}
 
-	private void ensureMutable() throws IllegalStateException {
+	protected void ensureMutable() throws IllegalStateException {
 		if (!mutable) {
 			throw new IllegalStateException("trying to alter fixed attribute in immutable state");
 		}

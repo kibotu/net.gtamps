@@ -17,7 +17,7 @@ public class Entity extends SharedGameActor {
 	private static final long serialVersionUID = -5466989016443709708L;
 
 	static public enum Type {
-		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
+		UNKNOWN, CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
 	}
 
 	//TODO: use!
@@ -29,27 +29,26 @@ public class Entity extends SharedGameActor {
 
 	//	protected Map<Property.Type,Property> properties;
 	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final IProperty<Integer> x;
-	public final IProperty<Integer> y;
-	public final IProperty<Integer> z;
+	public final IProperty<Integer> x = this.useProperty("posx", 0);
+	public final IProperty<Integer> y = this.useProperty("posy", 0);
+	public final IProperty<Integer> z = this.useProperty("posz", 0);
 	/**
 	 * rotation about z
 	 */
-	public final IProperty<Integer> rota;
-	public final IProperty<Integer> playerProperty;
-	public final Type type;
+	public final IProperty<Integer> rota = this.useProperty("rota", 0);
+	public final IProperty<Integer> playerProperty = this.useProperty("player", Player.INVALID_UID);
+	public Type type;
+
+	public Entity() {
+		super();
+		this.type = Type.UNKNOWN;
+	}
 
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
 	public Entity(final Type type) {
 		super(type.name().toLowerCase());
 		this.type = type;
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 
 	public Entity(final String name) {
@@ -59,12 +58,6 @@ public class Entity extends SharedGameActor {
 	public Entity(final String name, final int uid) {
 		super(name, uid);
 		this.type = getType(name);
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 
 	private Type getType(final String name) {
@@ -156,4 +149,10 @@ public class Entity extends SharedGameActor {
 
 	}
 
+	void setType(final Type type) {
+		ensureMutable();
+		this.type = type;
+	}
+
 }
+
