@@ -353,7 +353,7 @@ public class Game implements IGame, Runnable {
 		final ListNode<DataMap> eventNodes = SendableDataConverter.toSendableData(events, sendableProvider);
 
 		final DataMap updateData = new DataMap();
-		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, universe.getRevision());
+		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, sendableProvider.getValue(universe.getRevision()));
 		final MapEntry<ListNode<DataMap>> entEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_ENTITIES, entityNodes);
 		final MapEntry<ListNode<DataMap>> evtEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_GAMEEVENTS, eventNodes);
 		updateData.add(revEntry);

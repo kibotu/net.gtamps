@@ -37,8 +37,8 @@ public final class SendableFactory {
 
 	public NewSendable createLoginRequest(final String username, final String password) {
 		final DataMap authData = new DataMap();
-		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(nameEntry));
-		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(passEntry));
+		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(username));
+		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(password));
 		authData.add(nameEntry).add(passEntry);
 
 		return createSendable(SendableType.LOGIN).setData(authData);
@@ -46,8 +46,8 @@ public final class SendableFactory {
 
 	public NewSendable createRegisterRequest(final String username, final String password) {
 		final DataMap authData = new DataMap();
-		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(nameEntry));
-		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(passEntry));
+		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(username));
+		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(password));
 		authData.add(nameEntry).add(passEntry);
 
 		return createSendable(SendableType.REGISTER).setData(authData);

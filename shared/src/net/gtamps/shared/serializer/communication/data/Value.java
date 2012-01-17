@@ -25,6 +25,11 @@ public final class Value<T> extends AbstractSendableData<Value<T>> {
 		//		validate(valueType);
 	}
 
+	public Value(final T value) {
+		this();
+		set(value);
+	}
+
 	private final void validate(final Class<T> valueType) {
 		boolean found = false;
 		for (int i = 0; i < ALLOWED_TYPES.length; i++) {	// old-school for-loop allocates no heap memory

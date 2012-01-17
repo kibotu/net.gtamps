@@ -29,7 +29,7 @@ public class SendableDataConverter {
 		return data;
 	}
 
-	public static <T extends GameObject> AbstractSendableData<?> toSendableData(final List<T> c, final SendableProvider provider) {
+	public static <T extends GameObject> ListNode<DataMap> toSendableData(final List<T> c, final SendableProvider provider) {
 		Validate.notNull(c);
 		Validate.notNull(provider);
 		ListNode<DataMap> list = ListNode.emptyList();

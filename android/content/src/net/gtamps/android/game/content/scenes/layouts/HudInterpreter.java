@@ -5,7 +5,6 @@ import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.FloatData;
 
 public class HudInterpreter extends InputInterpreter {
 
@@ -19,27 +18,29 @@ public class HudInterpreter extends InputInterpreter {
     public void interpretTouch(float x, float y, MotionEvent event) {
 
         // decrease input spamming
-        if (System.currentTimeMillis() - startTime <= Config.HUD_INPUT_MESSAGE_TIMOUT) return;
+        if (System.currentTimeMillis() - startTime <= Config.HUD_INPUT_MESSAGE_TIMOUT) {
+        	return;
+        }
         startTime = System.currentTimeMillis();
 
         if (actionType.equals(ActionType.PLAYER_MOVEMENT)) {
 
             // accelerate
             if (y < 0.20f) {
-                eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, new FloatData((0.30f - y) * 2f));
+                eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
             }
             // decelerate
             else if (y > 0.80f) {
-                eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, new FloatData((y - 0.30f) * 2f));
+                eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
             }
 
             // left
             if (x < 0.20f) {
-                eventDispatcher.dispatch(SendableType.ACTION_LEFT, new FloatData((0.60f - x) * 2f));
+                eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
             }
             // right
             else if (x > 0.80f) {
-                eventDispatcher.dispatch(SendableType.ACTION_RIGHT, new FloatData((x - 0.60f) * 2f));
+                eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
             }
         }
 

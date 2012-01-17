@@ -22,7 +22,6 @@ import net.gtamps.shared.serializer.communication.SendableFactory;
 import net.gtamps.shared.serializer.communication.StringConstants;
 import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
-import net.gtamps.shared.serializer.communication.data.PlayerData;
 import net.gtamps.shared.serializer.communication.data.SendableDataConverter;
 import net.gtamps.shared.serializer.communication.data.Value;
 
@@ -53,7 +52,7 @@ public class MessageHandler {
 
                 // update revision id
                 DataMap updateData = (DataMap) sendable.data;
-                connection.currentRevId = ((Value<Long>)updateData.get(StringConstants.UPDATE_REVSION)).get();
+                connection.currentRevId = ((Value<Long>)updateData.get(StringConstants.UPDATE_REVISION)).get();
 
                 // parse all transmitted entities
                 ListNode<DataMap> entities = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_ENTITIES));
@@ -88,7 +87,7 @@ public class MessageHandler {
                     break;
 
                 // not player data
-                DataMap pmap = ((DataMap) sendable.data).get(StringConstants.PLAYER_DATA);
+                DataMap pmap = (DataMap) ((DataMap) sendable.data).get(StringConstants.PLAYER_DATA);
                 
                 Player player = store.getPlayer(SendableDataConverter.getGameObjectUid(pmap));
                 SendableDataConverter.updateGameobject(player, pmap);
