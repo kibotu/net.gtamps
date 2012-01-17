@@ -6,6 +6,5 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GTAandroidGraphics"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GTAandroidUtils"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/GTAshared"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
