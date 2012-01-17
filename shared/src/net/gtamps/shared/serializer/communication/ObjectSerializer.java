@@ -45,7 +45,7 @@ public class ObjectSerializer implements ISerializer {
     }
 
     @Override
-    public byte[] serializeMessage(NewMessage message) {
+    public byte[] serializeNewMessage(NewMessage message) {
         try {
             byteOutputStream = new ByteArrayOutputStream();
             objectOutputStream = new ObjectOutputStream(byteOutputStream);

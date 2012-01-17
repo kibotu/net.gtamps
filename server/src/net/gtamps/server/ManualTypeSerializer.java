@@ -86,45 +86,45 @@ public class ManualTypeSerializer implements ISerializer {
 		addToken(bld, Integer.toString(s.id));
 		addToken(bld, s.type.name());
 		switch (s.type) {
-			case GETUPDATE:
-				addToken(bld, Long.toString(((RevisionData) s.data).revisionId));
-				break;
+		case GETUPDATE:
+			addToken(bld, Long.toString(((RevisionData) s.data).revisionId));
+			break;
 
-			case GETUPDATE_OK:
-				final UpdateData udata = (UpdateData) s.data;
-				addToken(bld, Long.toString(udata.revId));
-				serializeUpdateData(bld, udata);
-				break;
+		case GETUPDATE_OK:
+			final UpdateData udata = (UpdateData) s.data;
+			addToken(bld, Long.toString(udata.revId));
+			serializeUpdateData(bld, udata);
+			break;
 
-			case GETPLAYER_OK:
-				final PlayerData pdata = (PlayerData) s.data;
-				addToken(bld, pdata.toString());
-				break;
+		case GETPLAYER_OK:
+			final PlayerData pdata = (PlayerData) s.data;
+			addToken(bld, pdata.toString());
+			break;
 
-			case LOGIN:
-				final AuthentificationData data = (AuthentificationData) s.data;
-				addToken(bld, data.username);
-				addToken(bld, data.password);
-				break;
+		case LOGIN:
+			final AuthentificationData data = (AuthentificationData) s.data;
+			addToken(bld, data.username);
+			addToken(bld, data.password);
+			break;
 
-			case REGISTER:
-				final AuthentificationData adata = (AuthentificationData) s.data;
-				addToken(bld, adata.username);
-				addToken(bld, adata.password);
-				break;
+		case REGISTER:
+			final AuthentificationData adata = (AuthentificationData) s.data;
+			addToken(bld, adata.username);
+			addToken(bld, adata.password);
+			break;
 
-			case SESSION_OK:
-			case BAD_SENDABLE:
-				final StringData sdata = (StringData) s.data;
-				if (sdata != null) {
-					addToken(bld, sdata.value);
-				}
-				break;
-			default:
-				if (s.data != null) {
-					addToken(bld, s.data.toString());
-				}
-				break;
+		case SESSION_OK:
+		case BAD_SENDABLE:
+			final StringData sdata = (StringData) s.data;
+			if (sdata != null) {
+				addToken(bld, sdata.value);
+			}
+			break;
+		default:
+			if (s.data != null) {
+				addToken(bld, s.data.toString());
+			}
+			break;
 		}
 	}
 
@@ -216,27 +216,27 @@ public class ManualTypeSerializer implements ISerializer {
 				final String typeString = scanner.next();
 				type = SendableType.valueOf(typeString);
 				switch (type) {
-					case ACTION_ACCELERATE:
-					case ACTION_DECELERATE:
-					case ACTION_ENTEREXIT:
-					case ACTION_HANDBRAKE:
-					case ACTION_LEFT:
-					case ACTION_RIGHT:
-					case ACTION_SHOOT:
-						break;
-					case REGISTER:
-					case LOGIN:
-						data = getAuthData(scanner);
-						break;
-					case SESSION_OK:
-						data = getStringData(scanner);
-						break;
-					case GETUPDATE:
-						data = getRevisionData(scanner);
-						break;
-					case GETUPDATE_OK:
-						data = getUpdateData(scanner);
-						break;
+				case ACTION_ACCELERATE:
+				case ACTION_DECELERATE:
+				case ACTION_ENTEREXIT:
+				case ACTION_HANDBRAKE:
+				case ACTION_LEFT:
+				case ACTION_RIGHT:
+				case ACTION_SHOOT:
+					break;
+				case REGISTER:
+				case LOGIN:
+					data = getAuthData(scanner);
+					break;
+				case SESSION_OK:
+					data = getStringData(scanner);
+					break;
+				case GETUPDATE:
+					data = getRevisionData(scanner);
+					break;
+				case GETUPDATE_OK:
+					data = getUpdateData(scanner);
+					break;
 				}
 				s = new Sendable(type, id, data);
 			} catch (final InputMismatchException e) {
@@ -305,15 +305,16 @@ public class ManualTypeSerializer implements ISerializer {
 		return null;
 	}
 
+
 	@Override
-	public byte[] serializeMessage(final NewMessage m) {
+	public NewMessage deserializeNewMessage(final byte[] bytes) {
 		//TODO
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public NewMessage deserializeNewMessage(final byte[] bytes) {
-		//TODO
+	public byte[] serializeNewMessage(final NewMessage m) {
+		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
