@@ -15,7 +15,7 @@ public class MenuActivity extends Activity implements OnClickListener {
     HashMap<menuMode, Integer> idMapping = new HashMap<MenuActivity.menuMode, Integer>();
 
     enum menuMode {
-        MAIN, CONFIGURATION, LOADING
+        MAIN, CONFIGURATION, LOADING, BUBU
     }
 
     @Override

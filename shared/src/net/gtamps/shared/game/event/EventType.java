@@ -83,7 +83,7 @@ public enum EventType {
 	private EventType parent = null;
 
 	private EventType(final EventType parent) {
-		this.id = getOrCreateLookupId(this);
+		id = getOrCreateLookupId(this);
 		this.parent = parent;
 		if (parent != null) {
 			parent.addChild(this);
@@ -127,23 +127,36 @@ public enum EventType {
 	}
 
 	private static int getOrCreateLookupId(final EventType entry) {
-		assert entry != null;
-		if (idLookupTable.containsValue(entry)) {
-			return entry.id;
-		}
-		int id = entry.name().hashCode();
-		while (hasLookupId(id)) {
-			id++;
-		}
-		idLookupTable.put(id, entry);
-		return id;
+		return entry.ordinal();
+		//		assert entry != null;
+		//		if (idLookupTable.containsValue(entry)) {
+		//			return entry.id;
+		//		}
+		//		int id = entry.name().hashCode();
+		//		while (hasLookupId(id)) {
+		//			id++;
+		//		}
+		//		idLookupTable.put(id, entry);
+		//		return id;
 	}
 
 	private static EventType lookup(final int id) {
-		return idLookupTable.get(id);
+		for(final EventType et : EventType.values()){
+			if(et.ordinal()==id) {
+				return et;
+			}
+		}
+		throw new IllegalArgumentException("There is no EventType with ordinal "+id);
+		//return idLookupTable.get(id);
 	}
 
 	private static boolean hasLookupId(final int id) {
-		return idLookupTable.get(id) != null;
+		for(final EventType et : EventType.values()){
+			if(et.ordinal()==id) {
+				return true;
+			}
+		}
+		return false;
+		//		return idLookupTable.get(id) != null;
 	}
 }

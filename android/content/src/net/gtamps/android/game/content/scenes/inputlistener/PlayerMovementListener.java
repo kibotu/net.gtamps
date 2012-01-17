@@ -1,6 +1,8 @@
 package net.gtamps.android.game.content.scenes.inputlistener;
 
+
 import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageFactory;
@@ -18,7 +20,7 @@ public class PlayerMovementListener implements InputEventListener {
 
     @Override
     public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
-//		Logger.d(this, "Received: " + sendableType.toString());
+		Logger.d(this, "Received: " + sendableType.toString());
 
         if (
                 sendableType.equals(SendableType.ACTION_ACCELERATE) ||
