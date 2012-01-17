@@ -8,6 +8,7 @@ import net.gtamps.shared.Utils.cache.TypableObjectCacheFactory;
 import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
 import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
 import net.gtamps.shared.serializer.communication.data.Value;
 
 public final class SendableFactory {
@@ -35,19 +36,21 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createLoginRequest(final String username, final String password) {
-		return createSendable(SendableType.LOGIN)
-				.setData(
-						sendableProvider.getListNode(sendableProvider.getValue(username))
-						.append(sendableProvider.getListNode(sendableProvider.getValue(password)))
-						);
+		final DataMap authData = new DataMap();
+		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(nameEntry));
+		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(passEntry));
+		authData.add(nameEntry).add(passEntry);
+
+		return createSendable(SendableType.LOGIN).setData(authData);
 	}
 
 	public NewSendable createRegisterRequest(final String username, final String password) {
-		return createSendable(SendableType.REGISTER)
-				.setData(
-						sendableProvider.getListNode(sendableProvider.getValue(username))
-						.append(sendableProvider.getListNode(sendableProvider.getValue(password)))
-						);
+		final DataMap authData = new DataMap();
+		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(nameEntry));
+		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(passEntry));
+		authData.add(nameEntry).add(passEntry);
+
+		return createSendable(SendableType.REGISTER).setData(authData);
 	}
 
 	public NewSendable createJoinRequest() {
@@ -72,8 +75,11 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createGetUpdateRequest(final long revId) {
-		return createSendable(SendableType.GETUPDATE)
-				.setData(sendableProvider.getValue(revId));
+		final DataMap data = new DataMap();
+		final MapEntry<Value<Long>> revEntry = sendableProvider.getMapEntry(StringConstants.UPDATE_REVISION, sendableProvider.getValue(revId));
+		data.add(revEntry);
+
+		return createSendable(SendableType.GETUPDATE).setData(data);
 	}
 
 	public NewSendable createAccelerateCommand(final float value) {
@@ -157,14 +163,7 @@ public final class SendableFactory {
 			if (o instanceof Map) {
 				data = createDataMap((Map<String, Object>) o);
 			} else if (o instanceof List) {
-
-
-				/**
-				 * TODO FIX ME! DOESN'T WORK ON ANDROID Q_Q
-				 */
-
-				//				data = this.<ListNode<?>> createList((List<Object>) o);
-				data = null;
+				data = this.createList((List<AbstractSendableData>) o);
 			} else {
 				data = createValue(o);
 			}
@@ -185,7 +184,7 @@ public final class SendableFactory {
 		return dataMap;
 	}
 
-	private <T extends AbstractSendableData<T>> ListNode<T> createList(final List<Object> list) {
+	private <T extends AbstractSendableData<T>> ListNode<T> createList(final List<T> list) {
 		final int length = list.size();
 		if (length == 0) {
 			return null;

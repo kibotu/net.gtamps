@@ -1,22 +1,17 @@
 package net.gtamps.android.game;
 
-import android.os.SystemClock;
-import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.net.MessageHandler;
-import net.gtamps.android.renderer.RenderAction;
-import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
 import net.gtamps.android.game.content.scenes.World;
-import net.gtamps.android.game.content.scenes.inputlistener.PlayerMovementListener;
+import net.gtamps.android.renderer.RenderAction;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.serializer.ConnectionManager;
-import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.MessageFactory;
-
-import java.util.ArrayList;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.NewMessageFactory;
+import net.gtamps.shared.serializer.communication.NewSendable;
 
 public class Game extends RenderAction {
 
@@ -58,7 +53,7 @@ public class Game extends RenderAction {
 
         Logger.I(this, "Connecting to " + Config.SERVER_DEFAULT_HOST_ADDRESS + ":" + Config.SERVER_DEFAULT_PORT + " " + (connection.isConnected() ? "successful." : "failed."));
         connection.start();
-        connection.add(MessageFactory.createSessionRequest());
+        connection.add(NewMessageFactory.createSessionRequest());
     }
 
     @Override
@@ -72,9 +67,10 @@ public class Game extends RenderAction {
 
         // handle inbox messages
         while (!connection.isEmpty()) {
-            Message message = connection.poll();
-            for (int i = 0; i < message.sendables.size(); i++) {
-                messageHandler.handleMessage(message.sendables.get(i), message);
+            NewMessage message = connection.poll();
+            message.sendables.resetIterator();
+            for(NewSendable sendable: message.sendables) {
+            	messageHandler.handleMessage(sendable, message);
             }
         }
 

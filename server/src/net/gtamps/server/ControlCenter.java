@@ -15,7 +15,13 @@ import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameData;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
 import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.StringConstants;
+import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
+import net.gtamps.shared.serializer.communication.data.Value;
 
 public final class ControlCenter implements Runnable, IMessageHandler {
 	private static final LogType TAG = LogType.SERVER;
@@ -23,11 +29,13 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 
+
 	public final BlockingQueue<NewMessage> inbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewMessage> outbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewSendable> responsebox = new LinkedBlockingQueue<NewSendable>();
 
 	private final Map<Long, IGame> gameThreads = new HashMap<Long, IGame>();
+	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	private boolean run = true;
 	private IGame game; //tmp
@@ -156,28 +164,54 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	private void handleSession(final NewSendable s) {
 		final NewSendable response = s.createResponse(SendableType.SESSION_OK);
-		response.data = new StringData(s.sessionId);
+		final Value<String> sessionId = new Value<String>(s.sessionId);
+
+		final MapEntry<Value<String>> sessionIdEntry = new MapEntry<Value<String>>
+		(StringConstants.SESSION_ID, sessionId);
+		final DataMap sessionData = new DataMap();
+		sessionData.add(sessionIdEntry);
+		response.data = sessionData;
+
 		handleResponse(response);
 	}
 
 	private void handleRegister(final NewSendable request) {
-		final AuthentificationData adata = (AuthentificationData) request.data;
-		if (adata == null || adata.username == null || adata.username.length() == 0 ||
-				adata.password == null || adata.password.length() == 0) {
+		final DataMap adata =  (DataMap) request.data;
+
+		final String username = ((Value<String>)(adata.get(StringConstants.AUTH_USERNAME))).get();
+		final String password = ((Value<String>)(adata.get(StringConstants.AUTH_PASSWORD))).get();
+
+		if (username == null || username.length() == 0 ||
+				password == null || password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
 		NewSendable response = null;
 		try {
-			final User user = Authenticator.instance.Register(adata.username, adata.password);
+			final User user = Authenticator.instance.Register(username, password);
 			SessionManager.instance.authenticateSession(request.sessionId, user);
 			response = request.createResponse(SendableType.REGISTER_OK);
 		} catch (final IllegalStateException e) {
 			response = request.createResponse(SendableType.REGISTER_BAD);
-			response.data = new StringData(e.getMessage());
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
 		} catch (final ServerException e) {
 			response = request.createResponse(SendableType.REGISTER_BAD);
-			response.data = new StringData(e.getMessage());
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+
 		}
 		handleResponse(response);
 	}
@@ -188,29 +222,44 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
 		}
-		final AuthentificationData adata = (AuthentificationData) request.data;
-		if (adata == null || adata.username == null || adata.username.length() == 0 ||
-				adata.password == null || adata.password.length() == 0) {
+		final DataMap adata =  (DataMap) request.data;
+
+		final String username = ((Value<String>)(adata.get(StringConstants.AUTH_USERNAME))).get();
+		final String password = ((Value<String>)(adata.get(StringConstants.AUTH_PASSWORD))).get();
+
+		if (username == null || username.length() == 0 ||
+				password == null || password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
 			return;
 		}
 		NewSendable response = null;
 		try {
-			final User debugUser = Authenticator.instance.Login(adata.username, adata.password);
-			SessionManager.instance.authenticateSession(request.sessionId, debugUser);
+			final User user = Authenticator.instance.Login(username, password);
+			SessionManager.instance.authenticateSession(request.sessionId, user);
 			response = request.createResponse(SendableType.LOGIN_OK);
-		} catch (final ServerException e) {
-			// from Authenticator
-			response = request.createResponse(SendableType.LOGIN_BAD);
-			response.data = new StringData(e.getMessage());
 		} catch (final IllegalStateException e) {
-			// cannot login: session already used by another user
-			// TODO log or something?
 			response = request.createResponse(SendableType.LOGIN_BAD);
-			response.data = new StringData(e.getMessage());
-		} finally {
-			handleResponse(response);
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+		} catch (final ServerException e) {
+			response = request.createResponse(SendableType.LOGIN_BAD);
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+
 		}
+		handleResponse(response);
 	}
 
 	private void handleAuthenticatedRequest(final NewSendable request) {
@@ -234,7 +283,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	private void sendInMessage(final NewSendable response) {
 		final NewMessage msg = new NewMessage();
 		msg.setSessionId(response.sessionId);
-		msg.addSendable(response);
+		msg.sendables.append(sendableProvider.getListNode(response));
 		SessionManager.instance.sendMessage(msg);
 	}
 

@@ -59,6 +59,10 @@ public class Player extends SharedGameActor {
 		return entity;
 	}
 
+	public int getEntityUid() {
+		return entity.getUid();
+	}
+
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		dispatchEvent(event);

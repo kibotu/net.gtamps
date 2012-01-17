@@ -12,9 +12,7 @@ import net.gtamps.android.renderer.graph.scene.primitives.Sprite;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.state.State;
 import net.gtamps.shared.serializer.ConnectionManager;
-import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.MessageFactory;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 
@@ -60,7 +58,7 @@ public class Hud extends BasicScene implements InputEventListener {
         setDirtyFlag();
     }
 
-    private Message message;
+    private NewMessage message;
 
     @Override
     public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
@@ -73,9 +71,14 @@ public class Hud extends BasicScene implements InputEventListener {
 //			sendableType.equals(SendableType.ACTION_SHOOT) 
 //
 //		) {
-        message = MessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
-        message.addSendable(new Sendable(sendableType, data));
-        ConnectionManager.INSTANCE.add(message);
+        
+
+        //TODO use SendableFactory
+//        message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+//        message.addSendable(new NewSendable(sendableType, data));
+//        ConnectionManager.INSTANCE.add(message);
+        
+        
 //		}
     }
 

@@ -9,18 +9,21 @@ import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.GameobjectStore;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.ConnectionManager;
-import net.gtamps.shared.serializer.communication.MessageFactory;
 import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableFactory;
 import net.gtamps.shared.serializer.communication.StringConstants;
 import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.ListNode;
 import net.gtamps.shared.serializer.communication.data.PlayerData;
+import net.gtamps.shared.serializer.communication.data.SendableDataConverter;
 import net.gtamps.shared.serializer.communication.data.Value;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class MessageHandler {
 
 	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
+	private GameobjectStore store = new GameobjectStore();
     private ConnectionManager connection;
     private World world;
 
@@ -43,38 +47,29 @@ public class MessageHandler {
 
         switch (sendable.type) {
             case GETUPDATE_OK:
-
                 // empty
                 if (sendable.data == null)
                     break;
 
                 // update revision id
-                
                 DataMap updateData = (DataMap) sendable.data;
                 connection.currentRevId = ((Value<Long>)updateData.get(StringConstants.UPDATE_REVSION)).get();
 
                 // parse all transmitted entities
-                List<GameObject> gameObjects = updateData.gameObjects;
-                Logger.d(this, "GameObject amount: " + gameObjects.size());
-                int keepTrackOfOrder = 0;
-                for (int i = 0; i < gameObjects.size(); i++) {
+                ListNode<DataMap> entities = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_ENTITIES));
+                for (DataMap emap: entities) {
+                	int uid = SendableDataConverter.getGameObjectUid(emap);
+                	Entity e = store.getEntity(uid);
+                	SendableDataConverter.updateGameobject(e, emap);
+                	updateOrCreateEntity(e);
+                }
 
-                    GameObject go = gameObjects.get(i);
-
-                    if (go instanceof GameEvent) {
-
-                        handleEvent((GameEvent) go);
-                        keepTrackOfOrder = 2;
-
-                    } else if (go instanceof Entity) {
-                        if (keepTrackOfOrder == 2)
-                            Logger.E(this, "Server entity after game event. GameEvent fired on empty entities.");
-                        keepTrackOfOrder = 1;
-
-                        updateOrCreateEntity((Entity) go);
-                    } else {
-                        Logger.d(this, "NOT HANDLED UPDATE -> " + go);
-                    }
+                ListNode<DataMap> events = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_GAMEEVENTS));
+                for (DataMap emap: events) {
+                	int uid = SendableDataConverter.getGameObjectUid(emap);
+                	GameEvent e = store.getGameEvent(uid);
+                	SendableDataConverter.updateGameobject(e, emap);
+                	handleEvent(e);
                 }
                 break;
 
@@ -93,16 +88,19 @@ public class MessageHandler {
                     break;
 
                 // not player data
-                if (!(sendable.data instanceof PlayerData)) break;
-                Player player = ((PlayerData) sendable.data).player;
+                DataMap pmap = ((DataMap) sendable.data).get(StringConstants.PLAYER_DATA);
+                
+                Player player = store.getPlayer(SendableDataConverter.getGameObjectUid(pmap));
+                SendableDataConverter.updateGameobject(player, pmap);
+                
                 world.playerManager.setActivePlayer(player);
 
-                updateOrCreateEntity(player.getEntity());
+                updateOrCreateEntity(store.getEntity(player.getEntityUid()));
 
                 Logger.D(this, "GETPLAYER_OK " + player);
 
                 // get update
-                connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
+                connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
                 break;
 
             case GETPLAYER_NEED:
@@ -115,7 +113,7 @@ public class MessageHandler {
 
             case SESSION_OK:
                 connection.currentSessionId = message.getSessionId();
-                connection.add(MessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
                 break;
             case SESSION_NEED:
                 break;
@@ -126,7 +124,7 @@ public class MessageHandler {
                 break;
 
             case JOIN_OK:
-                connection.add(MessageFactory.createGetPlayerRequest());
+                connection.add(NewMessageFactory.createGetPlayerRequest());
                 break;
             case JOIN_NEED:
                 break;
@@ -157,19 +155,19 @@ public class MessageHandler {
                 break;
 
             case LOGIN_OK:
-                connection.add(MessageFactory.createJoinRequest());
+                connection.add(NewMessageFactory.createJoinRequest());
                 break;
             case LOGIN_NEED:
                 break;
             case LOGIN_BAD:
-                connection.add(MessageFactory.createRegisterRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                connection.add(NewMessageFactory.createRegisterRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
                 break;
             case LOGIN_ERROR:
                 Logger.toast(this, "LOGIN_ERROR: most likely password or username wrong.");
                 break;
 
             case REGISTER_OK:
-                connection.add(MessageFactory.createJoinRequest());
+                connection.add(NewMessageFactory.createJoinRequest());
                 break;
             case REGISTER_NEED:
                 break;

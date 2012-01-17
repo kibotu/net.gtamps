@@ -22,7 +22,15 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
 import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.StringConstants;
+import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.ListNode;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
+import net.gtamps.shared.serializer.communication.data.SendableDataConverter;
+import net.gtamps.shared.serializer.communication.data.Value;
 
 
 /**
@@ -50,6 +58,7 @@ public class Game implements IGame, Runnable {
 	private final Universe universe;
 	private final PlayerManagerFacade playerStorage;
 	private final TimeKeeper gameTime;
+	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	public Game(final String mapPath) {
 		id = ++Game.instanceCounter;
@@ -290,7 +299,14 @@ public class Game implements IGame, Runnable {
 		final Player player = playerStorage.joinUser(user);
 		if (player == null) {
 			final NewSendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
-			joinError.data = new StringData("no spawnpoint found");
+			final Value<String> errorMessage = new Value<String>("no spawnpoint found");
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+			joinError.data = errorData;
+
+			new Value<String>("no spawnpoint found");
 			return joinError;
 		}
 		SessionManager.instance.joinSession(sendable.sessionId, this);
@@ -313,10 +329,14 @@ public class Game implements IGame, Runnable {
 			return request.createResponse(SendableType.GETPLAYER_NEED);
 		}
 		final NewSendable response = request.createResponse(SendableType.GETPLAYER_OK);
-		response.data = new PlayerData(player);
+
+		final DataMap playerData = new DataMap();
+		final DataMap playerMap = SendableDataConverter.toSendableData(player, sendableProvider);
+
+
+		//				response.data = new PlayerData(player);
 		return response;
 	}
-
 
 	private NewSendable getUpdate(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.GETUPDATE);
@@ -325,15 +345,24 @@ public class Game implements IGame, Runnable {
 		if (player == null) {
 			return sendable.createResponse(SendableType.GETPLAYER_NEED);
 		}
-		final long baseRevision = ((RevisionData) sendable.data).revisionId;
+		final long baseRevision = ((Value<Long>)((DataMap) sendable.data).get(StringConstants.UPDATE_REVISION)).get();
 		final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
 		final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
-		final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
-		update.gameObjects = new ArrayList<GameObject>();
-		update.gameObjects.addAll(entities);
-		update.gameObjects.addAll(events);
+
+		final ListNode<DataMap> entityNodes = SendableDataConverter.toSendableData(entities, sendableProvider);
+		final ListNode<DataMap> eventNodes = SendableDataConverter.toSendableData(events, sendableProvider);
+
+		final DataMap updateData = new DataMap();
+		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, universe.getRevision());
+		final MapEntry<ListNode<DataMap>> entEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_ENTITIES, entityNodes);
+		final MapEntry<ListNode<DataMap>> evtEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_GAMEEVENTS, eventNodes);
+		updateData.add(revEntry);
+		updateData.add(entEntry);
+		updateData.add(evtEntry);
+
+
 		final NewSendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
-		updateResponse.data = update;
+		updateResponse.data = updateData;
 		return updateResponse;
 	}
 
