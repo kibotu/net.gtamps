@@ -1,5 +1,6 @@
 package net.gtamps.shared.game;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.gtamps.shared.game.entity.Entity;
@@ -14,8 +15,8 @@ import net.gtamps.shared.game.player.Player;
  */
 public class GameobjectStore {
 
-	Map<Class<?>, GameObjectCache<?>> caches;
-	Map<Integer, GameObject> active;
+	Map<Class, GameObjectCache> caches = new HashMap<Class, GameObjectCache>();
+	Map<Integer, GameObject> active = new HashMap<Integer, GameObject>();
 
 	public GameobjectStore() {
 		initCache(Entity.class);

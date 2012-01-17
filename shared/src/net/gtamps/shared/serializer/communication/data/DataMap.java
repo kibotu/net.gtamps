@@ -13,8 +13,8 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 
 	private final MapEntry<?>[] table = new MapEntry[MAX_CAPACITY];
 	private int load = 0;
-	private int iteratorPosition = 0;
-	private final Iterator<MapEntry<?>> iterator = new Iterator<MapEntry<?>>() {
+	private transient int iteratorPosition = 0;
+	private final transient Iterator<MapEntry<?>> iterator = new Iterator<MapEntry<?>>() {
 
 		@Override
 		public boolean hasNext() {
@@ -129,10 +129,5 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 			table[i].recycle();
 		}
 	}
-	
-	public class EOF{
-		//Fake class for Binary Object Serializer
-	}
-
 
 }

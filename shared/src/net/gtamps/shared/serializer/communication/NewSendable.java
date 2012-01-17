@@ -60,7 +60,7 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 	@Override
 	public String toString() {
-		return String.format("%s (%d) [%s]", type.toString(), id, data != null ? data.toString() : "");
+		return String.format("%s (%d) [%s]", type != null ? type.toString() : "no type", id, data != null ? data.toString() : "");
 	}
 
 	private static int createId() {

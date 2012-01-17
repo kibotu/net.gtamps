@@ -9,7 +9,7 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 	private static final String ERROR_CACHE_UNDEFINED_MSG = "'cache' must not be 'null': call setCache(IObjectCache) first";
 	private static final long serialVersionUID = 7512510685123238578L;
 
-	IObjectCache<Type> cache = null;
+	transient IObjectCache<Type> cache = null;
 
 	protected AbstractSendable() {
 	}

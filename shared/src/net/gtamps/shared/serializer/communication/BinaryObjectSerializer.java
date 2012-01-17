@@ -37,9 +37,9 @@ public class BinaryObjectSerializer implements ISerializer {
 			ListNode.class, // 9
 			Value.class, // 10
 			Byte.class, // 11
-			DataMap.EOF.class, //12
-			ListNode.EOF.class, //13
-			ListNode.Header.class, //14
+			DataMapEOF.class, //12
+			ListNodeEOF.class, //13
+			ListNodeHeader.class, //14
 			MapEntry.class //15
 	};
 
@@ -258,7 +258,7 @@ public class BinaryObjectSerializer implements ISerializer {
 			dm.add(me);
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
-		if(classByte[b] != DataMap.EOF.class){
+		if(classByte[b] != DataMapEOF.class){
 			throw new SendableSerializationException("DataMap ended unexpectedly with byte "+b+" at position "+pd.pos());
 		}
 		return dm;
@@ -275,7 +275,7 @@ public class BinaryObjectSerializer implements ISerializer {
 			BinaryConverter.writeStringToBytes(me.key(), bytes, ps2);
 			serialzeAbstractSendable(me.value(), bytes, ps2);
 		}
-		BinaryConverter.writeByteToBytes(classByteLookup.get(DataMap.EOF.class), bytes, ps2);
+		BinaryConverter.writeByteToBytes(classByteLookup.get(DataMapEOF.class), bytes, ps2);
 	}
 
 	protected ListNode<? extends AbstractSendable<?>> deserializeListNode(final byte[] bytes, final ArrayPointer pd) {
@@ -294,13 +294,13 @@ public class BinaryObjectSerializer implements ISerializer {
 		final ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
 
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
-		while (classByte[b] == ListNode.Header.class){		
+		while (classByte[b] == ListNodeHeader.class){		
 			System.out.println(b);
 			rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes,pd)));
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
 
-		if(classByte[b] != ListNode.EOF.class){
+		if(classByte[b] != ListNodeEOF.class){
 			throw new SendableSerializationException("ListNode ended unexpectedly with byte "+b+"! That's disgusting.");
 		}
 		return rootNode;
@@ -314,11 +314,20 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		l.resetIterator();
 		for (final AbstractSendable<?> as : l) {
-			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.Header.class), bytes, p);
+			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNodeHeader.class), bytes, p);
 			serialzeAbstractSendable(as, bytes, p);
 		}
-		BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.EOF.class), bytes, p);
+		BinaryConverter.writeByteToBytes(classByteLookup.get(ListNodeEOF.class), bytes, p);
 	}
 
+	public class DataMapEOF{
+		//Fake class for Binary Object Serializer
+	}
+	public class ListNodeEOF {
+		//Fake class for serialization
+	}
+	public class ListNodeHeader {
+
+	}
 
 }
