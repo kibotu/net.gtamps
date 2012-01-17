@@ -15,6 +15,7 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageDeserializationException;
+import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.Sendable;
 import net.gtamps.shared.serializer.communication.SendableSerializationException;
 import net.gtamps.shared.serializer.communication.SendableType;
@@ -302,6 +303,18 @@ public class ManualTypeSerializer implements ISerializer {
 	private Propertay getProperty(final Scanner scanner) {
 		//TODO
 		return null;
+	}
+
+	@Override
+	public byte[] serializeMessage(final NewMessage m) {
+		//TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NewMessage deserializeNewMessage(final byte[] bytes) {
+		//TODO
+		throw new UnsupportedOperationException();
 	}
 
 
