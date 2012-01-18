@@ -8,6 +8,7 @@ import net.gtamps.shared.game.event.GameEvent;
 public class Player extends SharedGameActor {
 	private static final long serialVersionUID = -8070689911091703487L;
 
+	@Deprecated
 	private Entity entity;
 
 	public Player() {

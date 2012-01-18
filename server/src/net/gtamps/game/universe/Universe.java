@@ -127,5 +127,8 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 		dispatchEvent(event);
 
 	}
+	public Entity getEntity(final int uid) {
+		return entityManager.getEntity(uid);
+	}
 
 }
