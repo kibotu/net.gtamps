@@ -12,7 +12,7 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
-public class HealthHandler extends ServersideHandler {
+public class HealthHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
 
 	private final IProperty<Boolean> isAlive;

@@ -18,7 +18,7 @@ import net.gtamps.shared.game.handler.Handler;
  *
  * @author jan, tom, til
  */
-public class SensorHandler extends ServersideHandler {
+public class SensorHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
 
 	private static EventType[] sendsUp = {};
