@@ -129,6 +129,9 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	private void ensureIteratorReset() {
+		if (iterator == null) {
+			iterator = new ListNodeIterator<T>(this);
+		}
 		if (!iterator.isReset()) {
 			throw new IllegalStateException(errorIteratorNotResetMsg);
 		}
