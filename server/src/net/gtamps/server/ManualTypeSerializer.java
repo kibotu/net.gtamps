@@ -1,79 +1,72 @@
 package net.gtamps.server;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
-import net.gtamps.shared.game.GameObject;
-import net.gtamps.shared.game.IProperty;
-import net.gtamps.shared.game.Propertay;
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.serializer.communication.AbstractSendable;
 import net.gtamps.shared.serializer.communication.ISerializer;
-import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageDeserializationException;
 import net.gtamps.shared.serializer.communication.NewMessage;
-import net.gtamps.shared.serializer.communication.Sendable;
-import net.gtamps.shared.serializer.communication.SendableSerializationException;
+import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.AuthentificationData;
-import net.gtamps.shared.serializer.communication.data.ISendableData;
-import net.gtamps.shared.serializer.communication.data.PlayerData;
-import net.gtamps.shared.serializer.communication.data.RevisionData;
-import net.gtamps.shared.serializer.communication.data.StringData;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
+import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
+import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.ListNode;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
+import net.gtamps.shared.serializer.communication.data.Value;
 
 import org.jetbrains.annotations.NotNull;
 
 
 /**
- * $message 	= M $sessionId ($sendable)*
+ * $message 	= M $sessionId [($sendable , )*]
  * $sessionId 	= _String_
  * $sendable 	= SEND $sendId $sendType ($sendData)?
  * $sendId 		= _Integer_
  * $sendType 	= _SendableType.name()_
- * $sendData 	= $AuthData | $StringData | $RevData | $UpdateData
- * $AuthData 	= _String_ _String_
- * $StringData 	= _String_
- * $RevData		= $revisionId
- * $UpdateData 	= $revisionId ($entity)*
- * $revisionId 	= _Long_
- * $entity 		= ENTITY $uid $name ($property)*
- * $uid			= _Integer_
- * $name		= _String_
- * $property	= $intProp
- * $intProp		= PROP INT $name _Integer_
+ * $sendData 	= $message | $sendable | $list | $datamap | $mapentry | $value
+ * $list		= [ ($sendData , )* ]
+ * $datamap		= { ($mapentry ; )* }
+ * $mapentry	= _String_ : $sendData
+ * $value		= _String_ | _Integer_ | _Long_ | _Float_ | _Boolean_
  *
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  */
 public class ManualTypeSerializer implements ISerializer {
+
+	private static final String NULL_VALUE_TOKEN = "__NULL__";
+
 	private static final LogType TAG = LogType.SERVER;
 
-	public static String DELIMITER = " ";
+	static final  String DELIMITER = " ";
 
-	public static String MESSAGE = "M";
-	public static String SENDABLE = "SEND";
-	public static String ENTITY = "ENTITY";
-	public static String EVENT = "EVENT";
-	public static String EVENT_SOURCE = "SRC";
-	public static String EVENT_TARGET = "TGT";
-	public static String EVENT_VALUE = "VAL";
-	public static String PROPERTY = "PROP";
-	public static String INTEGER = "INT";
+	static final String MESSAGE_START_TOKEN = "M";
+	static final String SENDABLE_START_TOKEN = "SEND";
+
+	static final String LIST_SEPARATOR_TOKEN = ",";
+	static final String LIST_END_TOKEN = "]";
+	static final String LIST_START_TOKEN = "[";
+
+	static final String DATAMAP_END_TOKEN = "}";
+	static final String DATAMAP_START_TOKEN = "{";
+
+	static final String MAPENTRY_SEPARATOR_TOKEN = ";";
+	static final String MAPENTRY_DEFINITION_TOKEN = ":";
+
+	// TODO inject
+	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	@Override
-	public byte[] serializeMessage(@NotNull final Message message) {
+	public byte[] serializeNewMessage(@NotNull final NewMessage message) {
 		GUILogger.getInstance().log(TAG, "serializing message: " + message);
 		final StringBuilder bld = new StringBuilder();
-		addToken(bld, MESSAGE);
-		final String sessId = message.getSessionId();
-		addToken(bld, (sessId == null || sessId.length() == 0) ? "" : sessId);
-		for (final Sendable s : message.sendables) {
-			serializeSendable(bld, s);
-		}
+		serializeAbstractSendable(bld, message);
 		return bld.toString().getBytes();
 	}
 
@@ -81,180 +74,180 @@ public class ManualTypeSerializer implements ISerializer {
 		bld.append(token + DELIMITER);
 	}
 
-	private void serializeSendable(final StringBuilder bld, final Sendable s) {
-		addToken(bld, SENDABLE);
+	private <T extends AbstractSendable<T>>void serializeAbstractSendable(final StringBuilder bld, final AbstractSendable<T> sdb) {
+		if (sdb instanceof NewMessage) {
+			serializeMessage(bld, (NewMessage) sdb);
+		} else if (sdb instanceof NewSendable) {
+			serializeSendable(bld, (NewSendable) sdb);
+		} else if (sdb instanceof Value) {
+			serializeValue(bld, (Value<?>) sdb);
+		} else if (sdb instanceof ListNode) {
+			serializeList(bld, (ListNode<?>) sdb);
+		} else if (sdb instanceof DataMap) {
+			serializeDataMap(bld, (DataMap) sdb);
+		} else if (sdb instanceof MapEntry) {
+			serializeMapEntry(bld, (MapEntry<?>) sdb);
+		} else {
+			throw new IllegalArgumentException("unknown type: " + sdb.getClass().getCanonicalName());
+		}
+	}
+
+	private void serializeMessage(final StringBuilder bld, final NewMessage message) {
+		addToken(bld, MESSAGE_START_TOKEN);
+		final String sessId = message.getSessionId();
+		addToken(bld, (sessId == null || sessId.length() == 0) ? "" : sessId);
+		serializeAbstractSendable(bld, message.sendables);
+	}
+
+	private void serializeSendable(final StringBuilder bld, final NewSendable s) {
+		addToken(bld, SENDABLE_START_TOKEN);
 		addToken(bld, Integer.toString(s.id));
 		addToken(bld, s.type.name());
-		switch (s.type) {
-		case GETUPDATE:
-			addToken(bld, Long.toString(((RevisionData) s.data).revisionId));
-			break;
+		serializeAbstractSendable(bld, s.data);
+	}
 
-		case GETUPDATE_OK:
-			final UpdateData udata = (UpdateData) s.data;
-			addToken(bld, Long.toString(udata.revId));
-			serializeUpdateData(bld, udata);
-			break;
-
-		case GETPLAYER_OK:
-			final PlayerData pdata = (PlayerData) s.data;
-			addToken(bld, pdata.toString());
-			break;
-
-		case LOGIN:
-			final AuthentificationData data = (AuthentificationData) s.data;
-			addToken(bld, data.username);
-			addToken(bld, data.password);
-			break;
-
-		case REGISTER:
-			final AuthentificationData adata = (AuthentificationData) s.data;
-			addToken(bld, adata.username);
-			addToken(bld, adata.password);
-			break;
-
-		case SESSION_OK:
-		case BAD_SENDABLE:
-			final StringData sdata = (StringData) s.data;
-			if (sdata != null) {
-				addToken(bld, sdata.value);
-			}
-			break;
-		default:
-			if (s.data != null) {
-				addToken(bld, s.data.toString());
-			}
-			break;
+	private <T extends AbstractSendable<T>>void serializeList(final StringBuilder bld, final ListNode<T> sdb) {
+		addToken(bld, LIST_START_TOKEN);
+		sdb.resetIterator();
+		for (final T element: sdb) {
+			serializeAbstractSendable(bld, element);
+			addToken(bld, LIST_SEPARATOR_TOKEN);
 		}
+		addToken(bld, LIST_END_TOKEN);
 	}
 
-	private void serializeUpdateData(final StringBuilder bld, final UpdateData udata) {
-		for (final GameObject e : udata.gameObjects) {
-			//TODO other cases
-			addToken(bld, ">>>");
-			if (e instanceof Entity) {
-				addToken(bld, ENTITY);
-				addToken(bld, Integer.toString(e.getUid()));
-				addToken(bld, e.getName());
-				for (final IProperty<?> p : e.getAllProperties()) {
-					serializeProperty(bld, p);
-				}
-			} else if (e instanceof GameEvent) {
-				final GameEvent event = (GameEvent) e;
-				addToken(bld, EVENT);
-				addToken(bld, event.getType().name());
-				addToken(bld, Integer.toString(e.getUid()));
-				addToken(bld, EVENT_SOURCE);
-				addToken(bld, Integer.toString(event.getSourceUid()));
-				addToken(bld, EVENT_TARGET);
-				addToken(bld, Integer.toString(event.getTargetUid()));
-				//TODO
-			} else {
-				addToken(bld, "!!!!!!!!UNKNOWN GAMEOBJECT!!!!");
-				addToken(bld, e.getName());
-				addToken(bld, Integer.toString(e.getUid()));
-				addToken(bld, e.toString());
-			}
-
+	private void serializeDataMap(final StringBuilder bld, final DataMap sdb) {
+		addToken(bld, DATAMAP_START_TOKEN);
+		sdb.resetIterator();
+		for (final MapEntry<?> entry: sdb) {
+			serializeMapEntry(bld, entry);
+			addToken(bld, MAPENTRY_SEPARATOR_TOKEN);
 		}
+		addToken(bld, DATAMAP_END_TOKEN);
 	}
 
-	private void serializeProperty(final StringBuilder bld, final IProperty<?> p) {
-		//    	if (p instanceof IntProperty) {
-		//    		final IntProperty ip = (IntProperty)p;
-		//    		addToken(bld, PROPERTY);
-		//    		addToken(bld, INTEGER);
-		//    		addToken(bld, ip.getName());
-		//    		addToken(bld, Integer.toString(ip.value()));
-		//    	} else {
-		//    		// error
-		//    	}
-		final String typeName = p.value().getClass().getSimpleName();
-		addToken(bld, PROPERTY);
-		addToken(bld, typeName);
-		addToken(bld, p.getName());
-		addToken(bld, p.getAsString());
+	private void serializeValue(final StringBuilder bld, final Value<?> sdb) {
+		addToken(bld, sdb.get().toString());
 	}
+
+	private void serializeMapEntry(final StringBuilder bld, final MapEntry<?> sdb) {
+		addToken(bld, sdb.key());
+		addToken(bld, MAPENTRY_DEFINITION_TOKEN);
+		serializeAbstractSendable(bld, (AbstractSendableData<?>)sdb.value());
+	}
+
 
 	@Override
-	public Message deserializeMessage(@NotNull final byte[] bytes)
+	public NewMessage deserializeNewMessage(@NotNull final byte[] bytes)
 			throws MessageDeserializationException {
 		final String msgString = new String(bytes);
-		GUILogger.getInstance().log(TAG, "deserializing message: " + msgString);
-		final Message m = new Message();
 		final Scanner scanner = new Scanner(msgString);
 		try {
-			scanner.next(MESSAGE);
-			final String sessId = scanner.next();
-			m.setSessionId(sessId);
-			while (scanner.hasNext(SENDABLE)) {
-				scanner.next();
-				final Sendable s = getSendable(scanner);
-				s.sessionId = sessId;
-				m.addSendable(s);
-			}
-			GUILogger.getInstance().log(TAG, "finished deserializing message: " + m);
+			final NewMessage msg = deserializeMessage(scanner);
+			return msg;
 		} catch (final InputMismatchException e) {
 			throw new MessageDeserializationException(e);
 		} catch (final NoSuchElementException e) {
 			throw new MessageDeserializationException(e);
-		} catch (final SendableSerializationException e) {
-			GUILogger.getInstance().log(TAG, "MessageDeserializationException");
-			throw new MessageDeserializationException(e);
 		}
-		return m;
 	}
 
-	private Sendable getSendable(final Scanner scanner) {
-		Sendable s = null;
-		Integer id = null;
-		SendableType type = null;
-		ISendableData data = null;
-		try {
-			try {
-				id = scanner.nextInt();
-				final String typeString = scanner.next();
-				type = SendableType.valueOf(typeString);
-				switch (type) {
-				case ACTION_ACCELERATE:
-				case ACTION_DECELERATE:
-				case ACTION_ENTEREXIT:
-				case ACTION_HANDBRAKE:
-				case ACTION_LEFT:
-				case ACTION_RIGHT:
-				case ACTION_SHOOT:
-					break;
-				case REGISTER:
-				case LOGIN:
-					data = getAuthData(scanner);
-					break;
-				case SESSION_OK:
-					data = getStringData(scanner);
-					break;
-				case GETUPDATE:
-					data = getRevisionData(scanner);
-					break;
-				case GETUPDATE_OK:
-					data = getUpdateData(scanner);
-					break;
-				}
-				s = new Sendable(type, id, data);
-			} catch (final InputMismatchException e) {
-				throw new SendableSerializationException(e.getMessage(), e);
-			} catch (final NoSuchElementException e) {
-				throw new SendableSerializationException(e.getMessage(), e);
-			} catch (final IllegalArgumentException e) {
-				throw new SendableSerializationException(e.getMessage(), e);
-			}
-		} catch (final SendableSerializationException e) {
-			id = (id == null) ? -1 : id;
-			s = new Sendable(SendableType.BAD_SENDABLE, id, null);
-			s.data = new StringData(e.getMessage());
-			GUILogger.getInstance().log(TAG, e.getCause().toString());
-			System.err.println(e.getCause().toString());
-			proceedToNext(scanner, SENDABLE);
+	private AbstractSendable<?> deserializeAbstractSendable(final Scanner scanner) {
+		AbstractSendable<?> sendable = null;
+		if (isNextToken(scanner, DATAMAP_START_TOKEN)) {
+			sendable = deserializeDataMap(scanner);
+		} else if (isNextToken(scanner, LIST_START_TOKEN)) {
+			sendable = deserializeList(scanner);
+		} else if (isNextToken(scanner, SENDABLE_START_TOKEN)) {
+			sendable = deserializeSendable(scanner);
+		} else if (isNextToken(scanner, MESSAGE_START_TOKEN)) {
+			sendable = deserializeMessage(scanner);
+		} else {
+			sendable = deserializeValue(scanner);
 		}
-		return s;
+		return sendable;
+	}
+
+	private Value<?> deserializeValue(final Scanner scanner) {
+		Value<?> value;
+		if (scanner.hasNextInt()) {
+			value = sendableProvider.getValue(scanner.nextInt());
+		} else if (scanner.hasNextLong()) {
+			value = sendableProvider.getValue(scanner.nextLong());
+		} else if (scanner.hasNextFloat()) {
+			value = sendableProvider.getValue(scanner.nextFloat());
+		} else if (scanner.hasNextBoolean()) {
+			value = sendableProvider.getValue(scanner.nextBoolean());
+		} else 	if (isNextToken(scanner, NULL_VALUE_TOKEN)) {
+			scanner.next();
+			value = null;
+		} else {
+			value = sendableProvider.getValue(scanner.next());
+		}
+		return value;
+	}
+
+	private NewMessage deserializeMessage(final Scanner scanner) {
+		nextToken(scanner, MESSAGE_START_TOKEN);
+		final NewMessage msg = sendableProvider.getMessage();
+		final String sessionId = scanner.next();
+		msg.setSessionId(sessionId);
+		msg.sendables = deserializeList(scanner);
+		return msg;
+	}
+
+	private NewSendable deserializeSendable(final Scanner scanner) {
+		nextToken(scanner, SENDABLE_START_TOKEN);
+		final NewSendable sendable = sendableProvider.getSendable();
+		sendable.id = scanner.nextInt();
+		sendable.type = SendableType.valueOf(scanner.next());
+		sendable.data = (AbstractSendableData<?>) deserializeAbstractSendable(scanner);
+		return sendable;
+	}
+
+	private DataMap deserializeDataMap(final Scanner scanner) {
+		nextToken(scanner, DATAMAP_START_TOKEN);
+		final DataMap map = sendableProvider.getDataMap();
+		while (!isNextToken(scanner, DATAMAP_END_TOKEN)) {
+			final MapEntry<?> entry = deserializeMapEntry(scanner);
+			map.add(entry);
+			nextToken(scanner, MAPENTRY_SEPARATOR_TOKEN);
+		}
+		nextToken(scanner, DATAMAP_END_TOKEN);
+		return map;
+	}
+
+	private MapEntry<?> deserializeMapEntry(final Scanner scanner) {
+		final String key = scanner.next();
+		nextToken(scanner, MAPENTRY_DEFINITION_TOKEN);
+		final AbstractSendableData<?> value = (AbstractSendableData<?>) deserializeAbstractSendable(scanner);
+		return sendableProvider.getMapEntry(key, value);
+	}
+
+	private <T extends AbstractSendable<T>> ListNode<T> deserializeList(final Scanner scanner) {
+		ListNode<T> list = ListNode.emptyList();
+		nextToken(scanner, LIST_START_TOKEN);
+		while(!isNextToken(scanner, LIST_END_TOKEN)) {
+			final T content = (T) deserializeAbstractSendable(scanner);
+			list = list.append(sendableProvider.getListNode(content));
+			if (isNextToken(scanner, LIST_SEPARATOR_TOKEN)) {
+				nextToken(scanner, LIST_SEPARATOR_TOKEN);
+			}
+		}
+		nextToken(scanner, LIST_END_TOKEN);
+		return list;
+	}
+
+	private String nextToken(final Scanner scanner, final String string) {
+		return scanner.next(toPattern(string));
+	}
+
+	private boolean isNextToken(final Scanner scanner, final String string) {
+		return scanner.hasNext(toPattern(string));
+	}
+
+	private Pattern toPattern(final String s) {
+		return Pattern.compile(Pattern.quote(s));
 	}
 
 	private void proceedToNext(final Scanner scanner, final String pattern) {
@@ -262,61 +255,5 @@ public class ManualTypeSerializer implements ISerializer {
 			scanner.next();
 		}
 	}
-
-	private ISendableData getAuthData(final Scanner scanner) {
-		final String name = scanner.next();
-		final String pw = scanner.next();
-		final AuthentificationData data = new AuthentificationData(name, pw);
-		return data;
-	}
-
-	private ISendableData getStringData(final Scanner scanner) {
-		final StringData data = new StringData(scanner.next());
-		return data;
-	}
-
-	private ISendableData getRevisionData(final Scanner scanner) {
-		final long revId = scanner.nextLong();
-		final RevisionData data = new RevisionData(revId);
-		return data;
-	}
-
-	private ISendableData getUpdateData(final Scanner scanner) {
-		final long revId = scanner.nextLong();
-		final UpdateData data = new UpdateData(0, revId);
-		Entity entity = getEntity(scanner);
-		//TODO
-		final ArrayList<GameObject> entities = new ArrayList<GameObject>();
-		while (entity != null) {
-			entities.add(entity);
-			entity = getEntity(scanner);
-		}
-		data.gameObjects = entities;
-		return data;
-	}
-
-	private Entity getEntity(final Scanner scanner) {
-		//TODO
-		return null;
-	}
-
-	private Propertay getProperty(final Scanner scanner) {
-		//TODO
-		return null;
-	}
-
-
-	@Override
-	public NewMessage deserializeNewMessage(final byte[] bytes) {
-		//TODO
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public byte[] serializeNewMessage(final NewMessage m) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
 
 }

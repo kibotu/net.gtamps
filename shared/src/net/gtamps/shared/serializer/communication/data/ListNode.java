@@ -26,7 +26,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		resetIterator();
 	}
 
-	ListNode(final T value) {
+	public ListNode(final T value) {
 		this();
 		set(value);
 	}

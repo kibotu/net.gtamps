@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import net.gtamps.shared.serializer.communication.AbstractSendable;
+
 
 public final class DataMap extends AbstractSendableData<DataMap> implements Iterable<MapEntry<?>> {
 
@@ -49,6 +51,46 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 		}
 		table[load++] = entry;
 		return this;
+	}
+
+	public DataMap getMap(final String key) throws NoSuchElementException {
+		final AbstractSendableData<?> element = get(key);
+		if (!(element instanceof DataMap)) {
+			throw new NoSuchElementException("wrong element type: " + element.getClass().getCanonicalName());
+		}
+		return (DataMap) element;
+	}
+
+	public <T extends AbstractSendable<T>> ListNode<T> getList(final String key) throws NoSuchElementException {
+		final AbstractSendableData<?> element = get(key);
+		if (!(element instanceof ListNode)) {
+			throw new NoSuchElementException("wrong element type: " + element.getClass().getCanonicalName());
+		}
+		return (ListNode<T>) element;
+	}
+
+	public long getLong(final String key) throws NoSuchElementException {
+		return getValue(key, Long.class);
+	}
+
+	public int getInt(final String key) throws NoSuchElementException {
+		return getValue(key, Integer.class);
+	}
+
+	public boolean getBoolean(final String key) throws NoSuchElementException {
+		return getValue(key, Boolean.class);
+	}
+
+	public String getString(final String key) throws NoSuchElementException {
+		return getValue(key, String.class);
+	}
+
+	private <T> T getValue(final String key, final Class<T> type) throws NoSuchElementException {
+		final AbstractSendableData<?> element = get(key);
+		if (!(element instanceof Value)) {
+			throw new NoSuchElementException("wrong element type: " + element.getClass().getCanonicalName());
+		}
+		return ((Value<T>) element).get();
 	}
 
 	public AbstractSendableData<?> get(final String key) throws NoSuchElementException {

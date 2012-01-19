@@ -9,4 +9,17 @@ public abstract class AbstractSendableData<DataType extends AbstractSendableData
 	AbstractSendableData() {
 		super();
 	}
+
+	public DataMap asMap() {
+		return (DataMap) this;
+	}
+
+	public <T extends AbstractSendable<T>> ListNode<T> asList() {
+		return (ListNode<T>) this;
+	}
+
+	public <T> Value<T> asValue() {
+		return (Value<T>) this;
+	}
+
 }
