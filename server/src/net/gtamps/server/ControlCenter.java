@@ -283,7 +283,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	private void sendInMessage(final NewSendable response) {
 		final NewMessage msg = new NewMessage();
 		msg.setSessionId(response.sessionId);
-		msg.sendables.append(sendableProvider.getListNode(response));
+		msg.sendables = msg.sendables.append(sendableProvider.getListNode(response));
 		SessionManager.instance.sendMessage(msg);
 	}
 

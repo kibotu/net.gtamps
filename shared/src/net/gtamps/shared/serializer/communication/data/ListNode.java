@@ -17,26 +17,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 
 	protected ListNode<T> next;
 	private T value;
-	private transient ListNode<T> iteratorNextElement;
-	private transient final Iterator<T> iterator = new Iterator<T>() {
-		@Override
-		public boolean hasNext() {
-			return !(iteratorNextElement.isEmpty());
-		}
-		@Override
-		public T next() {
-			if (!hasNext()) {
-				throw new NoSuchElementException();
-			}
-			final T value = iteratorNextElement.value;
-			iteratorNextElement = iteratorNextElement.next;
-			return value;
-		}
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	};
+	private transient ListNodeIterator<T> iterator;
 
 	public ListNode() {
 		super();
@@ -117,7 +98,10 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	public void resetIterator() {
-		iteratorNextElement = this;
+		if (iterator == null) {
+			iterator = new ListNodeIterator<T>(this);
+		}
+		iterator.reset();
 	}
 
 	/**
@@ -138,14 +122,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	void unlink() {
-		iteratorNextElement = null;
+		iterator.unlink();
 		value = null;
 		next.unlink();
 		next = null;
 	}
 
 	private void ensureIteratorReset() {
-		if (iteratorNextElement != this) {
+		if (iterator == null) {
+			iterator = new ListNodeIterator<T>(this);
+		}
+		if (!iterator.isReset()) {
 			throw new IllegalStateException(errorIteratorNotResetMsg);
 		}
 	}
@@ -162,6 +149,49 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		}
 		unlink();
 	}
+
+	private static class ListNodeIterator<T extends AbstractSendable<T>>  implements Iterator<T> {
+
+		final ListNode<T> startElement;
+		ListNode<T> iteratorNextElement;
+
+		public ListNodeIterator(final ListNode<T> startElement) {
+			this.startElement = startElement;
+			iteratorNextElement = startElement;
+		}
+
+		public void unlink() {
+			iteratorNextElement = null;
+		}
+
+		public boolean isReset() {
+			return iteratorNextElement == startElement;
+		}
+
+		public void reset() {
+			iteratorNextElement = startElement;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !(iteratorNextElement.isEmpty());
+		}
+		@Override
+		public T next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			final T value = iteratorNextElement.value;
+			iteratorNextElement = iteratorNextElement.next;
+			return value;
+		}
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	};
+
+
 
 	private static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
 

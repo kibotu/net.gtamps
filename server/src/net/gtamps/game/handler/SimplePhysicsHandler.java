@@ -14,7 +14,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-public class SimplePhysicsHandler extends ServersideHandler {
+public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	@SuppressWarnings("unused")
 	private static final LogType TAG = LogType.PHYSICS;
 	private static final EventType[] up = {EventType.ENTITY_COLLIDE, EventType.ENTITY_SENSE, EventType.ENTITY_BULLET_HIT};

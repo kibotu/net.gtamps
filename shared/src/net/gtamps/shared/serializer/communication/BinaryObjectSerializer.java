@@ -291,12 +291,12 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		//read first header
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
-		final ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
+		ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
 
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == ListNodeHeader.class){		
 			System.out.println(b);
-			rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes,pd)));
+			rootNode = rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes,pd)));
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
 

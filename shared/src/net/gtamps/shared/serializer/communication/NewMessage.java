@@ -16,7 +16,7 @@ public class NewMessage extends AbstractSendable<NewMessage> {// extends
 	// @CheckedShareable
 	// public final ArrayList<Sendable> sendables;
 
-	public ListNode<NewSendable> sendables = null;
+	public ListNode<NewSendable> sendables = ListNode.emptyList();
 
 	// public Message(@NotNull final Sendable sendable) {
 	// this();
@@ -32,7 +32,7 @@ public class NewMessage extends AbstractSendable<NewMessage> {// extends
 		if (sendables == null) {
 			sendables = sendable;
 		} else {
-			sendables.append(sendable);
+			sendables = sendables.append(sendable);
 		}
 		return this;
 	}
@@ -44,12 +44,11 @@ public class NewMessage extends AbstractSendable<NewMessage> {// extends
 
 	public void setSessionId(@NotNull final String sessionId) {
 		this.sessionId = sessionId;
-		if (sendables != null) {
-			sendables.resetIterator();
-			for (final NewSendable s : sendables) {
-				s.sessionId = sessionId;
-			}
+		sendables.resetIterator();
+		for (final NewSendable s : sendables) {
+			s.sessionId = sessionId;
 		}
+		sendables.resetIterator();
 	}
 
 	@Override

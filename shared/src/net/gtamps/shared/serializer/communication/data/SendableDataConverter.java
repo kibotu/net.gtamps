@@ -160,11 +160,11 @@ public class SendableDataConverter {
 	}
 
 	private static AbstractSendableData<?> toSendableData(final Iterable<IProperty<?>> properties, final SendableProvider provider) {
-		final ListNode<DataMap> list = new ListNode<DataMap>();
+		ListNode<DataMap> list = new ListNode<DataMap>();
 		for (final IProperty<?> p : properties) {
 			final DataMap data = toSendableData(p, provider);
 			final ListNode<DataMap> newNode = new ListNode<DataMap>(data);
-			list.append(newNode);
+			list = list.append(newNode);
 		}
 		return list.next() == null ? list : list.next();
 	}

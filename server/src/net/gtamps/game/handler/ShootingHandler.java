@@ -8,7 +8,7 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
-public class ShootingHandler extends ServersideHandler {
+public class ShootingHandler extends ServersideHandler<Entity> {
 	private final EventType[] sendsUp = {};
 	private final EventType[] receivesDown = {EventType.ACTION_SHOOT};
 

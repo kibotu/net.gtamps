@@ -55,16 +55,16 @@ public class SendableProviderTest {
 	}
 
 	@Test
-			public void testGetListNode() {
-				System.out.println();
-				final ListNode<Value<String>> ln = sdb.getListNode(sdb.getValue("bla"));
-				System.out.println("ln.value = " + ln.value().get());
-				final ListNode<Value<String>> ln2 = sdb.getListNode(sdb.getValue("blub"));
-				System.out.println("ln2.value = " + ln2.value().get());
-				ln.append(ln2);
-				System.out.println("ln: " + ln);
-				ln.recycle();
-			}
+	public void testGetListNode() {
+		System.out.println();
+		ListNode<Value<String>> ln = sdb.getListNode(sdb.getValue("bla"));
+		System.out.println("ln.value = " + ln.value().get());
+		final ListNode<Value<String>> ln2 = sdb.getListNode(sdb.getValue("blub"));
+		System.out.println("ln2.value = " + ln2.value().get());
+		ln = ln.append(ln2);
+		System.out.println("ln: " + ln);
+		ln.recycle();
+	}
 
 	@Test
 	public void testGetMapEntry() {
