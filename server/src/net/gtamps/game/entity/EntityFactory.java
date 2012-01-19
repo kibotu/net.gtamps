@@ -47,6 +47,8 @@ public class EntityFactory {
 			blup.addHandlerPrototype(new GenericHandlerBlueprint<ShootingHandler>(universe, ShootingHandler.class, Handler.Type.SHOOTING));
 		} else if (normName.equals("BULLET")) {
 			physprop = PhysicalProperties.Bullet;
+		} else if (normName.equals("SPAWNPOINT")) {
+			physprop = PhysicalProperties.Empty;
 		} else {
 			physprop = PhysicalProperties.Empty;
 		}

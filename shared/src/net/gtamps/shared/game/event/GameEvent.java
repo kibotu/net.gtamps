@@ -78,6 +78,7 @@ public class GameEvent extends GameObject {
 		sourceUid.set(source.getUid());
 		targetUid.set(target.getUid());
 		stringValue.set(value);
+		setType(type);
 	}
 
 	public GameEvent(final EventType type, final GameObject source, final GameObject target) {
