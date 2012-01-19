@@ -10,7 +10,8 @@ import org.jbox2d.dynamics.Body;
 public class BodyView extends PhysicsView {
 
 	public static final BodyView createBodyView(final Body body) {
-		if (body.isDynamic()) {
+		// TODO boeser Hack nach '||'
+		if (body.isDynamic() || ((Entity)body.getUserData()).getName().equalsIgnoreCase("spawnpoint")) {
 			return new BodyViewWrapper(body);
 		} else {
 			return new BodyView(body);
