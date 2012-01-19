@@ -1,5 +1,7 @@
 package net.gtamps.shared.game.player;
 
+import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
@@ -10,6 +12,7 @@ public class Player extends SharedGameActor {
 
 	@Deprecated
 	private Entity entity;
+	private final IProperty<Integer> entityUid = useProperty("entityUid", GameObject.INVALID_UID);
 
 	public Player() {
 		super();
@@ -38,6 +41,7 @@ public class Player extends SharedGameActor {
 		}
 		removeEntity();
 		this.entity = entity;
+		entityUid.set(entity.getUid());
 		entity.setOwner(this);
 		//((IncarnationProperty)entity.getProperty(Property.Type.INCARNATION)).setPlayer(this);
 		entity.addEventListener(EventType.ENTITY_EVENT, this);
@@ -54,6 +58,7 @@ public class Player extends SharedGameActor {
 		entity.removeEventListener(EventType.GAME_EVENT, this);
 		this.removeEventListener(EventType.GAME_EVENT, entity);
 		this.entity = null;
+		entityUid.set(GameObject.INVALID_UID);
 	}
 
 	public Entity getEntity() {
@@ -61,7 +66,7 @@ public class Player extends SharedGameActor {
 	}
 
 	public int getEntityUid() {
-		return entity.getUid();
+		return entity != null ? entity.getUid() : entityUid.value();
 	}
 
 	@Override
