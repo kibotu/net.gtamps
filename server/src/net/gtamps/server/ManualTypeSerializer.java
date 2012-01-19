@@ -103,7 +103,9 @@ public class ManualTypeSerializer implements ISerializer {
 		addToken(bld, SENDABLE_START_TOKEN);
 		addToken(bld, Integer.toString(s.id));
 		addToken(bld, s.type.name());
-		serializeAbstractSendable(bld, s.data);
+		if (s.data != null) {
+			serializeAbstractSendable(bld, s.data);
+		}
 	}
 
 	private <T extends AbstractSendable<T>>void serializeList(final StringBuilder bld, final ListNode<T> sdb) {
@@ -170,9 +172,7 @@ public class ManualTypeSerializer implements ISerializer {
 
 	private Value<?> deserializeValue(final Scanner scanner) {
 		Value<?> value;
-		if (scanner.hasNextInt()) {
-			value = sendableProvider.getValue(scanner.nextInt());
-		} else if (scanner.hasNextLong()) {
+		if (scanner.hasNextLong()) {
 			value = sendableProvider.getValue(scanner.nextLong());
 		} else if (scanner.hasNextFloat()) {
 			value = sendableProvider.getValue(scanner.nextFloat());

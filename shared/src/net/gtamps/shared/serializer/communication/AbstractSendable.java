@@ -24,16 +24,13 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 	}
 
 	final void init() throws IllegalStateException {
-		System.out.println("init: " + this.toString());
 		ensureCacheDefined();
 		initHook();
 	}
 
 	public final void recycle() throws IllegalStateException {
-		System.out.println("recycle: " + this.toString());
 		recycleHook();
 		try {
-			System.out.println("  register with cache: " + this.toString());
 			cache.registerElement((Type)this);
 		} catch (final NullPointerException e) {
 			throw new IllegalStateException(ERROR_CACHE_UNDEFINED_MSG, e);

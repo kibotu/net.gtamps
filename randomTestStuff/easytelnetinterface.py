@@ -13,8 +13,39 @@ username = ''
 ip = ''
 automode = False
 
+
+class DataMap:
+	def __init__(self, entries = None):
+		self.entries = []
+		if (entries != None):
+			for (key,val) in entries.items():
+				self.add(MapEntry(key,val))
+	
+	def add(self, entry):
+		self.entries.append(entry)
+	
+	def __str__(self):
+		return '{ ' + ''.join([str(entry) for entry in self.entries]) + ' }'
+			
+class MapEntry:
+	def __init__(self, key, value):
+		self.key = key
+		self.value = value
+	def __str__(self):
+		return self.key + ' : ' + self.value + ' ; '
+		
+class ListNode:
+	def __init__(self, elements = None):
+		self.elements = [] if elements == None else elements
+	
+	def add(self, element):
+		self.elements.append(element)
+		
+	def __str__(self):
+		return ' [ ' + ' , '.join(self.elements) + ' ] '
+
 def sendMessage(sock,sessionid,message,messageid):
-	assembledMSG = 'M '+sessionid+' SEND '+messageid+' '+message+'\n'
+	assembledMSG = 'M '+sessionid+' [ SEND '+messageid+' '+message+' , ]\n'
 	if( not robotmode ):
 		print('SEND: '+assembledMSG)
 	sock.send(bytes(assembledMSG,'utf-8'))
@@ -132,9 +163,9 @@ def main(ip,username,password,robotmode):
 		while(True):
 			#fake switch statement
 			if (a=='l' ):
-				sessionID = sendMessage(s,sessionID,'LOGIN '+username+' '+password,messageID)
+				sessionID = sendMessage(s,sessionID,'LOGIN ' + str(DataMap({'authuser': username, 'authpass': password })),messageID)
 			if (a=='j' ):
-				revisionID = sendMessage(s,sessionID,'GETUPDATE '+revisionID,messageID)
+				revisionID = sendMessage(s,sessionID,'GETUPDATE '+ str(DataMap({'rev': revisionID})),messageID)
 			if (a=='k' ):
 				sendMessage(s,sessionID,'JOIN',messageID)
 			if (a=='h' ):

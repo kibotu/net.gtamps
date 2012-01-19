@@ -345,7 +345,7 @@ public class Game implements IGame, Runnable {
 		if (player == null) {
 			return sendable.createResponse(SendableType.GETPLAYER_NEED);
 		}
-		final long baseRevision = ((Value<Long>)((DataMap) sendable.data).get(StringConstants.UPDATE_REVISION)).get();
+		final long baseRevision = sendable.data.asMap().getLong(StringConstants.UPDATE_REVISION);
 		final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
 		final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
 

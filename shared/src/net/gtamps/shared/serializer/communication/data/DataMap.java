@@ -74,7 +74,7 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 	}
 
 	public int getInt(final String key) throws NoSuchElementException {
-		return getValue(key, Integer.class);
+		return (int)(long) getValue(key, Long.class);
 	}
 
 	public boolean getBoolean(final String key) throws NoSuchElementException {
