@@ -13,6 +13,7 @@ import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.helper.BinaryConverter;
 
 import org.jetbrains.annotations.NotNull;
 import org.xsocket.connection.INonBlockingConnection;
@@ -56,7 +57,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			}
 			// TODO: better solution
 			try {
-				Thread.sleep(20);
+				Thread.sleep(1);
 			} catch (final InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -109,13 +110,15 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	public boolean onData(final INonBlockingConnection nbc) {
 		int read = 0;
 		try {
+			final byte[] msgLen = new byte[4];
+			msgLen[0] = readByte(nbc);
+			msgLen[1] = readByte(nbc);
+			msgLen[2] = readByte(nbc);
+			msgLen[3] = readByte(nbc);
+			read += 4;
 
-			final byte hi = readByte(nbc);
-			final byte lo = readByte(nbc);
-			read += 2;
-
-			final int laenge = (((hi) & 0xff) << 8) + ((lo) & 0xff);
-			//System.out.println("expecting new message: " + laenge );
+			final int laenge = BinaryConverter.readIntFromBytes(msgLen);
+			System.out.println("expecting new message: " + laenge );
 			final byte[] data = new byte[laenge];
 			this.readFully(nbc, data);
 			this.receive(nbc, data);
@@ -168,19 +171,17 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 		if (length < 1) {
 			return;
 		}
-		if (length > 65535) {
-			throw new IllegalArgumentException("bla!");
-		}
-
-		final byte high = (byte) (length >> 8);
-		final byte low = (byte) (length & 0xFF);
+		/*if (length > 65535) {
+			throw new IllegalArgumentException("Overflow: Message exceeds 64K! This is an error message from the 80s!");
+		}*/
+		final byte[] lengthByte = new byte[4];
+		BinaryConverter.writeIntToBytes(length, lengthByte);
 
 		try {
-			nbc.write(high);
-			nbc.write(low);
+			nbc.write(lengthByte);
 			nbc.write(bytes);
 			nbc.flush();
-			System.out.println(length + " + 2 bytes send");
+			System.out.println(length + " + 4 bytes send");
 		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

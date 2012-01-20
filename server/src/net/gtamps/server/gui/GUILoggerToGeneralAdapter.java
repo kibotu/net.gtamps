@@ -1,29 +1,30 @@
 package net.gtamps.server.gui;
 
 import net.gtamps.shared.Utils.ILogger;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GUILoggerToGeneralAdapter implements ILogger {
-	
+
 	private static final LogType DEFAULT_LOGTYPE = LogType.SERVER;
-	
+
 	GUILogger guiLogger;
-	
+
 	public GUILoggerToGeneralAdapter(final GUILogger guiLogger) {
 		if (guiLogger == null) {
 			throw new IllegalArgumentException("'guiLogger' must not be 'null'");
 		}
 		this.guiLogger = guiLogger;
 	}
-	
+
 	private LogType getLogTypeFromId(final String id) {
 		LogType logType;
 		try {
 			logType = LogType.valueOf(LogType.class, id);
 		} catch (final IllegalArgumentException e) {
-			System.err.println("unknown id given for LogType: ");
-			e.printStackTrace();
+			System.err.println("unknown id given for LogType: "+id);
+			//e.printStackTrace();
 			logType = DEFAULT_LOGTYPE;
 		}
 		return logType;
@@ -64,9 +65,9 @@ public class GUILoggerToGeneralAdapter implements ILogger {
 		throw new UnsupportedOperationException(guiLogger.getClass().getCanonicalName() + "does not support saving");
 	}
 
-    @Override
-    public void checkGlError(@NotNull String id, @Nullable String message) {
-        e(id,message);
-    }
+	@Override
+	public void checkGlError(@NotNull final String id, @Nullable final String message) {
+		e(id,message);
+	}
 
 }

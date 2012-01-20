@@ -1,13 +1,15 @@
 package net.gtamps.shared.serializer;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.serializer.communication.CompressedObjectSerializer;
+import net.gtamps.shared.serializer.communication.BinaryObjectSerializer;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.NewMessage;
-import org.jetbrains.annotations.NotNull;
+import net.gtamps.shared.serializer.communication.ObjectSerializer;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.jetbrains.annotations.NotNull;
 
 public enum ConnectionManager implements IMessageManager {
 
@@ -22,13 +24,13 @@ public enum ConnectionManager implements IMessageManager {
 	public volatile long currentRevId;
 	private final int currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
-	private static ISerializer serializer = new CompressedObjectSerializer();
+	private static ISerializer serializer = new BinaryObjectSerializer();
 
 	private ConnectionManager() {
 		stream = new TcpStream();
 		inbox = new ConcurrentLinkedQueue<NewMessage>();
 		outbox = new ConcurrentLinkedQueue<NewMessage>();
-		this.currentSessionId = "0";
+		currentSessionId = "0";
 		currentRevId = 0;
 	}
 
@@ -86,7 +88,7 @@ public enum ConnectionManager implements IMessageManager {
 		if (!isConnected()) {
 			return;
 		}
-		remoteInputDispatcher = new RemoteInputDispatcher(stream.getInputStream(), inbox);
+		remoteInputDispatcher = new RemoteInputDispatcher(stream, inbox);
 		remoteOutputDispatcher = new RemoteOutputDispatcher(stream, outbox);
 		remoteInputDispatcher.start();
 		remoteOutputDispatcher.start();
@@ -113,13 +115,13 @@ public enum ConnectionManager implements IMessageManager {
 		if (!isConnected()) {
 			int i = 0;
 			while (!connect(Config.IPS.get(i), Config.SERVER_DEFAULT_PORT)) {
-				Logger.I(this, "Connecting to " + Config.IPS.get(i) + ":" + Config.SERVER_DEFAULT_PORT);
+				Logger.i(this, "Connecting to " + Config.IPS.get(i) + ":" + Config.SERVER_DEFAULT_PORT);
 				if (i < Config.IPS.size() - 1) {
 					i++;
 				} else {
 					return;
 				}
-				Logger.E(this, "Server unavailable. Trying to reconnect");
+				Logger.e(this, "Server unavailable. Trying to reconnect");
 			}
 		}
 	}

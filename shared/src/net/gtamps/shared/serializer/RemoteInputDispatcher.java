@@ -16,12 +16,12 @@ public class RemoteInputDispatcher implements Runnable {
 
 	private volatile boolean isRunning;
 	@Nullable
-	private final DataInputStream inputStream;
+	private final IStream inputStream;
 	private final ConcurrentLinkedQueue<NewMessage> inbox;
 
-	public RemoteInputDispatcher(@Nullable final DataInputStream inputStream, @NotNull final ConcurrentLinkedQueue<NewMessage> inbox) {
+	public RemoteInputDispatcher(@Nullable final IStream stream, @NotNull final ConcurrentLinkedQueue<NewMessage> inbox) {
 		isRunning = false;
-		this.inputStream = inputStream;
+		this.inputStream = stream;
 		this.inbox = inbox;
 	}
 
@@ -43,8 +43,6 @@ public class RemoteInputDispatcher implements Runnable {
 		int length;
 
 		while (isRunning) {
-			try {
-
 				//  latency
 				try {
 					Thread.sleep(Config.SOCKET_INBOX_LATENCY);
@@ -52,24 +50,15 @@ public class RemoteInputDispatcher implements Runnable {
 					Logger.e(this, e.getMessage());
 				}
 
-				// build message
-				length = (inputStream.read() << 8) + inputStream.read();
-				if (length < 0) {
-					continue;
-				}
-				response = new byte[length];
-				Logger.e(this, "has received " + length + " bytes");
-				inputStream.readFully(response);
-				final NewMessage message = ConnectionManager.INSTANCE.deserialize(response);
-				if (message != null) {
-					inbox.add(message);
+				response = inputStream.receive();
+				if(response!=null){
+					final NewMessage message = ConnectionManager.INSTANCE.deserialize(response);
+					Logger.d(this, message);
+					if (message != null) {
+						inbox.add(message);
+					}
 				}
 
-			} catch (final IOException e) {
-				Logger.e(this, e.getMessage());
-			} catch (final NullPointerException e) {
-				Logger.e(this, e.getMessage());
-			}
 		}
 		Logger.i(this, "Stops socket-listening loop.");
 	}

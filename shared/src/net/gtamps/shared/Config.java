@@ -55,6 +55,8 @@ final public class Config {
         IPS.add("192.168.1.55");
         IPS.add("192.168.2.102");
         IPS.add("192.168.2.101");
+        IPS.add("192.168.1.10");
+
     }
 
     public static final String SERVER_DEFAULT_HOST_ADDRESS = "localhost";

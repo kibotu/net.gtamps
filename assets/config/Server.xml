@@ -14,12 +14,14 @@
 	<TYPE name="NormalTCPSockHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler" />
 	<TYPE name="TelnetSerializer" class="net.gtamps.server.ManualTypeSerializer" />
 	<TYPE name="CompressedObjectSerializer" class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer" />
+	<TYPE name="ObjectSerializer" class="net.gtamps.shared.serializer.communication.ObjectSerializer" />
+	<TYPE name="BinaryObjectSerializer" class="net.gtamps.shared.serializer.communication.BinaryObjectSerializer" />
 </DEF>
 <COMMON>
 	<SETUP>
         <GAMESERVER port="8095" protocol="tcp">
 			    <SOCKETHANDLER type="NormalTCPSockHandler"/>
-			    <SERIALIZER type="CompressedObjectSerializer"/>
+			    <SERIALIZER type="BinaryObjectSerializer"/>
         </GAMESERVER>
         <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
         <GUI>

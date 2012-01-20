@@ -3,6 +3,8 @@ package net.gtamps.shared.serializer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+import net.gtamps.shared.serializer.communication.NewMessage;
+
 public interface IStream {
 
     public boolean send(String message);
@@ -16,12 +18,18 @@ public interface IStream {
     public boolean send(byte[] message);
 
     /**
+     * receives a message and returns its byte array
+     * @return
+     */
+    public byte[] receive();
+    
+    /**
      * connects to a specific
      *
      * @param host ip address
      * @param port
      * @return <code>true</code> if succeeded
-     */
+     */    
     public boolean connect(String host, int port);
 
     /**

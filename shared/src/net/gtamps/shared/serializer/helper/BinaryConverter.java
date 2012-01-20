@@ -14,6 +14,13 @@ public class BinaryConverter {
 		}
 		p.inc(Integer.SIZE / 8);
 	}
+	
+	public static void writeIntToBytes(final int i, byte[] modifyBytes) {
+		for (int j = 0; j < Integer.SIZE / 8; j++) {
+			modifyBytes[j] = 0;
+			modifyBytes[j] |= ((i >> (8 * (Integer.SIZE / 8 - j - 1)) & 0xff));
+		}
+	}
 
 	public static int readIntFromBytes(final byte[] b, ArrayPointer p) {
 		int i = 0;
@@ -22,6 +29,17 @@ public class BinaryConverter {
 			i |= (b[j + p.pos()] & 0xff);
 		}
 		p.inc(Integer.SIZE / 8);
+		return i;
+	}
+	/*
+	 * reads first int in bytearray
+	 */
+	public static int readIntFromBytes(final byte[] b) {
+		int i = 0;
+		for (int j = 0; j < Integer.SIZE / 8; j++) {
+			i = i << 8;
+			i |= (b[j] & 0xff);
+		}
 		return i;
 	}
 
