@@ -20,6 +20,7 @@ import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
 import net.gtamps.shared.serializer.communication.data.MapEntry;
 import net.gtamps.shared.serializer.communication.data.Value;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -254,6 +255,13 @@ public class ManualTypeSerializer implements ISerializer {
 		while (scanner.hasNext() && !scanner.hasNext(pattern)) {
 			scanner.next();
 		}
+	}
+
+	@Override
+	public SerializedMessage serializeAndPackNewMessage(final NewMessage m) {
+		serializedMessage.message = serializeNewMessage(m);
+		serializedMessage.length = serializedMessage.message.length;
+		return serializedMessage;
 	}
 
 }

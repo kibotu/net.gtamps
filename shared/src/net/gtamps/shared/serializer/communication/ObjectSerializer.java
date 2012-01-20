@@ -1,6 +1,8 @@
 package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
+
 import java.io.*;
 
 public class ObjectSerializer implements ISerializer {
@@ -11,7 +13,7 @@ public class ObjectSerializer implements ISerializer {
 	private ByteArrayInputStream byteInputStream;
 	private ObjectOutputStream objectOutputStream;
 	private ObjectInputStream objectInputStream;
-
+	
 	public ObjectSerializer() {
 	}
 
@@ -40,6 +42,13 @@ public class ObjectSerializer implements ISerializer {
 			Logger.printException(this, e);
 		}
 		return message;
+	}
+
+	@Override
+	public SerializedMessage serializeAndPackNewMessage(NewMessage m) {
+		serializedMessage.message = serializeNewMessage(m);
+		serializedMessage.length = serializedMessage.message.length;
+		return serializedMessage;
 	}
 
 }

@@ -10,6 +10,7 @@ import net.gtamps.shared.serializer.communication.data.MapEntry;
 import net.gtamps.shared.serializer.communication.data.Value;
 import net.gtamps.shared.serializer.helper.ArrayPointer;
 import net.gtamps.shared.serializer.helper.BinaryConverter;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 /**
  * This class
@@ -47,7 +48,8 @@ public class BinaryObjectSerializer implements ISerializer {
 	};
 
 	private HashMap<Class<?>, Byte> classByteLookup = null;
-
+	
+	
 	public BinaryObjectSerializer() {
 		init();
 	}
@@ -73,9 +75,9 @@ public class BinaryObjectSerializer implements ISerializer {
 			buf[i] = 0;
 		}
 	}
-
+	
 	@Override
-	public byte[] serializeNewMessage(final NewMessage m) {
+	public SerializedMessage serializeAndPackNewMessage(NewMessage m) {
 		clearBuffer();
 		final ArrayPointer ps = new ArrayPointer();
 
@@ -84,7 +86,15 @@ public class BinaryObjectSerializer implements ISerializer {
 		BinaryConverter.writeStringToBytes(m.getSessionId(), buf, ps);
 		Logger.e(this, "Actual Message size "+ps.pos()+" Bytes.");
 
-		return buf;
+		serializedMessage.message = buf;
+		serializedMessage.length = ps.pos();
+		
+		return serializedMessage;
+	}
+
+	@Override
+	public byte[] serializeNewMessage(final NewMessage m) {
+		return serializeAndPackNewMessage(m).message;
 	}
 
 	@Override

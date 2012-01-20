@@ -14,6 +14,7 @@ import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.helper.BinaryConverter;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;
 import org.xsocket.connection.INonBlockingConnection;
@@ -67,10 +68,10 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 
 	}
 
-	private void readFully(final INonBlockingConnection nbc, final byte[] data) throws IOException {
+	private void readFully(final INonBlockingConnection nbc, final byte[] data, final int length) throws IOException {
 		assert nbc != null;
 		assert data != null;
-		int need = data.length;
+		int need = length;
 		int read = 0;
 		while (need > 0) {
 			final int offered = Math.min(nbc.available(), need);
@@ -120,7 +121,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			final int laenge = BinaryConverter.readIntFromBytes(msgLen);
 			System.out.println("expecting new message: " + laenge );
 			final byte[] data = new byte[laenge];
-			this.readFully(nbc, data);
+			this.readFully(nbc, data, laenge);
 			this.receive(nbc, data);
 			GUILogger.i().indicateNetworkReceiveActivity();
 		} catch (final ClosedChannelException e) {
@@ -165,9 +166,8 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 
 	@Override
-	public void send(final String connectionId, @NotNull final byte[] bytes) {
+	public void send(final String connectionId, @NotNull final byte[] bytes, final int length) {
 		final INonBlockingConnection nbc = actualConnections.get(connectionId);
-		final int length = bytes.length;
 		if (length < 1) {
 			return;
 		}
@@ -179,9 +179,9 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 
 		try {
 			nbc.write(lengthByte);
-			nbc.write(bytes);
+			nbc.write(bytes,0,length);
 			nbc.flush();
-			System.out.println(length + " + 4 bytes send");
+			System.out.println("4 + "+length + " bytes send");
 		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,6 +196,16 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 				e1.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void send(final String connectionId, final SerializedMessage serMsg) {
+		send(connectionId, serMsg.message, serMsg.length);
+	}
+
+	@Override
+	public void send(final String connectionId, final byte[] bytes) {
+		send(connectionId, bytes, bytes.length);
 	}
 
 }

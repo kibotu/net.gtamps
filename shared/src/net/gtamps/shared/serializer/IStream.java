@@ -16,6 +16,14 @@ public interface IStream {
      * @return <code>true</code> if succeeded
      */
     public boolean send(byte[] message);
+    
+    /**
+     * Sends a message.
+     *
+     * @param message
+     * @return <code>true</code> if succeeded
+     */
+    public boolean send(byte[] buffer, int length);
 
     /**
      * receives a message and returns its byte array

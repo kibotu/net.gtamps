@@ -2,6 +2,8 @@ package net.gtamps.shared.serializer.helper;
 
 import java.nio.charset.Charset;
 
+import net.gtamps.shared.Utils.Logger;
+
 public class BinaryConverter {
 
 	private static final Charset charset = Charset.forName("UTF-8");
@@ -14,7 +16,7 @@ public class BinaryConverter {
 		}
 		p.inc(Integer.SIZE / 8);
 	}
-	
+
 	public static void writeIntToBytes(final int i, byte[] modifyBytes) {
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			modifyBytes[j] = 0;
@@ -23,14 +25,20 @@ public class BinaryConverter {
 	}
 
 	public static int readIntFromBytes(final byte[] b, ArrayPointer p) {
-		int i = 0;
-		for (int j = 0; j < Integer.SIZE / 8; j++) {
-			i = i << 8;
-			i |= (b[j + p.pos()] & 0xff);
+		try {
+			int i = 0;
+			for (int j = 0; j < Integer.SIZE / 8; j++) {
+				i = i << 8;
+				i |= (b[j + p.pos()] & 0xff);
+			}
+			p.inc(Integer.SIZE / 8);
+			return i;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Logger.e("BinaryConverter", "Current ArrayPointer position is :" + p.pos());
+			throw e;
 		}
-		p.inc(Integer.SIZE / 8);
-		return i;
 	}
+
 	/*
 	 * reads first int in bytearray
 	 */
@@ -87,24 +95,31 @@ public class BinaryConverter {
 	}
 
 	public static void writeBooleanToBytes(Boolean b, byte[] buf, ArrayPointer ps) {
-		if(b){
-			buf[ps.pos()] = 1; 
+		if (b) {
+			buf[ps.pos()] = 1;
 		} else {
 			buf[ps.pos()] = 0;
 		}
 		ps.inc(1);
 	}
-	public static boolean readBooleanFromBytes(byte[] buf, ArrayPointer p){
+
+	public static boolean readBooleanFromBytes(byte[] buf, ArrayPointer p) {
 		p.inc(1);
-		return (buf[p.pos()-1] == 1); 
+		return (buf[p.pos() - 1] == 1);
 	}
-	public static byte readByteFromBytes(byte[] buf, ArrayPointer p){
-		p.inc(1);
-		return buf[p.pos()-1];
+
+	public static byte readByteFromBytes(byte[] buf, ArrayPointer p) {
+		try {
+			p.inc(1);
+			return buf[p.pos() - 1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			Logger.e("BinaryConverter", "Current ArrayPointer position is :" + p.pos());
+			throw e;
+		}
 	}
-	
+
 	public static void writeByteToBytes(Byte b, byte[] buf, ArrayPointer ps) {
-		buf[ps.pos()] = b; 
+		buf[ps.pos()] = b;
 		ps.inc(1);
 	}
 }

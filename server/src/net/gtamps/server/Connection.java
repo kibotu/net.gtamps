@@ -2,6 +2,7 @@ package net.gtamps.server;
 
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 /**
  * immutable!
@@ -31,8 +32,8 @@ public final class Connection<H extends ISocketHandler> {
 
 	public void send(final NewMessage msg) {
 		if(this.isActive){
-			final byte[] bytes = serializer.serializeNewMessage(msg);
-			socketHandler.send(id, bytes);
+			final SerializedMessage serializedMessage = serializer.serializeAndPackNewMessage(msg);
+			socketHandler.send(id, serializedMessage);
 		} else {
 			System.out.println("Handle of client request on closed connection, on ID: "+id);
 		}

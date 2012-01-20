@@ -1,11 +1,15 @@
 package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
+
 import java.io.*;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
+
+import org.jdom.output.EscapeStrategy;
 
 public class CompressedObjectSerializer implements ISerializer {
 
@@ -57,6 +61,13 @@ public class CompressedObjectSerializer implements ISerializer {
 			Logger.printException(this, e);
 		}
 		return message;
+	}
+
+	@Override
+	public SerializedMessage serializeAndPackNewMessage(NewMessage m) {
+		serializedMessage.message = serializeNewMessage(m);
+		serializedMessage.length = serializedMessage.message.length;
+		return serializedMessage;
 	}
 
 }

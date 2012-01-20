@@ -8,6 +8,7 @@ import net.gtamps.shared.serializer.communication.BinaryObjectSerializer;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.ObjectSerializer;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ public enum ConnectionManager implements IMessageManager {
 		currentSessionId = "0";
 		currentRevId = 0;
 	}
-
+	
 	@Override
 	public boolean isEmpty() {
 		return inbox.isEmpty();
@@ -102,9 +103,9 @@ public enum ConnectionManager implements IMessageManager {
 		remoteOutputDispatcher.stop();
 	}
 
-	public byte[] serialize(@NotNull final NewMessage message) {
+	public SerializedMessage serialize(@NotNull final NewMessage message) {
 		message.setSessionId(currentSessionId);
-		return serializer.serializeNewMessage(message);
+		return serializer.serializeAndPackNewMessage(message);
 	}
 
 	public NewMessage deserialize(@NotNull final byte[] message) {
@@ -125,5 +126,6 @@ public enum ConnectionManager implements IMessageManager {
 			}
 		}
 	}
+	
 }
 

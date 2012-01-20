@@ -46,4 +46,10 @@ public class UdpStream implements IStream {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean send(byte[] buffer, int length) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

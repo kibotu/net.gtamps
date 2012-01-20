@@ -51,12 +51,11 @@ public class TcpStream implements IStream {
 			socket.connect(new InetSocketAddress(host, port), Config.SOCKET_TIMEOUT);
 			input = new DataInputStream(socket.getInputStream());
 			output = new DataOutputStream(socket.getOutputStream());
-		} catch (ConnectException e){
+		} catch (ConnectException e) {
 			Logger.i(this, "Connection refused...");
-		} catch (java.net.SocketTimeoutException e){
+		} catch (java.net.SocketTimeoutException e) {
 			Logger.e(this, "Socket Timout!");
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			Logger.printException(this, e);
 		}
 		return socket.isConnected();
@@ -91,23 +90,27 @@ public class TcpStream implements IStream {
 	}
 
 	@Override
-	public boolean send(byte[] message) {
+	public boolean send(byte[] message, int length) {
 		if (!socket.isConnected())
 			return false;
 
 		// TODO don't copy array and alloc byte array every sending invocation
-		byte[] temp = new byte[message.length + 4];
-		ArrayPointer ap = new ArrayPointer();
-		BinaryConverter.writeIntToBytes(message.length, temp, ap);
-		System.arraycopy(message, 0, temp, 4, message.length);
+		byte[] temp = new byte[length + 4];
+		BinaryConverter.writeIntToBytes(length, temp);
+		System.arraycopy(message, 0, temp, 4, length);
 		try {
 			output.write(temp);
-			Logger.i(this, "has send bytes " + message.length);
+			Logger.i(this, "has send bytes " + (temp.length));
 		} catch (IOException e) {
 			Logger.printException(this, e);
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean send(byte[] message) {
+		return send(message, message.length);
 	}
 
 	@Override
@@ -133,12 +136,13 @@ public class TcpStream implements IStream {
 		try {
 			// if less than 4bytes (Integer) are available, wait a while.
 			if (input.available() > 4) {
-				input.read(lengthInteger, 0, 4);
+				input.readFully(lengthInteger, 0, 4);
 				length = BinaryConverter.readIntFromBytes(lengthInteger);
-				byte[] response = new byte[length];
-				Logger.e(this, "has received " + length + " bytes");
-				input.readFully(response, 0, length);
-				return response;
+					byte[] response = new byte[length];
+					Logger.e(this, "has received " + lengthInteger[0] + " "+ lengthInteger[1] + " "+ lengthInteger[2] + " "+ lengthInteger[3]);
+					Logger.e(this, "has received " + length + " bytes");
+					input.readFully(response, 0, length);
+					return response;
 			}
 
 		} catch (IOException e) {

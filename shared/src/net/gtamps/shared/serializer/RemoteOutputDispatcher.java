@@ -4,6 +4,7 @@ package net.gtamps.shared.serializer;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,6 +19,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 	private int length;
 	private final IStream tcpStream;
 	private final ConcurrentLinkedQueue<NewMessage> outbox;
+	private SerializedMessage serializedMessage;
 
 	public RemoteOutputDispatcher(final IStream tcpStream, final ConcurrentLinkedQueue<NewMessage> outbox) {
 		isRunning = false;
@@ -48,8 +50,10 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 			if (outbox.isEmpty()) {
 				continue;
 			}
-			tcpStream.send(ConnectionManager.INSTANCE.serialize(outbox.poll()));
+			serializedMessage = ConnectionManager.INSTANCE.serialize(outbox.poll());
+			tcpStream.send(serializedMessage.message,serializedMessage.length);
 		}
 		Logger.i(this, "Stops socket-listening loop.");
 	}
+
 }
