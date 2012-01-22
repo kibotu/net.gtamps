@@ -119,7 +119,6 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			read += 4;
 
 			final int laenge = BinaryConverter.readIntFromBytes(msgLen);
-			System.out.println("expecting new message: " + laenge );
 			final byte[] data = new byte[laenge];
 			this.readFully(nbc, data, laenge);
 			this.receive(nbc, data);
@@ -136,7 +135,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 
 	private void receive(final INonBlockingConnection nbc, final byte[] data) {
-		System.out.println(">> " + data.length);
+		System.out.println("received >> " + data.length);
 		//send(nbc, data)
 		final Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
@@ -181,7 +180,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			nbc.write(lengthByte);
 			nbc.write(bytes,0,length);
 			nbc.flush();
-			System.out.println("4 + "+length + " bytes send");
+			System.out.println("sent >> 4 + "+length + " bytes");
 		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

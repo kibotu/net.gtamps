@@ -13,10 +13,7 @@ import net.gtamps.shared.serializer.communication.data.ISendableData;
 public class PlayerMovementListener implements InputEventListener {
 
 	public PlayerMovementListener() {
-		ConnectionManager.INSTANCE.add(NewMessageFactory.createLoginRequest("til", "secretpassword"));
-		ConnectionManager.INSTANCE.add(NewMessageFactory.createGetUpdateRequest(0));
-		ConnectionManager.INSTANCE.add(NewMessageFactory.createJoinRequest());
-		
+		ConnectionManager.INSTANCE.add(NewMessageFactory.createLoginRequest("til", "secretpassword"));	
 	}
 
 	// preallocate
@@ -24,8 +21,6 @@ public class PlayerMovementListener implements InputEventListener {
 
 	@Override
 	public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
-		Logger.d(this, "Received: " + sendableType.toString());
-		Logger.d(this, "Current revision Id" +ConnectionManager.INSTANCE.currentRevId);
 		if (sendableType.equals(SendableType.ACTION_ACCELERATE)) {
 			ConnectionManager.INSTANCE.add(NewMessageFactory.createAccelerateCommand(1f));
 		} else if (sendableType.equals(SendableType.ACTION_DECELERATE)) {

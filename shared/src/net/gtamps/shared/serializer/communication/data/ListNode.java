@@ -193,7 +193,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 
 
 
-	private static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
+	public static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
 
 		@SuppressWarnings("rawtypes")
 		public static final EmptyListNode<?> INSTANCE = new EmptyListNode();
@@ -201,7 +201,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		private static final long serialVersionUID = -115606057102526274L;
 
 		private EmptyListNode() {
-			this.next = null;
+			next = null;
 		}
 
 		@Override

@@ -42,11 +42,11 @@ public class GameEvent extends GameObject {
 	@Deprecated
 	protected EventType type = null;
 	@Deprecated
-	protected final GameObject source;
+	protected GameObject source = null;
 	@Deprecated
-	protected final GameObject target;
+	protected GameObject target = null;
 	@Deprecated
-	protected final String value;
+	protected String value = null;
 
 	protected IProperty<Integer> eventType = useProperty("gameevent_eventtype", EventType.GAME_EVENT.ordinal());
 	protected IProperty<Integer> sourceUid = useProperty("gameevent_sourceuid", INVALID_UID);
@@ -94,6 +94,9 @@ public class GameEvent extends GameObject {
 	 */
 	public GameEvent(final EventType type, final GameObject source) {
 		this(type, source, source);
+	}
+	public GameEvent() {
+		super();
 	}
 
 	public void setType(final EventType type) {

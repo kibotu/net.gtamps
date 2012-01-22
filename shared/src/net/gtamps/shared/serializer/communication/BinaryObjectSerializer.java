@@ -2,7 +2,6 @@ package net.gtamps.shared.serializer.communication;
 
 import java.util.HashMap;
 
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
 import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
@@ -20,7 +19,7 @@ import net.gtamps.shared.serializer.helper.SerializedMessage;
  */
 public class BinaryObjectSerializer implements ISerializer {
 
-	private final int BUFFER_SIZE = 4096;
+	private final int BUFFER_SIZE = 655360;
 	private final byte[] buf = new byte[BUFFER_SIZE];
 
 	/*
@@ -44,12 +43,13 @@ public class BinaryObjectSerializer implements ISerializer {
 			ListNodeEOF.class, // 13
 			ListNodeHeader.class, // 14
 			MapEntry.class, // 15
-			Null.class
+			Null.class, // 16
+			ListNode.EmptyListNode.class
 	};
 
 	private HashMap<Class<?>, Byte> classByteLookup = null;
-	
-	
+
+
 	public BinaryObjectSerializer() {
 		init();
 	}
@@ -75,20 +75,21 @@ public class BinaryObjectSerializer implements ISerializer {
 			buf[i] = 0;
 		}
 	}
-	
+
 	@Override
-	public SerializedMessage serializeAndPackNewMessage(NewMessage m) {
+	public SerializedMessage serializeAndPackNewMessage(final NewMessage m) {
 		clearBuffer();
 		final ArrayPointer ps = new ArrayPointer();
+		ps.set(0);
 
 		serializeListNode(m.sendables, buf, ps);
 
 		BinaryConverter.writeStringToBytes(m.getSessionId(), buf, ps);
-		Logger.e(this, "Actual Message size "+ps.pos()+" Bytes.");
+		//		Logger.e(this, "Actual Message size "+ps.pos()+" Bytes.");
 
 		serializedMessage.message = buf;
 		serializedMessage.length = ps.pos();
-		
+
 		return serializedMessage;
 	}
 
@@ -100,6 +101,7 @@ public class BinaryObjectSerializer implements ISerializer {
 	@Override
 	public NewMessage deserializeNewMessage(final byte[] bytes) {
 		final ArrayPointer pd = new ArrayPointer();
+		pd.set(0);
 		final NewMessage m = new NewMessage();
 
 		m.sendables = (ListNode<NewSendable>) deserializeListNode(bytes, pd);
@@ -119,6 +121,8 @@ public class BinaryObjectSerializer implements ISerializer {
 			return deserializeDataMap(bytes, pd);
 		} else if (classByte[b] == Value.class) {
 			return deserializeValue(bytes, pd);
+		} else if (classByte[b] == ListNode.EmptyListNode.class) {
+			return ListNode.emptyList();
 		} else {
 			throw new SendableSerializationException("Can't resolve to a valid class with byte header " + b
 					+ " in this context!");
@@ -133,6 +137,8 @@ public class BinaryObjectSerializer implements ISerializer {
 		} else if (s.getClass() == ListNode.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.class), bytes, ps);
 			serializeListNode((ListNode<? extends AbstractSendable<?>>) s, bytes, ps);
+		} else if (s.getClass() == ListNode.EmptyListNode.class) {
+			BinaryConverter.writeByteToBytes(classByteLookup.get(ListNode.EmptyListNode.class), bytes, ps);
 		} else if (s.getClass() == DataMap.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(DataMap.class), bytes, ps);
 			serializeDataMap((DataMap) s, bytes, ps);
@@ -313,7 +319,6 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == ListNodeHeader.class) {
-			System.out.println(b);
 			rootNode = rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes, pd)));
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
@@ -350,9 +355,9 @@ public class BinaryObjectSerializer implements ISerializer {
 	public class ListNodeHeader {
 
 	}
-	
+
 	public class Null{
-		
+
 	}
 
 }
