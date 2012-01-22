@@ -4,7 +4,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.graph.scene.primitives.*;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.entity.EntityType;
 
 import java.util.HashMap;
 
@@ -12,16 +12,16 @@ final public class Object3dFactory {
 
     public final static String TAG = Object3dFactory.class.getSimpleName();
 
-    private static final HashMap<Entity.Type, RenderableNode> cache = new HashMap<Entity.Type, RenderableNode>(10);
+    private static final HashMap<EntityType, RenderableNode> cache = new HashMap<EntityType, RenderableNode>(10);
 
     private Object3dFactory() {
     }
 
     public static RenderableNode create(String name) {
-        return create(Entity.Type.valueOf(name.toUpperCase()));
+        return create(EntityType.valueOf(name.toUpperCase()));
     }
 
-    public static RenderableNode create(Entity.Type type) {
+    public static RenderableNode create(EntityType type) {
 
         if (cache.containsKey(type)) {
 //            return cache.get(type).getStatic();

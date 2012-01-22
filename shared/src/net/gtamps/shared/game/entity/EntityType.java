@@ -1,0 +1,5 @@
+package net.gtamps.shared.game.entity;
+
+public enum EntityType {
+	CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
+}
