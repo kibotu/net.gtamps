@@ -11,15 +11,15 @@ public abstract class AbstractSendableData<DataType extends AbstractSendableData
 	}
 
 	public DataMap asMap() {
-		return (DataMap) this;
+		return (DataMap)(Object) this;
 	}
 
 	public <T extends AbstractSendable<T>> ListNode<T> asList() {
-		return (ListNode<T>) this;
+		return (ListNode<T>)(Object) this;
 	}
 
 	public <T> Value<T> asValue() {
-		return (Value<T>) this;
+		return (Value<T>)(Object) this;
 	}
 
 }
