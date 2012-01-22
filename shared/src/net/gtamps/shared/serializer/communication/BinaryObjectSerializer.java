@@ -2,6 +2,7 @@ package net.gtamps.shared.serializer.communication;
 
 import java.util.HashMap;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
 import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
@@ -122,7 +123,12 @@ public class BinaryObjectSerializer implements ISerializer {
 		} else if (classByte[b] == Value.class) {
 			return deserializeValue(bytes, pd);
 		} else if (classByte[b] == ListNode.EmptyListNode.class) {
-			return ListNode.emptyList();
+//            return ListNode.emptyList();
+
+
+            //TODO FIX ME Q_Q
+            
+            return null;
 		} else {
 			throw new SendableSerializationException("Can't resolve to a valid class with byte header " + b
 					+ " in this context!");
