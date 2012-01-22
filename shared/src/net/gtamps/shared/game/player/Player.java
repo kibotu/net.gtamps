@@ -6,13 +6,14 @@ import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class Player extends SharedGameActor {
 	private static final long serialVersionUID = -8070689911091703487L;
 
 	@Deprecated
 	private Entity entity;
-	private final IProperty<Integer> entityUid = useProperty("entityUid", GameObject.INVALID_UID);
+	private final IProperty<Integer> entityUid = useProperty(StringConstants.PROPERTY_ENTITY_UID, GameObject.INVALID_UID);
 
 	public Player() {
 		super();

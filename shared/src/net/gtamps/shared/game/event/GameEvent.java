@@ -2,6 +2,7 @@ package net.gtamps.shared.game.event;
 
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 /**
  * <p>
@@ -48,10 +49,10 @@ public class GameEvent extends GameObject {
 	@Deprecated
 	protected String value = null;
 
-	protected IProperty<Integer> eventType = useProperty("gameevent_eventtype", EventType.GAME_EVENT.ordinal());
-	protected IProperty<Integer> sourceUid = useProperty("gameevent_sourceuid", INVALID_UID);
-	protected IProperty<Integer> targetUid = useProperty("gameevent_targetuid", INVALID_UID);;
-	protected IProperty<String> stringValue = useProperty("gameevent_value", "");
+	protected IProperty<Integer> eventType = useProperty(StringConstants.PROPERTY_TYPE, EventType.GAME_EVENT.ordinal());
+	protected IProperty<Integer> sourceUid = useProperty(StringConstants.PROPERTY_SOURCE_UID, INVALID_UID);
+	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);;
+	protected IProperty<String> stringValue = useProperty(StringConstants.PROPERTY_VALUE, "");
 
 	/**
 	 * @param type   use an unambiguous type here, that is, one without

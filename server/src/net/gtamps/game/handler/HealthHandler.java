@@ -11,6 +11,7 @@ import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class HealthHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
@@ -39,9 +40,9 @@ public class HealthHandler extends ServersideHandler<Entity> {
 		this.maxHealth = maxHealth;
 		dmgThreshold = threshold;
 		this.dmgMultiplier = dmgMultiplier;
-		isAlive = parent.useProperty("isAlive", maxHealth > 0 ? true : false);
-		health = parent.useProperty("health", maxHealth);
-		healthRatio = parent.useProperty("healthRatio", 1f);
+		isAlive = parent.useProperty(StringConstants.PROPERTY_ALIVE, maxHealth > 0 ? true : false);
+		health = parent.useProperty(StringConstants.PROPERTY_HEALTH, maxHealth);
+		healthRatio = parent.useProperty(StringConstants.PROPERTY_HEALTHRATIO, 1f);
 		setHealth(maxHealth);
 	}
 

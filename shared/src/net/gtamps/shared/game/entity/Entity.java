@@ -5,6 +5,7 @@ import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,18 +26,15 @@ public class Entity extends SharedGameActor {
 		return name.toUpperCase();
 	}
 
-	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
-
-	//	protected Map<Property.Type,Property> properties;
-	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final IProperty<Integer> x = this.useProperty("posx", 0);
-	public final IProperty<Integer> y = this.useProperty("posy", 0);
-	public final IProperty<Integer> z = this.useProperty("posz", 0);
+	protected transient final Map<String, Handler<Entity>> handlers = new HashMap<String, Handler<Entity>>();
+	public final IProperty<Integer> x = this.useProperty(StringConstants.PROPERTY_POSX, 0);
+	public final IProperty<Integer> y = this.useProperty(StringConstants.PROPERTY_POSY, 0);
+	public final IProperty<Integer> z = this.useProperty(StringConstants.PROPERTY_POSZ, 0);
 	/**
 	 * rotation about z
 	 */
-	public final IProperty<Integer> rota = this.useProperty("rota", 0);
-	public final IProperty<Integer> playerProperty = this.useProperty("player", Player.INVALID_UID);
+	public final IProperty<Integer> rota = this.useProperty(StringConstants.PROPERTY_ROTA, 0);
+	public final IProperty<Integer> playerProperty = this.useProperty(StringConstants.PROPERTY_PLAYER, Player.INVALID_UID);
 	public Type type;
 
 	public Entity() {
@@ -91,29 +89,29 @@ public class Entity extends SharedGameActor {
 		return this.playerProperty.value();
 	}
 
-	public void setHandler(final Handler handler) {
+	public void setHandler(final Handler<Entity> handler) {
 		if (handler == null) {
 			throw new IllegalArgumentException("'handler' must not be null");
 		}
 		this.handlers.put(handler.getName(), handler);
 	}
 
-	public Handler removeHandler(final Handler.Type type) {
+	public Handler<Entity> removeHandler(final Handler.Type type) {
 		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.remove(name);
+		final Handler<Entity> handler = this.handlers.remove(name);
 		return handler;
 	}
 
-	public Handler getHandler(final Handler.Type type) {
+	public Handler<Entity> getHandler(final Handler.Type type) {
 		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.get(name);
+		final Handler<Entity> handler = this.handlers.get(name);
 		return handler;
 	}
 
 	@Override
 	public void enable() {
 		super.enable();
-		for (final Handler h : handlers.values()) {
+		for (final Handler<Entity> h : handlers.values()) {
 			h.enable();
 		}
 		//FIXME

@@ -9,6 +9,7 @@ import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -35,8 +36,8 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 
 		this.blueprint = blueprint;
 
-		speedxProperty = parent.useProperty("speedx", 0);
-		speedyProperty = parent.useProperty("speedy", 0);
+		speedxProperty = parent.useProperty(StringConstants.PROPERTY_SPEEDX, 0);
+		speedyProperty = parent.useProperty(StringConstants.PROPERTY_SPEEDY, 0);
 	}
 
 	@Override
