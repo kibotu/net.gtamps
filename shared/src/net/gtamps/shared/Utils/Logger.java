@@ -19,7 +19,9 @@ final public class Logger {
     private static final String LINE_BREAKS = "\n\n\n\n\n";
 
     public static void checkGlError(Object id, String message) {
-        logger.checkGlError(id.getClass().getSimpleName(), message);
+    	if(Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+    		logger.checkGlError(id.getClass().getSimpleName(), message);
+    	}
     }
 
     public enum Level {

@@ -100,7 +100,7 @@ public class TcpStream implements IStream {
 		System.arraycopy(message, 0, temp, 4, length);
 		try {
 			output.write(temp);
-			Logger.i(this, "has send bytes " + (temp.length));
+//			Logger.i(this, "has send bytes " + (temp.length));
 		} catch (IOException e) {
 			Logger.printException(this, e);
 			return false;
@@ -139,8 +139,8 @@ public class TcpStream implements IStream {
 				input.readFully(lengthInteger, 0, 4);
 				length = BinaryConverter.readIntFromBytes(lengthInteger);
 					byte[] response = new byte[length];
-					Logger.e(this, "has received " + lengthInteger[0] + " "+ lengthInteger[1] + " "+ lengthInteger[2] + " "+ lengthInteger[3]);
-					Logger.e(this, "has received " + length + " bytes");
+//					Logger.e(this, "has received " + lengthInteger[0] + " "+ lengthInteger[1] + " "+ lengthInteger[2] + " "+ lengthInteger[3]);
+//					Logger.e(this, "has received " + length + " bytes");
 					input.readFully(response, 0, length);
 					return response;
 			}

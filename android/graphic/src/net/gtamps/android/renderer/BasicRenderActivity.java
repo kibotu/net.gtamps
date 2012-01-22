@@ -33,13 +33,13 @@ public abstract class BasicRenderActivity extends Activity {
         BasicRenderer renderer;
 
         // detect if OpenGL ES 2.0 support exists
-//        if (RenderCapabilities.detectOpenGLES20(this)) {
+        if (RenderCapabilities.detectOpenGLES20(this)) {
 //        if (RenderCapabilities.supportsOpenGLES = false) {
-//            view.setEGLContextClientVersion(2);
-//            renderer = new GLES20Renderer(renderAction);
-//        } else {
+            view.setEGLContextClientVersion(2);
+            renderer = new GLES20Renderer(renderAction);
+        } else {
             renderer = new GL10Renderer(renderAction);
-//        }
+        }
 
         // set view render configurations
         glSurfaceViewConfig();
@@ -61,9 +61,9 @@ public abstract class BasicRenderActivity extends Activity {
 
         // transparent: scene.background = color4.transparent
         // manifest theme:translucent
-//        view.setEGLConfigChooser(8,8,8,8, 16, 0);
+        view.setEGLConfigChooser(8,8,8,8, 16, 0);
 
-        view.setEGLConfigChooser(new BasicEGLConfigChooser());
+//        view.setEGLConfigChooser(new BasicEGLConfigChooser());
 
         // !!!!!!! took me ages to find, but there are smooth images available now ^_^
         view.getHolder().setFormat(PixelFormat.RGBA_8888);

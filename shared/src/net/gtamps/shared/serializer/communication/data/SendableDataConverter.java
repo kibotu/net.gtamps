@@ -10,13 +10,13 @@ import net.gtamps.shared.serializer.communication.SendableProvider;
 
 public class SendableDataConverter {
 
-	private static final String PROPERTY_VALUE = "PROPERTY_VALUE";
-	private static final String PROPERTY_NAME = "PROPERTY_NAME";
-	private static final String GAMEOBJECT_ID = "GAMEOBJECT_ID";
-	private static final String GAMEOBJECT_NAME = "GAMEOBJECT_NAME";
-	private static final String GAMEOBJECT_REVISION = "GAMEOBJECT_REVISION";
-	private static final String GAMEOBJECT_PROPERTIES = "GAMEOBJECT_PROPERTIES";
-	private static final String GAMEOBJECT_TYPE = "GAMEOBJECT_TYPE";
+	private static final String PROPERTY_VALUE = "PV";
+	private static final String PROPERTY_NAME = "PN";
+	private static final String GAMEOBJECT_ID = "GOID";
+	private static final String GAMEOBJECT_NAME = "GON";
+	private static final String GAMEOBJECT_REVISION = "GOR";
+	private static final String GAMEOBJECT_PROPERTIES = "GOP";
+	private static final String GAMEOBJECT_TYPE = "GOT";
 
 	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
 		Validate.notNull(e);

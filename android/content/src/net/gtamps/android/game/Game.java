@@ -56,6 +56,9 @@ public class Game extends RenderAction {
         connection.add(NewMessageFactory.createSessionRequest());
     }
 
+    //preallocate
+    NewMessage messagePolled;
+    
     @Override
     public void onDrawFrame() {
         if (!isRunning || isPaused) {
@@ -67,10 +70,10 @@ public class Game extends RenderAction {
 
         // handle inbox messages
         while (!connection.isEmpty()) {
-            NewMessage message = connection.poll();
-            message.sendables.resetIterator();
-            for(NewSendable sendable: message.sendables) {
-            	messageHandler.handleMessage(sendable, message);
+        	messagePolled = connection.poll();
+        	messagePolled.sendables.resetIterator();
+            for(NewSendable sendable: messagePolled.sendables) {
+            	messageHandler.handleMessage(sendable, messagePolled);
             }
         }
 

@@ -46,7 +46,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	private final Map<String, IProperty<?>> inactiveProperties = null;
 
 
-	GameObject() {
+	protected GameObject() {
 	}
 
 	/**
