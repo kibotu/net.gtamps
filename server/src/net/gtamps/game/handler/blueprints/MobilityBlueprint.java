@@ -8,7 +8,7 @@ import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.handler.Handler;
 
-public class MobilityBlueprint extends HandlerBlueprint {
+public class MobilityBlueprint extends HandlerBlueprint<Entity> {
 
 	private final MobilityProperties mobProp;
 
@@ -22,13 +22,13 @@ public class MobilityBlueprint extends HandlerBlueprint {
 	}
 
 	@Override
-	public ServersideHandler createHandler(final Entity parent, final Integer pixX, final Integer pixY, final Integer deg) {
+	public ServersideHandler<Entity> createHandler(final Entity parent) {
 		final MobilityHandler mobh = new MobilityHandler(universe, parent, mobProp, (SimplePhysicsHandler) parent.getHandler(Handler.Type.PHYSICS));
 		return mobh;
 	}
 
 	@Override
-	public HandlerBlueprint copy() {
+	public HandlerBlueprint<Entity> copy() {
 		return new MobilityBlueprint(this);
 	}
 

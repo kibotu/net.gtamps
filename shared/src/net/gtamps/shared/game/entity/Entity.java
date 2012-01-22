@@ -126,7 +126,7 @@ public class Entity extends SharedGameActor {
 	@Override
 	public void disable() {
 		super.disable();
-		for (final Handler h : handlers.values()) {
+		for (final Handler<?> h : handlers.values()) {
 			h.disable();
 		}
 		//FIXME

@@ -53,7 +53,6 @@ public class MobilityHandlerTest {
 	public void createMobilityHandler() throws Exception {
 		mobilityHandler = new MobilityHandler(universe, parent, mobilityProperties,physicsHandler);
 		mobilityHandler.actionQueue = actionQueue;
-		mobilityHandler.body = body;
 		mobilityHandler.world = world;
 	}
 

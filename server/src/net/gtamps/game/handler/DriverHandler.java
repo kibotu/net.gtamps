@@ -122,14 +122,12 @@ public class DriverHandler extends ServersideHandler<Entity> {
 		}
 		driver = player;
 		player.setEntity(getParent());
-		//		hasChanged = true;
 		getParent().setChanged();
 	}
 
 	public void removeDriver() {
 		driver.removeEntity();
 		driver = null;
-		//		hasChanged = true;
 		getParent().setChanged();
 	}
 

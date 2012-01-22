@@ -1,6 +1,6 @@
 package net.gtamps.game.handler;
 
-import net.gtamps.game.conf.PhysicalProperties;
+import net.gtamps.game.handler.blueprints.PhysicsBlueprint;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.LogType;
@@ -21,27 +21,19 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	private static final EventType[] down = {EventType.SESSION_UPDATE,
 		EventType.ENTITY_DESTROYED};
 
-	protected Entity parent;
 	protected Body body;
-	protected World world;
-
-	protected PhysicalProperties physicalProperties;
-	protected float velocityForce;
-	protected float steeringForce;
-	protected float steeringRadius;
-	protected float slidyness;
 
 	protected final IProperty<Integer> speedxProperty;
 	protected final IProperty<Integer> speedyProperty;
 
-	public SimplePhysicsHandler(final Universe universe, final Entity parent, final Body physicalRepresentation, final PhysicalProperties physicalProperties) {
+	private final PhysicsBlueprint blueprint;
+
+	public SimplePhysicsHandler(final Universe universe, final Entity parent, final PhysicsBlueprint blueprint) {
 		super(universe, Handler.Type.PHYSICS, parent);
-		this.parent = parent;
-		body = physicalRepresentation;
-		world = body.getWorld();
-		//		this.physicalProperties = physicalProperties;
 		setReceives(down);
 		connectUpwardsActor(parent);
+
+		this.blueprint = blueprint;
 
 		speedxProperty = parent.useProperty("speedx", 0);
 		speedyProperty = parent.useProperty("speedy", 0);
@@ -69,20 +61,13 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	}
 
 	public void update() {
-
-		if (!isEnabled()) {
-			if (body != null) {
-				world.destroyBody(body);
-				body = null;
-			}
-			return;
-		}
-
-		parent.x.set(PhysicsFactory.lengthToWorld(body.getWorldCenter().x));
-		parent.y.set(PhysicsFactory.lengthToWorld(body.getWorldCenter().y));
+		final Vec2 pos = body.getWorldCenter();
+		final Vec2 vel = body.getLinearVelocity();
+		parent.x.set(PhysicsFactory.lengthToWorld(pos.x));
+		parent.y.set(PhysicsFactory.lengthToWorld(pos.y));
 		parent.rota.set(PhysicsFactory.angleToWorld((body.getAngle())));
-		speedxProperty.set(PhysicsFactory.lengthToWorld(body.getLinearVelocity().x));
-		speedyProperty.set(PhysicsFactory.lengthToWorld(body.getLinearVelocity().y));
+		speedxProperty.set(PhysicsFactory.lengthToWorld(vel.x));
+		speedyProperty.set(PhysicsFactory.lengthToWorld(vel.y));
 	}
 
 	Body getBody() {
@@ -90,7 +75,31 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	}
 
 	World getWorld() {
-		return world;
+		return blueprint.getWorld();
+	}
+
+	@Override
+	public void enable() {
+		super.enable();
+		createBody();
+	}
+
+	@Override
+	public void disable() {
+		super.disable();
+		destroyBody();
+	}
+
+	private void destroyBody() {
+		if (body != null) {
+			blueprint.getWorld().destroyBody(body);
+			body = null;
+		}
+	}
+
+	private void createBody() {
+		final Entity parent = getParent();
+		body = blueprint.createBody(parent, parent.x.value(), parent.y.value(), parent.rota.value());
 	}
 
 }

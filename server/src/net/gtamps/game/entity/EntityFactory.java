@@ -78,7 +78,8 @@ public class EntityFactory {
 
 	public static Entity createEntity(final Universe universe, final String name, final int pixX, final int pixY, final int deg) {
 		final String normName = Entity.normalizeName(name);
-		return getCachedBlueprint(universe, normName).createEntity(pixX, pixY, deg);
+		final Entity e = getCachedBlueprint(universe, normName).createEntity(pixX, pixY, deg);
+		return e;
 	}
 
 	//TODO de-uglify

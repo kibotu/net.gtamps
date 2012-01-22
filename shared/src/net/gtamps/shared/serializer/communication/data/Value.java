@@ -11,7 +11,7 @@ public final class Value<T> extends AbstractSendableData<Value<T>> {
 	};
 
 	private static final long serialVersionUID = -9073044759676467812L;
-	private static final String typeNotAllowedMsg = "illegal value type; see SendableDataValue.ALLOWED_TYPES for legal types. -> ";
+	private static final String typeNotAllowedMsg = "illegal value type; see Value.ALLOWED_TYPES for legal types. -> ";
 
 	protected T value;
 
