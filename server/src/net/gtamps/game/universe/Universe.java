@@ -8,12 +8,14 @@ import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.player.PlayerManager;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
+import net.gtamps.shared.game.player.Player;
 
 public class Universe implements IGameEventListener, IGameEventDispatcher {
 
@@ -129,6 +131,20 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 	}
 	public Entity getEntity(final int uid) {
 		return entityManager.getEntity(uid);
+	}
+
+	public Player getPlayer(final int uid) {
+		return playerManager.getPlayer(uid);
+	}
+
+	public GameObject getGameObject(final int uid) {
+		// TODO optimize
+		GameObject gob = null;
+		gob = getEntity(uid);
+		if (gob == null) {
+			gob = getPlayer(uid);
+		}
+		return gob;
 	}
 
 }

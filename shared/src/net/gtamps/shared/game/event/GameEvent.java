@@ -123,22 +123,6 @@ public class GameEvent extends GameObject {
 		return targetUid.value();
 	}
 
-	/**
-	 * @deprecated	use {@link #getSourceUid()} with your own lookup
-	 */
-	@Deprecated
-	public GameObject getSource() {
-		return this.source;
-	}
-
-	/**
-	 * @deprecated	use {@link #getTargetUid()} with your own lookup
-	 */
-	@Deprecated
-	public GameObject getTarget() {
-		return this.target;
-	}
-
 	public boolean isBegin() {
 		return stringValue.value().equals(BEGIN_VALUE);
 	}

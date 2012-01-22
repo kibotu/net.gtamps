@@ -270,21 +270,23 @@ public class MessageHandler {
             case PLAYER_LEAVES:
                 break;
             case ENTITY_NEW_PLAYER:
+            	
+            	int playerUid = event.getTargetUid();
+            	int entityUid = event.getSourceUid();
 
-                // target no player
-                if (!(event.getTarget() instanceof Player))
-                    break;
+            	// player not active player
+            	if (world.playerManager.getActivePlayer().getUid() != playerUid)
+            		break;
 
-                // player not active player
-                Player player = (Player) event.getTarget();
+                Player player = store.getPlayer(playerUid);
+                if (player == null) {
+                	throw new IllegalStateException("event target: player not found " + playerUid);
+                }
 
-                if (!world.playerManager.getActivePlayer().equals(player))
-                    break;
-
-                // source no entity
-                if (!(event.getSource() instanceof Entity))
-                    break;
-                Entity serverEntity = (Entity) event.getSource();
+                Entity serverEntity = store.getEntity(entityUid);
+                if (serverEntity == null) {
+                	throw new IllegalStateException("event source: entity not found " + playerUid);
+                }
 
                 // new active object
                 EntityView entityView = world.getViewById(serverEntity.getUid());

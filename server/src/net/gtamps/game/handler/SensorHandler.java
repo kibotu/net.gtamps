@@ -71,8 +71,9 @@ public class SensorHandler extends ServersideHandler<Entity> {
 
 	protected void sense(final GameEvent event) {
 		assert event.getType().isType(sensorType);
-		final GameObject source = event.getSource();
-		final GameObject target = event.getTarget();
+		final Universe universe = getUniverse();
+		final GameObject source = universe.getGameObject(event.getSourceUid());
+		final GameObject target = universe.getGameObject(event.getTargetUid());
 		final GameObject subject = (source == getParent()) ? target : source;
 		if (event.isBegin()) {
 			sensed.add((Entity) subject);
