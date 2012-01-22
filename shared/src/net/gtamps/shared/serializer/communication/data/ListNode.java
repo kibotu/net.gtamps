@@ -44,8 +44,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	 * append a new list node to this one and return the resulting list
 	 */
 	public ListNode<T> append(final ListNode<T> newNode) {
-		next = next.append(newNode);
+		final ListNode<T> end = gotoLastNonEmptyElement();
+		end.next = end.next.append(newNode);	// calls append on EmptyListNode
 		return this;
+	}
+
+	private ListNode<T> gotoLastNonEmptyElement() {
+		ListNode<T> current = this;
+		while (!current.next.isEmpty()) {
+			current = current.next;
+		}
+		return current;
 	}
 
 	@Override
