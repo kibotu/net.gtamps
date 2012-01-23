@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_graphics-test" default="compile.module.graphics-test">
+  <dirname property="module.graphics-test.basedir" file="${ant.file.module_graphics-test}"/>
+  
+  <property name="module.jdk.home.graphics-test" value="${jdk.home.android_2.2_platform}"/>
+  <property name="module.jdk.bin.graphics-test" value="${jdk.bin.android_2.2_platform}"/>
+  <property name="module.jdk.classpath.graphics-test" value="jdk.classpath.android_2.2_platform"/>
+  
+  <property name="compiler.args.graphics-test" value="${compiler.args}"/>
+  
+  <property name="graphics-test.output.dir" value="${module.graphics-test.basedir}/../content/out/production/graphics-test"/>
+  <property name="graphics-test.testoutput.dir" value="${module.graphics-test.basedir}/../content/out/test/graphics-test"/>
+  
+  <path id="graphics-test.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="graphics-test.module.production.classpath">
+    <path refid="${module.jdk.classpath.graphics-test}"/>
+    <pathelement location="${graphic.output.dir}"/>
+    <pathelement location="${utils.output.dir}"/>
+    <pathelement location="${shared.output.dir}"/>
+    <path refid="library.annotations.classpath"/>
+    <path refid="library.junit-4.8.classpath"/>
+    <path refid="library.jdom-1.1.1-android-fork.classpath"/>
+  </path>
+  
+  <path id="graphics-test.runtime.production.module.classpath">
+    <pathelement location="${graphics-test.output.dir}"/>
+    <path refid="graphic.runtime.production.module.classpath"/>
+    <path refid="utils.runtime.production.module.classpath"/>
+    <path refid="shared.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="graphics-test.module.classpath">
+    <path refid="${module.jdk.classpath.graphics-test}"/>
+    <pathelement location="${graphics-test.output.dir}"/>
+    <pathelement location="${graphic.testoutput.dir}"/>
+    <pathelement location="${graphic.output.dir}"/>
+    <pathelement location="${utils.testoutput.dir}"/>
+    <pathelement location="${utils.output.dir}"/>
+    <pathelement location="${shared.testoutput.dir}"/>
+    <pathelement location="${shared.output.dir}"/>
+    <path refid="library.annotations.classpath"/>
+    <path refid="library.junit-4.8.classpath"/>
+    <path refid="library.jdom-1.1.1-android-fork.classpath"/>
+  </path>
+  
+  <path id="graphics-test.runtime.module.classpath">
+    <pathelement location="${graphics-test.testoutput.dir}"/>
+    <pathelement location="${graphics-test.output.dir}"/>
+    <path refid="graphic.runtime.module.classpath"/>
+    <path refid="utils.runtime.module.classpath"/>
+    <path refid="shared.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.graphics-test">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.graphics-test">
+    <patternset refid="excluded.from.module.graphics-test"/>
+  </patternset>
+  
+  <path id="graphics-test.module.sourcepath">
+    <dirset dir="${module.graphics-test.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.graphics-test" depends="compile.module.graphics-test.production,compile.module.graphics-test.tests" description="Compile module graphics-test"/>
+  
+  <target name="compile.module.graphics-test.production" depends="register.custom.compilers,compile.module.graphic,compile.module.utils,compile.module.shared" description="Compile module graphics-test; production classes">
+    <mkdir dir="${graphics-test.output.dir}"/>
+    <javac2 destdir="${graphics-test.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.graphics-test}/javac">
+      <compilerarg line="${compiler.args.graphics-test}"/>
+      <bootclasspath refid="graphics-test.module.bootclasspath"/>
+      <classpath refid="graphics-test.module.production.classpath"/>
+      <src refid="graphics-test.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.graphics-test"/>
+    </javac2>
+    
+    <copy todir="${graphics-test.output.dir}">
+      <fileset dir="${module.graphics-test.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.graphics-test.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.graphics-test.tests" depends="register.custom.compilers,compile.module.graphics-test.production" description="compile module graphics-test; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.graphics-test" description="cleanup module">
+    <delete dir="${graphics-test.output.dir}"/>
+    <delete dir="${graphics-test.testoutput.dir}"/>
+  </target>
+</project>

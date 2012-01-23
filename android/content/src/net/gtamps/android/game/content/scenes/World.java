@@ -1,6 +1,10 @@
 package net.gtamps.android.game.content.scenes;
 
 import net.gtamps.android.R;
+import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.android.core.input.layout.AbstractInputLayout;
+import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.renderer.graph.RenderState;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.graph.scene.primitives.Camera;
@@ -9,14 +13,21 @@ import net.gtamps.android.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.SendableFactory;
+import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 
-public class World extends EntityScene {
+public class World extends EntityScene implements InputEventListener {
 
     private EntityView activeView;
     public final PlayerManager playerManager;
+    private AbstractInputLayout layout;
+    private NewMessage message;
 
     public World() {
         playerManager = new PlayerManager();
@@ -42,6 +53,14 @@ public class World extends EntityScene {
 
         add(new EntityView(addLevel()));
 //        add(new EntityView(getSunLight()));
+
+        // setup layout
+        layout = new InputLayoutIngame();
+        InputEngineController.getInstance().setLayout(layout);
+        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
+
+        // set dirty flag, since something has changed (input engine needs correct resolution
+        setDirtyFlag();
     }
 
     public static Light getSpotLight() {
@@ -118,6 +137,30 @@ public class World extends EntityScene {
     }
 
     @Override
+    public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
+        Logger.D(this, sendableType);
+//        if (
+//			sendableType.equals(SendableType.ACTION_ACCELERATE) ||
+//			sendableType.equals(SendableType.ACTION_DECELERATE) ||
+//			sendableType.equals(SendableType.ACTION_LEFT) ||
+//			sendableType.equals(SendableType.ACTION_RIGHT) ||
+//			sendableType.equals(SendableType.ACTION_SHOOT)
+//
+//		) {
+
+
+        //TODO use SendableFactory
+//        message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+//        message.addSendable(new NewSendable(sendableType, data));
+//        ConnectionManager.INSTANCE.add(message);
+
+//		}
+    }
+
+    @Override
     public void onDirty() {
+        // set resolution
+        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
+        clearDirtyFlag();
     }
 }

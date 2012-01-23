@@ -5,7 +5,7 @@ import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.physics.PhysicsFactory;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.entity.EntityType;
+import net.gtamps.shared.game.entity.Entity.Type;
 import net.gtamps.shared.game.level.EntityPosition;
 import net.gtamps.shared.game.level.Level;
 import net.gtamps.shared.game.level.PhysicalShape;
@@ -38,12 +38,12 @@ public class LevelParser {
 		// create entities from entity positions
 		for(final EntityPosition ep : level.getEntityPositions()){
 			//TODO degrees!
-			if(	ep.getType().equals(EntityType.CAR_CAMARO) ||
-				ep.getType().equals(EntityType.CAR_CHEVROLET_CORVETTE) ||
-				ep.getType().equals(EntityType.CAR_RIVIERA) ){
+			if(	ep.getType().equals(Type.CAR_CAMARO) ||
+				ep.getType().equals(Type.CAR_CHEVROLET_CORVETTE) ||
+				ep.getType().equals(Type.CAR_RIVIERA) ){
 				entityManager.createEntityCar((int)ep.getPosition().x, (int)ep.getPosition().y, 0);
 			}
-			if( ep.getType().equals(EntityType.SPAWNPOINT)){
+			if( ep.getType().equals(Type.SPAWNPOINT)){
 				final Entity spawnPoint = entityManager.createEntitySpawnPoint(universe, (int)ep.getPosition().x, (int)ep.getPosition().y, 0);
 				universe.addSpawnPoint(spawnPoint);
 			}
