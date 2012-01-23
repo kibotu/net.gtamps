@@ -97,7 +97,11 @@ public class HealthHandler extends ServersideHandler<Entity> {
 	private void die() {
 		final GameEvent death = new GameEvent(EventType.ENTITY_DESTROYED, parent);
 		System.out.println("death! destruction! calamity!");
-		eventRoot.dispatchEvent(death);
+
+		//TODO
+		//FIXME queue events, implement eventHandling phase to decouple from physics
+
+		//		eventRoot.dispatchEvent(death);
 	}
 
 
