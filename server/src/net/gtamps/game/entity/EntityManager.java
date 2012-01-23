@@ -138,10 +138,14 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 	}
 
 	public void removeEntity(final int uid) {
-		if (entities.containsKey(uid)) {
-			entities.remove(uid);
+		final Entity removed = entities.remove(uid);
+		if (removed != null) {
+			removeEventListener(EventType.GAME_EVENT, removed);
 		}
+	}
 
+	public void removeEntity(final Entity e) {
+		removeEntity(e.getUid());
 	}
 
 	//TODO
@@ -160,14 +164,18 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 
 	@Override
 	public void receiveEvent(final GameEvent event) {
-		if (event.getType().isType(EventType.ENTITY_EVENT)) {
+		final EventType type = event.getType();
+		if (type.isType(EventType.ENTITY_EVENT)) {
 			final Entity source = entities.get(event.getSourceUid());
 			final Entity target = entities.get(event.getTargetUid());
 			if (source != null) {
 				source.receiveEvent(event);
 			}
-			if (target != null) {
+			if (target != null && target != source) {
 				target.receiveEvent(event);
+			}
+			if (type.isType(EventType.ENTITY_DESTROYED)) {
+				removeEntity(target);
 			}
 		} else {
 			dispatchEvent(event);

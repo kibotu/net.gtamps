@@ -1,14 +1,15 @@
 package net.gtamps.shared.game.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
+import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.communication.StringConstants;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Entity extends SharedGameActor {
 
@@ -68,8 +69,12 @@ public class Entity extends SharedGameActor {
 
 	@Override
 	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
 		if (isEnabled()) {
 			dispatchEvent(event);
+		}
+		if (type.isType(EventType.ENTITY_DESTROYED) && event.getTargetUid() == getUid()) {
+			destroy();
 		}
 	}
 
