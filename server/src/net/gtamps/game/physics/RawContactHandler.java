@@ -1,15 +1,12 @@
 package net.gtamps.game.physics;
 
-import net.gtamps.game.handler.SimplePhysicsHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.BulletHitEvent;
 import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
-import net.gtamps.shared.game.handler.Handler;
 
 import org.jbox2d.dynamics.ContactListener;
 import org.jbox2d.dynamics.contacts.ContactPoint;
@@ -125,14 +122,8 @@ public final class RawContactHandler implements ContactListener {
 				TAG,
 				String.format("collision: %s, %s [%d]", oneEntity, twoEntity,
 						(int) impulse));
-		final SimplePhysicsHandler handler1 = (SimplePhysicsHandler) oneEntity.getHandler(Handler.Type.PHYSICS);
-		final SimplePhysicsHandler handler2 = (SimplePhysicsHandler) twoEntity.getHandler(Handler.Type.PHYSICS);
 		GameEvent event = null;
-		if (oneEntity.getName().equals("bullet") || twoEntity.getName().equals("bullet")) {
-			event = new BulletHitEvent(oneEntity, twoEntity, impulse);
-		} else {
-			event = new CollisionEvent(oneEntity, twoEntity, impulse);
-		}
+		event = new CollisionEvent(oneEntity, twoEntity, impulse);
 		eventRoot.dispatchEvent(event);
 	}
 }

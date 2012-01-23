@@ -7,6 +7,7 @@ import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.handler.DriverHandler;
 import net.gtamps.game.handler.SensorDoorHandler;
 import net.gtamps.game.handler.ShootingHandler;
+import net.gtamps.game.handler.blueprints.CollisionDamageBlueprint;
 import net.gtamps.game.handler.blueprints.GenericHandlerBlueprint;
 import net.gtamps.game.handler.blueprints.HealthBlueprint;
 import net.gtamps.game.handler.blueprints.MobilityBlueprint;
@@ -40,6 +41,7 @@ public class EntityFactory {
 		if (normName.equals("CAR")) {
 			physprop = PhysicalProperties.Sportscar;
 			blup.addHandlerPrototype(new GenericHandlerBlueprint<DriverHandler>(universe, DriverHandler.class, Handler.Type.DRIVER));
+			blup.addHandlerPrototype(new CollisionDamageBlueprint(universe, 0, 1f));
 		} else if (normName.equals("HUMAN")) {
 			physprop = PhysicalProperties.Human;
 			blup.addHandlerPrototype(new HealthBlueprint(universe, 100, 1f, 1));
@@ -47,6 +49,7 @@ public class EntityFactory {
 			blup.addHandlerPrototype(new GenericHandlerBlueprint<ShootingHandler>(universe, ShootingHandler.class, Handler.Type.SHOOTING));
 		} else if (normName.equals("BULLET")) {
 			physprop = PhysicalProperties.Bullet;
+			blup.addHandlerPrototype(new CollisionDamageBlueprint(universe, 10, 1f));
 		} else if (normName.equals("SPAWNPOINT")) {
 			physprop = PhysicalProperties.Empty;
 		} else {
@@ -88,6 +91,7 @@ public class EntityFactory {
 		final String normName = Entity.normalizeName(houseName);
 		final EntityBlueprint houseblup = getEmptyDisposableBlueprint(universe, normName);
 		houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(universe, pshape));
+		houseblup.addHandlerPrototype(new CollisionDamageBlueprint(universe, 0, 1f));
 		final Entity house =  houseblup.createEntity(0, 0, 0);
 		house.setSilent(true);
 		return house;

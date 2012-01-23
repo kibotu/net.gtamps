@@ -10,10 +10,10 @@ public class CollisionDamageHandler extends ServersideHandler<Entity> {
 
 	private static EventType[] receives = { EventType.ENTITY_COLLIDE };
 
-	int impulseDmgMultiply;
+	float impulseDmgMultiply;
 	int baseDamage;
 
-	public CollisionDamageHandler(final Universe universe, final Entity parent, final int baseDamage, final int impulseDmgMultiply) {
+	public CollisionDamageHandler(final Universe universe, final Entity parent, final int baseDamage, final float impulseDmgMultiply) {
 		super(universe, Type.COLLISION, parent);
 		setReceives(receives);
 		connectUpwardsActor(parent);
