@@ -69,7 +69,7 @@ def sendMessage(sock,sessionid,message,messageid):
 			#global sessionID
 			#sessionID = sID
 		if(message.startswith('GETUPDATE')):
-			rID = re.findall('GETUPDATE_OK\s(\d+?)\s',respstr);
+			rID = re.findall('GETUPDATE_OK\D+(\d+?)\s',respstr);
 			if(len(rID)>0):
 				rID = rID[0]
 			else:
