@@ -185,15 +185,15 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final Exception e) {
 			System.out.println("Client connection "+nbc.getId()+" lost: declaring as disconnected!");
 			try {
 				this.onDisconnect(nbc);
 			} catch (final IOException e1) {
 				e1.printStackTrace();
 			}
+		} catch (final Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

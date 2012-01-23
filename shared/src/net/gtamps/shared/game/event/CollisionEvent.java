@@ -21,7 +21,7 @@ public class CollisionEvent extends GameEvent {
 //	}
 
     public float getImpulse() {
-        return Float.parseFloat(this.value);
+        return Float.parseFloat(this.stringValue.value());
     }
 
 

@@ -52,10 +52,12 @@ public class RemoteInputDispatcher implements Runnable {
 
 				response = inputStream.receive();
 				if(response!=null){
-					final NewMessage message = ConnectionManager.INSTANCE.deserialize(response);
-//					Logger.d(this, message);
-					if (message != null) {
-						inbox.add(message);
+					if(inbox.size()<Config.MAX_MESSAGES_INBOX){
+						final NewMessage message = ConnectionManager.INSTANCE.deserialize(response);
+	//					Logger.d(this, message);
+						if (message != null) {
+							inbox.add(message);
+						}
 					}
 				}
 

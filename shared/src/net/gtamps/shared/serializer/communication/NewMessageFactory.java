@@ -134,6 +134,12 @@ final public class NewMessageFactory {
 		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createShootCommand()));
 		return msg;
 	}
+	
+	public static NewMessage createEnterExitCommand(){
+		final NewMessage msg = sendableFactory.createMessage();
+		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createEnterExitCommand()));
+		return msg;
+	}
 
 	public static NewMessage createJoinCommand() {
 		final NewMessage msg = sendableFactory.createMessage();

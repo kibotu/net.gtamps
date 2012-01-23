@@ -149,7 +149,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	 *                                any reason
 	 */
 	public final <T> IProperty<T> useProperty(@NotNull final String name, @NotNull final T value) throws NoSuchElementException {
-		final String properName = name.toLowerCase();
+		final String properName = name;
 		Propertay<T> p = this.getProperty(properName);
 		if (p == null) {
 			p = this.instantiateProperty(name, value);
@@ -158,7 +158,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 			}
 			this.addProperty(p);
 		} else if (!value.getClass().isAssignableFrom(p.value().getClass())) {
-			throw new NoSuchElementException("property already in use for different type: " + p.value().getClass().getSimpleName());
+			throw new NoSuchElementException("property ("+properName+") already in use for different type: " + p.value().getClass().getSimpleName()+ " value: "+value.getClass().getSimpleName()+" : "+value.toString());
 		}
 		return p;
 	}
@@ -261,7 +261,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		Propertay<T> p = null;
 		try {
 			c = Propertay.class.getConstructor(GameObject.class, String.class, Object.class);
-			p = c.newInstance(this, name.toLowerCase(), value);
+			p = c.newInstance(this, name, value);
 		} catch (final SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -42,16 +42,10 @@ public class GameEvent extends GameObject {
 
 	@Deprecated
 	protected EventType type = null;
-	@Deprecated
-	protected GameObject source = null;
-	@Deprecated
-	protected GameObject target = null;
-	@Deprecated
-	protected String value = null;
 
 	protected IProperty<Integer> eventType = useProperty(StringConstants.PROPERTY_TYPE, EventType.GAME_EVENT.ordinal());
 	protected IProperty<Integer> sourceUid = useProperty(StringConstants.PROPERTY_SOURCE_UID, INVALID_UID);
-	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);;
+	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);
 	protected IProperty<String> stringValue = useProperty(StringConstants.PROPERTY_VALUE, "");
 
 	/**
@@ -73,9 +67,6 @@ public class GameEvent extends GameObject {
 			throw new IllegalArgumentException("'type' is ambiguous! use an EventType without subtypes.");
 		}
 		value = value == null ? "" : value;
-		this.source = source;
-		this.target = target;
-		this.value = value;
 		sourceUid.set(source.getUid());
 		targetUid.set(target.getUid());
 		stringValue.set(value);

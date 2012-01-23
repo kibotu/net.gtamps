@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.gtamps.game.Game;
@@ -29,7 +30,9 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 
-
+	//FIXME this is a bad hack, so that the client can't "DoS" the server
+	private static final int KEEP_EVERY_NTH_UPDATE_REQUEST = 4;
+	public final ConcurrentHashMap<String, Integer> updateRequestThrottler = new ConcurrentHashMap<String, Integer>();
 	public final BlockingQueue<NewMessage> inbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewMessage> outbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewSendable> responsebox = new LinkedBlockingQueue<NewSendable>();
@@ -130,35 +133,46 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	private void handleSendable(final NewSendable request) {
 		switch (request.type) {
-			case SESSION:
-				handleSession(request);
-				break;
-			case REGISTER:
-				handleRegister(request);
-				break;
-			case LOGIN:
-				handleLogin(request);
-				break;
-			case JOIN:
-			case LEAVE:
-				handleAuthenticatedRequest(request);
-				break;
-			case GETMAPDATA:
-			case GETPLAYER:
-			case GETUPDATE:
-			case ACTION_ACCELERATE:
-			case ACTION_DECELERATE:
-			case ACTION_HANDBRAKE:
-			case ACTION_ENTEREXIT:
-			case ACTION_LEFT:
-			case ACTION_RIGHT:
-			case ACTION_SHOOT:
-			case ACTION_SUICIDE:
-				handlePlayingRequest(request);
-				break;
-			default:
-				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
-				break;
+		case SESSION:
+			handleSession(request);
+			break;
+		case REGISTER:
+			handleRegister(request);
+			break;
+		case LOGIN:
+			handleLogin(request);
+			break;
+		case JOIN:
+		case LEAVE:
+			handleAuthenticatedRequest(request);
+			break;
+		case GETUPDATE:
+			//FIXME easy way out, just throw some packages away.
+			//needs more delicate handling later
+			//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
+			//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
+			//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
+			handlePlayingRequest(request);
+			//				System.out.println("ansering update request");
+			//			}
+			//			System.out.println("throwing away update request");
+			//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
+			break;
+		case GETMAPDATA:
+		case GETPLAYER:
+		case ACTION_ACCELERATE:
+		case ACTION_DECELERATE:
+		case ACTION_HANDBRAKE:
+		case ACTION_ENTEREXIT:
+		case ACTION_LEFT:
+		case ACTION_RIGHT:
+		case ACTION_SHOOT:
+		case ACTION_SUICIDE:
+			handlePlayingRequest(request);
+			break;
+		default:
+			handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
+			break;
 		}
 	}
 

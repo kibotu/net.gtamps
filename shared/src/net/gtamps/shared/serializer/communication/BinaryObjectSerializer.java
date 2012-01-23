@@ -44,7 +44,8 @@ public class BinaryObjectSerializer implements ISerializer {
 			ListNodeHeader.class, // 14
 			MapEntry.class, // 15
 			Null.class, // 16
-			ListNode.EmptyListNode.class
+			ListNode.EmptyListNode.class,
+			Const.class
 	};
 
 	private HashMap<Class<?>, Byte> classByteLookup = null;
@@ -202,6 +203,8 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
+	//preallocate
+	byte translated = -1;
 	protected void serializeValue(final Value<?> data, final byte[] bytes, final ArrayPointer ps) {
 		if (data.get() == null) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Null.class), bytes, ps);
@@ -218,8 +221,14 @@ public class BinaryObjectSerializer implements ISerializer {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Boolean.class), bytes, ps);
 			BinaryConverter.writeBooleanToBytes((Boolean) data.get(), bytes, ps);
 		} else if (data.get().getClass() == String.class) {
-			BinaryConverter.writeByteToBytes(classByteLookup.get(String.class), bytes, ps);
-			BinaryConverter.writeStringToBytes((String) data.get(), bytes, ps);
+			translated = Translator.lookup((String) data.get());
+			if(translated>-1){
+				BinaryConverter.writeByteToBytes(classByteLookup.get(Const.class), bytes, ps);
+				BinaryConverter.writeByteToBytes(translated, bytes, ps);
+			} else {
+				BinaryConverter.writeByteToBytes(classByteLookup.get(String.class), bytes, ps);
+				BinaryConverter.writeStringToBytes((String) data.get(), bytes, ps);
+			}
 		} else if (data.get().getClass() == Byte.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Byte.class), bytes, ps);
 			BinaryConverter.writeByteToBytes((Byte) data.get(), bytes, ps);
@@ -261,6 +270,10 @@ public class BinaryObjectSerializer implements ISerializer {
 		} else if (valueClass == String.class) {
 			final Value<String> v = new Value<String>();
 			v.set(BinaryConverter.readStringFromBytes(bytes, p));
+			return v;
+		} else if (valueClass == Const.class) {
+			final Value<String> v = new Value<String>();
+			v.set(Translator.lookup(BinaryConverter.readByteFromBytes(bytes, p)));
 			return v;
 		} else {
 			throw new SendableSerializationException(valueClass + " cant be deserialized!");
@@ -358,6 +371,10 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	public class Null{
 
+	}
+	
+	public class Const{
+		
 	}
 
 }

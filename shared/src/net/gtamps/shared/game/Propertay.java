@@ -23,7 +23,7 @@ public class Propertay<T> extends GameObject implements IProperty<T> {
 	private T value;
 
 	public Propertay(@NotNull final GameObject parent, @NotNull final String name, @NotNull final T value) {
-		super(name.toLowerCase());
+		super(name);
 		this.parent = parent;
 		this.value = value;
 		this.parent.hasChanged = true;

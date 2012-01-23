@@ -30,7 +30,9 @@ public class PlayerMovementListener implements InputEventListener {
 		} else if (sendableType.equals(SendableType.ACTION_RIGHT)) {
 			ConnectionManager.INSTANCE.add(NewMessageFactory.createRightCommand(1f));
 		} else if (sendableType.equals(SendableType.ACTION_SHOOT)) {
-			// ConnectionManager.INSTANCE.add(NewMessageFactory.createShootCommand();
+			ConnectionManager.INSTANCE.add(NewMessageFactory.createShootCommand());
+		} else if (sendableType.equals(SendableType.ACTION_ENTEREXIT)) {
+			ConnectionManager.INSTANCE.add(NewMessageFactory.createEnterExitCommand());
 		}
 		message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
 		ConnectionManager.INSTANCE.add(message);

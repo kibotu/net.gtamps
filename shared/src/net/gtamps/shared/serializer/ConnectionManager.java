@@ -58,7 +58,11 @@ public enum ConnectionManager implements IMessageManager {
 //		if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
 //			Logger.i(this, "outbox add: " + message.toString());
 //		}
-		return outbox.add(message);
+		if(outbox.size()<Config.MAX_MESSAGES_OUTBOX){
+			return outbox.add(message);
+		} else {
+			return false;
+		}
 	}
 
 	public boolean connect() {
