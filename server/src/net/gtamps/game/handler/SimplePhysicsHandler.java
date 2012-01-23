@@ -18,9 +18,10 @@ import org.jbox2d.dynamics.World;
 public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	@SuppressWarnings("unused")
 	private static final LogType TAG = LogType.PHYSICS;
-	private static final EventType[] up = {EventType.ENTITY_COLLIDE, EventType.ENTITY_SENSE, EventType.ENTITY_BULLET_HIT};
-	private static final EventType[] down = {EventType.SESSION_UPDATE,
-		EventType.ENTITY_DESTROYED};
+	private static final EventType[] down = {
+		EventType.SESSION_UPDATE,
+		EventType.ENTITY_DESTROYED
+	};
 
 	protected Body body;
 
@@ -28,6 +29,7 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	protected final IProperty<Integer> speedyProperty;
 
 	private final PhysicsBlueprint blueprint;
+	private float initialImpulse = 0f;
 
 	public SimplePhysicsHandler(final Universe universe, final Entity parent, final PhysicsBlueprint blueprint) {
 		super(universe, Handler.Type.PHYSICS, parent);
@@ -38,6 +40,11 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 
 		speedxProperty = parent.useProperty(StringConstants.PROPERTY_SPEEDX, 0);
 		speedyProperty = parent.useProperty(StringConstants.PROPERTY_SPEEDY, 0);
+	}
+
+	public SimplePhysicsHandler(final Universe universe, final Entity parent, final PhysicsBlueprint blueprint, final int initialImpulseMagnitude) {
+		this(universe, parent, blueprint);
+		initialImpulse = initialImpulseMagnitude;
 	}
 
 	@Override
@@ -101,6 +108,17 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	private void createBody() {
 		final Entity parent = getParent();
 		body = blueprint.createBody(parent, parent.x.value(), parent.y.value(), parent.rota.value());
+		applyInitialImpulse(body);
+	}
+
+	private void applyInitialImpulse(final Body body) {
+		if (initialImpulse == 0f) {
+			return;
+		}
+		final float rota = body.getAngle();
+		final Vec2 impulse = new Vec2((float)Math.cos(rota), (float) Math.sin(rota));
+		impulse.mulLocal(initialImpulse);
+		applyImpulse(impulse);
 	}
 
 }

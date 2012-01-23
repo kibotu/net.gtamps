@@ -30,6 +30,7 @@ public class PhysicsBlueprint extends HandlerBlueprint<Entity> {
 	@NotNull
 	private final BodyDef bodyDef;
 	private final Collection<ShapeDef> shapeDefs;
+	private int initialImpulse = 0;
 
 
 	public PhysicsBlueprint(final Universe universe, final World world, final BodyDef bodyDef, final boolean dynamic) {
@@ -40,8 +41,14 @@ public class PhysicsBlueprint extends HandlerBlueprint<Entity> {
 		shapeDefs = new ArrayList<ShapeDef>();
 	}
 
+	public PhysicsBlueprint(final Universe universe, final World world, final BodyDef bodyDef, final int initialImpulse) {
+		this(universe, world, bodyDef, true);
+		this.initialImpulse = initialImpulse;
+	}
+
 	public PhysicsBlueprint(final PhysicsBlueprint other) {
 		this(other.universe, other.world, other.bodyDef, other.isDynamic);
+		initialImpulse = other.initialImpulse;
 		for (final ShapeDef shapeDef : other.shapeDefs) {
 			shapeDefs.add(shapeDef);
 		}
@@ -49,7 +56,11 @@ public class PhysicsBlueprint extends HandlerBlueprint<Entity> {
 
 	@Override
 	public ServersideHandler<Entity> createHandler(final Entity parent) {
-		return new SimplePhysicsHandler(universe, parent, this);
+		if (initialImpulse == 0) {
+			return new SimplePhysicsHandler(universe, parent, this);
+		} else {
+			return new SimplePhysicsHandler(universe, parent, this, initialImpulse);
+		}
 	}
 
 	public Body createBody(final Object userData) {
