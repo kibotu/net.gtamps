@@ -142,4 +142,16 @@ public class GameEvent extends GameObject {
 		return super.toString() + stringValue.value();
 	}
 
+	public void setSourceUid(final int uid) {
+		sourceUid.set(uid);
+	}
+
+	public void setTargetUid(final int uid) {
+		targetUid.set(uid);
+	}
+
+	public void setCause(final GameEvent event) {
+		// TODO implement setCause
+	}
+
 }
