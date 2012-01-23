@@ -17,6 +17,10 @@ public class Entity extends SharedGameActor {
 
 	private static final long serialVersionUID = -5466989016443709708L;
 
+	static public enum Type {
+		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
+	}
+
 	//TODO: use!
 	public static String normalizeName(final String name) {
 		return name.toUpperCase();
@@ -31,16 +35,16 @@ public class Entity extends SharedGameActor {
 	 */
 	public final IProperty<Integer> rota = this.useProperty(StringConstants.PROPERTY_ROTA, 0);
 	public final IProperty<Integer> playerProperty = this.useProperty(StringConstants.PROPERTY_PLAYER, Player.INVALID_UID);
-	public EntityType type;
+	public Type type;
 
 	public Entity() {
 		super();
-		this.type = EntityType.PLACEHOLDER;
+		this.type = Type.PLACEHOLDER;
 	}
 
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
-	public Entity(final EntityType type) {
+	public Entity(final Type type) {
 		super(type.name().toLowerCase());
 		this.type = type;
 	}
@@ -54,11 +58,11 @@ public class Entity extends SharedGameActor {
 		this.type = getType(name);
 	}
 
-	private EntityType getType(final String name) {
+	private Type getType(final String name) {
 		try {
-			return EntityType.valueOf(name.toUpperCase());
+			return Type.valueOf(name.toUpperCase());
 		} catch (final IllegalArgumentException e) {
-			return EntityType.PLACEHOLDER;
+			return Type.PLACEHOLDER;
 		}
 	}
 
@@ -143,7 +147,7 @@ public class Entity extends SharedGameActor {
 
 	}
 
-	void setType(final EntityType type) {
+	void setType(final Type type) {
 		ensureMutable();
 		this.type = type;
 	}

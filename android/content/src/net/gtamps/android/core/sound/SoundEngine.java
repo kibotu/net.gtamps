@@ -7,7 +7,7 @@ import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.configuration.Configuration;
-import net.gtamps.shared.game.entity.EntityType;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 
 import java.util.HashMap;
@@ -24,16 +24,16 @@ public class SoundEngine implements OnLoadCompleteListener {
     private static final String TAG = "SoundEngine";
 
     private SoundPool soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
-    private HashMap<EntityType, HashMap<EventType, SoundEffect>> soundPoolMap = new HashMap<EntityType, HashMap<EventType, SoundEffect>>();
+    private HashMap<Entity.Type, HashMap<EventType, SoundEffect>> soundPoolMap = new HashMap<Entity.Type, HashMap<EventType, SoundEffect>>();
     private AudioManager audioManager;
 
     // private Context context;
     public SoundEngine(Context context, Configuration configuration) {
         for (Configuration entity : configuration.select("game.entities.entity")) {
             String carType = entity.select("car").getString();
-            EntityType entityType = EntityType.PLACEHOLDER;
+            Entity.Type entityType = Entity.Type.PLACEHOLDER;
             // check if the type of the entity is one in the entity enum.
-            for (EntityType et : EntityType.values()) {
+            for (Entity.Type et : Entity.Type.values()) {
                 if (carType.equals(et.toString())) {
                     entityType = et;
                 }
@@ -57,7 +57,7 @@ public class SoundEngine implements OnLoadCompleteListener {
         instance = this;
     }
 
-    private void loadSoundIntoEngine(EntityType entityType, EventType eventType, String soundPath) {
+    private void loadSoundIntoEngine(Entity.Type entityType, EventType eventType, String soundPath) {
         if (soundPoolMap.containsKey(entityType)) {
             soundPoolMap.get(entityType).put(eventType,
                     new SoundEffect(soundPool.load(soundPath, PRIORITY_INTERACTION), 0.2f, PRIORITY_ENVIRONMENT));
@@ -85,7 +85,7 @@ public class SoundEngine implements OnLoadCompleteListener {
         }
     }
 
-    public void playSound(EntityType type, EventType eventType) {
+    public void playSound(Entity.Type type, EventType eventType) {
         if (soundPoolMap.containsKey(type) && soundPoolMap.get(type).containsKey(eventType)) {
             final SoundEffect se = soundPoolMap.get(type).get(eventType);
             if (se.isLoaded()) {
