@@ -96,8 +96,9 @@ public class GameEvent extends GameObject {
 	public GameEvent(final EventType type, final GameObject source) {
 		this(type, source, source);
 	}
+
 	public GameEvent() {
-		super();
+		super(EventType.GAME_EVENT.name());
 	}
 
 	public void setType(final EventType type) {
