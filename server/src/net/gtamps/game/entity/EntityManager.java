@@ -149,7 +149,9 @@ public class EntityManager extends GameEventDispatcher implements IGameEventList
 		final ArrayList<GameObject> update = new ArrayList<GameObject>();
 		for (final Entity e : entities.values()) {
 			if (!e.isSilent() && (e.getRevision() > baseRevision || e.hasChanged())) {
-				e.updateRevision(universe.getRevision());
+				if (e.hasChanged()) {
+					e.updateRevision(universe.getRevision());
+				}
 				update.add(e);
 			}
 		}
