@@ -22,7 +22,7 @@ import java.util.Set;
 public abstract class Handler<T extends SharedGameActor> implements IGameActor {
 
 	public enum Type {
-		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH, PLAYER_CONTROL, COLLISION
+		DRIVER, SENSOR, MOBILITY, PHYSICS, SHOOTING, HEALTH, PLAYER_CONTROL, COLLISION, AUTODISPOSE
 	}
 
 	protected final Type type;
