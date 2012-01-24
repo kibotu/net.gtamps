@@ -375,8 +375,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
 	@Override
 	public void shadeInternal(@NotNull ProcessingState state) {
-		shadeInternalWithOutVBO(state);
-//		shadeInternalWithVBO(state);
+        if(RenderCapabilities.useVBO()) shadeInternalWithVBO(state);
+        else shadeInternalWithOutVBO(state);
 	}
 
 	/**

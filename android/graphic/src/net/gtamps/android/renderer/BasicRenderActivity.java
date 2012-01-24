@@ -33,8 +33,7 @@ public abstract class BasicRenderActivity extends Activity {
         BasicRenderer renderer;
 
         // detect if OpenGL ES 2.0 support exists
-        if (RenderCapabilities.detectOpenGLES20(this)) {
-//        if (RenderCapabilities.supportsOpenGLES = false) {
+        if (Config.FORCE_GL10 ? RenderCapabilities.supportsOpenGLES = false : RenderCapabilities.detectOpenGLES20(this)) {
             view.setEGLContextClientVersion(2);
             renderer = new GLES20Renderer(renderAction);
         } else {
