@@ -16,9 +16,8 @@ import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
-import net.gtamps.shared.serializer.communication.NewMessage;
-import net.gtamps.shared.serializer.communication.SendableFactory;
-import net.gtamps.shared.serializer.communication.SendableType;
+import net.gtamps.shared.serializer.ConnectionManager;
+import net.gtamps.shared.serializer.communication.*;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 
@@ -139,22 +138,22 @@ public class World extends EntityScene implements InputEventListener {
     @Override
     public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
         Logger.D(this, sendableType);
-//        if (
-//			sendableType.equals(SendableType.ACTION_ACCELERATE) ||
-//			sendableType.equals(SendableType.ACTION_DECELERATE) ||
-//			sendableType.equals(SendableType.ACTION_LEFT) ||
-//			sendableType.equals(SendableType.ACTION_RIGHT) ||
-//			sendableType.equals(SendableType.ACTION_SHOOT)
-//
-//		) {
+        if (
+			sendableType.equals(SendableType.ACTION_ACCELERATE) ||
+			sendableType.equals(SendableType.ACTION_DECELERATE) ||
+			sendableType.equals(SendableType.ACTION_LEFT) ||
+			sendableType.equals(SendableType.ACTION_RIGHT) ||
+			sendableType.equals(SendableType.ACTION_SHOOT)
+
+		) {
 
 
         //TODO use SendableFactory
-//        message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
-//        message.addSendable(new NewSendable(sendableType, data));
-//        ConnectionManager.INSTANCE.add(message);
+        message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+        message.addSendable(new NewSendable(sendableType, data));
+        ConnectionManager.INSTANCE.add(message);
 
-//		}
+		}
     }
 
     @Override
