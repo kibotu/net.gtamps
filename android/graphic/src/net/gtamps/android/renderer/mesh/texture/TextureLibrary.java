@@ -65,8 +65,8 @@ public class TextureLibrary {
     }
 
     public int loadTexture(final int textureResourceId, boolean generateMipMap, Bitmap.Config bitmapConfig, boolean flipped) {
-        if (textureResourceIds.containsKey(textureResourceId)) {
-            return textureResourceIds.get(textureResourceId);
+        if (textureResourceIds.containsKey("" + textureResourceId)) {
+            return textureResourceIds.get("" + textureResourceId);
         }
 
         BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();

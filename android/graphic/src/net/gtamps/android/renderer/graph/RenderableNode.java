@@ -171,58 +171,95 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
 	@Deprecated
 	private void shadeInternalWithOutVBO(@NotNull ProcessingState state) {
-		if (!RenderCapabilities.supportsGLES20())
-			return;
-		if (mesh == null)
-			return;
-		if (isDirty)
-			onDirty(state.getGl());
+        if (!RenderCapabilities.supportsGLES20())
+            return;
+        if (mesh == null)
+            return;
+        if (isDirty)
+            onDirty(state.getGl());
 
-		int program = shaderTyp.shader.getProgram();
+        int program = shaderTyp.shader.getProgram();
 
-		// vertices
-		GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aPosition"), 3, GLES20.GL_FLOAT, false, 0,
-				mesh.getVbo().vertexBuffer);
-		GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aPosition"));
-		if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-			Logger.checkGlError(this, "aPosition");
-		}
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "modelMatrix"), 1, false,
+                getCombinedTransformation().values, 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "modelMatrix");
+        }
 
-		// the normal info
-		GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aNormal"), 3, GLES20.GL_FLOAT, false, 0,
-				mesh.getVbo().normalBuffer);
-		GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aNormal"));
-		if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-			Logger.checkGlError(this, "aNormal");
-		}
+        // vertices
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexPosition"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().vertexBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexPosition"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexPosition");
+        }
 
-		// colors
-		// GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program,
-		// "aColor"), 4, GLES20.GL_FLOAT, false, 0, mesh.getVbo().colorBuffer);
-		// GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program,
-		// "aColor"));
-		// OpenGLUtils.checkGlError("aColor");
+        // normals
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexNormal"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().normalBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexNormal"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexNormal");
+        }
 
-		// enable texturing
-		GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTexture"), 0f);
-		if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-			Logger.checkGlError(this, "hasTexture");
-		}
+        // colors
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexColor"), 4, GLES20.GL_FLOAT, false, 0, mesh.getVbo().colorBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexColor"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexColor");
+        }
 
-		// uvs
-		GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aTextCoord"), 2, GLES20.GL_FLOAT, false, 0,
-				mesh.getVbo().textureCoordinateBuffer);
-		GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aTextCoord"));
-		if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-			Logger.checkGlError(this, "aTextCoord");
-		}
+        // material
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.emission"), 1, material.getEmission()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.emission");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.ambient"), 1, material.getAmbient()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.ambient");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.diffuse"), 1, material.getDiffuse()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.diffuse");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.specular"), 1, material.getSpecular()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.specular");
+        }
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "material.shininess"), material.getPhongExponent());
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.shininess");
+        }
 
-		// Draw with indices
-		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT,
-				mesh.getVbo().indexBuffer);
-		if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-			Logger.checkGlError(this, "glDrawElements");
-		}
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTexture"), hasTextures ? 2 : 0);
+        if(net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+            Logger.checkGlError(this, "hasTexture");
+        }
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
+                hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
+
+        // uses lightning
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasLighting"), lightingEnabled ? 2 : 0);
+        if(net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+            Logger.checkGlError(this, "hasLighting");
+        }
+
+        // uvs
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexUv"), 2, GLES20.GL_FLOAT, false, 0, mesh.getVbo().textureCoordinateBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexUv"));
+        if(net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+            Logger.checkGlError(this, "vertexUv");
+        }
+
+        // Draw with indices
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, mesh.getVbo().indexBuffer);
+        if(net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+            Logger.checkGlError(this, "glDrawElements");
+        }
 	}
 
 	private void shadeInternalWithVBO(@NotNull ProcessingState state) {
@@ -338,8 +375,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
 	@Override
 	public void shadeInternal(@NotNull ProcessingState state) {
-		// shadeInternalWithOutVBO(state);
-		shadeInternalWithVBO(state);
+		shadeInternalWithOutVBO(state);
+//		shadeInternalWithVBO(state);
 	}
 
 	/**
