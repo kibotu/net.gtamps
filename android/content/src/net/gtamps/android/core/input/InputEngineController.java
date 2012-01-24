@@ -1,6 +1,5 @@
 package net.gtamps.android.core.input;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.View.OnTouchListener;
 import net.gtamps.android.core.input.event.InputEventDispatcher;
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.core.input.layout.DummyLayout;
+import net.gtamps.shared.Utils.Logger;
 
 
 public class InputEngineController implements OnTouchListener, OnKeyListener {
@@ -25,15 +25,16 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
     public static InputEngineController getInstance() {
         if (instance == null) {
             instance = new InputEngineController();
+            inputEventDispatcher = new InputEventDispatcher();
+//            instance.layout = new DummyLayout();
         }
-//        instance.layout = new DummyLayout();
         return instance;
     }
 
     public void setLayout(AbstractInputLayout layout) {
-        inputEventDispatcher = new InputEventDispatcher();
         layout.setInputEventDispatcher(inputEventDispatcher);
-        instance.layout = layout;
+        this.layout = layout;
+        Logger.d(this, "Set layout to "+instance.layout.getClass().getSimpleName());
     }
 
     public InputEventDispatcher getInputEventDispatcher() {

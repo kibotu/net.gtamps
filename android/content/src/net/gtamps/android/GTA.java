@@ -21,8 +21,5 @@ public class GTA extends BasicRenderActivity {
         view.setOnTouchListener(InputEngineController.getInstance());
         view.setOnKeyListener(InputEngineController.getInstance());
         
-        InputEngineController.getInstance().setLayout(new InputLayoutIngame());
-        PlayerMovementListener pml = new PlayerMovementListener();
-        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);
     }
 }

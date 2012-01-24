@@ -12,6 +12,7 @@ import net.gtamps.android.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.android.game.content.scenes.inputlistener.PlayerMovementListener;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -57,7 +58,9 @@ public class World extends EntityScene implements InputEventListener {
         // setup layout
         layout = new InputLayoutIngame();
         InputEngineController.getInstance().setLayout(layout);
-        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
+        PlayerMovementListener pml = new PlayerMovementListener();
+        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);
+//        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
 
         // set dirty flag, since something has changed (input engine needs correct resolution
         setDirtyFlag();
@@ -160,7 +163,7 @@ public class World extends EntityScene implements InputEventListener {
     @Override
     public void onDirty() {
         // set resolution
-        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
+//        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
         clearDirtyFlag();
     }
 }

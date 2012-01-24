@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import net.gtamps.android.core.input.event.InputInterpreter;
+import net.gtamps.shared.Utils.Logger;
 
 import java.util.HashMap;
 

@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.SendableType;
 
 public class HudInterpreter extends InputInterpreter {

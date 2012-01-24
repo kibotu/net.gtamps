@@ -50,9 +50,9 @@ public class Hud extends BasicScene implements InputEventListener {
         cursor.animate(0.51f, State.Type.IDLE);
 
         // setup layout
-        layout = new InputLayoutIngame();
-        InputEngineController.getInstance().setLayout(layout);
-        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
+//        layout = new InputLayoutIngame();
+//        InputEngineController.getInstance().setLayout(layout);
+//        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
 
         // set dirty flag, since something has changed (input engine needs correct resolution
         setDirtyFlag();
@@ -93,7 +93,7 @@ public class Hud extends BasicScene implements InputEventListener {
     @Override
     public void onDirty() {
         // set resolution
-        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
+//        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
         clearDirtyFlag();
     }
 }

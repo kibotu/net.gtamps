@@ -30,9 +30,9 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 
-	//FIXME this is a bad hack, so that the client can't "DoS" the server
-	private static final int KEEP_EVERY_NTH_UPDATE_REQUEST = 4;
-	public final ConcurrentHashMap<String, Integer> updateRequestThrottler = new ConcurrentHashMap<String, Integer>();
+	public final ConcurrentHashMap<String, Integer> updateRequestInterval = new ConcurrentHashMap<String, Integer>();
+	public final ConcurrentHashMap<String, Integer> lastRevisionNumber = new ConcurrentHashMap<String, Integer>();
+
 	public final BlockingQueue<NewMessage> inbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewMessage> outbox = new LinkedBlockingQueue<NewMessage>();
 	public final BlockingQueue<NewSendable> responsebox = new LinkedBlockingQueue<NewSendable>();
