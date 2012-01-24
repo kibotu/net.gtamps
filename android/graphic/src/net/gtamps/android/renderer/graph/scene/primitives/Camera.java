@@ -2,6 +2,7 @@ package net.gtamps.android.renderer.graph.scene.primitives;
 
 import android.opengl.GLES20;
 import android.opengl.GLU;
+import net.gtamps.android.renderer.Registry;
 import net.gtamps.android.renderer.RenderCapabilities;
 import net.gtamps.android.renderer.graph.ProcessingState;
 import net.gtamps.android.renderer.graph.RenderableNode;
@@ -34,12 +35,6 @@ public class Camera extends RenderableNode {
     private Vector3 viewportCoords = Vector3.createNew(0, 0, 0);
 
     private Vector3 viewPortDimension = Vector3.createNew(800, 480, 0);
-
-    protected Matrix4 projectionMatrix = Matrix4.createNew();
-    protected Matrix4 viewMatrix = Matrix4.createNew();
-    protected Matrix4 normalMatrix = Matrix4.createNew();
-
-    private boolean hasDepthTest = true;
 
     /**
      * Initialisiert eine neue Instanz der {@see CameraNode}-Klasse
@@ -201,91 +196,23 @@ public class Camera extends RenderableNode {
      */
     @Override
     protected void processInternal(@NotNull ProcessingState state) {
-    }
-
-    private void shadeInternalGLES20() {
-
-        Vector3 pos = frustum.getPosition();
-        Vector3 target = frustum.getTarget();
-        Vector3 up = frustum.getUp();
-        Matrix4.setLookAt(viewMatrix, pos, target, up);
-//        Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
-
-        if (hasDepthTest) {
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        } else {
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        }
-
-        int program = Shader.Type.PHONG.shader.getProgram();
-
-        // send to the shader
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "projectionMatrix"), 1, false, projectionMatrix.values, 0);
-        Logger.checkGlError(this, "projectionMatrix");
-
-        // Create the normal modelview matrix
-        // Invert + transpose of mvpmatrix
-//        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
-//        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
-
-        // send to the shader
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);
-        Logger.checkGlError(this, "normalMatrix");
-
-        // eye view matrix
-        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "viewMatrix"), 1, false, viewMatrix.values, 0);
-        Logger.checkGlError(this, "viewMatrix");
+        Registry.getRenderer().applyCamera(frustum);
     }
 
     public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
         viewportCoords.set(x, y, 0);
         viewPortDimension.set(width, height, 0);
         frustum.setAspectRatio(viewPortDimension.x/viewPortDimension.y);
-        if (RenderCapabilities.supportsGLES20()) setViewportGLES20();
-        else setViewportGL10(gl10);
+        frustum.setPerspectiveProjection();
+//        frustum.setOrthographicProjection();
+        Registry.getRenderer().setViewPort((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
+        setDirtyFlag();
         Logger.v(this, "[width:" + width + "| height:" + height + "| aspect:" + frustum.getAspectRatio() + "]");
-    }
-
-    private void setViewportGLES20() {
-//        frustum.setOrthographicProjection(projectionMatrix);
-        frustum.setPerspectiveProjection(projectionMatrix);
-        GLES20.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
-        Logger.checkGlError(this, "glViewPort");
-        setDirtyFlag();
-    }
-
-    private void setViewportGL10(GL10 gl10) {
-        gl10.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
-        setDirtyFlag();
-    }
-
-    private void shadeInternalGL10(@NotNull GL10 gl) {
-        gl.glViewport((int) viewportCoords.x, (int) viewportCoords.y, (int) dimension.x, (int) dimension.y);
-        gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadIdentity();
-        GLU.gluPerspective(gl, getHorizontalFieldOfViewEffective(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());
-        GLU.gluLookAt(gl, position.x, position.y, position.z, frustum.getTarget().x, frustum.getTarget().y, frustum.getTarget().z, frustum.getUp().x, frustum.getUp().y, frustum.getUp().z);
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        if (hasDepthTest) {
-            gl.glEnable(GL10.GL_DEPTH_TEST);
-        } else {
-            gl.glDisable(GL10.GL_DEPTH_TEST);
-        }
-    }
-
-    private void shadeInternalGL10(@NotNull ProcessingState state) {
-        shadeInternalGL10(state.getGl());
     }
 
     @Override
     public void shadeInternal(@NotNull ProcessingState state) {
-        if (RenderCapabilities.supportsGLES20()) {
-            shadeInternalGLES20();
-        } else {
-            shadeInternalGL10(state);
-        }
+        Registry.getRenderer().applyCamera(frustum);
     }
 
     private ProcessingState glState = new ProcessingState();
@@ -439,7 +366,7 @@ public class Camera extends RenderableNode {
     }
 
     public void enableDepthTest(boolean enableDepthTest) {
-        hasDepthTest = enableDepthTest;
+        frustum.enableDepthTest(enableDepthTest);
     }
 
     @Override

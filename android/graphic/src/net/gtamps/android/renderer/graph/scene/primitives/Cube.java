@@ -40,7 +40,7 @@ public class Cube extends RenderableNode {
         enableNormals(true);
         enableTextures(true);
         enableDoubleSided(true);
-        enableLighting(true);
+        enableLighting(false);
         enableAlpha(true);
 //        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
 //        setPointSize(3);

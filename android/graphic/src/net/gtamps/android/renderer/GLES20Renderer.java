@@ -6,6 +6,9 @@ import android.opengl.GLUtils;
 import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Matrix4;
+import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.nio.ByteBuffer;
@@ -235,6 +238,47 @@ public class GLES20Renderer extends BasicRenderer {
     public void clearScreen(Color4 bgcolor) {
         GLES20.glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
+    }
+
+    @Override
+    public void applyCamera(Frustum frustum) {
+        int program = Shader.Type.PHONG.shader.getProgram();
+
+        if (frustum.hasDepthTest()) GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        else GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+
+        Matrix4 projectionMatrix = frustum.getProjectionMatrix();
+        Matrix4 viewMatrix = frustum.getViewMatrix();
+        Matrix4 normalMatrix = frustum.getNormalMatrix();
+        Vector3 pos = frustum.getPosition();
+        Vector3 target = frustum.getTarget();
+        Vector3 up = frustum.getUp();
+        
+        Matrix4.setLookAt(viewMatrix, pos, target, up);
+//         Matrix.setLookAtM(viewMatrix.values,0,pos.x,pos.y,pos.z,target.x,target.y,target.z,up.x,up.y,up.z);
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "projectionMatrix"), 1, false, projectionMatrix.values, 0);
+        Logger.checkGlError(this, "projectionMatrix");
+
+        // Create the normal modelview matrix
+        // Invert + transpose of mvpmatrix
+//        Matrix.invertM(normalMatrix.values, 0, projectionMatrix.values, 0);
+//        Matrix.transposeM(normalMatrix.values, 0, normalMatrix.values, 0);
+
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "normalMatrix"), 1, false, normalMatrix.values, 0);
+        Logger.checkGlError(this, "normalMatrix");
+
+        // eye view matrix
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "viewMatrix"), 1, false, viewMatrix.values, 0);
+        Logger.checkGlError(this, "viewMatrix");
+    }
+
+    @Override
+    public void setViewPort(int x, int y, int width, int height) {
+        GLES20.glViewport(x,y,width,height);
+        Logger.checkGlError(this, "glViewPort");
     }
 
     // light variables

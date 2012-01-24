@@ -9,6 +9,7 @@ import net.gtamps.android.renderer.mesh.Mesh;
 import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -152,9 +153,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 		gl.glTranslatef(position.x, position.y, position.z);
 
 		// Object Rotieren (Roll - Pitch - Yaw)
-		gl.glRotatef(rotation.x, 1, 0, 0);
-		gl.glRotatef(rotation.y, 0, 1, 0);
-		gl.glRotatef(rotation.z, 0, 0, 1);
+		gl.glRotatef(MathUtils.rad2Deg(rotation.x), 1, 0, 0);
+		gl.glRotatef(MathUtils.rad2Deg(rotation.y), 0, 1, 0);
+		gl.glRotatef(MathUtils.rad2Deg(rotation.z), 0, 0, 1);
 
 		// Object skalieren
 		gl.glPushMatrix();
@@ -389,7 +390,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 			onDirty(gl);
 
 		// shading
-		// gl.glShadeModel(renderState.shader.getValue());
+		gl.glShadeModel(renderState.shader.getValue());
 
 		// enable color materials
 		if (colorMaterialEnabled) {
