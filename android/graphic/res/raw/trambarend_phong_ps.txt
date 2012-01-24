@@ -54,7 +54,7 @@ void main() {
 
   vec4 texColor = texture2D(colorMap, uvV);
 
-  gl_FragColor =  hasLighting == 2 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
+  //gl_FragColor =  hasLighting == 2 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
     //gl_FragColor =  phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
-  //gl_FragColor =  texture2D(colorMap, uvV);
+  gl_FragColor =  vec4(1,1,1,1);
 }
