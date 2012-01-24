@@ -139,11 +139,11 @@ def main(ip,username,password,robotmode):
 	if(robotmode):
 		print('Robot mode enabled! hit ctrl-c to stop')
 		
-		sendMessage(s,sessionID,'REGISTER '+username+' '+password,messageID)
-		sessionID = sendMessage(s,sessionID,'LOGIN '+username+' '+password,messageID)
+		sendMessage(s,sessionID,'REGISTER '+ str(DataMap({'authuser': username, 'authpass': password })),messageID)
+		sessionID = sendMessage(s,sessionID,'LOGIN '+ str(DataMap({'authuser': username, 'authpass': password })),messageID)
 		sendMessage(s,sessionID,'JOIN',messageID)
 		while(True):
-			revisionID = sendMessage(s,sessionID,'GETUPDATE '+revisionID,messageID)
+			revisionID = sendMessage(s,sessionID,'GETUPDATE '+ str(DataMap({'rev': revisionID})),messageID)
 			a = random.randint(0,5)
 			if( a==0):
 				sendMessage(s,sessionID,'ACTION_ACCELERATE',messageID)

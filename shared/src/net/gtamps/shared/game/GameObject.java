@@ -47,6 +47,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 
 
 	protected GameObject() {
+		this(null, INVALID_UID);
 	}
 
 	/**
@@ -235,7 +236,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		this.uid = uid;
 	}
 
-	void setName(final String name) {
+	public void setName(final String name) {
 		Validate.notEmpty(name);
 		this.name = name;
 	}

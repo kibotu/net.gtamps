@@ -87,8 +87,9 @@ public class GameEvent extends GameObject {
 	public GameEvent(final EventType type, final GameObject source) {
 		this(type, source, source);
 	}
+
 	public GameEvent() {
-		super();
+		super(EventType.GAME_EVENT.name());
 	}
 
 	public void setType(final EventType type) {
@@ -131,6 +132,18 @@ public class GameEvent extends GameObject {
 	@Override
 	public String toString() {
 		return super.toString() + stringValue.value();
+	}
+
+	public void setSourceUid(final int uid) {
+		sourceUid.set(uid);
+	}
+
+	public void setTargetUid(final int uid) {
+		targetUid.set(uid);
+	}
+
+	public void setCause(final GameEvent event) {
+		// TODO implement setCause
 	}
 
 }

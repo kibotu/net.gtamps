@@ -57,12 +57,21 @@ public class PhysicsFactory {
 	}
 
 	public static PhysicsBlueprint createPhysicsBlueprint(final Universe universe, final PhysicalProperties physprop) {
-		final PhysicsBlueprint blup = new PhysicsBlueprint(
-				universe,
-				universe.getPhysics().getWorld(),
-				physpropToBodyDef(physprop),
-				isDynamic(physprop)
-				);
+		final PhysicsBlueprint blup;
+		if (physprop == PhysicalProperties.Bullet) {
+			blup = new PhysicsBlueprint(
+					universe,
+					universe.getPhysics().getWorld(),
+					physpropToBodyDef(physprop),
+					WorldConstants.BULLET_INITIAL_IMPULSE);
+		} else {
+			blup = new PhysicsBlueprint(
+					universe,
+					universe.getPhysics().getWorld(),
+					physpropToBodyDef(physprop),
+					isDynamic(physprop)
+					);
+		}
 		blup.addAllShapeDefs(physpropToShapeDefs(physprop));
 		return blup;
 	}

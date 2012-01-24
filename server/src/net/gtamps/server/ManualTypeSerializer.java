@@ -76,18 +76,19 @@ public class ManualTypeSerializer implements ISerializer {
 	}
 
 	private <T extends AbstractSendable<T>>void serializeAbstractSendable(final StringBuilder bld, final AbstractSendable<T> sdb) {
-		if (sdb instanceof NewMessage) {
-			serializeMessage(bld, (NewMessage) sdb);
-		} else if (sdb instanceof NewSendable) {
-			serializeSendable(bld, (NewSendable) sdb);
-		} else if (sdb instanceof Value) {
-			serializeValue(bld, (Value<?>) sdb);
-		} else if (sdb instanceof ListNode) {
-			serializeList(bld, (ListNode<?>) sdb);
-		} else if (sdb instanceof DataMap) {
-			serializeDataMap(bld, (DataMap) sdb);
-		} else if (sdb instanceof MapEntry) {
-			serializeMapEntry(bld, (MapEntry<?>) sdb);
+		Object sdb2 = sdb;
+        if (sdb2 instanceof NewMessage) {
+			serializeMessage(bld, (NewMessage) sdb2);
+		} else if (sdb2 instanceof NewSendable) {
+			serializeSendable(bld, (NewSendable) sdb2);
+		} else if (sdb2 instanceof Value) {
+			serializeValue(bld, (Value<?>) sdb2);
+		} else if (sdb2 instanceof ListNode) {
+			serializeList(bld, (ListNode<?>) sdb2);
+		} else if (sdb2 instanceof DataMap) {
+			serializeDataMap(bld, (DataMap) sdb2);
+		} else if (sdb2 instanceof MapEntry) {
+			serializeMapEntry(bld, (MapEntry<?>) sdb2);
 		} else {
 			throw new IllegalArgumentException("unknown type: " + sdb.getClass().getCanonicalName());
 		}
@@ -160,7 +161,19 @@ public class ManualTypeSerializer implements ISerializer {
 		if (isNextToken(scanner, DATAMAP_START_TOKEN)) {
 			sendable = deserializeDataMap(scanner);
 		} else if (isNextToken(scanner, LIST_START_TOKEN)) {
-			sendable = deserializeList(scanner);
+
+
+            // TODO make me compatible q.q
+
+            /*
+
+            incompatible types; inferred type argument(s) net.gtamps.shared.serializer.communication.AbstractSendable<?> do not conform to bounds of type variable(s) T
+found   : <T>net.gtamps.shared.serializer.communication.data.ListNode<T>
+required: net.gtamps.shared.serializer.communication.data.ListNode<?>
+
+             */
+
+//			sendable =  deserializeList(scanner);
 		} else if (isNextToken(scanner, SENDABLE_START_TOKEN)) {
 			sendable = deserializeSendable(scanner);
 		} else if (isNextToken(scanner, MESSAGE_START_TOKEN)) {
