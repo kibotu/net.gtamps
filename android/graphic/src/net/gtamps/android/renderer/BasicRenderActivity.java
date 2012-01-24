@@ -69,7 +69,7 @@ public abstract class BasicRenderActivity extends Activity {
         view.getHolder().setFormat(PixelFormat.RGBA_8888);
 
 //	    view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-//        if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0)
+        if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_CHECK_GL_ERROR) <= 0)
             view.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
         if (Config.LOG_LEVEL.compareTo(Logger.Level.DEBUG_LOG_GL_CALLS) <= 0)
             view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
