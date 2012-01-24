@@ -78,7 +78,7 @@ public class Game extends RenderAction {
         }
 
         if (world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
-//            connection.add(MessageFactory.createGetUpdateRequest(connection.currentRevId));
+            connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
             Vector3 temp = world.getActiveView().getObject3d().getPosition();
             world.getActiveCamera().setPosition(temp.x, temp.y, temp.z + 300);
             world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
