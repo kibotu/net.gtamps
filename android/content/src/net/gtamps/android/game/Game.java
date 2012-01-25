@@ -1,6 +1,7 @@
 package net.gtamps.android.game;
 
 import net.gtamps.android.core.net.MessageHandler;
+import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
 import net.gtamps.android.game.content.scenes.World;
@@ -77,11 +78,11 @@ public class Game extends RenderAction {
             }
         }
 
-        if (world.getActiveView() != null && world.getActiveView().getObject3d() != null) {
+        if (world.getActiveView() != null && ((EntityView) world.getActiveView()).getObject3d() != null) {
             connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
-            Vector3 temp = world.getActiveView().getObject3d().getPosition();
+            Vector3 temp = ((EntityView)world.getActiveView()).getObject3d().getPosition();
             world.getActiveCamera().setPosition(temp.x, temp.y, temp.z + 300);
-            world.getActiveCamera().setTarget(world.getActiveView().getObject3d().getPosition());
+            world.getActiveCamera().setTarget(((EntityView)world.getActiveView()).getObject3d().getPosition());
         }
     }
     int i = 0;

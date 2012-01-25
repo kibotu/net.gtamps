@@ -1,10 +1,14 @@
 package net.gtamps.android.game.content.scenes;
 
+import java.util.List;
+
 import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.event.InputEventListener;
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
+import net.gtamps.android.core.net.AbstractEntityView;
+import net.gtamps.android.core.net.IWorld;
 import net.gtamps.android.renderer.graph.RenderState;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.graph.scene.primitives.Camera;
@@ -17,20 +21,19 @@ import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
+import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.*;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 
-public class World extends EntityScene implements InputEventListener {
+public class World extends EntityScene implements InputEventListener, IWorld {
 
-    private EntityView activeView;
-    public final PlayerManager playerManager;
+    private AbstractEntityView activeView;
     private AbstractInputLayout layout;
     private NewMessage message;
 
     public World() {
-        playerManager = new PlayerManager();
     }
 
     @Override
@@ -51,7 +54,6 @@ public class World extends EntityScene implements InputEventListener {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(addLevel()));
 //        add(new EntityView(getSunLight()));
 
         // setup layout
@@ -130,11 +132,11 @@ public class World extends EntityScene implements InputEventListener {
         return parsedObject;
     }
 
-    public EntityView getActiveView() {
+    public AbstractEntityView getActiveView() {
         return activeView;
     }
 
-    public void setActiveView(@NotNull EntityView entityView) {
+    public void setActiveView(@NotNull AbstractEntityView entityView) {
         this.activeView = entityView;
     }
 
@@ -165,4 +167,22 @@ public class World extends EntityScene implements InputEventListener {
 //        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
         clearDirtyFlag();
     }
+
+	@Override
+	public void add(AbstractEntityView entityView) {
+		
+		
+	}
+
+	@Override
+	public List<AbstractEntityView> getAllEntities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractEntityView createEntityView(Entity e) {
+		return new EntityView(e);
+	}
+
 }
