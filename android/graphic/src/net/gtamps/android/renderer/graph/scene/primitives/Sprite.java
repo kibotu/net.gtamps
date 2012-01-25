@@ -41,7 +41,6 @@ public class Sprite extends RenderableNode {
         setTextureBufferId(textureCoordBufferId);
         setTextureBufferOffsetId(textureCoordBufferOffsetId);
         scaling.set(1, 1, 0);
-        enableMipMap(useMipMap);
     }
 
     public Sprite(int textureId, int textureCoordBufferid, @NotNull SpriteTetxure spriteTetxure, boolean useMipMap) {
@@ -61,7 +60,6 @@ public class Sprite extends RenderableNode {
 
     public void loadBufferedTexture(int textureResourceId, int textureCoordinateResourceId, boolean generateMipMap) {
         setBufferedTexture(Registry.getTextureLibrary().loadBufferedTexture(textureResourceId, textureCoordinateResourceId, generateMipMap));
-        enableMipMap(generateMipMap);
     }
 
     @Override
@@ -107,7 +105,6 @@ public class Sprite extends RenderableNode {
 //        setPointSmoothing(true);
 //        setLineWidth(1);
 //        setLineSmoothing(true);
-        enableMipMap(true);
     }
 
     @Override
@@ -150,8 +147,9 @@ public class Sprite extends RenderableNode {
     }
 
     @Override
+    @Deprecated
     public Sprite clone() {
-        Sprite sprite = new Sprite(dimension.x, dimension.y, textureId, textureBufferId, textureBufferOffsetId, hasMipMap());
+        Sprite sprite = new Sprite(dimension.x, dimension.y, textureId, textureBufferId, textureBufferOffsetId,true);
         sprite.setPosition(position);
         return sprite;
     }

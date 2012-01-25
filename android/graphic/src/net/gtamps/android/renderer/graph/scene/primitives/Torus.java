@@ -122,11 +122,10 @@ public class Torus extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(false);
+        enableTextures(true);
         enableDoubleSided(false);
         enableLighting(true);
         enableAlpha(true);
-        enableMipMap(true);
 
 //        getRenderState().drawingStyle = RenderState.DrawingStyle.GL_POINTS; // default anyway
 //        setPointSize(3);

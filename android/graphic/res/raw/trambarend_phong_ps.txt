@@ -1,5 +1,36 @@
 precision mediump float;
 
+// Vertex attributes form the mesh. Transformed by the vertex shader.
+varying vec3 fcolor;
+varying vec3 normalV;
+varying vec3 eyedirV;
+varying vec3 lightdirV;
+varying vec2 uvV;
+
+uniform int textureunits;
+uniform sampler2D texture_01;
+uniform sampler2D texture_02;
+uniform sampler2D texture_03;
+uniform sampler2D texture_04;
+uniform sampler2D texture_05;
+uniform sampler2D texture_06;
+uniform sampler2D texture_07;
+uniform sampler2D texture_08;
+
+uniform int hasLighting;
+
+struct PhongMaterial
+{
+   vec4 emission;    // Ecm
+   vec4 ambient;     // Acm
+   vec4 diffuse;     // Dcm
+   vec4 specular;    // Scm
+   float shininess;  // Srm
+};
+uniform PhongMaterial material;
+
+vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+
 // Simple implementation of the phong illumination model.
 vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) {
 
@@ -28,33 +59,8 @@ vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) 
   return vec4(color,1.0);
 }
 
-// Vertex attributes form the mesh. Transformed by the vertex shader.
-varying vec3 fcolor;
-varying vec3 normalV;
-varying vec3 eyedirV;
-varying vec3 lightdirV;
-varying vec2 uvV;
-uniform sampler2D colorMap;
-
-uniform int hasLighting;
-
-struct PhongMaterial
-{
-   vec4 emission;    // Ecm
-   vec4 ambient;     // Acm
-   vec4 diffuse;     // Dcm
-   vec4 specular;    // Scm
-   float shininess;  // Srm
-};
-uniform PhongMaterial material;
-
-vec3 lightintensity = vec3(0.9, 0.9, 0.9);
-
 void main() {
 
-  vec4 texColor = texture2D(colorMap, uvV);
-
+  vec4 texColor = texture2D(texture_01, uvV);
   gl_FragColor =  hasLighting == 2 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
-    //gl_FragColor =  phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess);
-  //gl_FragColor =  texture2D(colorMap, uvV);
 }

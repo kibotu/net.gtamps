@@ -51,7 +51,7 @@ public class RenderCapabilities {
     }
 
     public static int maxTextureUnits() {
-        return maxTextureUnits;
+        return 8; // maxTextureUnits;
     }
 
     public static int getMaxTextureSize() {
@@ -91,7 +91,7 @@ public class RenderCapabilities {
     }
 
     public static int maxLights() {
-        return maxLights;
+        return 8; //;maxLights;
     }
 
     /**

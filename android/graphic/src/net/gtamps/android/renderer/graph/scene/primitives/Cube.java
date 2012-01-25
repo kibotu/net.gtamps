@@ -38,8 +38,8 @@ public class Cube extends RenderableNode {
         enableColorMaterialEnabled(true);
         enableVertexColors(true);
         enableNormals(true);
-        enableTextures(true);
-        enableDoubleSided(true);
+//        enableTextures(false);
+        enableDoubleSided(false);
         enableLighting(false);
         enableAlpha(true);
 //        setDrawingStyle(DrawingStyle.GL_TRIANGLES); // default anyway
@@ -47,7 +47,6 @@ public class Cube extends RenderableNode {
 //        setPointSmoothing(true);
 //        setLineWidth(1);
 //        setLineSmoothing(true);
-        enableMipMap(true);
 //        material = new Material(new Color4(0xff000000),new Color4(0xff330000),new Color4(0xff660000),new Color4(0xff770000),5);
     }
 
