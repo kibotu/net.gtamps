@@ -399,15 +399,14 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable vertex colors
-        if (vertexColorsEnabled) {
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-            gl.glColorPointer(4, GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL_COLOR_ARRAY);
-        } else {
-            gl.glColor4f(material.getEmission().r, material.getEmission().g, material.getEmission().b,
-                    material.getEmission().a);
-            gl.glDisableClientState(GL_COLOR_ARRAY);
-        }
+//        if (vertexColorsEnabled) {
+//            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
+//            gl.glColorPointer(4, GL_FLOAT, 0, 0);
+//            gl.glEnableClientState(GL_COLOR_ARRAY);
+//        } else {
+//            gl.glColor4f(material.getEmission().asArray()[0], material.getEmission().asArray()[1], material.getEmission().asArray()[2], material.getEmission().asArray()[3]);
+//            gl.glDisableClientState(GL_COLOR_ARRAY);
+//        }
 
         // enable light
         if (lightingEnabled) {
@@ -441,20 +440,16 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glDisable(GL_ALPHA_TEST);
         }
 
-        // enable texture
+//        enable texture
         if (textureSamples != null) {
             gl.glEnable(GL_TEXTURE_2D);
-            
-//            for (int i = 0; i < textureSamples.size(); i++) {
-//                TextureSample textureSample = textureSamples.get(i);
-//                gl.glActiveTexture(GL_TEXTURE0 + textureSample.activeTextureId);
-//                Logger.i(this, "" + textureSample.textureId + " " +textureSample.isAllocated);
-//                gl.glBindTexture(GL_TEXTURE_2D, textureSample.textureId);
-//                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureSample.hasMipMap ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST);
-//            }
 
-            // bind texture vbo id
-            gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, textureSamples.get(0).textureId);
+            for (int i = 0; i < textureSamples.size(); i++) {
+                TextureSample textureSample = textureSamples.get(i);
+                gl.glActiveTexture(GL_TEXTURE0 + i);
+                gl.glBindTexture(GL_TEXTURE_2D, textureSample.textureId);
+                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureSample.hasMipMap ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST);
+            }
 
             // // texture offset for repeating textures
             // if (textureManager.get(0).offsetU != 0 ||
@@ -475,7 +470,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glDisable(GL_TEXTURE_2D);
         }
 
-        // drawing point setings
+//        drawing point setings
         if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_POINTS)) {
             if (pointSmoothing) {
                 gl.glEnable(GL_POINT_SMOOTH);
@@ -485,7 +480,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glPointSize(pointSize);
         }
 
-        // drawing line settings
+//        drawing line settings
         if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINES)
                 || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_LOOP)
                 || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_STRIP)) {

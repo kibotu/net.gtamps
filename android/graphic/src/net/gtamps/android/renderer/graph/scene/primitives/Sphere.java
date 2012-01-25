@@ -103,11 +103,11 @@ public class Sphere extends RenderableNode {
     @Override
     protected void setOptions() {
         enableColorMaterialEnabled(true);
-        enableVertexColors(true);
+        enableVertexColors(false);
         enableNormals(true);
 //        enableTextures(false);
         enableDoubleSided(false);
-        enableLighting(true);
+        enableLighting(false);
         enableAlpha(true);
 
 //        getRenderState().drawingStyle = RenderState.DrawingStyle.GL_POINTS; // default anyway
