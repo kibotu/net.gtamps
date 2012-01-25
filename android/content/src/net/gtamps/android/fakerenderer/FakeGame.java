@@ -2,6 +2,7 @@ package net.gtamps.android.fakerenderer;
 
 import java.util.LinkedList;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
@@ -27,8 +28,8 @@ public class FakeGame extends View {
 
 	public FakeGame(Context context) {
 		super(context);
-		camera = new FakeCamera();
-		world = new FakeWorld();
+		camera = new FakeCamera(context);
+		world = new FakeWorld(context);
 		ConnectionThread connection = new ConnectionThread(world);
 		new Thread(connection).start();
 		
@@ -44,11 +45,6 @@ public class FakeGame extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		
-		x+=2f;
-		
-		paint.setColor(0xffff00ff);
-		canvas.drawLine(x, 0, 100, 100, paint);
 		
 		if(world.getActiveView() != null){
 			camera.follow(world.getActiveView());

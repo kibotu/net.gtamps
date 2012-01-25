@@ -90,7 +90,7 @@ public class EntityFactory {
 
 	//TODO de-uglify
 	public static Entity createSpecialEntityHouse(final Universe universe, final PhysicalShape pshape) {
-		final String houseName = "house";
+		final String houseName = "HOUSE";
 		final String normName = Entity.normalizeName(houseName);
 		final EntityBlueprint houseblup = getEmptyDisposableBlueprint(universe, normName);
 		houseblup.addHandlerPrototype(PhysicsFactory.createHouseBlueprintFromLevelPhysicalShape(universe, pshape));
@@ -106,7 +106,7 @@ public class EntityFactory {
 	 */
 	@Deprecated
 	public static Entity createEntityCar(final Universe universe, final int pixX, final int pixY, final int deg) {
-		final Entity entity = createEntity(universe, "car", pixX, pixY, deg);
+		final Entity entity = createEntity(universe, "CAR", pixX, pixY, deg);
 		return entity;
 	}
 
@@ -115,7 +115,7 @@ public class EntityFactory {
 	 */
 	@Deprecated
 	public static Entity createEntityHuman(final Universe universe, final int pixX, final int pixY, final int deg, final EntityManager em) {
-		final Entity entity = createEntity(universe, "human", pixX, pixY, deg);
+		final Entity entity = createEntity(universe, "HUMAN", pixX, pixY, deg);
 		return entity;
 	}
 
@@ -124,7 +124,7 @@ public class EntityFactory {
 	 */
 	@Deprecated
 	public static Entity createEntityHouse(final Universe universe, final int pixX, final int pixY) {
-		final Entity entity = createEntity(universe, "house", pixX, pixY, 0);
+		final Entity entity = createEntity(universe, "HOUSE", pixX, pixY, 0);
 		return entity;
 	}
 
@@ -133,7 +133,7 @@ public class EntityFactory {
 	 */
 	@Deprecated
 	public static Entity createEntitySpawnPoint(final Universe universe, final int pixX, final int pixY, final Integer deg) {
-		final Entity entity = createEntity(universe, "spawnpoint", pixX, pixY, deg);
+		final Entity entity = createEntity(universe, "SPAWNPOINT", pixX, pixY, deg);
 		return entity;
 	}
 
@@ -154,7 +154,7 @@ public class EntityFactory {
 		////		entity.addProperty(new ActivationProperty(entity));
 		//		final SimplePhysicsHandler physicsHandler = new SimplePhysicsHandler(entity, bulletBody, PhysicalProperties.Bullet);
 		//		entity.setHandler(physicsHandler);
-		final Entity entity = createEntity(universe, "bullet", pixX, pixY, rotation);
+		final Entity entity = createEntity(universe, "BULLET", pixX, pixY, rotation);
 		return entity;
 	}
 

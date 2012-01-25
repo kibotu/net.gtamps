@@ -1,17 +1,29 @@
 package net.gtamps.android.fakerenderer;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.net.AbstractEntityView;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity.Type;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 
 public class FakeCamera {
+	
+	private int[] resolution = {1024,600}; 
+	
 	private float x = 0f;
 	private float y = 0f;
 	private float rot = 0f;
 	private Canvas canvas;
 	private Paint paint = new Paint();
-	FakeCamera(){
+	
+
+	FakeCamera(Context context){
 		
 	}
 	
@@ -25,29 +37,33 @@ public class FakeCamera {
 			canvas.drawBitmap(t.getBitmap(), t.getX()-this.x, t.getY()-this.y, paint);
 		}
 	}
-
+	Matrix matrix = new Matrix();
 	public void renderEntityView(FakeEntityView ev) {
+		matrix.reset();
 		if(canvas!=null){
-			Paint paint = new Paint();
 			paint.setColor(0xffffffff);
-			if(ev.entity.getName().equals("CAR") || ev.entity.type==Type.CAR_RIVIERA || ev.entity.type==Type.CAR_CHEVROLET_CORVETTE ){
-				canvas.drawRect( ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y, 10f, 10f, paint);
-			} else if( ev.entity.type == Type.SPAWNPOINT){
+			if( ev.hasBitmap()){
+				matrix.reset();
+				canvas.save();
+//				canvas.translate(-ev.getWidth()/2,-ev.getHeight()/2);				
+				canvas.rotate(ev.entity.rota.value());
+//				canvas.translate(ev.getWidth()/2,ev.getHeight()/2);
+				canvas.translate(ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y);
+				canvas.drawBitmap(ev.getBitmap(), matrix, paint);
+				canvas.restore();
+			} else if(ev.entity.getName().equals("SPAWNPOINT")){
 				paint.setColor(0xff0000ff);
-				canvas.drawCircle( ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y, 5f, paint);
-			} else if(ev.entity.getName().equals("HUMAN")){
-				paint.setColor(0xffff0000);
 				canvas.drawCircle( ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y, 5f, paint);
 			} else {
-				paint.setColor(0xff0000ff);
-				canvas.drawCircle( ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y, 10f, paint);
+				paint.setColor(0xffffffff);
+				canvas.drawCircle( ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y, 3f, paint);
 			}
 		}
 	}
 
 	public void follow(AbstractEntityView activeView) {
-		this.x = activeView.entity.x.value();
-		this.y = activeView.entity.y.value();
+		this.x = activeView.entity.x.value()-resolution[0]/2;
+		this.y = activeView.entity.y.value()-resolution[1]/2;
 	}
 
 	public void move(int i, int j) {

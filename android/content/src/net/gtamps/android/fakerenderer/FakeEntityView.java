@@ -1,5 +1,6 @@
 package net.gtamps.android.fakerenderer;
 
+import android.graphics.Bitmap;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -8,9 +9,11 @@ public class FakeEntityView extends AbstractEntityView {
 	private static final long INTERPOLATION_TIME_MILLIS = 1000;
 	private Entity lastEntity;
 	private long millisUpdateTimeStamp;
+	private Bitmap bitmap;
 	
-	public FakeEntityView(Entity iev){
+	public FakeEntityView(Entity iev, Bitmap b){
 		super(iev);
+		this.bitmap = b;
 		this.lastEntity = iev;
 		millisUpdateTimeStamp = System.currentTimeMillis();
 		
@@ -36,6 +39,22 @@ public class FakeEntityView extends AbstractEntityView {
 		}
 		return this.entity.y.value();
 
+	}
+
+	public int getHeight() {
+		return bitmap.getHeight();
+	}
+
+	public int getWidth() {
+		return bitmap.getWidth();
+	}
+
+	public Bitmap getBitmap() {
+		return bitmap;
+	}
+
+	public boolean hasBitmap() {
+		return bitmap!=null;
 	}
 
 }
