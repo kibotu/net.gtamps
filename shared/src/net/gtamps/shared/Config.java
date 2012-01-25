@@ -20,7 +20,7 @@ final public class Config {
     public static final boolean DISPLAY_FRAME_RATE = false;
     public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE = 0.3f;
     public static final boolean USEVBO = true;
-    public static final boolean FORCE_GL10 = true;
+    public static final boolean FORCE_GL10 = false;
 
     /**
      * FONT
