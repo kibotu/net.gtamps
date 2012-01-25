@@ -3,6 +3,8 @@ package net.gtamps.android.game.content.scenes.layouts;
 import android.view.MotionEvent;
 import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
+import net.gtamps.android.game.content.scenes.World;
+import net.gtamps.android.renderer.graph.scene.primitives.Camera;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.SendableType;
@@ -10,6 +12,7 @@ import net.gtamps.shared.serializer.communication.SendableType;
 public class HudInterpreter extends InputInterpreter {
 
     private long startTime = 0;
+	private double rotation;
 
     public HudInterpreter(ActionType actionType) {
         super(actionType);
@@ -57,9 +60,30 @@ public class HudInterpreter extends InputInterpreter {
             }
         }
 
-        if (actionType.equals(ActionType.MUTE_SOUND)) {
+      /*  if (actionType.equals(ActionType.CAMERA_MOVE)) {
+        	
+        	 // accelerate
+            if (y < 0.50f) {
+            	camera.move((float)Math.cos(this.rotation), -(float)Math.sin(this.rotation), 0, false);
+//            	Logger.d(this, this.camera.toString());
+            }
+            // decelerate
+            else if (y > 0.50f) {
+            	camera.move((float)Math.sin(this.rotation), (float)Math.cos(this.rotation), 0, false);
+//            	Logger.d(this, this.camera.toString());
+            }
 
-        }
+            // left
+            if (x < 0.50f) {
+            	this.rotation += Math.PI/120;
+            	Logger.d(this, this.rotation);
+            }
+            // right
+            else if (x > 0.50f) {
+            	this.rotation -= Math.PI/120;
+            	Logger.d(this, this.rotation);
+            }
+        }*/
     }
 
     /*@Override

@@ -40,7 +40,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 
     private void startGame() {
         Intent intent = new Intent();
-        intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA");
+        intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA2D");
         startActivity(intent);
     }
 

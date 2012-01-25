@@ -89,17 +89,17 @@ public class TcpStream implements IStream {
 		return true;
 	}
 
+	byte[] lengthbytes = new byte[4];
 	@Override
 	public boolean send(byte[] message, int length) {
 		if (!socket.isConnected())
 			return false;
-
-		// TODO don't copy array and alloc byte array every sending invocation
-		byte[] temp = new byte[length + 4];
-		BinaryConverter.writeIntToBytes(length, temp);
-		System.arraycopy(message, 0, temp, 4, length);
+			
 		try {
-			output.write(temp);
+			
+			BinaryConverter.writeIntToBytes(length, lengthbytes);
+			output.write(lengthbytes);
+			output.write(message,0,length);
 //			Logger.i(this, "has send bytes " + (temp.length));
 		} catch (IOException e) {
 			Logger.printException(this, e);

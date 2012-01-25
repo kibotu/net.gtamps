@@ -32,11 +32,11 @@ public class MessageHandler {
 	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
 	private GameobjectStore store = new GameobjectStore();
     private ConnectionManager connection;
-    private World world;
+    private IWorld world;
 
-    public MessageHandler(ConnectionManager connection, World world) {
+    public MessageHandler(ConnectionManager connection, IWorld world2) {
         this.connection = connection;
-        this.world = world;
+        this.world = world2;
     }
 
     public void handleMessage(NewSendable sendable, NewMessage message) {
@@ -183,15 +183,17 @@ public class MessageHandler {
     private void updateOrCreateEntity(@NotNull Entity serverEntity) {
 
         // new or update
-        EntityView entityView = world.getViewById(serverEntity.getUid());
+        AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
         if (entityView == null) {
 
             // new entity
-            entityView = new EntityView(serverEntity);
+            entityView = world.createEntityView(serverEntity);
             world.add(entityView);
 
             // add to setup
-            Registry.getRenderer().addToSetupQueue(entityView.getObject3d());
+            if(entityView instanceof EntityView){
+            	Registry.getRenderer().addToSetupQueue(((EntityView) entityView).getObject3d());
+            }
 
 //            Logger.i(this, "Add new entity " + serverEntity.getUid());
         } else {
@@ -289,7 +291,7 @@ public class MessageHandler {
                 }
 
                 // new active object
-                EntityView entityView = world.getViewById(serverEntity.getUid());
+                AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
                 world.setActiveView(entityView);
 
                 Logger.i(this, "PLAYER_NEWENTITY " + entityView.entity.getUid());

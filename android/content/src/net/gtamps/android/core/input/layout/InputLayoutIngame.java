@@ -4,6 +4,7 @@ import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
 import net.gtamps.android.core.input.touch.TouchInputButton;
 import net.gtamps.android.game.content.scenes.layouts.HudInterpreter;
+import net.gtamps.android.renderer.graph.scene.primitives.Camera;
 
 public class InputLayoutIngame extends AbstractInputLayout {
 
