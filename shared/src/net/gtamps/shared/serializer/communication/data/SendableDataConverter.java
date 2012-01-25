@@ -1,8 +1,6 @@
 package net.gtamps.shared.serializer.communication.data;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.GameObject;
@@ -24,14 +22,14 @@ public class SendableDataConverter {
 	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
 		Validate.notNull(e);
 		Validate.notNull(provider);
-		
+
 		if(GameEvent.class.isAssignableFrom(e.getClass())){
 			System.out.print(".");
 		}
 		if(Entity.class.isAssignableFrom(e.getClass())){
 			System.out.print("O");
 		}
-		
+
 		final DataMap data = initSendableDataForGameObject(e, provider);
 
 		final MapEntry<Value<String>> typeEntry = createTypeEntry(e, provider);
@@ -63,8 +61,10 @@ public class SendableDataConverter {
 		Validate.notNull(updateData);
 		validateMatches(gob, updateData);
 		try{
+			gob.setName(getGameObjectName(updateData));
+			gob.updateRevision(getGameObjectRevision(updateData));
 			updateProperties(gob, updateData);
-		} catch (RuntimeException e){
+		} catch (final RuntimeException e){
 			Logger.e("SENDABLEDATACONVERTER", updateData);
 			throw e;
 		}
@@ -141,6 +141,7 @@ public class SendableDataConverter {
 
 	private static <T extends GameObject> void validateMatches(final T gob, final DataMap updateData) throws IllegalArgumentException {
 		final int dataUid = getGameObjectUid(updateData);
+		final String name = getGameObjectName(updateData);
 		if (dataUid != gob.getUid()) {
 			throw new IllegalArgumentException("uid in updateData does not match GameObject uid");
 		}
