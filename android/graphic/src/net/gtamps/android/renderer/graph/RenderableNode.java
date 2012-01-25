@@ -812,6 +812,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         mesh.invalidate();
     }
 
+    @Deprecated
     public void setTextureResourceId(int resourceId) {
         textureResourceId = resourceId;
         setDirtyFlag();

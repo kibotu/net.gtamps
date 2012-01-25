@@ -109,7 +109,6 @@ public class World extends EntityScene implements InputEventListener, IWorld {
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.getRenderState().shader = RenderState.Shader.SMOOTH;
-        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 
@@ -128,7 +127,6 @@ public class World extends EntityScene implements InputEventListener, IWorld {
         parsedObject.setPosition(0,- (1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, 0);
         parsedChild.setRotation(0,0, MathUtils.deg2Rad(180));
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
-        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 
