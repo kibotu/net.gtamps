@@ -761,36 +761,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         this.material = material;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof RenderableNode))
-            return false;
-
-        RenderableNode that = (RenderableNode) o;
-
-        if (textureBufferId != that.textureBufferId)
-            return false;
-        if (textureBufferOffsetId != that.textureBufferOffsetId)
-            return false;
-        if (textureId != that.textureId)
-            return false;
-        if (!mesh.equals(that.mesh))
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = mesh.hashCode();
-        result = 31 * result + textureId;
-        result = 31 * result + textureBufferId;
-        result = 31 * result + textureBufferOffsetId;
-        return result;
-    }
-
     public void useSharedTextureCoordBuffer(boolean isUsing) {
         useSharedTextureCoordBuffer = isUsing;
     }
@@ -810,11 +780,76 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (mesh == null)
             return;
         mesh.invalidate();
+        if(textureSamples == null) return;
+        for(int i = 0; i < textureSamples.size(); i++) {
+            textureSamples.get(0).invalidate();
+        }
     }
 
     @Deprecated
     public void setTextureResourceId(int resourceId) {
         textureResourceId = resourceId;
         setDirtyFlag();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RenderableNode)) return false;
+
+        RenderableNode that = (RenderableNode) o;
+
+        if (alphaEnabled != that.alphaEnabled) return false;
+        if (colorMaterialEnabled != that.colorMaterialEnabled) return false;
+        if (doubleSidedEnabled != that.doubleSidedEnabled) return false;
+        if (hasTextures != that.hasTextures) return false;
+        if (isDirty != that.isDirty) return false;
+        if (lightingEnabled != that.lightingEnabled) return false;
+        if (lineSmoothing != that.lineSmoothing) return false;
+        if (Float.compare(that.lineWidth, lineWidth) != 0) return false;
+        if (normalsEnabled != that.normalsEnabled) return false;
+        if (Float.compare(that.pointSize, pointSize) != 0) return false;
+        if (pointSmoothing != that.pointSmoothing) return false;
+        if (textureBufferId != that.textureBufferId) return false;
+        if (textureBufferOffsetId != that.textureBufferOffsetId) return false;
+        if (textureId != that.textureId) return false;
+        if (textureResourceId != that.textureResourceId) return false;
+        if (useSharedTextureCoordBuffer != that.useSharedTextureCoordBuffer) return false;
+        if (vertexColorsEnabled != that.vertexColorsEnabled) return false;
+        if (!material.equals(that.material)) return false;
+        if (mesh != null ? !mesh.equals(that.mesh) : that.mesh != null) return false;
+        if (!renderState.equals(that.renderState)) return false;
+        if (shaderTyp != that.shaderTyp) return false;
+        if (textureSamples != null ? !textureSamples.equals(that.textureSamples) : that.textureSamples != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mesh != null ? mesh.hashCode() : 0;
+        result = 31 * result + (isDirty ? 1 : 0);
+        result = 31 * result + (vertexColorsEnabled ? 1 : 0);
+        result = 31 * result + (doubleSidedEnabled ? 1 : 0);
+        result = 31 * result + (hasTextures ? 1 : 0);
+        result = 31 * result + (normalsEnabled ? 1 : 0);
+        result = 31 * result + (colorMaterialEnabled ? 1 : 0);
+        result = 31 * result + (lightingEnabled ? 1 : 0);
+        result = 31 * result + (alphaEnabled ? 1 : 0);
+        result = 31 * result + renderState.hashCode();
+        result = 31 * result + material.hashCode();
+        result = 31 * result + (textureSamples != null ? textureSamples.hashCode() : 0);
+        result = 31 * result + textureId;
+        result = 31 * result + textureBufferId;
+        result = 31 * result + textureBufferOffsetId;
+        result = 31 * result + (useSharedTextureCoordBuffer ? 1 : 0);
+        result = 31 * result + (shaderTyp != null ? shaderTyp.hashCode() : 0);
+        result = 31 * result + textureResourceId;
+        result = 31 * result + (pointSize != +0.0f ? Float.floatToIntBits(pointSize) : 0);
+        result = 31 * result + (pointSmoothing ? 1 : 0);
+        result = 31 * result + (lineWidth != +0.0f ? Float.floatToIntBits(lineWidth) : 0);
+        result = 31 * result + (lineSmoothing ? 1 : 0);
+        return result;
     }
 }

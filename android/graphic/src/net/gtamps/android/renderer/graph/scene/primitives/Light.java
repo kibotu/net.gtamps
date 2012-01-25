@@ -1,9 +1,11 @@
 package net.gtamps.android.renderer.graph.scene.primitives;
 
+import android.opengl.GLES20;
 import net.gtamps.android.renderer.RenderCapabilities;
 import net.gtamps.android.renderer.graph.ProcessingState;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.mesh.Mesh;
+import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.android.renderer.utils.OpenGLUtils;
 import net.gtamps.android.renderer.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
@@ -51,7 +53,7 @@ public class Light extends RenderableNode {
     /**
      * Direction is a vector and should be normalized.
      */
-    private FloatBuffer direction;
+    private float[] direction;
 
     /**
      * Holds the position for convenience reasons additionally with the type.
@@ -82,14 +84,16 @@ public class Light extends RenderableNode {
      */
     private int lightId;
 
+
+
     public Light() {
         mesh = new Mesh(0, 0);
         type = Type.DIRECTIONAL;
         material.getAmbient().setAll(128, 128, 128, 255);
-        material.getDiffuse().setAll(255, 255, 255, 255);
+        material.getDiffuse().setAll(0.5f, 0.5f, 0.5f, 1f);
         material.getSpecular().setAll(0, 0, 0, 255);
         material.getEmission().setAll(0, 0, 0, 255);
-        direction = OpenGLUtils.makeFloatBuffer3(0, 0, -1);
+        direction = new float[] {0, 0, -1};
         spotCutoffAngle = 180;
         spotExponent = 0;
         attenuation = Vector3.createNew(1f, 0f, 0f);
@@ -110,8 +114,26 @@ public class Light extends RenderableNode {
         availableLightIndices.remove(0);
     }
 
+    // light variables
+    float[] lightP = {0, 1, 5,1};
+    float[] lightC = {0.5f, 0.5f, 0.5f, 1f};
+    float[] lightDir = {0f, 0f, -1f};
+
     public void release() {
         availableLightIndices.add(lightId);
+    }
+
+    @Override
+    public void shadeInternal(@NotNull ProcessingState state) {
+
+        int program = Shader.Type.PHONG.shader.getProgram();
+
+        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightPosition"), 1, position.asArray(), 0);
+        Logger.checkGlError(this, "lightPosition");
+//        GLES20.glUniform3fv(GLES20.glGetUniformLocation(program, "lightDirection"), 1, lightDir, 0);
+//        Logger.checkGlError(this,"lightDirection");
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "lightColor"), 1, lightC, 0);
+        Logger.checkGlError(this, "lightColor");
     }
 
     @Override
@@ -129,7 +151,7 @@ public class Light extends RenderableNode {
             gl11.glLightfv(GL_LIGHT0 + lightId, GL_AMBIENT, material.getAmbient().asBuffer());
             gl11.glLightfv(GL_LIGHT0 + lightId, GL_DIFFUSE, material.getDiffuse().asBuffer());
             gl11.glLightfv(GL_LIGHT0 + lightId, GL_SPECULAR, material.getSpecular().asBuffer());
-            gl11.glLightfv(GL_LIGHT0 + lightId, GL_SPOT_DIRECTION, direction);
+//            gl11.glLightfv(GL_LIGHT0 + lightId, GL_SPOT_DIRECTION, direction);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_CUTOFF, spotCutoffAngle);
             gl11.glLightf(GL11.GL_LIGHT0 + lightId, GL11.GL_SPOT_EXPONENT, spotExponent);
 //            Utils.log(this, ""+diffuse.getColorBuffer().get(0) + " "+diffuse.getColorBuffer().get(1)+ " "+diffuse.getColorBuffer().get(2) + " "+diffuse.getColorBuffer().get(3));
@@ -193,10 +215,6 @@ public class Light extends RenderableNode {
         OpenGLUtils.addFloat4PositionZero(positionAndTypeBuffer, getPosition().x, getPosition().y, getPosition().z, type.getValue());
     }
 
-    public void setDirection(float x, float y, float z) {
-        OpenGLUtils.addFloat3PositionZero(direction, x, y, z);
-    }
-
     /**
      * No cutoff angle (ie, no spotlight effect)
      * (represented internally with a value of 180)
@@ -232,11 +250,6 @@ public class Light extends RenderableNode {
 
     @Override
     public void onDirty() {
-    }
-
-
-    public FloatBuffer getDirection() {
-        return direction;
     }
 
     public static ArrayList<Integer> getAvailableLightIndices() {
