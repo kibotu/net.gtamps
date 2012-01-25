@@ -41,7 +41,7 @@ public class MessageHandler {
 
     public void handleMessage(NewSendable sendable, NewMessage message) {
 
-        Logger.i(this, "Handles message.");
+//        Logger.i(this, "Handles message.");
 //        Logger.i(this, sendable);
 
         switch (sendable.type) {
