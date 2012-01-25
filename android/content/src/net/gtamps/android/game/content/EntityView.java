@@ -27,9 +27,7 @@ public class EntityView extends AbstractEntityView implements IDirty {
      */
     public EntityView(@NotNull Entity entity) {
         super(entity);
-        Logger.I(this, "" + entity);
         object3d = Object3dFactory.create(entity.type);
-        Logger.I(this, "" + object3d);
         isDirty = true;
         onDirty();
     }
@@ -48,9 +46,6 @@ public class EntityView extends AbstractEntityView implements IDirty {
 
     @Override
     public void onDirty() {
-
-        if(entity == null) return;
-        if(object3d == null) return;
 
         // position
         object3d.setPosition(entity.x.value() * Config.PIXEL_TO_NATIVE, entity.y.value() * Config.PIXEL_TO_NATIVE, entity.z.value() * Config.PIXEL_TO_NATIVE);
