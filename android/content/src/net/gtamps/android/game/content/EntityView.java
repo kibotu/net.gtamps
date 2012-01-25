@@ -13,8 +13,6 @@ public class EntityView extends AbstractEntityView implements IDirty {
     /**
      * Current Entity for visual display.
      */
-    @NotNull
-    public Entity entity;
 
     private RenderableNode object3d;
 

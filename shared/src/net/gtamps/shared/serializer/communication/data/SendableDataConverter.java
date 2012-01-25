@@ -23,12 +23,12 @@ public class SendableDataConverter {
 		Validate.notNull(e);
 		Validate.notNull(provider);
 
-		if(GameEvent.class.isAssignableFrom(e.getClass())){
-			System.out.print(".");
-		}
-		if(Entity.class.isAssignableFrom(e.getClass())){
-			System.out.print("O");
-		}
+//		if(GameEvent.class.isAssignableFrom(e.getClass())){
+//			System.out.print(".");
+//		}
+//		if(Entity.class.isAssignableFrom(e.getClass())){
+//			System.out.print("O");
+//		}
 
 		final DataMap data = initSendableDataForGameObject(e, provider);
 
