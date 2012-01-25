@@ -27,7 +27,9 @@ public class EntityView extends AbstractEntityView implements IDirty {
      */
     public EntityView(@NotNull Entity entity) {
         super(entity);
+        Logger.I(this, "" + entity);
         object3d = Object3dFactory.create(entity.type);
+        Logger.I(this, "" + object3d);
         isDirty = true;
         onDirty();
     }
