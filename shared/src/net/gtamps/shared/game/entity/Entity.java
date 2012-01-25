@@ -3,6 +3,7 @@ package net.gtamps.shared.game.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.event.EventType;
@@ -152,9 +153,10 @@ public class Entity extends SharedGameActor {
 
 	}
 
-	void setType(final Type type) {
-		ensureMutable();
-		this.type = type;
+	@Override
+	public void setName(final String name) {
+		Validate.notEmpty(name);
+		type = getType(name);
 	}
 
 }

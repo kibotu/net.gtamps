@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import net.gtamps.shared.Config;
 
 import java.util.HashMap;
 
@@ -34,13 +35,20 @@ public class MenuActivity extends Activity implements OnClickListener {
         ((Button) findViewById(R.id.menuButtonQuit)).setOnClickListener(this);
         ((Button) findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
 
-        startGame();
-
+        // autostart
+        if(Config.FORCE_GTA_2D) startGTA2D();
+        else startGTA3D();
     }
 
-    private void startGame() {
+    private void startGTA2D() {
         Intent intent = new Intent();
         intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA2D");
+        startActivity(intent);
+    }
+
+    private void startGTA3D() {
+        Intent intent = new Intent();
+        intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA");
         startActivity(intent);
     }
 
@@ -59,7 +67,8 @@ public class MenuActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         if (v.equals(findViewById(R.id.menuButtonStartGame))) {
             setMenuMode(menuMode.LOADING);
-            startGame();
+            if(Config.FORCE_GTA_2D) startGTA2D();
+            else startGTA3D();
         }
         if (v.equals(findViewById(R.id.menuButtonConfiguration))) {
             setMenuMode(menuMode.CONFIGURATION);

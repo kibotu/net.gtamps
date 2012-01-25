@@ -70,7 +70,7 @@ public class World extends EntityScene implements InputEventListener, IWorld {
     public static Light getSpotLight() {
         Light spot = new Light();
         spot.setPosition(0, 3, 3);
-        spot.setDirection(0, 0, -1);
+//        spot.setDirection(0, 0, -1);
         spot.getMaterial().getAmbient().setAll(128, 128, 128, 128);
         spot.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
         spot.getMaterial().getSpecular().setAll(128, 128, 128, 128);
@@ -85,7 +85,7 @@ public class World extends EntityScene implements InputEventListener, IWorld {
     public static Light getSunLight() {
         Light sun = new Light();
         sun.setPosition(0, 0, 20);
-        sun.setDirection(0, 0, -1);
+//        sun.setDirection(0, 0, -1);
         sun.getMaterial().getAmbient().setAll(128, 128, 128, 128);
         sun.getMaterial().getDiffuse().setAll(128, 128, 128, 128);
         sun.getMaterial().getSpecular().setAll(128, 128, 128, 128);

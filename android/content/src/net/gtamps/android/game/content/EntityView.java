@@ -4,6 +4,7 @@ import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.IDirty;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,9 @@ public class EntityView extends AbstractEntityView implements IDirty {
 
     @Override
     public void onDirty() {
+
+        if(entity == null) return;
+        if(object3d == null) return;
 
         // position
         object3d.setPosition(entity.x.value() * Config.PIXEL_TO_NATIVE, entity.y.value() * Config.PIXEL_TO_NATIVE, entity.z.value() * Config.PIXEL_TO_NATIVE);

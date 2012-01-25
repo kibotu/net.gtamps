@@ -401,21 +401,7 @@ public class MatrixFactory {
     @NotNull
     @ReturnsCachedValue
     public static Matrix4 getTransformation(@NotNull Vector3 scaling, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
-        float cr = (float) Math.cos(rotation.x); // Φ
-        float sr = (float) Math.sin(rotation.x);
-
-        float cp = (float) Math.cos(rotation.y); // Θ
-        float sp = (float) Math.sin(rotation.y);
-
-        float cy = (float) Math.cos(rotation.z); // Ψ
-        float sy = (float) Math.sin(rotation.z);
-
-        return Matrix4.createNew().set(
-                scaling.x * cp * cy, scaling.x * cp * sy, scaling.x * (-sp), 0f,
-                -scaling.y * (sr * sp * cy - cr * sy), scaling.y * (sr * sp * sy + cr * cy), scaling.y * sr * cp, 0f,
-                scaling.z * (cr * sp * cy + sr * sy), scaling.z * (cr * sp * sy - sr * cy), scaling.z * cr * cp, 0f,
-                translation.x, translation.y, translation.z, 1f
-        );
+       return setTransformation(Matrix4.createNew(),scaling,rotation,translation);
     }
 
     /**
