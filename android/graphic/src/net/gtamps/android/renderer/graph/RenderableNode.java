@@ -810,6 +810,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         if (mesh == null)
             return;
         mesh.invalidate();
+        if(textureSamples == null) return;
+        for(int i = 0; i < textureSamples.size(); i++) {
+            textureSamples.get(0).invalidate();
+        }
     }
 
     @Deprecated

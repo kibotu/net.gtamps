@@ -38,8 +38,10 @@ vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) 
 
   // Normalization is good.
   n = normalize(n);
+  //n = normalize(texture2D(normalMap, uvV).xyz*n);
   v = normalize(v);
   s = normalize(s);
+  //s = normalize(texture2D(specularMap, uvV).xyz*s);
 
   // The ambient term.
   vec3 color = ka * l;
