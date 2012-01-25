@@ -20,6 +20,6 @@ public class GTA extends BasicRenderActivity {
 
         view.setOnTouchListener(InputEngineController.getInstance());
         view.setOnKeyListener(InputEngineController.getInstance());
-        
+
     }
 }
