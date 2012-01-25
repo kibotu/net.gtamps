@@ -5,8 +5,6 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
 public class SendableDataConverter {
@@ -23,12 +21,12 @@ public class SendableDataConverter {
 		Validate.notNull(e);
 		Validate.notNull(provider);
 
-//		if(GameEvent.class.isAssignableFrom(e.getClass())){
-//			System.out.print(".");
-//		}
-//		if(Entity.class.isAssignableFrom(e.getClass())){
-//			System.out.print("O");
-//		}
+		//		if(GameEvent.class.isAssignableFrom(e.getClass())){
+		//			System.out.print(".");
+		//		}
+		//		if(Entity.class.isAssignableFrom(e.getClass())){
+		//			System.out.print("O");
+		//		}
 
 		final DataMap data = initSendableDataForGameObject(e, provider);
 
@@ -69,14 +67,6 @@ public class SendableDataConverter {
 			throw e;
 		}
 		gob.setChanged();
-	}
-
-	public static Entity toEntity(final DataMap objectdata) {
-		final String name = getGameObjectName(objectdata);
-		final int uid = getGameObjectUid(objectdata);
-		final Entity e = new Entity(name, uid);
-		updateGameobject(e, objectdata);
-		return e;
 	}
 
 	public static int getGameObjectUid(final DataMap map) {

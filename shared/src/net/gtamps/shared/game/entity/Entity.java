@@ -57,6 +57,7 @@ public class Entity extends SharedGameActor {
 
 	public Entity(final String name, final int uid) {
 		super(name, uid);
+		assert this.name != null;
 		this.type = getType(name);
 	}
 
@@ -156,6 +157,7 @@ public class Entity extends SharedGameActor {
 	@Override
 	public void setName(final String name) {
 		Validate.notEmpty(name);
+		this.name = name;
 		type = getType(name);
 	}
 
