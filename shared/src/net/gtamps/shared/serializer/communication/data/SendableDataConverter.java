@@ -92,6 +92,7 @@ public class SendableDataConverter {
 
 	private static <T extends GameObject> void putGameObjectName(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<String> value = provider.getValue(gob.getName());
+		assert value.get() != null;
 		final MapEntry<Value<String>> entry = provider.getMapEntry(GAMEOBJECT_NAME, value);
 		map.add(entry);
 	}
