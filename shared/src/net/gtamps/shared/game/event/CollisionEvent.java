@@ -1,28 +1,21 @@
 package net.gtamps.shared.game.event;
 
 import net.gtamps.shared.game.GameObject;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class CollisionEvent extends GameEvent {
 
 
-    private static final long serialVersionUID = -2768243016816037656L;
+	private static final long serialVersionUID = -2768243016816037656L;
 
-    public CollisionEvent(GameObject source, GameObject target, float impulse) {
-        super(EventType.ENTITY_COLLIDE, source, target, Float.toString(impulse));
-    }
+	public CollisionEvent(final GameObject source, final GameObject target, final float impulse) {
+		super(EventType.ENTITY_COLLIDE, source, target);
+		useProperty(StringConstants.PROPERTY_VALUE, "").set(Float.toString(impulse));
+	}
 
-//	@Override
-//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-//		Element e = super.toXMLElement(baseRevision, keeper);
-//		if (e != null) {
-//			e.setAttribute(new Attribute(XmlElements.ATTRIB_VALUE.tagName(), impulse+""));
-//		}
-//		return e;
-//	}
-
-    public float getImpulse() {
-        return Float.parseFloat(this.value);
-    }
+	public float getImpulse() {
+		return Float.valueOf(useProperty(StringConstants.PROPERTY_VALUE, "0").value());
+	}
 
 
 }

@@ -1,12 +1,13 @@
 package net.gtamps.android.game.content;
 
+import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityView implements IDirty {
+public class EntityView extends AbstractEntityView implements IDirty {
 
     /**
      * Current Entity for visual display.
@@ -24,7 +25,7 @@ public class EntityView implements IDirty {
      * @param entity
      */
     public EntityView(@NotNull Entity entity) {
-        this.entity = entity;
+        super(entity);
         object3d = Object3dFactory.create(entity.type);
         isDirty = true;
         onDirty();
@@ -32,7 +33,7 @@ public class EntityView implements IDirty {
 
     @Deprecated
     public EntityView(RenderableNode node) {
-        entity = new Entity("bla");
+        super(new Entity("bla"));
         object3d = node;
     }
 

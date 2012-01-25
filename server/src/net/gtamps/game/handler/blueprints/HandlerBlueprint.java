@@ -2,12 +2,12 @@ package net.gtamps.game.handler.blueprints;
 
 import net.gtamps.game.handler.ServersideHandler;
 import net.gtamps.game.universe.Universe;
-import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.SharedGameActor;
 import net.gtamps.shared.game.handler.Handler;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class HandlerBlueprint {
+public abstract class HandlerBlueprint<T extends SharedGameActor> {
 
 	@NotNull
 	protected final Universe universe;
@@ -23,12 +23,8 @@ public abstract class HandlerBlueprint {
 		return type;
 	}
 
-	public ServersideHandler createHandler(final Entity parent) {
-		return createHandler(parent, null, null, null);
-	}
+	public abstract ServersideHandler<T> createHandler(T parent);
 
-	public abstract ServersideHandler createHandler(Entity parent, Integer pixX, Integer pixY, Integer deg);
-
-	public abstract HandlerBlueprint copy();
+	public abstract HandlerBlueprint<T> copy();
 
 }

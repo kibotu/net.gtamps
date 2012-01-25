@@ -1,0 +1,27 @@
+updateData
+	DataMap
+		UPDATE_REVISION value<long>
+		UPDATE_REVISION_OLD value<long>
+		UPDATE_ENTITIES ListNode<DataMap>
+		UPDATE_GAMEEVENTS ListNode<DataMap>
+playerData
+	DataMap
+		PLAYER_DATA DataMap
+				...
+StringData
+	DataMap
+		ERROR_MESSAGE value<String>
+
+(GETUPDATE)
+updateRequest
+	DataMap
+		UPDATE_REVISION value<long>
+
+sessionRequest
+	DataMap
+		SESSION_ID value<String>
+		
+authentificationData
+	DataMap
+		AUTH_USERNAME value<String>
+		AUTH_PASSWORD value<String> 

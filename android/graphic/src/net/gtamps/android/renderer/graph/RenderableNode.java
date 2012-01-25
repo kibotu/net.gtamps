@@ -1,7 +1,6 @@
 package net.gtamps.android.renderer.graph;
 
 import android.opengl.GLES20;
-import net.gtamps.android.renderer.Registry;
 import net.gtamps.android.renderer.RenderCapabilities;
 import net.gtamps.android.renderer.mesh.Material;
 import net.gtamps.android.renderer.mesh.Mesh;
@@ -9,21 +8,19 @@ import net.gtamps.android.renderer.mesh.texture.TextureSample;
 import net.gtamps.android.renderer.shader.Shader;
 import net.gtamps.shared.Utils.IDirty;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import static fix.android.opengl.GLES20.glDrawElements;
 import static fix.android.opengl.GLES20.glVertexAttribPointer;
 import static javax.microedition.khronos.opengles.GL10.*;
 import static javax.microedition.khronos.opengles.GL11.GL_ARRAY_BUFFER;
 import static javax.microedition.khronos.opengles.GL11.GL_ELEMENT_ARRAY_BUFFER;
-
 
 public abstract class RenderableNode extends SceneNode implements IDirty {
 
@@ -80,27 +77,20 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     protected Material material = Material.DEFAULT;
 
-    /**
-     * Defines if mip maps are available.
-     */
-    @Deprecated private boolean hasMipMap = false;
+    private ArrayList<TextureSample> textureSamples;
 
-    // TODO clean this up
-    @Deprecated protected int textureId = 0;
+    public void addTexture(TextureSample textureSample) {
+        if (textureSamples == null) textureSamples = new ArrayList<TextureSample>();
+        textureSamples.add(textureSample);
+        setDirtyFlag();
+    }
+
+    protected int textureId = 0;
     protected int textureBufferId = 0;
     protected int textureBufferOffsetId = 0;
     private boolean useSharedTextureCoordBuffer = false;
     private Shader.Type shaderTyp = Shader.Type.PHONG;
-    @Deprecated private int textureResourceId = 0;
-    
-    private ArrayList<TextureSample> textureSamples;
-    
-    public void addTexture(TextureSample textureSample) {
-        if(textureSamples == null) textureSamples = new ArrayList<TextureSample>();
-        hasTextures = true;
-        textureSamples.add(textureSample);
-        setDirtyFlag();
-    }
+    private int textureResourceId = 0;
 
     public Shader.Type getShader() {
         return shaderTyp;
@@ -165,9 +155,9 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         gl.glTranslatef(position.x, position.y, position.z);
 
         // Object Rotieren (Roll - Pitch - Yaw)
-        gl.glRotatef(rotation.x, 1, 0, 0);
-        gl.glRotatef(rotation.y, 0, 1, 0);
-        gl.glRotatef(rotation.z, 0, 0, 1);
+        gl.glRotatef(MathUtils.rad2Deg(rotation.x), 1, 0, 0);
+        gl.glRotatef(MathUtils.rad2Deg(rotation.y), 0, 1, 0);
+        gl.glRotatef(MathUtils.rad2Deg(rotation.z), 0, 0, 1);
 
         // Object skalieren
         gl.glPushMatrix();
@@ -184,39 +174,104 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     @Deprecated
     private void shadeInternalWithOutVBO(@NotNull ProcessingState state) {
-        if (!RenderCapabilities.supportsGLES20()) return;
-        if (mesh == null) return;
-        if (isDirty) onDirty(state.getGl());
+        if (!RenderCapabilities.supportsGLES20())
+            return;
+        if (mesh == null)
+            return;
+        if (isDirty)
+            onDirty(state.getGl());
 
         int program = shaderTyp.shader.getProgram();
 
-        // vertices
-        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aPosition"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().vertexBuffer);
-        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aPosition"));
-        Logger.checkGlError(this, "aPosition");
+        // send to the shader
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "modelMatrix"), 1, false,
+                getCombinedTransformation().values, 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "modelMatrix");
+        }
 
-        // the normal info
-        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aNormal"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().normalBuffer);
-        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aNormal"));
-        Logger.checkGlError(this, "aNormal");
+        // vertices
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexPosition"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().vertexBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexPosition"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexPosition");
+        }
+
+        // normals
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexNormal"), 3, GLES20.GL_FLOAT, false, 0, mesh.getVbo().normalBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexNormal"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexNormal");
+        }
 
         // colors
-//        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aColor"), 4, GLES20.GL_FLOAT, false, 0, mesh.getVbo().colorBuffer);
-//        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aColor"));
-//        OpenGLUtils.checkGlError("aColor");
+        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexColor"), 4, GLES20.GL_FLOAT, false, 0, mesh.getVbo().colorBuffer);
+        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexColor"));
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexColor");
+        }
 
-        // enable texturing
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "hasTextures"), 0f);
-        Logger.checkGlError(this, "hasTextures");
+        // material
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.emission"), 1, material.getEmission()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.emission");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.ambient"), 1, material.getAmbient()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.ambient");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.diffuse"), 1, material.getDiffuse()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.diffuse");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.specular"), 1, material.getSpecular()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.specular");
+        }
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "material.shininess"), material.getPhongExponent());
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.shininess");
+        }
 
-        // uvs
-        GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "aTextCoord"), 2, GLES20.GL_FLOAT, false, 0, mesh.getVbo().textureCoordinateBuffer);
-        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "aTextCoord"));
-        Logger.checkGlError(this, "aTextCoord");
+        // multiple textures
+        if (textureSamples != null) {
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 2);
+            Logger.checkGlError(this, "hasTextures");
+            for (int i = 0; i < textureSamples.size(); i++) {
+                TextureSample textureSample = textureSamples.get(i);
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + textureSample.activeTextureId);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureSample.textureId);
+                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSample.type.name()), textureSample.activeTextureId);
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, textureSample.hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
+            }
+
+            // uvs
+            GLES20.glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexUv"), 2, GLES20.GL_FLOAT, false, 0, mesh.getVbo().textureCoordinateBuffer);
+            GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexUv"));
+            Logger.checkGlError(this, "vertexUv");
+        } else {
+            GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 0);
+            Logger.checkGlError(this, "hasTextures");
+        }
+
+        // uses lightning
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasLighting"), lightingEnabled ? 2 : 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "hasLighting");
+        }
 
         // Draw with indices
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, mesh.getVbo().indexBuffer);
-        Logger.checkGlError(this, "glDrawElements");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "glDrawElements");
+        }
+
+        // unbind to avoid accidental manipulation
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
     private void shadeInternalWithVBO(@NotNull ProcessingState state) {
@@ -228,67 +283,91 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
         // send to the shader
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "modelMatrix"), 1, false, getCombinedTransformation().values, 0);
-        Logger.checkGlError(this, "modelMatrix");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "modelMatrix");
+        }
 
         // vertices
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().vertexBufferId);
         glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexPosition"), 3, GLES20.GL_FLOAT, false, 0, 0);
         GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexPosition"));
-        Logger.checkGlError(this, "vertexPosition");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexPosition");
+        }
 
         // normals
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().normalBufferId);
         glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexNormal"), 3, GLES20.GL_FLOAT, false, 0, 0);
         GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexNormal"));
-        Logger.checkGlError(this, "vertexNormal");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexNormal");
+        }
 
         // colors
         GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
         glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexColor"), 4, GLES20.GL_FLOAT, false, 0, 0);
         GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexColor"));
-        Logger.checkGlError(this, "vertexColor");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "vertexColor");
+        }
 
         // material
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.emission"), 1, material.getEmission().asArray(), 0);
-        Logger.checkGlError(this, "material.emission");
-        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.ambient"), 1, material.getAmbient().asArray(), 0);
-        Logger.checkGlError(this, "material.ambient");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.emission");
+        }
+        GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.ambient"), 1, material.getAmbient()
+                .asArray(), 0);
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.ambient");
+        }
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.diffuse"), 1, material.getDiffuse().asArray(), 0);
-        Logger.checkGlError(this, "material.diffuse");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.diffuse");
+        }
         GLES20.glUniform4fv(GLES20.glGetUniformLocation(program, "material.specular"), 1, material.getSpecular().asArray(), 0);
-        Logger.checkGlError(this, "material.specular");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.specular");
+        }
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "material.shininess"), material.getPhongExponent());
-        Logger.checkGlError(this, "material.shininess");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "material.shininess");
+        }
 
         // multiple textures
-        if(textureSamples != null) {
+        if (textureSamples != null) {
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 2);
-            Logger.checkGlError(this,"hasTextures");
-            for(int i = 0; i < textureSamples.size(); i++) {
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureSamples.get(i).textureId);
-                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSamples.get(i).type.name()), i);
-                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, textureSamples.get(i).hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
+            Logger.checkGlError(this, "hasTextures");
+            for (int i = 0; i < textureSamples.size(); i++) {
+                TextureSample textureSample = textureSamples.get(i);
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + textureSample.activeTextureId);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureSample.textureId);
+                GLES20.glUniform1i(GLES20.glGetUniformLocation(program, textureSample.type.name()), textureSample.activeTextureId);
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, textureSample.hasMipMap ? GLES20.GL_LINEAR_MIPMAP_LINEAR : GLES20.GL_NEAREST);
             }
+
+            // uvs
+            GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
+            glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexUv"), 2, GLES20.GL_FLOAT, false, 0, 0);
+            GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexUv"));
+            Logger.checkGlError(this, "vertexUv");
         } else {
             GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasTextures"), 0);
-            Logger.checkGlError(this,"hasTextures");
+            Logger.checkGlError(this, "hasTextures");
         }
 
         // uses lightning
         GLES20.glUniform1i(GLES20.glGetUniformLocation(program, "hasLighting"), lightingEnabled ? 2 : 0);
-        Logger.checkGlError(this,"hasLighting");
-
-        // uvs
-        GLES20.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().textureCoordinateBufferId);
-        glVertexAttribPointer(GLES20.glGetAttribLocation(program, "vertexUv"), 2, GLES20.GL_FLOAT, false, 0, 0);
-        GLES20.glEnableVertexAttribArray(GLES20.glGetAttribLocation(program, "vertexUv"));
-        Logger.checkGlError(this, "vertexUv");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "hasLighting");
+        }
 
         // Draw with indices
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.getVbo().indexBufferId);
         glDrawElements(GLES20.GL_TRIANGLES, mesh.getVbo().indexBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, 0);
-        Logger.checkGlError(this,"glDrawElements");
+        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
+            Logger.checkGlError(this, "glDrawElements");
+        }
 
         // unbind to avoid accidental manipulation
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
@@ -296,19 +375,21 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     @Override
     public void shadeInternal(@NotNull ProcessingState state) {
-//        shadeInternalWithOutVBO(state);
-        shadeInternalWithVBO(state);
+        if (RenderCapabilities.useVBO()) shadeInternalWithVBO(state);
+        else shadeInternalWithOutVBO(state);
     }
 
     /**
      * Default rendering process.
      */
     public void render(GL11 gl) {
-        if (mesh == null) return;
-        if (isDirty) onDirty(gl);
+        if (mesh == null)
+            return;
+        if (isDirty)
+            onDirty(gl);
 
         // shading
-//        gl.glShadeModel(renderState.shader.getValue());
+        gl.glShadeModel(renderState.shader.getValue());
 
         // enable color materials
         if (colorMaterialEnabled) {
@@ -318,14 +399,14 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         }
 
         // enable vertex colors
-        if (vertexColorsEnabled) {
-            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
-            gl.glColorPointer(4, GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL_COLOR_ARRAY);
-        } else {
-            gl.glColor4f(material.getEmission().r, material.getEmission().g, material.getEmission().b, material.getEmission().a);
-            gl.glDisableClientState(GL_COLOR_ARRAY);
-        }
+//        if (vertexColorsEnabled) {
+//            gl.glBindBuffer(GL_ARRAY_BUFFER, mesh.getVbo().colorBufferId);
+//            gl.glColorPointer(4, GL_FLOAT, 0, 0);
+//            gl.glEnableClientState(GL_COLOR_ARRAY);
+//        } else {
+//            gl.glColor4f(material.getEmission().asArray()[0], material.getEmission().asArray()[1], material.getEmission().asArray()[2], material.getEmission().asArray()[3]);
+//            gl.glDisableClientState(GL_COLOR_ARRAY);
+//        }
 
         // enable light
         if (lightingEnabled) {
@@ -359,30 +440,26 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glDisable(GL_ALPHA_TEST);
         }
 
-        // enable texture
-        if (hasTextures) {
+//        enable texture
+        if (textureSamples != null) {
             gl.glEnable(GL_TEXTURE_2D);
 
-            // TODO find way to use active texture instead of bind texture
-            // gl.glActiveTexture(texture.getTextureId());
-//            Texture texture = textureManager.get(0);
-//            int glId = Registry.getTextureLibrary().getTextureResourceIds().get(texture.getTextureId());
-            gl.glBindTexture(GL_TEXTURE_2D, textureId);
-
-            // enable mip maps
-            if (hasMipMap) {
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-            } else {
-                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            for (int i = 0; i < textureSamples.size(); i++) {
+                TextureSample textureSample = textureSamples.get(i);
+                gl.glActiveTexture(GL_TEXTURE0 + i);
+                gl.glBindTexture(GL_TEXTURE_2D, textureSample.textureId);
+                gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureSample.hasMipMap ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST);
             }
-//
-//            // texture offset for repeating textures
-//            if (textureManager.get(0).offsetU != 0 || textureManager.get(0).offsetV != 0) {
-//                gl.glMatrixMode(GL_TEXTURE);
-//                gl.glLoadIdentity();
-//                gl.glTranslatef(textureManager.get(0).offsetU, textureManager.get(0).offsetV, 0);
-//                gl.glMatrixMode(GL_MODELVIEW);
-//            }
+
+            // // texture offset for repeating textures
+            // if (textureManager.get(0).offsetU != 0 ||
+            // textureManager.get(0).offsetV != 0) {
+            // gl.glMatrixMode(GL_TEXTURE);
+            // gl.glLoadIdentity();
+            // gl.glTranslatef(textureManager.get(0).offsetU,
+            // textureManager.get(0).offsetV, 0);
+            // gl.glMatrixMode(GL_MODELVIEW);
+            // }
 
             // draw uvs
             gl.glBindBuffer(GL_ARRAY_BUFFER, useSharedTextureCoordBuffer ? textureBufferId : mesh.getVbo().textureCoordinateBufferId);
@@ -393,7 +470,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glDisable(GL_TEXTURE_2D);
         }
 
-        // drawing point setings
+//        drawing point setings
         if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_POINTS)) {
             if (pointSmoothing) {
                 gl.glEnable(GL_POINT_SMOOTH);
@@ -403,8 +480,10 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
             gl.glPointSize(pointSize);
         }
 
-        // drawing line settings
-        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINES) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_LOOP) || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_STRIP)) {
+//        drawing line settings
+        if (renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINES)
+                || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_LOOP)
+                || renderState.drawingStyle.equals(RenderState.DrawingStyle.GL_LINE_STRIP)) {
             if (lineSmoothing) {
                 gl.glEnable(GL_LINE_SMOOTH);
             } else {
@@ -440,8 +519,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     final public void onDirty(GL10 gl) {
         mesh.setup(gl);
-        if(textureSamples != null) {
-            for(int i = 0; i < textureSamples.size(); i++) {
+        if (textureSamples != null) {
+            for (int i = 0; i < textureSamples.size(); i++) {
                 textureSamples.get(i).allocate();
             }
         }
@@ -502,7 +581,7 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      *
      * @return <code>true</code> if it has uvs.
      */
-    final public boolean hasTextures() {
+    final public boolean isHasTextures() {
         return hasTextures;
     }
 
@@ -605,7 +684,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
         this.pointSmoothing = pointSmoothing;
     }
 
-
     /**
      * Gets current line width.
      *
@@ -631,24 +709,6 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
      */
     final public boolean isLineSmoothing() {
         return lineSmoothing;
-    }
-
-    /**
-     * Enables using mip map.
-     *
-     * @param enableMipMap
-     */
-    public void enableMipMap(boolean enableMipMap) {
-        hasMipMap = enableMipMap;
-    }
-
-    /**
-     * Returns if mip maps are enabled.
-     *
-     * @return <code>true</code> if enabled
-     */
-    public boolean hasMipMap() {
-        return hasMipMap;
     }
 
     /**
@@ -703,15 +763,21 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RenderableNode)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof RenderableNode))
+            return false;
 
         RenderableNode that = (RenderableNode) o;
 
-        if (textureBufferId != that.textureBufferId) return false;
-        if (textureBufferOffsetId != that.textureBufferOffsetId) return false;
-        if (textureId != that.textureId) return false;
-        if (!mesh.equals(that.mesh)) return false;
+        if (textureBufferId != that.textureBufferId)
+            return false;
+        if (textureBufferOffsetId != that.textureBufferOffsetId)
+            return false;
+        if (textureId != that.textureId)
+            return false;
+        if (!mesh.equals(that.mesh))
+            return false;
 
         return true;
     }
@@ -741,7 +807,8 @@ public abstract class RenderableNode extends SceneNode implements IDirty {
 
     @Override
     protected void onResumeInternal(ProcessingState state) {
-        if (mesh == null) return;
+        if (mesh == null)
+            return;
         mesh.invalidate();
         if(textureSamples == null) return;
         for(int i = 0; i < textureSamples.size(); i++) {

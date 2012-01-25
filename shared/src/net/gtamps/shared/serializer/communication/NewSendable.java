@@ -60,7 +60,7 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 	@Override
 	public String toString() {
-		return String.format("%s (%d) [%s]", type.toString(), id, data != null ? data.toString() : "");
+		return String.format("%s (%d) [%s]", type != null ? type.toString() : "no type", id, data != null ? data.toString() : "");
 	}
 
 	private static int createId() {
@@ -68,15 +68,40 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NewSendable other = (NewSendable) obj;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		if (id != other.id)
+			return false;
+		if (sessionId == null) {
+			if (other.sessionId != null)
+				return false;
+		} else if (!sessionId.equals(other.sessionId))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class TextureSample {
     }
 
     public enum Type {
-        colorMap, color2Map, normalMap, alphaMap, specularMap;
+        texture_01, texture_02, texture_03, texture_04, texture_05, texture_06, texture_07, texture_08;
     }
 
     public TextureSample(int textureResourceId, Type type, boolean hasMipMap) {

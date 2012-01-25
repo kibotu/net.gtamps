@@ -8,7 +8,7 @@ import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.handler.Handler;
 
-public class HealthBlueprint extends HandlerBlueprint {
+public class HealthBlueprint extends HandlerBlueprint<Entity> {
 
 	private final String handlerName = "net.gtamps.game.handler.HealthHandler";
 
@@ -32,18 +32,18 @@ public class HealthBlueprint extends HandlerBlueprint {
 	}
 
 	@Override
-	public ServersideHandler createHandler(final Entity parent, final Integer pixX, final Integer pixY,
-			final Integer deg) {
+	public ServersideHandler<Entity> createHandler(final Entity parent) {
 		return instantiateHandler(parent);
 	}
 
-	private ServersideHandler instantiateHandler(final Entity parent) {
-		ServersideHandler instance = null;
+	@SuppressWarnings("unchecked")
+	private ServersideHandler<Entity> instantiateHandler(final Entity parent) {
+		ServersideHandler<Entity> instance = null;
 		try {
 			final Class<?> handlerClass = Class.forName(handlerName);
 			final Constructor<?> constructor = handlerClass.getConstructor(Universe.class, Entity.class, int.class, float.class, int.class);
 			final Object hobject = constructor.newInstance(universe, parent, maxHealth, dmgMultiplier, dmgThreshold);
-			instance = (ServersideHandler) hobject;
+			instance = (ServersideHandler<Entity>) hobject;
 		} catch (final ClassNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -64,7 +64,7 @@ public class HealthBlueprint extends HandlerBlueprint {
 	}
 
 	@Override
-	public HandlerBlueprint copy() {
+	public HandlerBlueprint<Entity> copy() {
 		return new HealthBlueprint(this);
 	}
 

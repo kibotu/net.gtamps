@@ -12,6 +12,11 @@ public final class MapEntry<V extends AbstractSendableData<?>> extends AbstractS
 		super();
 	}
 
+	public MapEntry(final String key, final V value) {
+		this();
+		set(key, value);
+	}
+
 	public MapEntry<V> set(final String key, final V value) {
 		setKey(key);
 		setValue(value);

@@ -27,7 +27,7 @@ public class UdpStream implements IStream {
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean isConnected() { 
         return false;
     }
 
@@ -40,4 +40,16 @@ public class UdpStream implements IStream {
     public DataOutputStream getOutputStream() {
         return null;
     }
+
+	@Override
+	public byte[] receive() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean send(byte[] buffer, int length) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

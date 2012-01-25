@@ -48,6 +48,8 @@ public final class GTAMultiplayerServer {
 	@Deprecated
 	public static final String DEFAULT_PATH = "../assets/kompilat/";
 	public static final String DEFAULT_MAP = "tinycity.xml";
+	public static final int MAX_LOG_ENTRY_DISPLAY = 20;
+	public static final boolean WRITE_SERIALIZED_MESSAGE_DUMPS = false;
 
 
 	private static GTAMultiplayerServer INSTANCE = null;

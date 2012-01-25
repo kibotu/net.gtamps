@@ -17,11 +17,15 @@ varying vec3 eyedirV;
 varying vec3 lightdirV;
 varying vec2 uvV;
 
-uniform sampler2D colorMap;
-uniform sampler2D color2Map;
-uniform sampler2D alphaMap;
-uniform sampler2D normalMap;
-uniform sampler2D specularMap;
+uniform int textureunits;
+uniform sampler2D texture_01;
+uniform sampler2D texture_02;
+uniform sampler2D texture_03;
+uniform sampler2D texture_04;
+uniform sampler2D texture_05;
+uniform sampler2D texture_06;
+uniform sampler2D texture_07;
+uniform sampler2D texture_08;
 
 // The main entry point.
 void main() {

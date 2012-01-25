@@ -36,12 +36,19 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	private static final long START_REVISION = 1;
 	private static final String DEFAULT_NAME = "GameObject";
 
-	protected final int uid;
+	protected int uid;
 	protected String name;
 	protected long revision = START_REVISION;
 	protected boolean hasChanged = true;
 	private boolean silent = false;
+	private boolean mutable = false;
 	private Map<String, IProperty<?>> properties = null;
+	private final Map<String, IProperty<?>> inactiveProperties = null;
+
+
+	protected GameObject() {
+		this(null, INVALID_UID);
+	}
 
 	/**
 	 * @param name default is {@value #DEFAULT_NAME}
@@ -55,7 +62,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 			name = DEFAULT_NAME;
 		}
 		this.uid = (uid == INVALID_UID) ? UIDGenerator.getNewUID() : uid;
-		this.name = name;
+		setName(name);
 	}
 
 	public int getUid() {
@@ -143,7 +150,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	 *                                any reason
 	 */
 	public final <T> IProperty<T> useProperty(@NotNull final String name, @NotNull final T value) throws NoSuchElementException {
-		final String properName = name.toLowerCase();
+		final String properName = name;
 		Propertay<T> p = this.getProperty(properName);
 		if (p == null) {
 			p = this.instantiateProperty(name, value);
@@ -152,7 +159,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 			}
 			this.addProperty(p);
 		} else if (!value.getClass().isAssignableFrom(p.value().getClass())) {
-			throw new NoSuchElementException("property already in use for different type: " + p.value().getClass().getSimpleName());
+			throw new NoSuchElementException("property ("+properName+") already in use for different type: " + p.value().getClass().getSimpleName()+ " value: "+value.getClass().getSimpleName()+" : "+value.toString());
 		}
 		return p;
 	}
@@ -219,13 +226,43 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		return true;
 	}
 
+
+	void setMutable(final boolean value) {
+		this.mutable = value;
+	}
+
+	void setUid(final int uid) {
+		ensureMutable();
+		this.uid = uid;
+	}
+
+	public void setName(final String name) {
+		Validate.notEmpty(name);
+		this.name = name;
+	}
+
+	protected void ensureMutable() throws IllegalStateException {
+		if (!mutable) {
+			throw new IllegalStateException("trying to alter fixed attribute in immutable state");
+		}
+	}
+
+	void setRevision(final long revision) {
+		this.revision = revision;
+	}
+
+	void deactivateAllProperties() {
+		inactiveProperties.putAll(properties);
+		properties.clear();
+	}
+
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private <T> Propertay<T> instantiateProperty(final String name, final T value) {
 		Constructor<Propertay> c;
 		Propertay<T> p = null;
 		try {
 			c = Propertay.class.getConstructor(GameObject.class, String.class, Object.class);
-			p = c.newInstance(this, name.toLowerCase(), value);
+			p = c.newInstance(this, name, value);
 		} catch (final SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,23 +293,42 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		if (this.properties == null) {
 			this.properties = new HashMap<String, IProperty<?>>();
 		}
-		if (this.properties.containsKey(p.name)) {
+		if (this.properties.containsKey(p.getName())) {
 			throw new IllegalArgumentException("Property exists already: " + p);
 		}
-		this.properties.put(p.name, p);
+		this.properties.put(p.getName(), p);
 	}
 
 	private void removeProperty(final String name) {
 		this.properties.remove(name);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> Propertay<T> getProperty(final String name) {
+		Propertay<T> p = getActiveProperty(name);
+		if (p == null) {
+			p = getInactiveProperty(name);
+		}
+		return p;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Propertay<T> getActiveProperty(final String name) {
 		if (this.properties == null) {
 			return null;
 		}
 		final Propertay<?> p = (Propertay<?>) this.properties.get(name);
 		return (Propertay<T>) p;
 	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Propertay<T> getInactiveProperty(final String name) {
+		if (this.inactiveProperties == null) {
+			return null;
+		}
+		final Propertay<?> p = (Propertay<?>) this.inactiveProperties.get(name);
+		return (Propertay<T>) p;
+	}
+
+
 
 }

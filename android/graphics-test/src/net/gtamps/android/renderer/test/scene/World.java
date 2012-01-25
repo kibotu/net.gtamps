@@ -2,8 +2,12 @@ package net.gtamps.android.renderer.test.scene;
 
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.android.renderer.graph.scene.primitives.*;
+import net.gtamps.android.renderer.mesh.texture.TextureSample;
 import net.gtamps.android.renderer.test.R;
 import net.gtamps.shared.Utils.math.Color4;
+
+import static net.gtamps.android.graphic.R.drawable.crate;
+import static net.gtamps.android.graphic.R.drawable.earth;
 
 public class World extends BasicScene {
 
@@ -18,22 +22,22 @@ public class World extends BasicScene {
 
         Cube cube = new Cube();
         cube.setPosition(-3, -3, 0);
-        cube.setTextureResourceId(R.drawable.crate);
+        cube.addTexture(new TextureSample(crate, TextureSample.Type.texture_01, true));
 
         Sphere sphere = new Sphere(1, 20, 20);
         sphere.setPosition(3, -3, 0);
-        sphere.setTextureResourceId(R.drawable.earth);
+        sphere.addTexture(new TextureSample(earth, TextureSample.Type.texture_01, true));
 
         Torus torus = new Torus();
         torus.setPosition(3, 3, 0);
-        torus.setTextureResourceId(R.drawable.crate);
+        torus.addTexture(new TextureSample(crate, TextureSample.Type.texture_01, true));
 
         Cylinder cylinder = new Cylinder();
         cylinder.setPosition(-3, 3, 0);
-        cylinder.setTextureResourceId(R.drawable.crate);
+        cylinder.addTexture(new TextureSample(crate, TextureSample.Type.texture_01, true));
 
         SkyBox skyBox = new SkyBox();
-        skyBox.setScaling(3,3,3);
+        skyBox.setScaling(3, 3, 3);
         skyBox.enableLighting(false);
 
         add(torus);

@@ -3,13 +3,16 @@ package net.gtamps.android.game.content.scenes.layouts;
 import android.view.MotionEvent;
 import net.gtamps.android.core.input.event.ActionType;
 import net.gtamps.android.core.input.event.InputInterpreter;
+import net.gtamps.android.game.content.scenes.World;
+import net.gtamps.android.renderer.graph.scene.primitives.Camera;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.FloatData;
 
 public class HudInterpreter extends InputInterpreter {
 
     private long startTime = 0;
+	private double rotation;
 
     public HudInterpreter(ActionType actionType) {
         super(actionType);
@@ -19,27 +22,29 @@ public class HudInterpreter extends InputInterpreter {
     public void interpretTouch(float x, float y, MotionEvent event) {
 
         // decrease input spamming
-        if (System.currentTimeMillis() - startTime <= Config.HUD_INPUT_MESSAGE_TIMOUT) return;
+        if (System.currentTimeMillis() - startTime <= Config.HUD_INPUT_MESSAGE_TIMOUT) {
+        	return;
+        }
         startTime = System.currentTimeMillis();
 
         if (actionType.equals(ActionType.PLAYER_MOVEMENT)) {
 
             // accelerate
-            if (y < 0.20f) {
-                eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, new FloatData((0.30f - y) * 2f));
+            if (y < 0.30f) {
+                eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
             }
             // decelerate
-            else if (y > 0.80f) {
-                eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, new FloatData((y - 0.30f) * 2f));
+            else if (y > 0.70f) {
+                eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
             }
 
             // left
-            if (x < 0.20f) {
-                eventDispatcher.dispatch(SendableType.ACTION_LEFT, new FloatData((0.60f - x) * 2f));
+            if (x < 0.30f) {
+                eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
             }
             // right
-            else if (x > 0.80f) {
-                eventDispatcher.dispatch(SendableType.ACTION_RIGHT, new FloatData((x - 0.60f) * 2f));
+            else if (x > 0.70f) {
+                eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
             }
         }
 
@@ -48,10 +53,37 @@ public class HudInterpreter extends InputInterpreter {
                 eventDispatcher.dispatch(SendableType.ACTION_SHOOT, null);
             }
         }
-
-        if (actionType.equals(ActionType.MUTE_SOUND)) {
-
+        
+        if (actionType.equals(ActionType.PLAYER_ENTER_CAR)) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                eventDispatcher.dispatch(SendableType.ACTION_ENTEREXIT, null);
+            }
         }
+
+      /*  if (actionType.equals(ActionType.CAMERA_MOVE)) {
+        	
+        	 // accelerate
+            if (y < 0.50f) {
+            	camera.move((float)Math.cos(this.rotation), -(float)Math.sin(this.rotation), 0, false);
+//            	Logger.d(this, this.camera.toString());
+            }
+            // decelerate
+            else if (y > 0.50f) {
+            	camera.move((float)Math.sin(this.rotation), (float)Math.cos(this.rotation), 0, false);
+//            	Logger.d(this, this.camera.toString());
+            }
+
+            // left
+            if (x < 0.50f) {
+            	this.rotation += Math.PI/120;
+            	Logger.d(this, this.rotation);
+            }
+            // right
+            else if (x > 0.50f) {
+            	this.rotation -= Math.PI/120;
+            	Logger.d(this, this.rotation);
+            }
+        }*/
     }
 
     /*@Override

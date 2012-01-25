@@ -1,24 +1,24 @@
 package net.gtamps.game;
 
-import net.gtamps.shared.serializer.communication.Sendable;
-
 import java.util.Collection;
+
+import net.gtamps.shared.serializer.communication.NewSendable;
 
 public interface IGame {
 
-    public void start();
+	public void start();
 
-    public void hardstop();
+	public void hardstop();
 
-    public boolean isActive();
+	public boolean isActive();
 
-    public long getId();
+	public long getId();
 
-    public String getName();
+	public String getName();
 
-    public void handleSendable(Sendable r);
+	public void handleSendable(NewSendable r);
 
-    void drainResponseQueue(Collection<Sendable> target);
+	void drainResponseQueue(Collection<NewSendable> target);
 
 
 }

@@ -16,10 +16,9 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-public class MobilityHandler extends ServersideHandler {
+public class MobilityHandler extends ServersideHandler<Entity> {
 
 	private static final LogType TAG = LogType.PHYSICS;
-	private static final EventType[] up = {EventType.ENTITY_COLLIDE, EventType.ENTITY_SENSE, EventType.ENTITY_BULLET_HIT};
 	private static final EventType[] down = {EventType.ACTION_EVENT, EventType.SESSION_UPDATE,
 		EventType.ENTITY_DESTROYED};
 
@@ -29,8 +28,7 @@ public class MobilityHandler extends ServersideHandler {
 
 	protected ConcurrentLinkedQueue<GameEvent> actionQueue = new ConcurrentLinkedQueue<GameEvent>();
 
-	protected Body body;
-	protected World world;
+	protected World world = null;
 
 
 	//TODO getRidOfThese
@@ -48,7 +46,6 @@ public class MobilityHandler extends ServersideHandler {
 		slidyness = mobilityProperties.SLIDYNESS;
 		physics = physicsHandler;
 		world = physics.getWorld();
-		body = physicsHandler.getBody();
 		setReceives(down);
 		connectUpwardsActor(parent);
 
@@ -81,13 +78,11 @@ public class MobilityHandler extends ServersideHandler {
 
 	public void update() {
 
-		if (!isEnabled()) {
-			//			if (body != null) {
-			//				world.destroyBody(body);
-			//				body = null;
-			//			}
+		if (!isEnabled() || !physics.isEnabled()) {
 			return;
 		}
+
+		final Body body = physics.getBody();
 
 		// put all player inputs inside the physics engine
 		final Vec2 front = new Vec2((float) Math.cos(body.getAngle()), (float) Math.sin(body.getAngle()));

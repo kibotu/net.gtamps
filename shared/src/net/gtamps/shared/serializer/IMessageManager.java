@@ -1,12 +1,13 @@
 package net.gtamps.shared.serializer;
 
-import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.NewMessage;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface IMessageManager {
-    public boolean add(@NotNull Message message);
+	public boolean add(@NotNull NewMessage message);
 
-    public Message poll();
+	public NewMessage poll();
 
-    public boolean isEmpty();
+	public boolean isEmpty();
 }

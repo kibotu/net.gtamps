@@ -56,7 +56,7 @@ public class SensorDoorHandler extends SensorHandler {
 	@Override
 	public void act(final GameEvent event) {
 		Logger.i("GAMEWORLD", getParent() + " looking for things to enter");
-		final Player player = (Player) event.getSource();
+		final Player player = getUniverse().getPlayer(event.getSourceUid());
 		float minDistance = Float.POSITIVE_INFINITY;
 		Entity closest = null;
 		for (final Entity e : sensed) {

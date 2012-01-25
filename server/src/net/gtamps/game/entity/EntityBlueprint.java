@@ -1,14 +1,14 @@
 package net.gtamps.game.entity;
 
-import net.gtamps.game.handler.blueprints.HandlerBlueprint;
-import net.gtamps.shared.game.entity.Entity;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.gtamps.game.handler.blueprints.HandlerBlueprint;
+import net.gtamps.shared.game.entity.Entity;
+
+import org.jetbrains.annotations.NotNull;
 
 public final class EntityBlueprint {
 
@@ -17,7 +17,7 @@ public final class EntityBlueprint {
 	private static final int EXPECTED_NUMBER_OF_HANDLERS = 10;
 	private static final int EXPECTED_NUMBER_OF_PROTOTYPES = 10;
 	private static final Map<String, EntityBlueprint> protoCache =
-		new HashMap<String, EntityBlueprint>(EXPECTED_NUMBER_OF_PROTOTYPES);
+			new HashMap<String, EntityBlueprint>(EXPECTED_NUMBER_OF_PROTOTYPES);
 
 	public static EntityBlueprint getCached(final String name) {
 		final String realName = Entity.normalizeName(name);
@@ -48,15 +48,19 @@ public final class EntityBlueprint {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public Entity createEntity(final Integer pixX, final Integer pixY, final Integer deg) {
-		final Entity entity = new Entity(this.name);
+		final Entity entity = new Entity(name);
 		for (final HandlerBlueprint hproto : handlerPrototypes) {
 			assert hproto != null;
-			entity.setHandler(hproto.createHandler(entity, pixX, pixY, deg));
+			entity.setHandler(hproto.createHandler(entity));
 		}
+		entity.x.set(pixX);
+		entity.y.set(pixY);
+		entity.rota.set(deg);
+		entity.enable();
 		return entity;
 	}
 

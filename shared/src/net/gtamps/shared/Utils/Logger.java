@@ -19,7 +19,9 @@ final public class Logger {
     private static final String LINE_BREAKS = "\n\n\n\n\n";
 
     public static void checkGlError(Object id, String message) {
-        logger.checkGlError(id.getClass().getSimpleName(), message);
+    	if(Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS){
+    		logger.checkGlError(id.getClass().getSimpleName(), message);
+    	}
     }
 
     public enum Level {
@@ -213,6 +215,7 @@ final public class Logger {
     public static void printException(@NotNull final String id, @NotNull final Exception e) {
         // remove string allocations
         if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
+        	Logger.e(id,e.toString());
             printStackTrace(id, e.getStackTrace());
 
             Logger.e(id, e.getMessage());
@@ -228,6 +231,7 @@ final public class Logger {
         // remove string allocations
         if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
             final StringBuilder error = new StringBuilder();
+            
             for (final StackTraceElement stackTraceElement : stackTrace) {
                 // error.append(stackTraceElement.toString().substring(Math.max(0,stackTraceElement.toString().length()-80),stackTraceElement.toString().length())
                 // + "\n");

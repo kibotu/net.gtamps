@@ -1,11 +1,14 @@
 package net.gtamps.android.renderer;
 
 import android.graphics.Bitmap;
+import android.opengl.GLU;
 import android.opengl.GLUtils;
 import net.gtamps.android.renderer.graph.scene.BasicScene;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -62,7 +65,6 @@ public class GL10Renderer extends BasicRenderer {
         return glTextureId;
     }
 
-
     final int[] newTextureId = new int[1];
 
     @Override
@@ -81,6 +83,33 @@ public class GL10Renderer extends BasicRenderer {
         GL10 gl10 = glState.getGl();
         gl10.glClearColor(bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
         gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
+    }
+
+    @Override
+    public void applyCamera(Frustum frustum) {
+        GL10 gl = glState.getGl();
+        if(gl == null) return;
+
+        if (frustum.hasDepthTest()) gl.glEnable(GL10.GL_DEPTH_TEST);
+        else gl.glDisable(GL10.GL_DEPTH_TEST);
+
+        Vector3 pos = frustum.getPosition();
+        Vector3 target = frustum.getTarget();
+        Vector3 up = frustum.getUp();
+
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+        gl.glLoadIdentity();
+
+        GLU.gluPerspective(glState.getGl(), frustum.getHorizontalFieldOfView(), frustum.getAspectRatio(), frustum.getNearDistance(), frustum.getFarDistance());
+        GLU.gluLookAt(gl, pos.x, pos.y, pos.z, target.x, target.y, target.z, up.x, up.y, up.z);
+
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+    }
+
+    @Override
+    public void setViewPort(int x, int y, int width, int height) {
+        glState.getGl().glViewport(x, y, width, height);
     }
 
     @Override

@@ -135,6 +135,14 @@ public class ListNodeTest {
 	}
 
 	@Test
+	public final void testIterator_whenEmptyList_shouldWorkButNoIteration() {
+		final ListNode<Content> list = ListNode.emptyList();
+		if (list.iterator().hasNext()) {
+			fail("there should be no iteration for an empty list");
+		}
+	}	
+
+	@Test
 	public final void testResetIterator() {
 		fail("Not yet implemented"); // TODO
 	}

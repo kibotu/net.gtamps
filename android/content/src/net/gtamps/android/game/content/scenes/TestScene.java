@@ -104,7 +104,6 @@ public class TestScene extends EntityScene {
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.getRenderState().shader = RenderState.Shader.SMOOTH;
-        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 
@@ -121,7 +120,6 @@ public class TestScene extends EntityScene {
         parsedObject.setScaling(Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE, Config.PIXEL_TO_NATIVE);
         parsedObject.setPosition(0, 0, -3f);
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
-        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 

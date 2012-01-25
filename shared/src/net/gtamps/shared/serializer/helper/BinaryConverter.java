@@ -2,11 +2,13 @@ package net.gtamps.shared.serializer.helper;
 
 import java.nio.charset.Charset;
 
+import net.gtamps.shared.Utils.Logger;
+
 public class BinaryConverter {
 
 	private static final Charset charset = Charset.forName("UTF-8");
 
-	public static void writeIntToBytes(final int i, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeIntToBytes(final int i, final byte[] modifyBytes, final ArrayPointer p) {
 		// final byte[] b = new byte[Integer.SIZE / 8];
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			modifyBytes[j + p.pos()] = 0;
@@ -15,25 +17,49 @@ public class BinaryConverter {
 		p.inc(Integer.SIZE / 8);
 	}
 
-	public static int readIntFromBytes(final byte[] b, ArrayPointer p) {
+	public static void writeIntToBytes(final int i, final byte[] modifyBytes) {
+		for (int j = 0; j < Integer.SIZE / 8; j++) {
+			modifyBytes[j] = 0;
+			modifyBytes[j] |= ((i >> (8 * (Integer.SIZE / 8 - j - 1)) & 0xff));
+		}
+	}
+
+	public static int readIntFromBytes(final byte[] b, final ArrayPointer p) {
+		try {
+			int i = 0;
+			for (int j = 0; j < Integer.SIZE / 8; j++) {
+				i = i << 8;
+				i |= (b[j + p.pos()] & 0xff);
+			}
+			p.inc(Integer.SIZE / 8);
+			return i;
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			Logger.e("BinaryConverter", "Current ArrayPointer position is :" + p.pos());
+			throw e;
+		}
+	}
+
+	/*
+	 * reads first int in bytearray
+	 */
+	public static int readIntFromBytes(final byte[] b) {
 		int i = 0;
 		for (int j = 0; j < Integer.SIZE / 8; j++) {
 			i = i << 8;
-			i |= (b[j + p.pos()] & 0xff);
+			i |= (b[j] & 0xff);
 		}
-		p.inc(Integer.SIZE / 8);
 		return i;
 	}
 
-	public static float readFloatFromBytes(final byte[] b, ArrayPointer p) {
+	public static float readFloatFromBytes(final byte[] b, final ArrayPointer p) {
 		return Float.intBitsToFloat(readIntFromBytes(b, p));
 	}
 
-	public static void writeFloatToBytes(final float f, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeFloatToBytes(final float f, final byte[] modifyBytes, final ArrayPointer p) {
 		writeIntToBytes(Float.floatToIntBits(f), modifyBytes, p);
 	}
 
-	public static void writeLongToBytes(final long l, byte[] modifyBytes, ArrayPointer p) {
+	public static void writeLongToBytes(final long l, final byte[] modifyBytes, final ArrayPointer p) {
 		for (int j = 0; j < Long.SIZE / 8; j++) {
 			modifyBytes[j + p.pos()] = 0;
 			modifyBytes[j + p.pos()] |= ((l >> (8 * (Long.SIZE / 8 - j - 1)) & 0xff));
@@ -41,7 +67,7 @@ public class BinaryConverter {
 		p.inc(Long.SIZE / 8);
 	}
 
-	public static long readLongFromBytes(byte[] b, ArrayPointer p) {
+	public static long readLongFromBytes(final byte[] b, final ArrayPointer p) {
 		long l = 0;
 		for (int j = 0; j < Long.SIZE / 8; j++) {
 			l = l << 8;
@@ -51,42 +77,53 @@ public class BinaryConverter {
 		return l;
 	}
 
-	public static void writeStringToBytes(final String s, byte[] modifyBytes, ArrayPointer p) {
-		byte[] byteString = s.getBytes();
-		writeIntToBytes(byteString.length, modifyBytes, p);
+	public static void writeStringToBytes(final String s, final byte[] modifyBytes, final ArrayPointer p) {
+		try {
+			final byte[] byteString = s.getBytes();
+			writeIntToBytes(byteString.length, modifyBytes, p);
 
-		for (int i = 0; i < byteString.length; i++) {
-			modifyBytes[i + p.pos()] = byteString[i];
+			for (int i = 0; i < byteString.length; i++) {
+				modifyBytes[i + p.pos()] = byteString[i];
+			}
+			p.inc(byteString.length);
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			System.out.println("error serializing string: "+s);
 		}
-		p.inc(byteString.length);
 	}
 
-	public static String readStringFromBytes(byte[] modifyBytes, ArrayPointer p) {
-		int length = readIntFromBytes(modifyBytes, p);
-		String s = new String(modifyBytes, p.pos(), length);
+	public static String readStringFromBytes(final byte[] modifyBytes, final ArrayPointer p) {
+		final int length = readIntFromBytes(modifyBytes, p);
+		final String s = new String(modifyBytes, p.pos(), length);
 		p.inc(length);
 		return s;
 	}
 
-	public static void writeBooleanToBytes(Boolean b, byte[] buf, ArrayPointer ps) {
-		if(b){
-			buf[ps.pos()] = 1; 
+	public static void writeBooleanToBytes(final Boolean b, final byte[] buf, final ArrayPointer ps) {
+		if (b) {
+			buf[ps.pos()] = 1;
 		} else {
 			buf[ps.pos()] = 0;
 		}
 		ps.inc(1);
 	}
-	public static boolean readBooleanFromBytes(byte[] buf, ArrayPointer p){
+
+	public static boolean readBooleanFromBytes(final byte[] buf, final ArrayPointer p) {
 		p.inc(1);
-		return (buf[p.pos()-1] == 1); 
+		return (buf[p.pos() - 1] == 1);
 	}
-	public static byte readByteFromBytes(byte[] buf, ArrayPointer p){
-		p.inc(1);
-		return buf[p.pos()-1];
+
+	public static byte readByteFromBytes(final byte[] buf, final ArrayPointer p) {
+		try {
+			p.inc(1);
+			return buf[p.pos() - 1];
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			Logger.e("BinaryConverter", "Current ArrayPointer position is :" + p.pos());
+			throw e;
+		}
 	}
-	
-	public static void writeByteToBytes(Byte b, byte[] buf, ArrayPointer ps) {
-		buf[ps.pos()] = b; 
+
+	public static void writeByteToBytes(final Byte b, final byte[] buf, final ArrayPointer ps) {
+		buf[ps.pos()] = b;
 		ps.inc(1);
 	}
 }

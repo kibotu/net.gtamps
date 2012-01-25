@@ -8,11 +8,13 @@ import android.view.View.OnTouchListener;
 import net.gtamps.android.core.input.event.InputEventDispatcher;
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.core.input.layout.DummyLayout;
+import net.gtamps.shared.Utils.Logger;
 
 
 public class InputEngineController implements OnTouchListener, OnKeyListener {
-    private static InputEngineController instance;
-    private static AbstractInputLayout layout;
+    private static final String TAG = "InputEngineController";
+	private static InputEngineController instance;
+    private AbstractInputLayout layout;
     private static InputEventDispatcher inputEventDispatcher;
 
 
@@ -23,14 +25,16 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
     public static InputEngineController getInstance() {
         if (instance == null) {
             instance = new InputEngineController();
+            inputEventDispatcher = new InputEventDispatcher();
+//            instance.layout = new DummyLayout();
         }
         return instance;
     }
 
     public void setLayout(AbstractInputLayout layout) {
-        inputEventDispatcher = new InputEventDispatcher();
         layout.setInputEventDispatcher(inputEventDispatcher);
-        InputEngineController.layout = layout;
+        this.layout = layout;
+        Logger.d(this, "Set layout to "+instance.layout.getClass().getSimpleName());
     }
 
     public InputEventDispatcher getInputEventDispatcher() {
@@ -39,7 +43,7 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return layout.getTouchWindow().onTouch(v, event);
+   		return instance.layout.getTouchWindow().onTouch(v, event);
     }
 
     @Override

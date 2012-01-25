@@ -90,7 +90,6 @@ final public class Object3dFactory {
         parsedChild.enableDoubleSided(true);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(true);
         parsedChild.setScaling(0.3f, 0.3f, 0.3f);
         return parsedObject;
     }
@@ -106,7 +105,6 @@ final public class Object3dFactory {
         parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(false);
         parsedChild.setScaling(5,5,5);
         return parsedObject;
     }
@@ -122,7 +120,6 @@ final public class Object3dFactory {
         parsedChild.enableDoubleSided(false);
         parsedChild.enableLighting(false);
         parsedChild.enableAlpha(false);
-        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 

@@ -21,12 +21,16 @@ import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.PlayerData;
-import net.gtamps.shared.serializer.communication.data.RevisionData;
-import net.gtamps.shared.serializer.communication.data.StringData;
-import net.gtamps.shared.serializer.communication.data.UpdateData;
+import net.gtamps.shared.serializer.communication.StringConstants;
+import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.ListNode;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
+import net.gtamps.shared.serializer.communication.data.SendableDataConverter;
+import net.gtamps.shared.serializer.communication.data.Value;
 
 
 /**
@@ -44,9 +48,9 @@ public class Game implements IGame, Runnable {
 
 	private final int id;
 	private final Thread thread;
-	private final BlockingQueue<Sendable> requestQueue = new LinkedBlockingQueue<Sendable>();
-	private final BlockingQueue<Sendable> commandQueue = new LinkedBlockingQueue<Sendable>();
-	private final BlockingQueue<Sendable> responseQueue = new LinkedBlockingQueue<Sendable>();
+	private final BlockingQueue<NewSendable> requestQueue = new LinkedBlockingQueue<NewSendable>();
+	private final BlockingQueue<NewSendable> commandQueue = new LinkedBlockingQueue<NewSendable>();
+	private final BlockingQueue<NewSendable> responseQueue = new LinkedBlockingQueue<NewSendable>();
 
 	private volatile boolean run;
 	private volatile boolean isActive;
@@ -54,6 +58,7 @@ public class Game implements IGame, Runnable {
 	private final Universe universe;
 	private final PlayerManagerFacade playerStorage;
 	private final TimeKeeper gameTime;
+	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	public Game(final String mapPath) {
 		id = ++Game.instanceCounter;
@@ -165,91 +170,91 @@ public class Game implements IGame, Runnable {
 
 
 	@Override
-	public void handleSendable(final Sendable sendable) {
+	public void handleSendable(final NewSendable sendable) {
 		if (sendable == null) {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
 		switch (sendable.type) {
-			case ACTION_ACCELERATE:
-			case ACTION_DECELERATE:
-			case ACTION_ENTEREXIT:
-			case ACTION_LEFT:
-			case ACTION_RIGHT:
-			case ACTION_SHOOT:
-			case ACTION_SUICIDE:
-				commandQueue.add(sendable);
-				break;
-			case GETMAPDATA:
-			case GETPLAYER:
-			case GETUPDATE:
-			case JOIN:
-			case LEAVE:
-				requestQueue.add(sendable);
-				break;
-			default:
-				break;
+		case ACTION_ACCELERATE:
+		case ACTION_DECELERATE:
+		case ACTION_ENTEREXIT:
+		case ACTION_LEFT:
+		case ACTION_RIGHT:
+		case ACTION_SHOOT:
+		case ACTION_SUICIDE:
+			commandQueue.add(sendable);
+			break;
+		case GETMAPDATA:
+		case GETPLAYER:
+		case GETUPDATE:
+		case JOIN:
+		case LEAVE:
+			requestQueue.add(sendable);
+			break;
+		default:
+			break;
 		}
 	}
 
 	@Override
-	public void drainResponseQueue(final Collection<Sendable> target) {
+	public void drainResponseQueue(final Collection<NewSendable> target) {
 		responseQueue.drainTo(target);
 	}
 
 	private void processCommandQueue() {
-		final List<Sendable> commandPairs = new LinkedList<Sendable>();
+		final List<NewSendable> commandPairs = new LinkedList<NewSendable>();
 		commandQueue.drainTo(commandPairs);
-		for (final Sendable sendable : commandPairs) {
+		for (final NewSendable sendable : commandPairs) {
 			command(sendable);
 		}
 		commandPairs.clear();
 	}
 
 	private void processRequestQueue() {
-		final List<Sendable> requestPairs = new LinkedList<Sendable>();
+		final List<NewSendable> requestPairs = new LinkedList<NewSendable>();
 		requestQueue.drainTo(requestPairs);
-		for (final Sendable sendable : requestPairs) {
-			final Sendable response = processRequest(sendable);
+		for (final NewSendable sendable : requestPairs) {
+			final NewSendable response = processRequest(sendable);
 			handleResponse(response);
 		}
 		requestPairs.clear();
 	}
 
-	private Sendable processRequest(final Sendable request) {
-		Sendable response = null;
+	private NewSendable processRequest(final NewSendable request) {
+		NewSendable response = null;
 		if (!(request.type.equals(SendableType.JOIN) || SessionManager.instance.isPlaying(request.sessionId))) {
 			return request.createResponse(request.type.getNeedResponse());
 		}
 		switch (request.type) {
-			case JOIN:
-				response = join(request);
-				break;
-			case GETMAPDATA:
-				//					response = getMapData(session, request);
-				break;
-			case GETPLAYER:
-				response = getPlayer(request);
-				break;
-			case GETUPDATE:
-				response = getUpdate(request);
-				break;
-			case LEAVE:
-				response = leave(request);
-				break;
-			default:
-				break;
+		case JOIN:
+			response = join(request);
+			break;
+		case GETMAPDATA:
+			//					response = getMapData(session, request);
+			break;
+		case GETPLAYER:
+			response = getPlayer(request);
+			break;
+		case GETUPDATE:
+			response = getUpdate(request);
+			break;
+		case LEAVE:
+			response = leave(request);
+			break;
+		default:
+			break;
 
 		}
 		return response;
 	}
 
 
-	private void handleResponse(final Sendable r) {
+	private void handleResponse(final NewSendable r) {
 		assert r != null;
 		responseQueue.add(r);
 	}
 
-	private void command(final Sendable cmd) {
+	private void command(final NewSendable cmd) {
 		final User user = SessionManager.instance.getUserForSession(cmd.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
 		if (player == null) {
@@ -257,30 +262,30 @@ public class Game implements IGame, Runnable {
 		}
 		EventType type = null;
 		switch (cmd.type) {
-			case ACTION_ACCELERATE:
-				type = EventType.ACTION_ACCELERATE;
-				break;
-			case ACTION_DECELERATE:
-				type = EventType.ACTION_DECELERATE;
-				break;
-			case ACTION_LEFT:
-				type = EventType.ACTION_TURNLEFT;
-				break;
-			case ACTION_RIGHT:
-				type = EventType.ACTION_TURNRIGHT;
-				break;
-			case ACTION_ENTEREXIT:
-				type = EventType.ACTION_ENTEREXIT;
-				GUILogger.i().log(TAG, "ENTER/EXIT received");
-				break;
-			case ACTION_SHOOT:
-				type = EventType.ACTION_SHOOT;
-				break;
-			case ACTION_HANDBRAKE:
-				type = EventType.ACTION_HANDBRAKE;
-				break;
-			case ACTION_SUICIDE:
-				type = EventType.ACTION_SUICIDE;
+		case ACTION_ACCELERATE:
+			type = EventType.ACTION_ACCELERATE;
+			break;
+		case ACTION_DECELERATE:
+			type = EventType.ACTION_DECELERATE;
+			break;
+		case ACTION_LEFT:
+			type = EventType.ACTION_TURNLEFT;
+			break;
+		case ACTION_RIGHT:
+			type = EventType.ACTION_TURNRIGHT;
+			break;
+		case ACTION_ENTEREXIT:
+			type = EventType.ACTION_ENTEREXIT;
+			GUILogger.i().log(TAG, "ENTER/EXIT received");
+			break;
+		case ACTION_SHOOT:
+			type = EventType.ACTION_SHOOT;
+			break;
+		case ACTION_HANDBRAKE:
+			type = EventType.ACTION_HANDBRAKE;
+			break;
+		case ACTION_SUICIDE:
+			type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
 			universe.dispatchEvent(new GameEvent(type, player));
@@ -288,20 +293,27 @@ public class Game implements IGame, Runnable {
 	}
 
 
-	private Sendable join(final Sendable sendable) {
+	private NewSendable join(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.JOIN);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		final Player player = playerStorage.joinUser(user);
 		if (player == null) {
-			final Sendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
-			joinError.data = new StringData("no spawnpoint found");
+			final NewSendable joinError =  sendable.createResponse(SendableType.JOIN_ERROR);
+			final Value<String> errorMessage = new Value<String>("no spawnpoint found");
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+			joinError.data = errorData;
+
+			new Value<String>("no spawnpoint found");
 			return joinError;
 		}
 		SessionManager.instance.joinSession(sendable.sessionId, this);
 		return sendable.createResponse(SendableType.JOIN_OK);
 	}
 
-	private Sendable leave(final Sendable sendable) {
+	private NewSendable leave(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.LEAVE);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		playerStorage.leaveUser(user);
@@ -309,35 +321,50 @@ public class Game implements IGame, Runnable {
 		return sendable.createResponse(SendableType.LEAVE_OK);
 	}
 
-	private Sendable getPlayer(final Sendable request) {
+	private NewSendable getPlayer(final NewSendable request) {
 		assert request.type.equals(SendableType.GETPLAYER);
 		final User user = SessionManager.instance.getUserForSession(request.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
 		if (player == null) {
 			return request.createResponse(SendableType.GETPLAYER_NEED);
 		}
-		final Sendable response = request.createResponse(SendableType.GETPLAYER_OK);
-		response.data = new PlayerData(player);
+		final NewSendable response = request.createResponse(SendableType.GETPLAYER_OK);
+
+		final DataMap playerData = sendableProvider.getDataMap();
+		final DataMap playerMap = SendableDataConverter.toSendableData(player, sendableProvider);
+		final MapEntry<DataMap> playerEntry = sendableProvider.getMapEntry(StringConstants.PLAYER_DATA, playerMap);
+		playerData.add(playerEntry);
+		response.data = playerData;
 		return response;
 	}
 
-
-	private Sendable getUpdate(final Sendable sendable) {
+	private NewSendable getUpdate(final NewSendable sendable) {
 		assert sendable.type.equals(SendableType.GETUPDATE);
 		final User user = SessionManager.instance.getUserForSession(sendable.sessionId);
 		final Player player = playerStorage.getPlayerForUser(user);
 		if (player == null) {
 			return sendable.createResponse(SendableType.GETPLAYER_NEED);
 		}
-		final long baseRevision = ((RevisionData) sendable.data).revisionId;
+		return getUpdateByRev(sendable.data.asMap().getLong(StringConstants.UPDATE_REVISION),sendable);
+	}
+	private NewSendable getUpdateByRev(final long baseRevision, final NewSendable sendable){
 		final ArrayList<GameObject> entities = universe.entityManager.getUpdate(baseRevision);
 		final ArrayList<GameObject> events = universe.eventManager.getUpdate(baseRevision);
-		final UpdateData update = new UpdateData(baseRevision, universe.getRevision());
-		update.gameObjects = new ArrayList<GameObject>();
-		update.gameObjects.addAll(entities);
-		update.gameObjects.addAll(events);
-		final Sendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
-		updateResponse.data = update;
+
+		final ListNode<DataMap> entityNodes = SendableDataConverter.toSendableData(entities, sendableProvider);
+		final ListNode<DataMap> eventNodes = SendableDataConverter.toSendableData(events, sendableProvider);
+
+		final DataMap updateData = new DataMap();
+		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, sendableProvider.getValue(universe.getRevision()));
+		final MapEntry<ListNode<DataMap>> entEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_ENTITIES, entityNodes);
+		final MapEntry<ListNode<DataMap>> evtEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_GAMEEVENTS, eventNodes);
+		updateData.add(revEntry);
+		updateData.add(entEntry);
+		updateData.add(evtEntry);
+
+
+		final NewSendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
+		updateResponse.data = updateData;
 		return updateResponse;
 	}
 

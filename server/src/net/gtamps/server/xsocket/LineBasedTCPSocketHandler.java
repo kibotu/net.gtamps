@@ -11,6 +11,7 @@ import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.xsocket.connection.INonBlockingConnection;
 
@@ -80,20 +81,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 
 	@Override
 	public void send(final String connectionId, final byte[] bytes) {
-		final INonBlockingConnection nbc = actualConnections.get(connectionId);
-		try {
-			nbc.write(bytes);
-			nbc.write((byte) 0x0A);
-			nbc.flush();
-			System.out.println(bytes.length + " + 1 bytes send");
-			// System.out.println(msg);
-		} catch (final BufferOverflowException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		send(connectionId, bytes, bytes.length);
 	}
 
 	private void connect(final INonBlockingConnection nbc) {
@@ -118,5 +106,29 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 			s += (int) b[i] + " ";
 		}
 		return s;
+	}
+
+	@Override
+	public void send(final String connectionId, final byte[] bytes, final int msgLength) {
+		final INonBlockingConnection nbc = actualConnections.get(connectionId);
+		try {
+
+			nbc.write(bytes,0,msgLength);
+			nbc.write((byte) 0x0A);
+			nbc.flush();
+			System.out.println(bytes.length + " + 1 bytes send");
+			// System.out.println(msg);
+		} catch (final BufferOverflowException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void send(final String connectionId, final SerializedMessage serMsg) {
+		send(connectionId, serMsg.message, serMsg.length);
 	}
 }

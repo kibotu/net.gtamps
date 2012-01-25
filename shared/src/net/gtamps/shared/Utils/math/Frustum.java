@@ -17,6 +17,8 @@ public final class Frustum {
      */
     private float farDistance;
 
+    private boolean hasDepthTest = true;
+
     /**
      * Sichtwinkel in Grad
      */
@@ -72,6 +74,10 @@ public final class Frustum {
      * Kugel-Faktoren
      */
     private float sphereFactorY, sphereFactorX;
+
+    protected Matrix4 projectionMatrix = Matrix4.createNew();
+    protected Matrix4 viewMatrix = Matrix4.createNew();
+    protected Matrix4 normalMatrix = Matrix4.createNew();
 
     /**
      * Erzeugt einen neuen Sichtkegel
@@ -404,8 +410,16 @@ public final class Frustum {
         return up;
     }
 
+    public void setPerspectiveProjection() {
+        setPerspectiveProjection(projectionMatrix);
+    }
+
     public void setPerspectiveProjection(Matrix4 matrix) {
         Matrix4.setPerspectiveProjection(matrix, getHorizontalFieldOfViewEffective(), getNearDistance(), getFarDistance(), getAspectRatio());
+    }
+
+    public void setOrthographicProjection() {
+        setOrthographicProjection(projectionMatrix);
     }
 
     public void setOrthographicProjection(Matrix4 projectionMatrix) {
@@ -414,5 +428,25 @@ public final class Frustum {
 
     public void setTarget(float x, float y, float z) {
         target.set(x,y,z);
+    }
+
+    public Matrix4 getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public Matrix4 getViewMatrix() {
+        return viewMatrix;
+    }
+
+    public Matrix4 getNormalMatrix() {
+        return normalMatrix;
+    }
+
+    public boolean hasDepthTest() {
+        return hasDepthTest;
+    }
+
+    public void enableDepthTest(boolean enableDepthTest) {
+        hasDepthTest = enableDepthTest;
     }
 }

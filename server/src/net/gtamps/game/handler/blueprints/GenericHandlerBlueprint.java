@@ -3,7 +3,6 @@ package net.gtamps.game.handler.blueprints;
 import java.lang.reflect.Constructor;
 import java.util.NoSuchElementException;
 
-import net.gtamps.game.IGame;
 import net.gtamps.game.handler.ServersideHandler;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.shared.game.entity.Entity;
@@ -16,7 +15,7 @@ import net.gtamps.shared.game.handler.Handler;
  * @param <H>
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  */
-public class GenericHandlerBlueprint<H extends ServersideHandler> extends HandlerBlueprint {
+public class GenericHandlerBlueprint<H extends ServersideHandler<Entity>> extends HandlerBlueprint<Entity> {
 
 	private final Class<H> classObject;
 
@@ -26,8 +25,7 @@ public class GenericHandlerBlueprint<H extends ServersideHandler> extends Handle
 	}
 
 	@Override
-	public ServersideHandler createHandler(final Entity parent, final Integer pixX, final Integer pixY,
-			final Integer deg) {
+	public ServersideHandler<Entity> createHandler(final Entity parent) {
 		Constructor<H> constructor;
 		H handler;
 		try {
@@ -46,7 +44,7 @@ public class GenericHandlerBlueprint<H extends ServersideHandler> extends Handle
 	}
 
 	@Override
-	public HandlerBlueprint copy() {
+	public HandlerBlueprint<Entity> copy() {
 		return new GenericHandlerBlueprint<H>(universe, classObject, getType());
 	}
 

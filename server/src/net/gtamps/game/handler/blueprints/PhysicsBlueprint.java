@@ -20,7 +20,7 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
 import org.jetbrains.annotations.NotNull;
 
-public class PhysicsBlueprint extends HandlerBlueprint {
+public class PhysicsBlueprint extends HandlerBlueprint<Entity> {
 
 	public static final boolean DYNAMIC = true;
 	public static final boolean STATIC = false;
@@ -30,6 +30,7 @@ public class PhysicsBlueprint extends HandlerBlueprint {
 	@NotNull
 	private final BodyDef bodyDef;
 	private final Collection<ShapeDef> shapeDefs;
+	private int initialImpulse = 0;
 
 
 	public PhysicsBlueprint(final Universe universe, final World world, final BodyDef bodyDef, final boolean dynamic) {
@@ -40,20 +41,33 @@ public class PhysicsBlueprint extends HandlerBlueprint {
 		shapeDefs = new ArrayList<ShapeDef>();
 	}
 
+	public PhysicsBlueprint(final Universe universe, final World world, final BodyDef bodyDef, final int initialImpulse) {
+		this(universe, world, bodyDef, true);
+		this.initialImpulse = initialImpulse;
+	}
+
 	public PhysicsBlueprint(final PhysicsBlueprint other) {
 		this(other.universe, other.world, other.bodyDef, other.isDynamic);
+		initialImpulse = other.initialImpulse;
 		for (final ShapeDef shapeDef : other.shapeDefs) {
 			shapeDefs.add(shapeDef);
 		}
 	}
 
 	@Override
-	public ServersideHandler createHandler(final Entity parent) {
-		return createHandler(parent, null, null, null);
+	public ServersideHandler<Entity> createHandler(final Entity parent) {
+		if (initialImpulse == 0) {
+			return new SimplePhysicsHandler(universe, parent, this);
+		} else {
+			return new SimplePhysicsHandler(universe, parent, this, initialImpulse);
+		}
 	}
 
-	@Override
-	public ServersideHandler createHandler(final Entity parent, final Integer pixX, final Integer pixY, final Integer deg) {
+	public Body createBody(final Object userData) {
+		return createBody(userData, null, null, null);
+	}
+
+	public Body createBody(final Object userData, final Integer pixX, final Integer pixY, final Integer deg) {
 		Body body = null;
 		final Vec2 opos = bodyDef.position;
 		final float oang = bodyDef.angle;
@@ -72,19 +86,23 @@ public class PhysicsBlueprint extends HandlerBlueprint {
 			bodyDef.position = opos;
 			bodyDef.angle = oang;
 		}
-		body.setUserData(parent);
+		body.setUserData(userData);
 		for (final ShapeDef shapeDef : shapeDefs) {
 			body.createShape(shapeDef);
 		}
 		if (isDynamic && body.getMass() == 0f) {
 			body.setMassFromShapes();
 		}
-		return new SimplePhysicsHandler(universe, parent, body, null);
+		return body;
+	}
+
+	public World getWorld() {
+		return world;
 	}
 
 
 	@Override
-	public HandlerBlueprint copy() {
+	public HandlerBlueprint<Entity> copy() {
 		return new PhysicsBlueprint(this);
 	}
 

@@ -1,13 +1,15 @@
 package net.gtamps.shared.game.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
+import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 import net.gtamps.shared.game.player.Player;
-
-import java.util.HashMap;
-import java.util.Map;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class Entity extends SharedGameActor {
 
@@ -25,31 +27,27 @@ public class Entity extends SharedGameActor {
 		return name.toUpperCase();
 	}
 
-	//public static final PlayerManager DEFAULT_OWNER = PlayerManager.WORLD_PSEUDOPLAYER;
-
-	//	protected Map<Property.Type,Property> properties;
-	protected transient final Map<String, Handler> handlers = new HashMap<String, Handler>();
-	public final IProperty<Integer> x;
-	public final IProperty<Integer> y;
-	public final IProperty<Integer> z;
+	protected transient final Map<String, Handler<Entity>> handlers = new HashMap<String, Handler<Entity>>();
+	public final IProperty<Integer> x = this.useProperty(StringConstants.PROPERTY_POSX, 0);
+	public final IProperty<Integer> y = this.useProperty(StringConstants.PROPERTY_POSY, 0);
+	public final IProperty<Integer> z = this.useProperty(StringConstants.PROPERTY_POSZ, 0);
 	/**
 	 * rotation about z
 	 */
-	public final IProperty<Integer> rota;
-	public final IProperty<Integer> playerProperty;
-	public final Type type;
+	public final IProperty<Integer> rota = this.useProperty(StringConstants.PROPERTY_ROTA, 0);
+	public final IProperty<Integer> playerProperty = this.useProperty(StringConstants.PROPERTY_PLAYER, Player.INVALID_UID);
+	public Type type;
+
+	public Entity() {
+		super();
+		this.type = Type.PLACEHOLDER;
+	}
 
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
 	public Entity(final Type type) {
 		super(type.name().toLowerCase());
 		this.type = type;
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 
 	public Entity(final String name) {
@@ -59,12 +57,6 @@ public class Entity extends SharedGameActor {
 	public Entity(final String name, final int uid) {
 		super(name, uid);
 		this.type = getType(name);
-		x = this.useProperty("posx", 0);
-		y = this.useProperty("posy", 0);
-		z = this.useProperty("posz", 0);
-		rota = this.useProperty("rota", 0);
-		//        playerProperty = this.useLazyProperty("player", Player.INVALID_UID);
-		playerProperty = this.useProperty("player", Player.INVALID_UID);
 	}
 
 	private Type getType(final String name) {
@@ -77,8 +69,12 @@ public class Entity extends SharedGameActor {
 
 	@Override
 	public void receiveEvent(final GameEvent event) {
+		final EventType type = event.getType();
 		if (isEnabled()) {
 			dispatchEvent(event);
+		}
+		if (type.isType(EventType.ENTITY_DESTROYED) && event.getTargetUid() == getUid()) {
+			destroy();
 		}
 	}
 
@@ -98,29 +94,29 @@ public class Entity extends SharedGameActor {
 		return this.playerProperty.value();
 	}
 
-	public void setHandler(final Handler handler) {
+	public void setHandler(final Handler<Entity> handler) {
 		if (handler == null) {
 			throw new IllegalArgumentException("'handler' must not be null");
 		}
 		this.handlers.put(handler.getName(), handler);
 	}
 
-	public Handler removeHandler(final Handler.Type type) {
+	public Handler<Entity> removeHandler(final Handler.Type type) {
 		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.remove(name);
+		final Handler<Entity> handler = this.handlers.remove(name);
 		return handler;
 	}
 
-	public Handler getHandler(final Handler.Type type) {
+	public Handler<Entity> getHandler(final Handler.Type type) {
 		final String name = type.name().toLowerCase();
-		final Handler handler = this.handlers.get(name);
+		final Handler<Entity> handler = this.handlers.get(name);
 		return handler;
 	}
 
 	@Override
 	public void enable() {
 		super.enable();
-		for (final Handler h : handlers.values()) {
+		for (final Handler<Entity> h : handlers.values()) {
 			h.enable();
 		}
 		//FIXME
@@ -133,7 +129,7 @@ public class Entity extends SharedGameActor {
 	@Override
 	public void disable() {
 		super.disable();
-		for (final Handler h : handlers.values()) {
+		for (final Handler<?> h : handlers.values()) {
 			h.disable();
 		}
 		//FIXME
@@ -156,4 +152,10 @@ public class Entity extends SharedGameActor {
 
 	}
 
+	void setType(final Type type) {
+		ensureMutable();
+		this.type = type;
+	}
+
 }
+

@@ -13,6 +13,8 @@ import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.serializer.communication.ISerializer;
+import net.gtamps.shared.serializer.helper.BinaryConverter;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;
 import org.xsocket.connection.INonBlockingConnection;
@@ -56,7 +58,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			}
 			// TODO: better solution
 			try {
-				Thread.sleep(20);
+				Thread.sleep(1);
 			} catch (final InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -66,10 +68,10 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 
 	}
 
-	private void readFully(final INonBlockingConnection nbc, final byte[] data) throws IOException {
+	private void readFully(final INonBlockingConnection nbc, final byte[] data, final int length) throws IOException {
 		assert nbc != null;
 		assert data != null;
-		int need = data.length;
+		int need = length;
 		int read = 0;
 		while (need > 0) {
 			final int offered = Math.min(nbc.available(), need);
@@ -109,15 +111,16 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	public boolean onData(final INonBlockingConnection nbc) {
 		int read = 0;
 		try {
+			final byte[] msgLen = new byte[4];
+			msgLen[0] = readByte(nbc);
+			msgLen[1] = readByte(nbc);
+			msgLen[2] = readByte(nbc);
+			msgLen[3] = readByte(nbc);
+			read += 4;
 
-			final byte hi = readByte(nbc);
-			final byte lo = readByte(nbc);
-			read += 2;
-
-			final int laenge = (((hi) & 0xff) << 8) + ((lo) & 0xff);
-			//System.out.println("expecting new message: " + laenge );
+			final int laenge = BinaryConverter.readIntFromBytes(msgLen);
 			final byte[] data = new byte[laenge];
-			this.readFully(nbc, data);
+			this.readFully(nbc, data, laenge);
 			this.receive(nbc, data);
 			GUILogger.i().indicateNetworkReceiveActivity();
 		} catch (final ClosedChannelException e) {
@@ -132,7 +135,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 
 	private void receive(final INonBlockingConnection nbc, final byte[] data) {
-		System.out.println(">> " + data.length);
+		System.out.println("received >> " + data.length);
 		//send(nbc, data)
 		final Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
@@ -162,39 +165,46 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 
 	@Override
-	public void send(final String connectionId, @NotNull final byte[] bytes) {
+	public void send(final String connectionId, @NotNull final byte[] bytes, final int length) {
 		final INonBlockingConnection nbc = actualConnections.get(connectionId);
-		final int length = bytes.length;
 		if (length < 1) {
 			return;
 		}
-		if (length > 65535) {
-			throw new IllegalArgumentException("bla!");
-		}
-
-		final byte high = (byte) (length >> 8);
-		final byte low = (byte) (length & 0xFF);
+		/*if (length > 65535) {
+			throw new IllegalArgumentException("Overflow: Message exceeds 64K! This is an error message from the 80s!");
+		}*/
+		final byte[] lengthByte = new byte[4];
+		BinaryConverter.writeIntToBytes(length, lengthByte);
 
 		try {
-			nbc.write(high);
-			nbc.write(low);
-			nbc.write(bytes);
+			nbc.write(lengthByte);
+			nbc.write(bytes,0,length);
 			nbc.flush();
-			System.out.println(length + " + 2 bytes send");
+			System.out.println("sent >> 4 + "+length + " bytes");
 		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final Exception e) {
 			System.out.println("Client connection "+nbc.getId()+" lost: declaring as disconnected!");
 			try {
 				this.onDisconnect(nbc);
 			} catch (final IOException e1) {
 				e1.printStackTrace();
 			}
+		} catch (final Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void send(final String connectionId, final SerializedMessage serMsg) {
+		send(connectionId, serMsg.message, serMsg.length);
+	}
+
+	@Override
+	public void send(final String connectionId, final byte[] bytes) {
+		send(connectionId, bytes, bytes.length);
 	}
 
 }

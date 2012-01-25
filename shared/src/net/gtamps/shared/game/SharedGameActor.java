@@ -61,6 +61,11 @@ public class SharedGameActor extends GameObject implements IGameActor {
 		super(name, uid);
 	}
 
+	public SharedGameActor() {
+		super();
+
+	}
+
 	/* (non-Javadoc)
 	 * @see net.gtamps.shared.game.IGameActor#isEnabled()
 	 */

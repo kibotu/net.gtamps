@@ -36,7 +36,7 @@ import org.jbox2d.common.Vec2;
  * @see Entity
  * @see Player
  */
-public class DriverHandler extends ServersideHandler {
+public class DriverHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
 	private static final int COOLDOWN_MILLIS = 500;
 
@@ -122,14 +122,12 @@ public class DriverHandler extends ServersideHandler {
 		}
 		driver = player;
 		player.setEntity(getParent());
-		//		hasChanged = true;
 		getParent().setChanged();
 	}
 
 	public void removeDriver() {
 		driver.removeEntity();
 		driver = null;
-		//		hasChanged = true;
 		getParent().setChanged();
 	}
 

@@ -11,6 +11,8 @@ import net.gtamps.android.renderer.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -201,4 +203,8 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     public abstract void deleteTexture(int... textureIds);
 
     public abstract void clearScreen(Color4 bgcolor);
+
+    public abstract void setViewPort(int x, int y, int width, int height);
+
+    public abstract void applyCamera(Frustum frustum);
 }

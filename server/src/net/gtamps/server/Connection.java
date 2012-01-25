@@ -1,7 +1,10 @@
 package net.gtamps.server;
 
+import net.gtamps.GTAMultiplayerServer;
+import net.gtamps.helper.FileDumper;
 import net.gtamps.shared.serializer.communication.ISerializer;
-import net.gtamps.shared.serializer.communication.Message;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 /**
  * immutable!
@@ -29,10 +32,13 @@ public final class Connection<H extends ISocketHandler> {
 		this.isActive = true;
 	}
 
-	public void send(final Message msg) {
+	public void send(final NewMessage msg) {
 		if(this.isActive){
-			final byte[] bytes = serializer.serializeMessage(msg);
-			socketHandler.send(id, bytes);
+			final SerializedMessage serializedMessage = serializer.serializeAndPackNewMessage(msg);
+			if(GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS){
+				FileDumper.writeBytesToFile(id, serializedMessage.message,serializedMessage.length);
+			}
+			socketHandler.send(id, serializedMessage);
 		} else {
 			System.out.println("Handle of client request on closed connection, on ID: "+id);
 		}
@@ -42,7 +48,7 @@ public final class Connection<H extends ISocketHandler> {
 		if (bytes == null) {
 			throw new IllegalArgumentException("'bytes' must not be null");
 		}
-		final Message m = serializer.deserializeMessage(bytes);
+		final NewMessage m = serializer.deserializeNewMessage(bytes);
 		controlCenter.receiveMessage(this, m);
 	}
 

@@ -17,26 +17,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 
 	protected ListNode<T> next;
 	private T value;
-	private transient ListNode<T> iteratorNextElement;
-	private transient final Iterator<T> iterator = new Iterator<T>() {
-		@Override
-		public boolean hasNext() {
-			return !(iteratorNextElement.isEmpty());
-		}
-		@Override
-		public T next() {
-			if (!hasNext()) {
-				throw new NoSuchElementException();
-			}
-			final T value = iteratorNextElement.value;
-			iteratorNextElement = iteratorNextElement.next;
-			return value;
-		}
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	};
+	private transient ListNodeIterator<T> iterator;
 
 	public ListNode() {
 		super();
@@ -45,7 +26,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		resetIterator();
 	}
 
-	ListNode(final T value) {
+	public ListNode(final T value) {
 		this();
 		set(value);
 	}
@@ -63,8 +44,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	 * append a new list node to this one and return the resulting list
 	 */
 	public ListNode<T> append(final ListNode<T> newNode) {
-		next = next.append(newNode);
+		final ListNode<T> end = gotoLastNonEmptyElement();
+		end.next = end.next.append(newNode);	// calls append on EmptyListNode
 		return this;
+	}
+
+	private ListNode<T> gotoLastNonEmptyElement() {
+		ListNode<T> current = this;
+		while (!current.next.isEmpty()) {
+			current = current.next;
+		}
+		return current;
 	}
 
 	@Override
@@ -117,7 +107,10 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	public void resetIterator() {
-		iteratorNextElement = this;
+		if (iterator == null) {
+			iterator = new ListNodeIterator<T>(this);
+		}
+		iterator.reset();
 	}
 
 	/**
@@ -138,14 +131,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	void unlink() {
-		iteratorNextElement = null;
+		iterator.unlink();
 		value = null;
 		next.unlink();
 		next = null;
 	}
 
 	private void ensureIteratorReset() {
-		if (iteratorNextElement != this) {
+		if (iterator == null) {
+			iterator = new ListNodeIterator<T>(this);
+		}
+		if (!iterator.isReset()) {
 			throw new IllegalStateException(errorIteratorNotResetMsg);
 		}
 	}
@@ -163,7 +159,50 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		unlink();
 	}
 
-	private static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
+	private static class ListNodeIterator<T extends AbstractSendable<T>>  implements Iterator<T> {
+
+		final ListNode<T> startElement;
+		ListNode<T> iteratorNextElement;
+
+		public ListNodeIterator(final ListNode<T> startElement) {
+			this.startElement = startElement;
+			iteratorNextElement = startElement;
+		}
+
+		public void unlink() {
+			iteratorNextElement = null;
+		}
+
+		public boolean isReset() {
+			return iteratorNextElement == startElement;
+		}
+
+		public void reset() {
+			iteratorNextElement = startElement;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !(iteratorNextElement.isEmpty());
+		}
+		@Override
+		public T next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			final T value = iteratorNextElement.value;
+			iteratorNextElement = iteratorNextElement.next;
+			return value;
+		}
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	};
+
+
+
+	public static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
 
 		@SuppressWarnings("rawtypes")
 		public static final EmptyListNode<?> INSTANCE = new EmptyListNode();
@@ -171,7 +210,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		private static final long serialVersionUID = -115606057102526274L;
 
 		private EmptyListNode() {
-			this.next = null;
+			next = null;
 		}
 
 		@Override
@@ -206,10 +245,5 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		}
 	}
 
-	public class EOF {
-		//Fake class for serialization
-	}
-	public class Header {
 
-	}
 }

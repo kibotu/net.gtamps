@@ -2,6 +2,7 @@ package net.gtamps.shared.game.event;
 
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 /**
  * <p>
@@ -41,17 +42,11 @@ public class GameEvent extends GameObject {
 
 	@Deprecated
 	protected EventType type = null;
-	@Deprecated
-	protected final GameObject source;
-	@Deprecated
-	protected final GameObject target;
-	@Deprecated
-	protected final String value;
 
-	protected IProperty<Integer> eventType = useProperty("gameevent_eventtype", EventType.GAME_EVENT.ordinal());
-	protected IProperty<Integer> sourceUid = useProperty("gameevent_sourceuid", INVALID_UID);
-	protected IProperty<Integer> targetUid = useProperty("gameevent_targetuid", INVALID_UID);;
-	protected IProperty<String> stringValue = useProperty("gameevent_value", "");
+	protected IProperty<Integer> eventType = useProperty(StringConstants.PROPERTY_TYPE, EventType.GAME_EVENT.ordinal());
+	protected IProperty<Integer> sourceUid = useProperty(StringConstants.PROPERTY_SOURCE_UID, INVALID_UID);
+	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);
+	protected IProperty<String> stringValue = useProperty(StringConstants.PROPERTY_VALUE, "");
 
 	/**
 	 * @param type   use an unambiguous type here, that is, one without
@@ -72,12 +67,10 @@ public class GameEvent extends GameObject {
 			throw new IllegalArgumentException("'type' is ambiguous! use an EventType without subtypes.");
 		}
 		value = value == null ? "" : value;
-		this.source = source;
-		this.target = target;
-		this.value = value;
 		sourceUid.set(source.getUid());
 		targetUid.set(target.getUid());
 		stringValue.set(value);
+		setType(type);
 	}
 
 	public GameEvent(final EventType type, final GameObject source, final GameObject target) {
@@ -93,6 +86,10 @@ public class GameEvent extends GameObject {
 	 */
 	public GameEvent(final EventType type, final GameObject source) {
 		this(type, source, source);
+	}
+
+	public GameEvent() {
+		super(EventType.GAME_EVENT.name());
 	}
 
 	public void setType(final EventType type) {
@@ -119,22 +116,6 @@ public class GameEvent extends GameObject {
 		return targetUid.value();
 	}
 
-	/**
-	 * @deprecated	use {@link #getSourceUid()} with your own lookup
-	 */
-	@Deprecated
-	public GameObject getSource() {
-		return this.source;
-	}
-
-	/**
-	 * @deprecated	use {@link #getTargetUid()} with your own lookup
-	 */
-	@Deprecated
-	public GameObject getTarget() {
-		return this.target;
-	}
-
 	public boolean isBegin() {
 		return stringValue.value().equals(BEGIN_VALUE);
 	}
@@ -151,6 +132,18 @@ public class GameEvent extends GameObject {
 	@Override
 	public String toString() {
 		return super.toString() + stringValue.value();
+	}
+
+	public void setSourceUid(final int uid) {
+		sourceUid.set(uid);
+	}
+
+	public void setTargetUid(final int uid) {
+		targetUid.set(uid);
+	}
+
+	public void setCause(final GameEvent event) {
+		// TODO implement setCause
 	}
 
 }

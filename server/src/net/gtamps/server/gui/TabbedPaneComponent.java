@@ -1,33 +1,34 @@
 package net.gtamps.server.gui;
 
-import javax.swing.*;
-import java.util.LinkedList;
+import java.util.List;
+
+import javax.swing.JTextArea;
 
 public class TabbedPaneComponent extends JTextArea {
-    private LogType logType;
+	private final LogType logType;
 
-    public TabbedPaneComponent(LogType lmt) {
-        this.logType = lmt;
-        this.setEditable(false);
-    }
+	public TabbedPaneComponent(final LogType lmt) {
+		logType = lmt;
+		setEditable(false);
+	}
 
-    public LogType getLogType() {
-        return this.logType;
-    }
+	public LogType getLogType() {
+		return logType;
+	}
 
-    public void updateLog(LinkedList<String> ls) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : ls) {
-            sb.append(s + "\r\n");
-        }
-        this.setText(sb.toString());
-//		this.repaint();
-        this.invalidate();
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-//			e.printStackTrace();
-        }
-    }
+	public void updateLog(final List<String> list) {
+		final StringBuilder sb = new StringBuilder();
+		for (final String s : list) {
+			sb.append(s + "\r\n");
+		}
+		setText(sb.toString());
+		//		this.repaint();
+		invalidate();
+		try {
+			Thread.sleep(200);
+		} catch (final InterruptedException e) {
+			// TODO Auto-generated catch block
+			//			e.printStackTrace();
+		}
+	}
 }

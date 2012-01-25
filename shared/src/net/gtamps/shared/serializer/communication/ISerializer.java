@@ -1,11 +1,15 @@
 package net.gtamps.shared.serializer.communication;
 
+import net.gtamps.shared.serializer.helper.SerializedMessage;
+
 public interface ISerializer {
-    public byte[] serializeMessage(Message m);
-
-    public Message deserializeMessage(byte[] bytes);
-
-	byte[] serializeMessage(NewMessage m);
+	
+	SerializedMessage serializedMessage = new SerializedMessage();
+	
+	byte[] serializeNewMessage(NewMessage m);
 
 	public NewMessage deserializeNewMessage(byte[] bytes);
+	
+	SerializedMessage serializeAndPackNewMessage(NewMessage m);
+
 }

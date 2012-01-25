@@ -3,7 +3,7 @@ package net.gtamps.android.renderer;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLES20;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -35,6 +35,7 @@ public class RenderCapabilities {
     private static int smoothLineSizeMin;
     private static int smoothLineSizeMax;
     private static int maxLights;
+    private static boolean useVBO = Config.USEVBO;
 
 
     public static float openGlVersion() {
@@ -50,7 +51,7 @@ public class RenderCapabilities {
     }
 
     public static int maxTextureUnits() {
-        return supportsGLES20() ? 8 : maxTextureUnits;
+        return 8; // maxTextureUnits;
     }
 
     public static int getMaxTextureSize() {
@@ -90,7 +91,7 @@ public class RenderCapabilities {
     }
 
     public static int maxLights() {
-        return supportsGLES20() ? 8 : maxLights;
+        return 8; //;maxLights;
     }
 
     /**
@@ -156,8 +157,10 @@ public class RenderCapabilities {
             gl.glGetIntegerv(GL_MAX_LIGHTS, i);
             maxLights = i.get(0);
         }
-        
-        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion + " (" + (supportsOpenGLES ? "With " : "Without ") + "OpenGLES20 support.)");
+
+        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion );
+        Logger.i(TAG, "RenderCapabilities - " + (supportsOpenGLES ? "With " : "Without ") + "OpenGLES20 support.");
+        if(useVBO) Logger.i(TAG, "RenderCapabilities - Uses VBO");
         if (openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + maxTextureUnits);
         Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + maxTextureSize);
         if (openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxLights: " + maxLights);
@@ -176,5 +179,9 @@ public class RenderCapabilities {
 
     public static boolean supportsGLES20() {
         return supportsOpenGLES;
+    }
+
+    public static boolean useVBO() {
+        return useVBO;
     }
 }

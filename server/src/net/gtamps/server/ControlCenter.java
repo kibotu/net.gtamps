@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.gtamps.game.Game;
@@ -13,11 +14,15 @@ import net.gtamps.game.IGame;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameData;
-import net.gtamps.shared.serializer.communication.Message;
-import net.gtamps.shared.serializer.communication.Sendable;
+import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.NewSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
 import net.gtamps.shared.serializer.communication.SendableType;
-import net.gtamps.shared.serializer.communication.data.AuthentificationData;
-import net.gtamps.shared.serializer.communication.data.StringData;
+import net.gtamps.shared.serializer.communication.StringConstants;
+import net.gtamps.shared.serializer.communication.data.DataMap;
+import net.gtamps.shared.serializer.communication.data.MapEntry;
+import net.gtamps.shared.serializer.communication.data.Value;
 
 public final class ControlCenter implements Runnable, IMessageHandler {
 	private static final LogType TAG = LogType.SERVER;
@@ -25,11 +30,15 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	public static final ControlCenter instance = new ControlCenter();
 
-	public final BlockingQueue<Message> inbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Message> outbox = new LinkedBlockingQueue<Message>();
-	public final BlockingQueue<Sendable> responsebox = new LinkedBlockingQueue<Sendable>();
+	public final ConcurrentHashMap<String, Integer> updateRequestInterval = new ConcurrentHashMap<String, Integer>();
+	public final ConcurrentHashMap<String, Integer> lastRevisionNumber = new ConcurrentHashMap<String, Integer>();
+
+	public final BlockingQueue<NewMessage> inbox = new LinkedBlockingQueue<NewMessage>();
+	public final BlockingQueue<NewMessage> outbox = new LinkedBlockingQueue<NewMessage>();
+	public final BlockingQueue<NewSendable> responsebox = new LinkedBlockingQueue<NewSendable>();
 
 	private final Map<Long, IGame> gameThreads = new HashMap<Long, IGame>();
+	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	private boolean run = true;
 	private IGame game; //tmp
@@ -60,10 +69,9 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.gtamps.server.IMessageHandler#receiveMessage(net.gtamps.server.Connection, net.gtamps.shared.communication.Message)
 	 */
 	@Override
-	public void receiveMessage(final Connection<?> c, final Message msg) {
+	public void receiveMessage(final Connection<?> c, final NewMessage msg) {
 		if (msg != null) {
 			GUILogger.getInstance().log(TAG, msg.toString());
 			String sessionId;
@@ -79,7 +87,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 		}
 	}
 
-	public void handleResponse(final Sendable response) {
+	public void handleResponse(final NewSendable response) {
 		if (response != null) {
 			responsebox.add(response);
 		}
@@ -96,11 +104,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	private void processInbox() {
-		final List<Message> workingCopy = new LinkedList<Message>();
+		final List<NewMessage> workingCopy = new LinkedList<NewMessage>();
 		inbox.drainTo(workingCopy);
-		for (final Message msg : workingCopy) {
+		for (final NewMessage msg : workingCopy) {
 			final String msgSessid = msg.getSessionId();
-			for (final Sendable i : msg.sendables) {
+			for (final NewSendable i : msg.sendables) {
 				assert msgSessid.equals(i.sessionId);
 				handleSendable(i);
 			}
@@ -109,11 +117,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 	private void processResponsebox() {
-		final List<Sendable> workingCopy = new LinkedList<Sendable>();
+		final List<NewSendable> workingCopy = new LinkedList<NewSendable>();
 		//responsebox.drainTo(workingCopy);
 		responsebox.drainTo(workingCopy);
 		game.drainResponseQueue(workingCopy);
-		for (final Sendable response : workingCopy) {
+		for (final NewSendable response : workingCopy) {
 			sendInMessage(response);
 		}
 		workingCopy.clear();
@@ -123,100 +131,152 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	}
 
-	private void handleSendable(final Sendable request) {
+	private void handleSendable(final NewSendable request) {
 		switch (request.type) {
-			case SESSION:
-				handleSession(request);
-				break;
-			case REGISTER:
-				handleRegister(request);
-				break;
-			case LOGIN:
-				handleLogin(request);
-				break;
-			case JOIN:
-			case LEAVE:
-				handleAuthenticatedRequest(request);
-				break;
-			case GETMAPDATA:
-			case GETPLAYER:
-			case GETUPDATE:
-			case ACTION_ACCELERATE:
-			case ACTION_DECELERATE:
-			case ACTION_HANDBRAKE:
-			case ACTION_ENTEREXIT:
-			case ACTION_LEFT:
-			case ACTION_RIGHT:
-			case ACTION_SHOOT:
-			case ACTION_SUICIDE:
-				handlePlayingRequest(request);
-				break;
-			default:
-				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
-				break;
+		case SESSION:
+			handleSession(request);
+			break;
+		case REGISTER:
+			handleRegister(request);
+			break;
+		case LOGIN:
+			handleLogin(request);
+			break;
+		case JOIN:
+		case LEAVE:
+			handleAuthenticatedRequest(request);
+			break;
+		case GETUPDATE:
+			//FIXME easy way out, just throw some packages away.
+			//needs more delicate handling later
+			//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
+			//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
+			//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
+			handlePlayingRequest(request);
+			//				System.out.println("ansering update request");
+			//			}
+			//			System.out.println("throwing away update request");
+			//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
+			break;
+		case GETMAPDATA:
+		case GETPLAYER:
+		case ACTION_ACCELERATE:
+		case ACTION_DECELERATE:
+		case ACTION_HANDBRAKE:
+		case ACTION_ENTEREXIT:
+		case ACTION_LEFT:
+		case ACTION_RIGHT:
+		case ACTION_SHOOT:
+		case ACTION_SUICIDE:
+			handlePlayingRequest(request);
+			break;
+		default:
+			handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
+			break;
 		}
 	}
 
-	private void handleSession(final Sendable s) {
-		final Sendable response = s.createResponse(SendableType.SESSION_OK);
-		response.data = new StringData(s.sessionId);
+	private void handleSession(final NewSendable s) {
+		final NewSendable response = s.createResponse(SendableType.SESSION_OK);
+		final Value<String> sessionId = new Value<String>(s.sessionId);
+
+		final MapEntry<Value<String>> sessionIdEntry = new MapEntry<Value<String>>
+		(StringConstants.SESSION_ID, sessionId);
+		final DataMap sessionData = new DataMap();
+		sessionData.add(sessionIdEntry);
+		response.data = sessionData;
+
 		handleResponse(response);
 	}
 
-	private void handleRegister(final Sendable request) {
-		final AuthentificationData adata = (AuthentificationData) request.data;
-		if (adata == null || adata.username == null || adata.username.length() == 0 ||
-				adata.password == null || adata.password.length() == 0) {
+	private void handleRegister(final NewSendable request) {
+		final DataMap adata =  (DataMap) request.data;
+
+		final String username = ((Value<String>)(adata.get(StringConstants.AUTH_USERNAME))).get();
+		final String password = ((Value<String>)(adata.get(StringConstants.AUTH_PASSWORD))).get();
+
+		if (username == null || username.length() == 0 ||
+				password == null || password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.REGISTER_BAD));
 			return;
 		}
-		Sendable response = null;
+		NewSendable response = null;
 		try {
-			final User user = Authenticator.instance.Register(adata.username, adata.password);
+			final User user = Authenticator.instance.Register(username, password);
 			SessionManager.instance.authenticateSession(request.sessionId, user);
 			response = request.createResponse(SendableType.REGISTER_OK);
 		} catch (final IllegalStateException e) {
 			response = request.createResponse(SendableType.REGISTER_BAD);
-			response.data = new StringData(e.getMessage());
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
 		} catch (final ServerException e) {
 			response = request.createResponse(SendableType.REGISTER_BAD);
-			response.data = new StringData(e.getMessage());
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+
 		}
 		handleResponse(response);
 	}
 
 
-	private void handleLogin(final Sendable request) {
+	private void handleLogin(final NewSendable request) {
 		if (SessionManager.instance.isAuthenticated(request.sessionId)) {
 			handleResponse(request.createResponse(SendableType.LOGIN_OK));
 			return;
 		}
-		final AuthentificationData adata = (AuthentificationData) request.data;
-		if (adata == null || adata.username == null || adata.username.length() == 0 ||
-				adata.password == null || adata.password.length() == 0) {
+		final DataMap adata =  (DataMap) request.data;
+
+		final String username = ((Value<String>)(adata.get(StringConstants.AUTH_USERNAME))).get();
+		final String password = ((Value<String>)(adata.get(StringConstants.AUTH_PASSWORD))).get();
+
+		if (username == null || username.length() == 0 ||
+				password == null || password.length() == 0) {
 			handleResponse(request.createResponse(SendableType.LOGIN_BAD));
 			return;
 		}
-		Sendable response = null;
+		NewSendable response = null;
 		try {
-			final User debugUser = Authenticator.instance.Login(adata.username, adata.password);
-			SessionManager.instance.authenticateSession(request.sessionId, debugUser);
+			final User user = Authenticator.instance.Login(username, password);
+			SessionManager.instance.authenticateSession(request.sessionId, user);
 			response = request.createResponse(SendableType.LOGIN_OK);
-		} catch (final ServerException e) {
-			// from Authenticator
-			response = request.createResponse(SendableType.LOGIN_BAD);
-			response.data = new StringData(e.getMessage());
 		} catch (final IllegalStateException e) {
-			// cannot login: session already used by another user
-			// TODO log or something?
 			response = request.createResponse(SendableType.LOGIN_BAD);
-			response.data = new StringData(e.getMessage());
-		} finally {
-			handleResponse(response);
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+		} catch (final ServerException e) {
+			response = request.createResponse(SendableType.LOGIN_BAD);
+
+			final Value<String> errorMessage = new Value<String>(e.getMessage());
+			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
+			(StringConstants.ERROR_MESSAGE, errorMessage);
+			final DataMap errorData = new DataMap();
+			errorData.add(errorMessageEntry);
+
+			response.data = errorData;
+
 		}
+		handleResponse(response);
 	}
 
-	private void handleAuthenticatedRequest(final Sendable request) {
+	private void handleAuthenticatedRequest(final NewSendable request) {
 		if (!SessionManager.instance.isAuthenticated(request.sessionId)) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
@@ -225,7 +285,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 
-	private void handlePlayingRequest(final Sendable request) {
+	private void handlePlayingRequest(final NewSendable request) {
 		if (!SessionManager.instance.isPlaying(request.sessionId)) {
 			handleResponse(request.createResponse(request.type.getNeedResponse()));
 			return;
@@ -234,10 +294,10 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	}
 
 
-	private void sendInMessage(final Sendable response) {
-		final Message msg = new Message();
+	private void sendInMessage(final NewSendable response) {
+		final NewMessage msg = new NewMessage();
 		msg.setSessionId(response.sessionId);
-		msg.addSendable(response);
+		msg.sendables = msg.sendables.append(sendableProvider.getListNode(response));
 		SessionManager.instance.sendMessage(msg);
 	}
 

@@ -1,6 +1,14 @@
 package net.gtamps.android.game.content.scenes;
 
+import java.util.List;
+
 import net.gtamps.android.R;
+import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.android.core.input.layout.AbstractInputLayout;
+import net.gtamps.android.core.input.layout.InputLayoutIngame;
+import net.gtamps.android.core.net.AbstractEntityView;
+import net.gtamps.android.core.net.IWorld;
 import net.gtamps.android.renderer.graph.RenderState;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.android.renderer.graph.scene.primitives.Camera;
@@ -8,18 +16,24 @@ import net.gtamps.android.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
+import net.gtamps.android.game.content.scenes.inputlistener.PlayerMovementListener;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
+import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.serializer.ConnectionManager;
+import net.gtamps.shared.serializer.communication.*;
+import net.gtamps.shared.serializer.communication.data.ISendableData;
 import org.jetbrains.annotations.NotNull;
 
-public class World extends EntityScene {
+public class World extends EntityScene implements InputEventListener, IWorld {
 
-    private EntityView activeView;
-    public final PlayerManager playerManager;
+    private AbstractEntityView activeView;
+    private AbstractInputLayout layout;
+    private NewMessage message;
 
     public World() {
-        playerManager = new PlayerManager();
     }
 
     @Override
@@ -40,8 +54,17 @@ public class World extends EntityScene {
 //        riviera.getObject3d().setPosition(3, 0, 0);
 //        add(riviera);
 
-        add(new EntityView(addLevel()));
 //        add(new EntityView(getSunLight()));
+
+        // setup layout
+        layout = new InputLayoutIngame();
+        InputEngineController.getInstance().setLayout(layout);
+        PlayerMovementListener pml = new PlayerMovementListener();
+        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);
+//        InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(this);
+
+        // set dirty flag, since something has changed (input engine needs correct resolution
+        setDirtyFlag();
     }
 
     public static Light getSpotLight() {
@@ -86,7 +109,6 @@ public class World extends EntityScene {
         parsedChild.enableAlpha(false);
         parsedChild.setRotation(0, 0, 0);
         parsedChild.getRenderState().shader = RenderState.Shader.SMOOTH;
-        parsedChild.enableMipMap(true);
         return parsedObject;
     }
 
@@ -105,19 +127,60 @@ public class World extends EntityScene {
         parsedObject.setPosition(0,- (1280*(Config.PIXEL_TO_NATIVE + 0.1f))/2, 0);
         parsedChild.setRotation(0,0, MathUtils.deg2Rad(180));
         parsedChild.getRenderState().shader = RenderState.Shader.FLAT;
-        parsedChild.enableMipMap(false);
         return parsedObject;
     }
 
-    public EntityView getActiveView() {
+    public AbstractEntityView getActiveView() {
         return activeView;
     }
 
-    public void setActiveView(@NotNull EntityView entityView) {
+    public void setActiveView(@NotNull AbstractEntityView entityView) {
         this.activeView = entityView;
     }
 
     @Override
-    public void onDirty() {
+    public void onSendableRetrieve(SendableType sendableType, ISendableData data) {
+        Logger.D(this, sendableType);
+//        if (
+//			sendableType.equals(SendableType.ACTION_ACCELERATE) ||
+//			sendableType.equals(SendableType.ACTION_DECELERATE) ||
+//			sendableType.equals(SendableType.ACTION_LEFT) ||
+//			sendableType.equals(SendableType.ACTION_RIGHT) ||
+//			sendableType.equals(SendableType.ACTION_SHOOT)
+//
+//		) {
+//
+//
+//        TODO use SendableFactory
+//        message = NewMessageFactory.createGetUpdateRequest(ConnectionManager.INSTANCE.currentRevId);
+//        message.addSendable(new NewSendable(sendableType));
+//        ConnectionManager.INSTANCE.add(message);
+
+//		}
     }
+
+    @Override
+    public void onDirty() {
+        // set resolution
+//        layout.getTouchWindow().setResolution((int) getScene().getActiveCamera().getDimension().x, (int) getScene().getActiveCamera().getDimension().y);
+        clearDirtyFlag();
+    }
+
+	@Override
+	public void add(AbstractEntityView entityView) {
+		
+		
+	}
+
+	@Override
+	public List<AbstractEntityView> getAllEntities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractEntityView createEntityView(Entity e) {
+		return new EntityView(e);
+	}
+
 }
