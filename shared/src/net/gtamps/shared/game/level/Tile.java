@@ -1,6 +1,8 @@
 package net.gtamps.shared.game.level;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable{
 
 	private String bitmapName;
 	private float x;

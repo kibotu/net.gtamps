@@ -63,6 +63,12 @@ final public class NewMessageFactory {
 		return msg;
 	}
 
+	public static NewMessage creategetTileMapRequest() {
+		final NewMessage msg = sendableFactory.createMessage();
+		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createTileMapRequest()));
+		return msg;
+	}
+
 	public static NewMessage createLoginRequest(final String username, final String password) {
 		final NewMessage msg = sendableFactory.createMessage();
 		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createLoginRequest(username, password)));
@@ -134,7 +140,7 @@ final public class NewMessageFactory {
 		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createShootCommand()));
 		return msg;
 	}
-	
+
 	public static NewMessage createEnterExitCommand(){
 		final NewMessage msg = sendableFactory.createMessage();
 		msg.addSendable(sendableFactory.wrapSendable(sendableFactory.createEnterExitCommand()));
