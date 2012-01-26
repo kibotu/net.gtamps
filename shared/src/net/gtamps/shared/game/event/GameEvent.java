@@ -46,6 +46,7 @@ public class GameEvent extends GameObject {
 	protected IProperty<Integer> eventType = useProperty(StringConstants.PROPERTY_TYPE, EventType.GAME_EVENT.ordinal());
 	protected IProperty<Integer> sourceUid = useProperty(StringConstants.PROPERTY_SOURCE_UID, INVALID_UID);
 	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);
+	protected IProperty<Integer> causeUid = useProperty(StringConstants.PROPERTY_CAUSE_UID, INVALID_UID);
 	protected IProperty<String> stringValue = useProperty(StringConstants.PROPERTY_VALUE, "");
 
 	/**
@@ -143,7 +144,7 @@ public class GameEvent extends GameObject {
 	}
 
 	public void setCause(final GameEvent event) {
-		// TODO implement setCause
+		causeUid.set(event.getUid());
 	}
 
 }
