@@ -175,6 +175,16 @@ public class MessageHandler {
             case REGISTER_ERROR:
                 Logger.toast(this, "REGISTER_ERROR");
                 break;
+                
+             
+            case GETTILEMAP_OK:
+            	if(world.supports2DTileMap()){
+            		world.setTileMap(SendableDataConverter.toTileMap((ListNode<DataMap>) sendable.data));
+            	} else {
+            		Logger.e(world, "doesn't support Tile Maps!");
+            	}
+            	break;
+            
             default:
                 break;
         }
@@ -186,7 +196,7 @@ public class MessageHandler {
         AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
         if (entityView == null) {
 
-            // new entity
+            // new entityT
             entityView = world.createEntityView(serverEntity);
             world.add(entityView);
 

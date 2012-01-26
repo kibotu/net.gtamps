@@ -1,10 +1,12 @@
 package net.gtamps.android.core.net;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.communication.NewMessage;
 
 public interface IWorld {
@@ -19,5 +21,8 @@ public interface IWorld {
 	List<AbstractEntityView> getAllEntities();
 	AbstractEntityView getActiveView();
 	AbstractEntityView createEntityView(Entity e);
+	
+	public boolean supports2DTileMap();
+	void setTileMap(LinkedList<Tile> linkedList);
 
 }
