@@ -21,6 +21,10 @@ public enum SendableType {
 	MESSAGE_FREQ_SLOWDOWN,
 	MESSAGE_FREQ_SPEEDUP,
 
+	//map
+	GETTILEMAP,
+	GETTILEMAP_OK,
+	
 	//player management
 	GETUPDATE_OK,
 	GETPLAYER_OK,
