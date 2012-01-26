@@ -20,6 +20,7 @@ import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
@@ -175,24 +176,25 @@ public class Game implements IGame, Runnable {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
 		switch (sendable.type) {
-		case ACTION_ACCELERATE:
-		case ACTION_DECELERATE:
-		case ACTION_ENTEREXIT:
-		case ACTION_LEFT:
-		case ACTION_RIGHT:
-		case ACTION_SHOOT:
-		case ACTION_SUICIDE:
-			commandQueue.add(sendable);
-			break;
-		case GETMAPDATA:
-		case GETPLAYER:
-		case GETUPDATE:
-		case JOIN:
-		case LEAVE:
-			requestQueue.add(sendable);
-			break;
-		default:
-			break;
+			case ACTION_ACCELERATE:
+			case ACTION_DECELERATE:
+			case ACTION_ENTEREXIT:
+			case ACTION_LEFT:
+			case ACTION_RIGHT:
+			case ACTION_SHOOT:
+			case ACTION_SUICIDE:
+				commandQueue.add(sendable);
+				break;
+			case GETMAPDATA:
+			case GETPLAYER:
+			case GETUPDATE:
+			case GETTILEMAP:
+			case JOIN:
+			case LEAVE:
+				requestQueue.add(sendable);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -226,28 +228,47 @@ public class Game implements IGame, Runnable {
 			return request.createResponse(request.type.getNeedResponse());
 		}
 		switch (request.type) {
-		case JOIN:
-			response = join(request);
-			break;
-		case GETMAPDATA:
-			//					response = getMapData(session, request);
-			break;
-		case GETPLAYER:
-			response = getPlayer(request);
-			break;
-		case GETUPDATE:
-			response = getUpdate(request);
-			break;
-		case LEAVE:
-			response = leave(request);
-			break;
-		default:
-			break;
+			case JOIN:
+				response = join(request);
+				break;
+			case GETMAPDATA:
+				//					response = getMapData(session, request);
+				break;
+			case GETPLAYER:
+				response = getPlayer(request);
+				break;
+			case GETUPDATE:
+				response = getUpdate(request);
+				break;
+			case GETTILEMAP:
+				response = getTileMap(request);
+				break;
+			case LEAVE:
+				response = leave(request);
+				break;
+			default:
+				break;
 
 		}
 		return response;
 	}
 
+	private NewSendable getTileMap(final NewSendable request) {
+		NewSendable response;
+		final List<Tile> tileList = universe.getTiles();
+		if (tileList == null) {
+			final String errorMsg = "Game does not contain tile data";
+			response = request.createResponse(SendableType.GETTILEMAP_ERROR);
+			final DataMap data = new DataMap();
+			final MapEntry<Value<String>> errorEntry = new MapEntry<Value<String>>(StringConstants.ERROR_MESSAGE, new Value(errorMsg));
+			data.add(errorEntry);
+		} else {
+			final ListNode<?> tileData = SendableDataConverter.tileMaptoSendableData(tileList, sendableProvider);
+			response = request.createResponse(SendableType.GETTILEMAP_OK);
+			response.data = tileData;
+		}
+		return response;
+	}
 
 	private void handleResponse(final NewSendable r) {
 		assert r != null;
@@ -262,30 +283,30 @@ public class Game implements IGame, Runnable {
 		}
 		EventType type = null;
 		switch (cmd.type) {
-		case ACTION_ACCELERATE:
-			type = EventType.ACTION_ACCELERATE;
-			break;
-		case ACTION_DECELERATE:
-			type = EventType.ACTION_DECELERATE;
-			break;
-		case ACTION_LEFT:
-			type = EventType.ACTION_TURNLEFT;
-			break;
-		case ACTION_RIGHT:
-			type = EventType.ACTION_TURNRIGHT;
-			break;
-		case ACTION_ENTEREXIT:
-			type = EventType.ACTION_ENTEREXIT;
-			GUILogger.i().log(TAG, "ENTER/EXIT received");
-			break;
-		case ACTION_SHOOT:
-			type = EventType.ACTION_SHOOT;
-			break;
-		case ACTION_HANDBRAKE:
-			type = EventType.ACTION_HANDBRAKE;
-			break;
-		case ACTION_SUICIDE:
-			type = EventType.ACTION_SUICIDE;
+			case ACTION_ACCELERATE:
+				type = EventType.ACTION_ACCELERATE;
+				break;
+			case ACTION_DECELERATE:
+				type = EventType.ACTION_DECELERATE;
+				break;
+			case ACTION_LEFT:
+				type = EventType.ACTION_TURNLEFT;
+				break;
+			case ACTION_RIGHT:
+				type = EventType.ACTION_TURNRIGHT;
+				break;
+			case ACTION_ENTEREXIT:
+				type = EventType.ACTION_ENTEREXIT;
+				GUILogger.i().log(TAG, "ENTER/EXIT received");
+				break;
+			case ACTION_SHOOT:
+				type = EventType.ACTION_SHOOT;
+				break;
+			case ACTION_HANDBRAKE:
+				type = EventType.ACTION_HANDBRAKE;
+				break;
+			case ACTION_SUICIDE:
+				type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
 			universe.dispatchEvent(new GameEvent(type, player));

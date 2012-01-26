@@ -1,6 +1,7 @@
 package net.gtamps.game.universe;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
@@ -15,6 +16,8 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.GameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
 import net.gtamps.shared.game.event.IGameEventListener;
+import net.gtamps.shared.game.level.Level;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.game.player.Player;
 
 public class Universe implements IGameEventListener, IGameEventDispatcher {
@@ -26,6 +29,8 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 	private final String name;
 	private final int width;
 	private final int height;
+
+	private Level level = null;
 
 	//private LinkedList<Entity> entityList = new LinkedList<Entity>();
 	private final LinkedList<Entity> spawnPoints = new LinkedList<Entity>();
@@ -54,11 +59,16 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 		addEventListener(EventType.ENTITY_EVENT, entityManager);
 
 	}
+
 	public void setPhysics (final Box2DEngine physics)  {
 		if (physics == null) {
 			throw new IllegalArgumentException("'physics' must not be 'null'");
 		}
 		this.physics = physics;
+	}
+
+	public void setLevel(final Level level) {
+		this.level = level;
 	}
 
 	public String getName() {
@@ -127,8 +137,8 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		dispatchEvent(event);
-
 	}
+
 	public Entity getEntity(final int uid) {
 		return entityManager.getEntity(uid);
 	}
@@ -145,6 +155,10 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 			gob = getPlayer(uid);
 		}
 		return gob;
+	}
+
+	public List<Tile> getTiles() {
+		return level != null ? level.getTileList(): null;
 	}
 
 }
