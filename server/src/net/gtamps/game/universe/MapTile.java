@@ -2,7 +2,7 @@ package net.gtamps.game.universe;
 
 import org.jdom.Element;
 
-class Tile {
+class MapTile {
 
     String texture;
     boolean isSpawn;
@@ -10,7 +10,7 @@ class Tile {
     int carRot;
     int floors;
 
-    public Tile(Element xml) {
+    public MapTile(Element xml) {
         this.texture = xml.getAttributeValue("src");
         this.isSpawn = xml.getAttributeValue("spawn").toLowerCase().equals("true") ? true : false;
         this.hasCar = xml.getAttributeValue("car").toLowerCase().equals("true") ? true : false;
