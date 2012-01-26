@@ -16,7 +16,7 @@ public final class SendableFactory {
 	private final SendableProvider sendableProvider;
 
 	public SendableFactory(final TypableObjectCacheFactory cacheFactory) {
-		this.sendableProvider = new SendableProvider(cacheFactory);
+		sendableProvider = new SendableProvider(cacheFactory);
 	}
 
 	public MessageBuilder createMessageBuilder() {
@@ -32,7 +32,11 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createSessionRequest() {
-		return createSendable(SendableType.SESSION); 
+		return createSendable(SendableType.SESSION);
+	}
+
+	public NewSendable createTileMapRequest(){
+		return createSendable(SendableType.GETTILEMAP);
 	}
 
 	public NewSendable createLoginRequest(final String username, final String password) {

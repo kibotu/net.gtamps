@@ -18,6 +18,8 @@ public class Level implements Serializable {
     String levelName = "";
     private String OBJMap = "";
 
+	private LinkedList<Tile> tileList;
+
     public Level(int widthInPixelCoordinates, int heightInPixelCoordinates) {
         this.LevelWidthInPixelCoord = widthInPixelCoordinates;
         this.LevelHeightInPixelCoord = heightInPixelCoordinates;
@@ -74,4 +76,12 @@ public class Level implements Serializable {
     public String getName() {
         return levelName;
     }
+
+    public LinkedList<Tile> getTileList() {
+		return tileList;
+	}
+    
+	public void setTileList(LinkedList<Tile> tileList) {
+		this.tileList = tileList;
+	}
 }

@@ -99,7 +99,11 @@ public class MessageHandler {
                 Logger.D(this, "GETPLAYER_OK " + player);
 
                 // get update
-                connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
+                if(world.supports2DTileMap()){
+                	connection.add(NewMessageFactory.creategetTileMapRequest());
+                } else {
+                	connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
+                }
                 break;
 
             case GETPLAYER_NEED:
@@ -183,6 +187,7 @@ public class MessageHandler {
             	} else {
             		Logger.e(world, "doesn't support Tile Maps!");
             	}
+            	connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
             	break;
             
             default:
