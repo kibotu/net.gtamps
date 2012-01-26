@@ -6,7 +6,7 @@ import net.gtamps.shared.game.entity.Entity;
 
 public class FakeEntityView extends AbstractEntityView {
 	
-	private static final long INTERPOLATION_TIME_MILLIS = 1000;
+	private static final long INTERPOLATION_TIME_MILLIS = 200;
 	private Entity lastEntity;
 	private long millisUpdateTimeStamp;
 	private Bitmap bitmap;

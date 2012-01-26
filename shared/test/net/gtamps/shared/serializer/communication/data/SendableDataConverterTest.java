@@ -153,10 +153,10 @@ public class SendableDataConverterTest {
 	public final void testToSendableDataListofListofTiles() {
 		@SuppressWarnings("unchecked")
 		List<Tile> tileListList = new LinkedList<Tile>();
-		tileListList.add(new Tile("bitmap1.jpg", 0.1f, 0.2f, 4f));
-		tileListList.add(new Tile("bitmap12.jpg", 0.12f, 0.22f, 42f));
-		tileListList.add(new Tile("bitmap14.jpg", 0.14f, 0.24f, 44f));
-		tileListList.add(new Tile("bitmap124.jpg", 0.124f, 0.224f, 424f));
+		tileListList.add(new Tile("bitmap1.jpg", 0.1f, 0.2f, 4f, 0));
+		tileListList.add(new Tile("bitmap12.jpg", 0.12f, 0.22f, 42f, 90));
+		tileListList.add(new Tile("bitmap14.jpg", 0.14f, 0.24f, 44f, 180));
+		tileListList.add(new Tile("bitmap124.jpg", 0.124f, 0.224f, 424f, 270));
 		ListNode<DataMap> listifiedTiles = SendableDataConverter.tileMaptoSendableData(tileListList, provider);
 		assertEquals(tileListList, SendableDataConverter.toTileMap(listifiedTiles));
 

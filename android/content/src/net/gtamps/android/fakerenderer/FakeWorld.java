@@ -1,10 +1,12 @@
 package net.gtamps.android.fakerenderer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -24,12 +26,14 @@ public class FakeWorld implements IWorld {
 	private Bitmap characterbitmap;
 	private HashMap<String,Bitmap> tileBitmapLookup = new HashMap<String, Bitmap>();
 	private Bitmap defaulttile;
+	private AssetManager assetManager;
 	FakeWorld(Context context){
 		car1bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.car1_90);
 		car2bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.car2);
 		characterbitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.char1_90);
 		characterdeadbitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.char1dead);
 		defaulttile = BitmapFactory.decodeResource(context.getResources(), R.drawable.defaulttile);
+		assetManager = context.getAssets();
 	}
 	
 	private HashMap<Integer, AbstractEntityView> fakeEntityMap = new HashMap<Integer, AbstractEntityView>();
@@ -38,7 +42,9 @@ public class FakeWorld implements IWorld {
 	
 	@Override
 	public AbstractEntityView getViewById(int uid) {
-		return fakeEntityMap.get(uid);
+		synchronized(this){
+			return fakeEntityMap.get(uid);
+		}
 	}
 
 	@Override
@@ -49,12 +55,16 @@ public class FakeWorld implements IWorld {
 	@Override
 	public void add(AbstractEntityView entityView) {
 		Log.d("FakeWorld", "Adding Entity! "+entityView.entity.getName());
-		this.fakeEntityMap.put(entityView.entity.getUid(), entityView);
+		synchronized(this){
+			this.fakeEntityMap.put(entityView.entity.getUid(), entityView);
+		}
 	}
 
 	@Override
 	public List<AbstractEntityView> getAllEntities() {
-		return new LinkedList<AbstractEntityView>(this.fakeEntityMap.values());
+		synchronized(this){
+			return new LinkedList<AbstractEntityView>(this.fakeEntityMap.values());
+		}
 	}
 
 	@Override
@@ -82,9 +92,15 @@ public class FakeWorld implements IWorld {
 	public void setTileMap(LinkedList<Tile> tileMap) {
 		for(Tile t : tileMap){
 			if(!tileBitmapLookup.containsKey(t.getBitmap())){
-				Bitmap bitmapLoader = BitmapFactory.decodeFile(t.getBitmap());
+				Bitmap bitmapLoader = null;
+				try {
+					bitmapLoader = BitmapFactory.decodeStream(assetManager.open("tiles/"+t.getBitmap()));
+				} catch (IOException e) {
+					Logger.e(this, "unable to load tile: "+t.getBitmap());
+				}
 				if(bitmapLoader!=null){
 					tileBitmapLookup.put(t.getBitmap(), bitmapLoader);
+					Logger.e(this, "Sucessfully loaded tile: "+t.getBitmap());
 				}
 			}
 		}

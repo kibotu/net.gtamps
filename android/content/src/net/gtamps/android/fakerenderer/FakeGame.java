@@ -6,6 +6,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
+import net.gtamps.android.core.net.ConnectionThread;
 import net.gtamps.android.core.net.IWorld;
 import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
@@ -29,8 +30,8 @@ public class FakeGame extends View {
 
 	public FakeGame(Context context) {
 		super(context);
-		camera = new FakeCamera(context,world);
 		world = new FakeWorld(context);
+		camera = new FakeCamera(context,world);
 		ConnectionThread connection = new ConnectionThread(world);
 		new Thread(connection).start();
 		

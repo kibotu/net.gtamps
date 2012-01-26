@@ -36,7 +36,16 @@ public class FakeCamera {
 	
 	public void renderTile(Tile t){
 		if(canvas!=null){
-			canvas.drawBitmap(world.getTileBitmap(t.getBitmap()), t.getX()-this.x, t.getY()-this.y, paint);
+			if(world!=null){
+				canvas.save();
+				canvas.rotate(t.getRotation());
+				canvas.drawBitmap(world.getTileBitmap(t.getBitmap()), t.getX()-this.x, t.getY()-this.y, paint);
+				canvas.restore();
+			} else {
+				Logger.e(this, "World is not set!");
+			}
+		} else {
+			Logger.e(this, "Canvas is not set!");
 		}
 	}
 	Matrix matrix = new Matrix();

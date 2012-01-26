@@ -7,7 +7,6 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.BinaryObjectSerializer;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.NewMessage;
-import net.gtamps.shared.serializer.communication.ObjectSerializer;
 import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;

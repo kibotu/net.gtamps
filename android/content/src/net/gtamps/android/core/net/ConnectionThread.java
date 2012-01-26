@@ -1,8 +1,6 @@
-package net.gtamps.android.fakerenderer;
+package net.gtamps.android.core.net;
 
 import android.util.Log;
-import net.gtamps.android.core.net.IWorld;
-import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
@@ -15,7 +13,7 @@ public class ConnectionThread implements Runnable{
 	private IWorld world ;
 
 	
-	ConnectionThread(IWorld world){
+	public ConnectionThread(IWorld world){
 		this.world = world;
 	}
 	

@@ -193,6 +193,7 @@ public class SendableDataConverter {
 				tileMap.add(provider.getMapEntry("y", provider.getValue(tileListList.get(x).getY())));
 				tileMap.add(provider.getMapEntry("h", provider.getValue(tileListList.get(x).getHeight())));
 				tileMap.add(provider.getMapEntry("t", provider.getValue(tileListList.get(x).getBitmap())));
+				tileMap.add(provider.getMapEntry("r", provider.getValue(tileListList.get(x).getRotation())));
 				ListNode<DataMap> yListElement = provider.getListNode(tileMap);				
 			if(xList == null){
 				xList = yListElement;
@@ -207,7 +208,7 @@ public class SendableDataConverter {
 		LinkedList<Tile> linkedTileList = new LinkedList<Tile>();
 		tileListMap.resetIterator();
 		for(DataMap tile : tileListMap){
-			linkedTileList.add(new Tile(tile.getString("t"), tile.getFloat("x"), tile.getFloat("y"), tile.getFloat("h")));
+			linkedTileList.add(new Tile(tile.getString("t"), tile.getFloat("x"), tile.getFloat("y"), tile.getFloat("h"), tile.getInt("r")));
 		}
 		return linkedTileList;
 	}

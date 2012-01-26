@@ -99,11 +99,7 @@ public class MessageHandler {
                 Logger.D(this, "GETPLAYER_OK " + player);
 
                 // get update
-                if(world.supports2DTileMap()){
-                	connection.add(NewMessageFactory.creategetTileMapRequest());
-                } else {
-                	connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
-                }
+                connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
                 break;
 
             case GETPLAYER_NEED:
@@ -127,7 +123,12 @@ public class MessageHandler {
                 break;
 
             case JOIN_OK:
-                connection.add(NewMessageFactory.createGetPlayerRequest());
+            	if(world.supports2DTileMap()){
+                	Logger.D(this, "Requesting Map Data...");
+                	connection.add(NewMessageFactory.creategetTileMapRequest());
+                } else {
+                	connection.add(NewMessageFactory.createGetPlayerRequest());
+                }
                 break;
             case JOIN_NEED:
                 break;
@@ -180,14 +181,18 @@ public class MessageHandler {
                 Logger.toast(this, "REGISTER_ERROR");
                 break;
                 
-             
+            case GETTILEMAP_ERROR:
+            	Logger.e(world, "Server error! Tile Map was not received!");
+            	connection.add(NewMessageFactory.createGetPlayerRequest());
+            	break;
             case GETTILEMAP_OK:
             	if(world.supports2DTileMap()){
+            		Logger.e(this,"Receiving Map Data, parsing...");
             		world.setTileMap(SendableDataConverter.toTileMap((ListNode<DataMap>) sendable.data));
             	} else {
             		Logger.e(world, "doesn't support Tile Maps!");
             	}
-            	connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
+            	connection.add(NewMessageFactory.createGetPlayerRequest());
             	break;
             
             default:

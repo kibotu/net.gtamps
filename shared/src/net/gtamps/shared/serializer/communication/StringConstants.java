@@ -27,4 +27,5 @@ public class StringConstants {
 	public static final String PROPERTY_HEALTH = "health";
 	public static final String PROPERTY_HEALTHRATIO = "healthRatio";
 	public static final String PROPERTY_IMPULSE = "impulse";
+	public static final String PROPERTY_CAUSE_UID = "cause";
 }
