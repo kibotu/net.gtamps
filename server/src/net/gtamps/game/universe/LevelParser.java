@@ -41,7 +41,7 @@ public class LevelParser {
 			if(	ep.getType().equals(Type.CAR_CAMARO) ||
 					ep.getType().equals(Type.CAR_CHEVROLET_CORVETTE) ||
 					ep.getType().equals(Type.CAR_RIVIERA) ){
-				entityManager.createEntityCar((int)ep.getPosition().x, (int)ep.getPosition().y, 0);
+				entityManager.createEntityCar((int)ep.getPosition().x, (int)ep.getPosition().y, ep.getRotationInDegrees());
 			}
 			if( ep.getType().equals(Type.SPAWNPOINT)){
 				final Entity spawnPoint = entityManager.createEntitySpawnPoint(universe, (int)ep.getPosition().x, (int)ep.getPosition().y, 0);
