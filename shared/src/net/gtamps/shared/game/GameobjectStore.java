@@ -28,6 +28,13 @@ public class GameobjectStore {
 		caches.put(type, new GameObjectCache<T>(type));
 	}
 
+	public void reclaim(final int uid) {
+		final GameObject target = active.get(uid);
+		if (target != null) {
+			reclaim(target, (Class<GameObject>) target.getClass());
+		}
+	}
+
 	public void reclaim(final Entity e) {
 		reclaim(e, Entity.class);
 	}
@@ -52,10 +59,10 @@ public class GameobjectStore {
 		return getActiveOrCached(uid, Player.class);
 	}
 
-	private <T extends GameObject, U extends T> void reclaim(final U obj, final Class<T> type) {
+	private <T extends GameObject> void reclaim(final T obj, final Class<T> type) {
 		active.remove(obj.getUid());
 		@SuppressWarnings("unchecked")
-		final GameObjectCache<T> cache =  (GameObjectCache<T>) caches.get(type);
+		final GameObjectCache<T> cache =  caches.get(type);
 		cache.registerElement(obj);
 	}
 
@@ -63,7 +70,7 @@ public class GameobjectStore {
 		T obj = type.cast(active.get(uid));
 		if (obj == null) {
 			@SuppressWarnings("unchecked")
-			final GameObjectCache<T> cache = (GameObjectCache<T>) caches.get(type);
+			final GameObjectCache<T> cache = caches.get(type);
 			obj = cache.getOrCreate(uid);
 		}
 		return obj;
