@@ -1,5 +1,7 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
+import net.gtamps.android.core.net.IStream;
+import net.gtamps.android.core.net.TcpStream;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.helper.ArrayPointer;
@@ -90,17 +92,18 @@ public class TcpStream implements IStream {
 	}
 
 	byte[] lengthbytes = new byte[4];
+
 	@Override
 	public boolean send(byte[] message, int length) {
 		if (!socket.isConnected())
 			return false;
-			
+
 		try {
-			
+
 			BinaryConverter.writeIntToBytes(length, lengthbytes);
 			output.write(lengthbytes);
-			output.write(message,0,length);
-//			Logger.i(this, "has send bytes " + (temp.length));
+			output.write(message, 0, length);
+			// Logger.i(this, "has send bytes " + (temp.length));
 		} catch (IOException e) {
 			Logger.printException(this, e);
 			return false;
@@ -130,6 +133,7 @@ public class TcpStream implements IStream {
 
 	int length;
 	byte[] lengthInteger = new byte[4];
+	byte[] networkInputBuffer = new byte[Config.SOCKET_MAX_RECEIVE_BUFFER_SIZE];
 
 	@Override
 	public byte[] receive() {
@@ -138,11 +142,13 @@ public class TcpStream implements IStream {
 			if (input.available() > 4) {
 				input.readFully(lengthInteger, 0, 4);
 				length = BinaryConverter.readIntFromBytes(lengthInteger);
-					byte[] response = new byte[length];
-//					Logger.e(this, "has received " + lengthInteger[0] + " "+ lengthInteger[1] + " "+ lengthInteger[2] + " "+ lengthInteger[3]);
-//					Logger.e(this, "has received " + length + " bytes");
-					input.readFully(response, 0, length);
-					return response;
+				// byte[] response = new byte[length];
+				// Logger.e(this, "has received " + lengthInteger[0] + " "+
+				// lengthInteger[1] + " "+ lengthInteger[2] + " "+
+				// lengthInteger[3]);
+				// Logger.e(this, "has received " + length + " bytes");
+				input.readFully(networkInputBuffer, 0, length);
+				return networkInputBuffer;
 			}
 
 		} catch (IOException e) {

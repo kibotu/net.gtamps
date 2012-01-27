@@ -7,7 +7,7 @@ public class Tile implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8696118686755612819L;
+	private static final long serialVersionUID = 8696118686715512819L;
 	private String bitmapName;
 	private float x;
 	private float y;

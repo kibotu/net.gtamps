@@ -82,6 +82,8 @@ final public class Config {
 
 	public static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
 
+	public static final boolean SHOW_NETWORK_BANDWITH_USAGE = false;
+
 	private Config() {
 	}
 }

@@ -157,7 +157,7 @@ public class BinaryObjectSerializer implements ISerializer {
 		// read sendable header
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		// TODO Enum should be send in a more intelligent manner...
-		final NewSendable ns = new NewSendable(SendableType.valueOf(BinaryConverter.readStringFromBytes(bytes, pd)));
+		final NewSendable ns = new NewSendable(SendableType.valueOf(readTranslatedStringFromBytes(bytes, pd)));
 		// read session id
 		ns.sessionId = BinaryConverter.readStringFromBytes(bytes, pd);
 		// read sendable id
@@ -185,7 +185,8 @@ public class BinaryObjectSerializer implements ISerializer {
 		// write sendable header
 		BinaryConverter.writeByteToBytes(classByteLookup.get(NewSendable.class), bytes, ps);
 		// TODO Enum should be send in a more intelligent manner...
-		BinaryConverter.writeStringToBytes(ns.type.name().toString(), bytes, ps);
+//		BinaryConverter.writeStringToBytes(ns.type.name().toString(), bytes, ps);		
+		writeTranslatedStringToBytes(ns.type.name().toString(), bytes, ps);
 		// write session id
 		BinaryConverter.writeStringToBytes(ns.sessionId, bytes, ps);
 		// write sendable id
@@ -204,6 +205,30 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
+	private void writeTranslatedStringToBytes(String s, byte[] bytes, ArrayPointer ps){
+		translated = Translator.lookup(s);
+		if(translated>-1){
+			BinaryConverter.writeByteToBytes(classByteLookup.get(Const.class), bytes, ps);
+			BinaryConverter.writeByteToBytes(translated, bytes, ps);
+		} else {
+			BinaryConverter.writeByteToBytes(classByteLookup.get(String.class), bytes, ps);
+			BinaryConverter.writeStringToBytes(s, bytes, ps);
+		}
+	}
+	
+	//preallocate
+	Class<?> valueClass = null;
+	private String readTranslatedStringFromBytes(byte[] bytes, ArrayPointer p){
+		valueClass = classByte[BinaryConverter.readByteFromBytes(bytes, p)];
+		if (valueClass == String.class) {
+			return BinaryConverter.readStringFromBytes(bytes, p);
+		} else if (valueClass == Const.class) {
+			return Translator.lookup(BinaryConverter.readByteFromBytes(bytes, p));
+		} else {
+			throw new SendableSerializationException("Can't deserialize String with wrong Class Byte!");
+		}
+	}
+	
 	//preallocate
 	byte translated = -1;
 	protected void serializeValue(final Value<?> data, final byte[] bytes, final ArrayPointer ps) {
@@ -222,14 +247,7 @@ public class BinaryObjectSerializer implements ISerializer {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Boolean.class), bytes, ps);
 			BinaryConverter.writeBooleanToBytes((Boolean) data.get(), bytes, ps);
 		} else if (data.get().getClass() == String.class) {
-			translated = Translator.lookup((String) data.get());
-			if(translated>-1){
-				BinaryConverter.writeByteToBytes(classByteLookup.get(Const.class), bytes, ps);
-				BinaryConverter.writeByteToBytes(translated, bytes, ps);
-			} else {
-				BinaryConverter.writeByteToBytes(classByteLookup.get(String.class), bytes, ps);
-				BinaryConverter.writeStringToBytes((String) data.get(), bytes, ps);
-			}
+			writeTranslatedStringToBytes((String)data.get(), bytes, ps);
 		} else if (data.get().getClass() == Byte.class) {
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Byte.class), bytes, ps);
 			BinaryConverter.writeByteToBytes((Byte) data.get(), bytes, ps);
@@ -290,7 +308,7 @@ public class BinaryObjectSerializer implements ISerializer {
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == MapEntry.class) {
 			final MapEntry<AbstractSendableData<?>> me = new MapEntry<AbstractSendableData<?>>();
-			me.setKey(BinaryConverter.readStringFromBytes(bytes, pd));
+			me.setKey(readTranslatedStringFromBytes(bytes, pd));
 			me.setValue((AbstractSendableData<?>) deserializeAbstractSendable(bytes, pd));
 			dm.add(me);
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
@@ -311,7 +329,7 @@ public class BinaryObjectSerializer implements ISerializer {
 		for (final MapEntry<? extends AbstractSendableData<?>> me : data) {
 			// write header per mapEntry
 			BinaryConverter.writeByteToBytes(classByteLookup.get(MapEntry.class), bytes, ps2);
-			BinaryConverter.writeStringToBytes(me.key(), bytes, ps2);
+			writeTranslatedStringToBytes(me.key(), bytes, ps2);
 			serialzeAbstractSendable(me.value(), bytes, ps2);
 		}
 		BinaryConverter.writeByteToBytes(classByteLookup.get(DataMapEOF.class), bytes, ps2);

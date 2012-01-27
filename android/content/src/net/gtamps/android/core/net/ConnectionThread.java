@@ -1,7 +1,6 @@
 package net.gtamps.android.core.net;
 
 import android.util.Log;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;

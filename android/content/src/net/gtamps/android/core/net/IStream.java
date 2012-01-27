@@ -1,4 +1,4 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

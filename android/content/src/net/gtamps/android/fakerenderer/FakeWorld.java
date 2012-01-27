@@ -74,9 +74,9 @@ public class FakeWorld implements IWorld {
 
 	@Override
 	public AbstractEntityView createEntityView(Entity e) {
-		if(e.getName().equals("CAR")){
+		if(e.getName().toUpperCase().equals("CAR")){
 			return new FakeEntityView(e,car1bitmap);
-		} else if(e.getName().equals("HUMAN")){
+		} else if(e.getName().toUpperCase().equals("HUMAN")){
 			return new FakeEntityView(e,characterbitmap);
 		} else {
 			return new FakeEntityView(e, null);
@@ -119,6 +119,11 @@ public class FakeWorld implements IWorld {
 			return defaulttile;
 		}
 		return returnBitmap;
+	}
+
+	@Override
+	public void remove(int targetUid) {
+		fakeEntityMap.remove(targetUid);
 	}
 
 }

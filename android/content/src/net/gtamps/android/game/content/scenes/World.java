@@ -24,9 +24,9 @@ import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.level.Tile;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.*;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
+
 import org.jetbrains.annotations.NotNull;
 
 public class World extends EntityScene implements InputEventListener, IWorld {
@@ -194,5 +194,13 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 	public void setTileMap(LinkedList<Tile> tileMap) {
 		Logger.e(this, "I'm sorry Dave, I'm afraid I can't do that.");
 	}
+
+	@Override
+	public void remove(int targetUid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }
