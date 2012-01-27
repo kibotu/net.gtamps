@@ -1,9 +1,9 @@
 package net.gtamps.android.game.content.scenes.inputlistener;
 
 import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.android.core.net.ConnectionManager;
 import net.gtamps.android.fakerenderer.FakeCamera;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.MessageBuilder;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;

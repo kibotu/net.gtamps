@@ -1,20 +1,11 @@
 package net.gtamps.android.fakerenderer;
 
-import java.util.LinkedList;
-
-import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.ConnectionThread;
-import net.gtamps.android.core.net.IWorld;
-import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
-import net.gtamps.android.game.content.scenes.inputlistener.PlayerMovementListener;
 import net.gtamps.shared.game.level.Tile;
-import net.gtamps.shared.serializer.ConnectionManager;
-import net.gtamps.shared.serializer.communication.NewMessage;
-import net.gtamps.shared.serializer.communication.NewSendable;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,10 +13,9 @@ import android.graphics.Paint;
 import android.view.View;
 
 public class FakeGame extends View {
+	private static final int FPS_AVERAGE_AMOUNT = 10;
 	FakeCamera camera;
-	private LinkedList<Tile> tilesInMap = new LinkedList<Tile>();
 	private FakeWorld world;
-	private float x = 0;
 	private Paint paint = new Paint();
 
 	public FakeGame(Context context) {
@@ -39,17 +29,27 @@ public class FakeGame extends View {
 		CameraMovementListener pml = new CameraMovementListener(camera);
 		InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);
 		
+		paint.setColor(0xffffffff);
 		this.invalidate();
 
 	}
 	
-
+	long lastDraw = System.currentTimeMillis();
+	int avgFPS = 0;
+	int FPS = 0;
+	int FPScounter = 0;
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+		//super.onDraw(canvas);
 		
-		if(world.getActiveView() != null){
-			camera.follow(world.getActiveView());
+		if(world.getActiveView() == null){
+			for(AbstractEntityView aev : world.getAllEntities()){
+				if(aev.entity.getUid() == world.playerManager.getActivePlayer().getEntityUid()){
+					world.setActiveView(aev);
+				}
+			}
+		} else {
+			camera.follow(world.getActiveView());	
 		}
 		
 		camera.setCanvas(canvas);
@@ -62,8 +62,23 @@ public class FakeGame extends View {
 			camera.renderEntityView((FakeEntityView) ev);
 		}
 		
+		drawHUD(canvas);
+		
+		if(FPScounter<FPS_AVERAGE_AMOUNT){
+			FPScounter++;
+			avgFPS += (int) (1000/(System.currentTimeMillis()-lastDraw));
+		} else {
+			FPS = avgFPS/FPScounter;
+			avgFPS = 0;
+			FPScounter = 0;
+		}
+		canvas.drawText(FPS+" FPS", 10, 10, paint);
+		lastDraw = System.currentTimeMillis();
 		
 		this.invalidate();
+	}
+	private void drawHUD(Canvas canvas) {
+		
 	}
 
 }

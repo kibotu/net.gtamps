@@ -13,7 +13,6 @@ import net.gtamps.shared.game.GameobjectStore;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;

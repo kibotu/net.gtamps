@@ -11,7 +11,6 @@ import net.gtamps.android.renderer.graph.scene.primitives.Camera;
 import net.gtamps.android.renderer.graph.scene.primitives.Sprite;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.state.State;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.ISendableData;

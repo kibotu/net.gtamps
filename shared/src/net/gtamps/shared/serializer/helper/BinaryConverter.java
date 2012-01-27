@@ -3,6 +3,8 @@ package net.gtamps.shared.serializer.helper;
 import java.nio.charset.Charset;
 
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.serializer.communication.Translator;
+import net.gtamps.shared.serializer.communication.BinaryObjectSerializer.Const;
 
 public class BinaryConverter {
 
@@ -89,7 +91,7 @@ public class BinaryConverter {
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			System.out.println("error serializing string: "+s);
 		}
-	}
+	}	
 
 	public static String readStringFromBytes(final byte[] modifyBytes, final ArrayPointer p) {
 		final int length = readIntFromBytes(modifyBytes, p);
@@ -126,4 +128,6 @@ public class BinaryConverter {
 		buf[ps.pos()] = b;
 		ps.inc(1);
 	}
+	
+	
 }

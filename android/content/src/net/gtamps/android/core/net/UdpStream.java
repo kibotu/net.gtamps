@@ -1,7 +1,9 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+
+import net.gtamps.android.core.net.IStream;
 
 @Deprecated
 public class UdpStream implements IStream {

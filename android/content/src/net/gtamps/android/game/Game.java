@@ -1,5 +1,6 @@
 package net.gtamps.android.game;
 
+import net.gtamps.android.core.net.ConnectionManager;
 import net.gtamps.android.core.net.MessageHandler;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
@@ -9,7 +10,6 @@ import net.gtamps.android.renderer.RenderAction;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
-import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;

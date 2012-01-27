@@ -19,6 +19,7 @@ public class StringConstants {
 	public static final String PROPERTY_SPEEDY = "speedy";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
+	public static final String PROPERTY_NAME = "pname";
 	public static final String PROPERTY_SOURCE_UID = "sourceUid";
 	public static final String PROPERTY_TARGET_UID = "targetUid";
 	public static final String PROPERTY_CAUSE_UID = "causeUid";
@@ -31,4 +32,18 @@ public class StringConstants {
 	public static final String PROPERTY_SCORE_COUNT = "scoreCount";
 	public static final String PROPERTY_SCORE_MOD_TIME = "scoreLastModTime";
 	public static final String PROPERTY_SCORE_MOD_GAME = "scoreLastModGame";
+	
+	public static final String GAMEOBJECT_ID = "GOID";
+	public static final String GAMEOBJECT_NAME = "GON";
+	public static final String GAMEOBJECT_REVISION = "GOR";
+	public static final String GAMEOBJECT_PROPERTIES = "GOP";
+	public static final String GAMEOBJECT_TYPE = "GOT";
+	
+	public static final String ENTITY = "Entity";
+	public static final String HUMAN = "Human";
+	public static final String CAR = "Car";
+	
+	public static final String GETUPDATE_OK = "GETUPDATE_OK"; 
+	public static final String GETMAPDATA = "GETMAPDATA";
+	public static final String ACTION_ACCELERATE = "ACTION_ACCELERATE";
 }
