@@ -30,6 +30,7 @@ public class FakeGame extends View {
 		InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);
 		
 		paint.setColor(0xffffffff);
+		paint.setStyle(Paint.Style.FILL);
 		this.invalidate();
 
 	}
@@ -72,6 +73,10 @@ public class FakeGame extends View {
 			avgFPS = 0;
 			FPScounter = 0;
 		}
+		
+		paint.setColor(0xff000000);
+		canvas.drawRect(10,0,40,20,paint);
+		paint.setColor(0xffffffff);
 		canvas.drawText(FPS+" FPS", 10, 10, paint);
 		lastDraw = System.currentTimeMillis();
 		

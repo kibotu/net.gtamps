@@ -195,6 +195,12 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 		Logger.e(this, "I'm sorry Dave, I'm afraid I can't do that.");
 	}
 
+	@Override
+	public void remove(int targetUid) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 }
