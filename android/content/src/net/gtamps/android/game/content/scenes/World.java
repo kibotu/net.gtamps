@@ -1,5 +1,6 @@
 package net.gtamps.android.game.content.scenes;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import net.gtamps.android.R;
@@ -22,6 +23,7 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.MathUtils;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.*;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
@@ -181,6 +183,16 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 	@Override
 	public AbstractEntityView createEntityView(Entity e) {
 		return new EntityView(e);
+	}
+
+	@Override
+	public boolean supports2DTileMap() {
+		return false;
+	}
+
+	@Override
+	public void setTileMap(LinkedList<Tile> tileMap) {
+		Logger.e(this, "I'm sorry Dave, I'm afraid I can't do that.");
 	}
 
 }

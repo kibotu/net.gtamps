@@ -4,6 +4,7 @@ import net.gtamps.android.R;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity.Type;
+import net.gtamps.shared.game.level.Tile;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,10 +22,12 @@ public class FakeCamera {
 	private float rot = 0f;
 	private Canvas canvas;
 	private Paint paint = new Paint();
+
+	private FakeWorld world;
 	
 
-	FakeCamera(Context context){
-		
+	FakeCamera(Context context, FakeWorld world){
+		this.world = world;
 	}
 	
 	public void setCanvas(Canvas c){
@@ -33,8 +36,16 @@ public class FakeCamera {
 	
 	public void renderTile(Tile t){
 		if(canvas!=null){
-			
-			canvas.drawBitmap(t.getBitmap(), t.getX()-this.x, t.getY()-this.y, paint);
+			if(world!=null){
+				canvas.save();
+				canvas.rotate(t.getRotation());
+				canvas.drawBitmap(world.getTileBitmap(t.getBitmap()), t.getX()-this.x, t.getY()-this.y, paint);
+				canvas.restore();
+			} else {
+				Logger.e(this, "World is not set!");
+			}
+		} else {
+			Logger.e(this, "Canvas is not set!");
 		}
 	}
 	Matrix matrix = new Matrix();
@@ -45,11 +56,13 @@ public class FakeCamera {
 			if( ev.hasBitmap()){
 				matrix.reset();
 				canvas.save();
-//				canvas.translate(-ev.getWidth()/2,-ev.getHeight()/2);				
-				canvas.rotate(ev.entity.rota.value());
-//				canvas.translate(ev.getWidth()/2,ev.getHeight()/2);
-				canvas.translate(ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y);
-				canvas.drawBitmap(ev.getBitmap(), matrix, paint);
+					canvas.save();
+						canvas.translate(-ev.getWidth()/2,-ev.getHeight()/2);				
+						canvas.rotate(ev.entity.rota.value());
+						canvas.translate(ev.getWidth()/2,ev.getHeight()/2);
+					canvas.restore();
+					canvas.translate(ev.interpolateCoordinateX()-this.x, ev.interpolateCoordinateY()-this.y);
+					canvas.drawBitmap(ev.getBitmap(), matrix, paint);
 				canvas.restore();
 			} else if(ev.entity.getName().equals("SPAWNPOINT")){
 				paint.setColor(0xff0000ff);

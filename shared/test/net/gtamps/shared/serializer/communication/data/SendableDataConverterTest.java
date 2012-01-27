@@ -6,11 +6,13 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.gtamps.shared.Utils.cache.TypableObjectCacheFactory;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.entity.Entity;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
@@ -145,6 +147,19 @@ public class SendableDataConverterTest {
 		} catch (final IndexOutOfBoundsException e) {
 			fail("generated list is longer than input list");
 		}
+	}
+	
+	@Test
+	public final void testToSendableDataListofListofTiles() {
+		@SuppressWarnings("unchecked")
+		List<Tile> tileListList = new LinkedList<Tile>();
+		tileListList.add(new Tile("bitmap1.jpg", 0.1f, 0.2f, 4f, 0));
+		tileListList.add(new Tile("bitmap12.jpg", 0.12f, 0.22f, 42f, 90));
+		tileListList.add(new Tile("bitmap14.jpg", 0.14f, 0.24f, 44f, 180));
+		tileListList.add(new Tile("bitmap124.jpg", 0.124f, 0.224f, 424f, 270));
+		ListNode<DataMap> listifiedTiles = SendableDataConverter.tileMaptoSendableData(tileListList, provider);
+		assertEquals(tileListList, SendableDataConverter.toTileMap(listifiedTiles));
+
 	}
 
 }

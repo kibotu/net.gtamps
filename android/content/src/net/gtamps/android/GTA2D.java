@@ -1,5 +1,8 @@
 package net.gtamps.android;
 
+import java.io.File;
+import java.io.IOException;
+
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.fakerenderer.FakeGame;
 import net.gtamps.android.utils.AndroidLogger;
@@ -20,7 +23,6 @@ public class GTA2D extends Activity{
 		Logger.setLogger(AndroidLogger.INSTANCE);
 		
 		view.setOnTouchListener(InputEngineController.getInstance());
-		view.setOnKeyListener(InputEngineController.getInstance());
-		
+		view.setOnKeyListener(InputEngineController.getInstance());		
 	}
 }

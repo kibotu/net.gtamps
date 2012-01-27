@@ -51,7 +51,13 @@ public class SendableProviderTest {
 		System.out.println(sval2.get());
 		assertEquals(sval.get(), "blub");
 		sval2.recycle();
+	}
 
+	@Test
+	public void testGetValue_shouldWorkForAllLegalTypes() {
+		for (final Class<?> c : Value.ALLOWED_TYPES) {
+			c.cast(sdb.getValue().get());
+		}
 	}
 
 	@Test

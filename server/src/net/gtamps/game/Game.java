@@ -16,10 +16,12 @@ import net.gtamps.server.User;
 import net.gtamps.server.gui.DebugGameBridge;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.NullGameObject;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
@@ -39,7 +41,6 @@ import net.gtamps.shared.serializer.communication.data.Value;
  * @author jan, tom, til
  */
 public class Game implements IGame, Runnable {
-	private static final String TEST_LEVEL_PATH = "../assets/map3.map.lvl";
 	private static final LogType TAG = LogType.GAMEWORLD;
 	private static final long THREAD_UPDATE_SLEEP_TIME = 20;
 	private static final int PHYSICS_ITERATIONS = 20;
@@ -82,7 +83,7 @@ public class Game implements IGame, Runnable {
 	}
 
 	public Game() {
-		this(TEST_LEVEL_PATH);
+		this(Config.TEST_LEVEL_PATH);
 	}
 
 	@Override
@@ -187,6 +188,7 @@ public class Game implements IGame, Runnable {
 		case GETMAPDATA:
 		case GETPLAYER:
 		case GETUPDATE:
+		case GETTILEMAP:
 		case JOIN:
 		case LEAVE:
 			requestQueue.add(sendable);
@@ -238,6 +240,9 @@ public class Game implements IGame, Runnable {
 		case GETUPDATE:
 			response = getUpdate(request);
 			break;
+		case GETTILEMAP:
+			response = getTileMap(request);
+			break;
 		case LEAVE:
 			response = leave(request);
 			break;
@@ -248,6 +253,22 @@ public class Game implements IGame, Runnable {
 		return response;
 	}
 
+	private NewSendable getTileMap(final NewSendable request) {
+		NewSendable response;
+		final List<Tile> tileList = universe.getTiles();
+		if (tileList == null) {
+			final String errorMsg = "Game does not contain tile data";
+			response = request.createResponse(SendableType.GETTILEMAP_ERROR);
+			final DataMap data = new DataMap();
+			final MapEntry<Value<String>> errorEntry = new MapEntry<Value<String>>(StringConstants.ERROR_MESSAGE, new Value(errorMsg));
+			data.add(errorEntry);
+		} else {
+			final ListNode<?> tileData = SendableDataConverter.tileMaptoSendableData(tileList, sendableProvider);
+			response = request.createResponse(SendableType.GETTILEMAP_OK);
+			response.data = tileData;
+		}
+		return response;
+	}
 
 	private void handleResponse(final NewSendable r) {
 		assert r != null;

@@ -68,7 +68,7 @@ public class MapParser {
             for (int col = 0; col < tileWidth; col++) {
                 final int posX = (int) ((col + 0.5f) * WorldConstants.TILE_SIZE_PIX);
                 final int posY = (int) ((row + 0.5f) * WorldConstants.TILE_SIZE_PIX);
-                final Tile t = new Tile(tiles.get(col));
+                final MapTile t = new MapTile(tiles.get(col));
                 if (t.isSpawn()) {
                     spawnPoints.put(new Point(posX, posY), t.getCarRot());
                 }

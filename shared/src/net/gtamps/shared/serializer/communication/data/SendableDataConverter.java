@@ -1,12 +1,12 @@
 package net.gtamps.shared.serializer.communication.data;
 
+import java.util.LinkedList;
 import java.util.List;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
-import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.communication.SendableProvider;
 
 public class SendableDataConverter {
@@ -23,12 +23,12 @@ public class SendableDataConverter {
 		Validate.notNull(e);
 		Validate.notNull(provider);
 
-//		if(GameEvent.class.isAssignableFrom(e.getClass())){
-//			System.out.print(".");
-//		}
-//		if(Entity.class.isAssignableFrom(e.getClass())){
-//			System.out.print("O");
-//		}
+		//		if(GameEvent.class.isAssignableFrom(e.getClass())){
+		//			System.out.print(".");
+		//		}
+		//		if(Entity.class.isAssignableFrom(e.getClass())){
+		//			System.out.print("O");
+		//		}
 
 		final DataMap data = initSendableDataForGameObject(e, provider);
 
@@ -69,14 +69,6 @@ public class SendableDataConverter {
 			throw e;
 		}
 		gob.setChanged();
-	}
-
-	public static Entity toEntity(final DataMap objectdata) {
-		final String name = getGameObjectName(objectdata);
-		final int uid = getGameObjectUid(objectdata);
-		final Entity e = new Entity(name, uid);
-		updateGameobject(e, objectdata);
-		return e;
 	}
 
 	public static int getGameObjectUid(final DataMap map) {
@@ -193,4 +185,31 @@ public class SendableDataConverter {
 		return entry;
 	}
 
+	public static ListNode<DataMap> tileMaptoSendableData(List<Tile> tileListList, final SendableProvider provider){
+		ListNode<DataMap> xList = null;
+		for(int x=0; x<tileListList.size(); x++){
+				DataMap tileMap = provider.getDataMap();
+				tileMap.add(provider.getMapEntry("x", provider.getValue(tileListList.get(x).getX())));
+				tileMap.add(provider.getMapEntry("y", provider.getValue(tileListList.get(x).getY())));
+				tileMap.add(provider.getMapEntry("h", provider.getValue(tileListList.get(x).getHeight())));
+				tileMap.add(provider.getMapEntry("t", provider.getValue(tileListList.get(x).getBitmap())));
+				tileMap.add(provider.getMapEntry("r", provider.getValue(tileListList.get(x).getRotation())));
+				ListNode<DataMap> yListElement = provider.getListNode(tileMap);				
+			if(xList == null){
+				xList = yListElement;
+			} else {
+				xList.append(yListElement);
+			}
+		}
+		return xList;
+	}
+	
+	public static LinkedList<Tile> toTileMap(ListNode<DataMap> tileListMap){
+		LinkedList<Tile> linkedTileList = new LinkedList<Tile>();
+		tileListMap.resetIterator();
+		for(DataMap tile : tileListMap){
+			linkedTileList.add(new Tile(tile.getString("t"), tile.getFloat("x"), tile.getFloat("y"), tile.getFloat("h"), tile.getInt("r")));
+		}
+		return linkedTileList;
+	}
 }
