@@ -1,6 +1,7 @@
 package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,9 +21,9 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 	@Nullable
 	public transient String sessionId = null;
 
-    @Deprecated
-    public NewSendable() {
-    }
+	@Deprecated
+	public NewSendable() {
+	}
 
 	public NewSendable(final SendableType type) {
 		this(type, null);
@@ -68,28 +69,37 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		NewSendable other = (NewSendable) obj;
+		}
+		final NewSendable other = (NewSendable) obj;
 		if (data == null) {
-			if (other.data != null)
+			if (other.data != null) {
 				return false;
-		} else if (!data.equals(other.data))
+			}
+		} else if (!data.equals(other.data)) {
 			return false;
-		if (id != other.id)
+		}
+		if (id != other.id) {
 			return false;
+		}
 		if (sessionId == null) {
-			if (other.sessionId != null)
+			if (other.sessionId != null) {
 				return false;
-		} else if (!sessionId.equals(other.sessionId))
+			}
+		} else if (!sessionId.equals(other.sessionId)) {
 			return false;
-		if (type != other.type)
+		}
+		if (type != other.type) {
 			return false;
+		}
 		return true;
 	}
 
@@ -112,8 +122,11 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 	@Override
 	protected void recycleHook() {
-		// TODO Auto-generated method stub
-
+		this.data.recycle();
+		this.data = null;
+		this.id = INVALID_ID;
+		this.sessionId = null;
+		this.type = null;
 	}
 
 	public NewSendable setId(final int id) {
