@@ -2,7 +2,7 @@ package net.gtamps.shared.game.level;
 
 import java.io.Serializable;
 
-public class Tile implements Serializable{
+public class Tile implements Serializable, Comparable<Tile>{
 
 	/**
 	 * 
@@ -87,4 +87,12 @@ public class Tile implements Serializable{
 	public String toString(){
 		return "Tile x:"+x+" y:"+y+" h:"+height+" bitmap:"+bitmapName;
 	}
+
+
+
+	@Override
+	public int compareTo(Tile o) {
+		return (int) (o.getHeight()-this.getHeight());
+	}
+	
 }

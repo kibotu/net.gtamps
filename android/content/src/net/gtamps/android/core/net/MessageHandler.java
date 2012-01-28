@@ -195,6 +195,7 @@ public class MessageHandler {
             	break;
             
             default:
+            	sendable.recycle();
                 break;
         }
         message.recycle();
@@ -342,6 +343,8 @@ public class MessageHandler {
                 break;
             case SESSION_UPDATE:
                 break;
+            default:
+            	store.reclaim(event);
         }
     }
 

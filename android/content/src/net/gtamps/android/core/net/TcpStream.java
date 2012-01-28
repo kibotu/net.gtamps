@@ -94,7 +94,7 @@ public class TcpStream implements IStream {
 	byte[] lengthbytes = new byte[4];
 
 	@Override
-	public boolean send(byte[] message, int length) {
+	public boolean send(byte[] message, int length) throws SocketException {
 		if (!socket.isConnected())
 			return false;
 
@@ -104,6 +104,9 @@ public class TcpStream implements IStream {
 			output.write(lengthbytes);
 			output.write(message, 0, length);
 			// Logger.i(this, "has send bytes " + (temp.length));
+		} catch (SocketException e){
+			Logger.toast(this, "Connection lost, returning to Menu.");
+			throw e;
 		} catch (IOException e) {
 			Logger.printException(this, e);
 			return false;
@@ -112,7 +115,7 @@ public class TcpStream implements IStream {
 	}
 
 	@Override
-	public boolean send(byte[] message) {
+	public boolean send(byte[] message) throws SocketException {
 		return send(message, message.length);
 	}
 

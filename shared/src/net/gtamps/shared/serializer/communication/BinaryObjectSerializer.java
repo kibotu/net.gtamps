@@ -79,11 +79,11 @@ public class BinaryObjectSerializer implements ISerializer {
 		}
 	}
 
+	final ArrayPointer ps = new ArrayPointer();
 	@Override
 	public SerializedMessage serializeAndPackNewMessage(final NewMessage m) {
 		clearBuffer();
-		final ArrayPointer ps = new ArrayPointer();
-		ps.set(0);
+		ps.reset();
 
 		serializeListNode(m.sendables, buf, ps);
 
@@ -102,10 +102,10 @@ public class BinaryObjectSerializer implements ISerializer {
 		return serializeAndPackNewMessage(m).message;
 	}
 
+	final ArrayPointer pd = new ArrayPointer();
 	@Override
 	public NewMessage deserializeNewMessage(final byte[] bytes) {
-		final ArrayPointer pd = new ArrayPointer();
-		pd.set(0);
+		pd.reset();
 //		final NewMessage m = new NewMessage();
 		NewMessage m = cache.getMessage();
 

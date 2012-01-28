@@ -19,6 +19,8 @@ public class FakeCamera {
 
 	private static final float CAMERA_SPEED = 5;
 
+	private static final float CAMERA_FOV = 300;
+
 	private int[] resolution = { 600, 300 };
 
 	private float x = 0f;
@@ -45,13 +47,15 @@ public class FakeCamera {
 		matrix.reset();
 		xtilepos = t.getX() - this.x;
 		ytilepos = t.getY() - this.y;
+//		xtilepos += xtilepos*t.getHeight()/CAMERA_FOV;
+//		ytilepos += ytilepos*t.getHeight()/CAMERA_FOV;
 		
 		canvas.save();
 		canvas.translate(resolution[0] / 2,resolution[1] / 2);
 		
 		//check if tile is inside screenarea
-		if(	xtilepos>-(resolution[0]/2+TILE_SIZE) && xtilepos<resolution[0] &&
-			ytilepos>-(resolution[1]/2+TILE_SIZE) && ytilepos<resolution[1] ){
+		if(	xtilepos>-(resolution[0]/2+TILE_SIZE) && xtilepos<resolution[0]/2 &&
+			ytilepos>-(resolution[1]/2+TILE_SIZE) && ytilepos<resolution[1]/2 ){
 			if (canvas != null) {
 				if (world != null) {
 					canvas.save();
@@ -105,5 +109,10 @@ public class FakeCamera {
 	public void move(int i, int j) {
 		this.x += i;
 		this.y += j;
+	}
+
+	public void setResolution(int w, int h) {
+		resolution[0] = w;
+		resolution[1] = h;
 	}
 }

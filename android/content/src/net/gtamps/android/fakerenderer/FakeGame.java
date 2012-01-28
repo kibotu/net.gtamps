@@ -14,11 +14,14 @@ import android.view.View;
 
 public class FakeGame extends View {
 	private static final int FPS_AVERAGE_AMOUNT = 10;
-	private static final long MAX_FPS = 30;
+	private static final long MAX_FPS = 60;
+	private static final boolean LIMIT_FPS = false;
+
 	private static final boolean RENDER_TILES = true;
 	private static final boolean RENDER_ENTITIES = true;
 	private static final boolean RENDER_HUD = true;
 	private static final boolean RENDER_FPS = true;
+	private static final int EVERY_N_TH_FRAME = 100;
 	FakeCamera camera;
 	private FakeWorld world;
 	private Paint paint = new Paint();
@@ -44,10 +47,14 @@ public class FakeGame extends View {
 	int avgFPS = 0;
 	int FPS = 0;
 	int FPScounter = 0;
+	int frameCounter = 0;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// super.onDraw(canvas);
+//		super.onDraw(canvas);
+		paint.setColor(0xff000000);
+		canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
+		
 		camera.setCanvas(canvas);
 
 		if (world.getActiveView() == null) {
@@ -76,14 +83,16 @@ public class FakeGame extends View {
 			drawHUD(canvas);
 		}
 
-		if ((1000 / (System.currentTimeMillis() - lastDraw)) > MAX_FPS) {
-			try {
-				synchronized (this) {
-					wait(5);
+		if (LIMIT_FPS) {
+			if ((1000 / (System.currentTimeMillis() - lastDraw)) > MAX_FPS) {
+				try {
+					synchronized (this) {
+						wait(5);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		if (RENDER_FPS) {
@@ -102,11 +111,26 @@ public class FakeGame extends View {
 			canvas.drawText(FPS + " FPS", 10, 10, paint);
 			lastDraw = System.currentTimeMillis();
 		}
+		frameCounter++;
+		if (frameCounter > EVERY_N_TH_FRAME) {
+			frameCounter = 0;
+			everyNthFrameDo();
+		}
 		this.invalidate();
+	}
+
+	private void everyNthFrameDo() {
+		world.ensureEntityAppearance();
 	}
 
 	private void drawHUD(Canvas canvas) {
 
+	}
+
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		camera.setResolution(w, h);
 	}
 
 }
