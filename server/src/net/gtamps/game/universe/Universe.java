@@ -161,4 +161,8 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 		return level != null ? level.getTileList(): null;
 	}
 
+	public boolean isPlayer(final int uid) {
+		return playerManager.hasPlayer(uid);
+	}
+
 }
