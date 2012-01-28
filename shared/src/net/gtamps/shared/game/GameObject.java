@@ -359,6 +359,10 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		return (Propertay<T>) p;
 	}
 
+	public static boolean isValidUid(final int uid) {
+		return UIDGenerator.isValid(uid);
+	}
+
 
 
 }
