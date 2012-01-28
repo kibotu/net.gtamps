@@ -60,7 +60,7 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 //        add(new EntityView(getSunLight()));
 
         // setup layout
-        layout = new InputLayoutIngame();
+        layout = new InputLayoutIngame(this);
         InputEngineController.getInstance().setLayout(layout);
         PlayerMovementListener pml = new PlayerMovementListener();
         InputEngineController.getInstance().getInputEventDispatcher().addInputEventListener(pml);

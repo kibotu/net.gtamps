@@ -230,7 +230,7 @@ public class MessageHandler {
     Entity targetEntity;
 
     public void handleEvent(GameEvent event) {
-		Logger.i(this, "Handle event "+event.getName()+" type: " + event.getType());
+//		Logger.i(this, "Handle event "+event.getName()+" type: " + event.getType());
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:

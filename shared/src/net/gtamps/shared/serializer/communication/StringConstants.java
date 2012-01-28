@@ -40,13 +40,23 @@ public class StringConstants {
 	public static final String GAMEOBJECT_REVISION = "GOR";
 	public static final String GAMEOBJECT_PROPERTIES = "GOP";
 	public static final String GAMEOBJECT_TYPE = "GOT";
+	
+	public static final String GameEvent = "GameEvent";
+	public static final String GAME_EVENT = "GAME_EVENT";
+	public static final String ENTITY_COLLIDE = "ENTITY_COLLIDE";
+	public static final String CollisionEvent = "CollisionEvent";
+	public static final String ENTITY_DESTROYED = "ENTITY_DESTROYED";
 
-	public static final String ENTITY = "Entity";
-	public static final String HUMAN = "Human";
-	public static final String CAR = "Car";
+	public static final String ENTITY = "ENTITY";
+	public static final String Entity = "Entity";
+	public static final String HUMAN = "HUMAN";
+	public static final String BULLET = "BULLET";
+	public static final String CAR = "CAR";
 
 	public static final String GETUPDATE_OK = "GETUPDATE_OK"; 
 	public static final String GETMAPDATA = "GETMAPDATA";
 	public static final String ACTION_ACCELERATE = "ACTION_ACCELERATE";
+	public static final String ACTION_ENTEREXIT = "ACTION_ENTEREXIT";
+	public static final String ACTION_SHOOT = "ACTION_SHOOT";
 
 }
