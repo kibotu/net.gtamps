@@ -86,7 +86,7 @@ public class FakeCamera {
 				canvas.save();
 				matrix.setTranslate(-ev.getWidth() / 2, -ev.getHeight() / 2);
 				matrix.postRotate(ev.entity.rota.value());
-				matrix.postTranslate(ev.getWidth() / 2, ev.getHeight() / 2);
+//				matrix.postTranslate(ev.getWidth() / 2, ev.getHeight() / 2);
 				canvas.translate(ev.interpolateCoordinateX() - this.x, ev.interpolateCoordinateY() - this.y);
 				canvas.drawBitmap(ev.getBitmap(), matrix, paint);
 				canvas.restore();

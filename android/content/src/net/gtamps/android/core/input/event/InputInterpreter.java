@@ -1,14 +1,17 @@
 package net.gtamps.android.core.input.event;
 
+import net.gtamps.android.core.net.IWorld;
 import android.view.MotionEvent;
 
 public abstract class InputInterpreter {
 
     protected ActionType actionType;
     protected InputEventDispatcher eventDispatcher;
-
-    public InputInterpreter(ActionType actionType) {
+    protected IWorld world;
+    
+    public InputInterpreter(ActionType actionType, IWorld world) {
         this.actionType = actionType;
+        this.world = world;
     }
 
     /**
