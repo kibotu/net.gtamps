@@ -42,7 +42,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 
 	public static enum ScoreType {
 		DUMMY(null, null),
-		FRAGS(EventType.PLAYER_KILLED, null);
+		FRAGS(EventType.ACTION_SHOOT, null);
 
 		private EventType triggerEventType;
 		private Predicate<GameEvent> filter;
@@ -67,7 +67,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 			if (event.getType() != this.triggerEventType) {
 				return false;
 			}
-			if (!(filter == null || filter.isTrueFor(event))) {
+			if (filter != null && !filter.isTrueFor(event)) {
 				return false;
 			}
 			return true;
@@ -130,6 +130,11 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 		if (getType().isTriggeredBy(event) && filter.isTrueFor(event)) {
 			increaseCountBy(1);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + getCount();
 	}
 
 	public Score setType(final ScoreType type) {

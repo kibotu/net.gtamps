@@ -23,6 +23,7 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.game.score.Score;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
@@ -374,7 +375,7 @@ public class Game implements IGame, Runnable {
 
 		final ListNode<DataMap> entityNodes = SendableDataConverter.toSendableData(entities, sendableProvider);
 		final ListNode<DataMap> eventNodes = SendableDataConverter.toSendableData(events, sendableProvider);
-		final ListNode<DataMap> scoreNodes = ListNode.emptyList();
+		final ListNode<DataMap> scoreNodes = SendableDataConverter.toSendableData(getScoreUpdate(baseRevision), sendableProvider);
 
 		final DataMap updateData = new DataMap();
 		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, sendableProvider.getValue(universe.getRevision()));
@@ -391,6 +392,20 @@ public class Game implements IGame, Runnable {
 		final NewSendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = updateData;
 		return updateResponse;
+	}
+
+	private List<Score> getScoreUpdate(final long baseRev) {
+		final Iterable<Score> allScores = universe.scoreManager.getScores();
+		final List<Score> update = new LinkedList<Score>();
+		for (final Score score: allScores) {
+			if (score.getRevision() > baseRev || score.hasChanged()) {
+				update.add(score);
+				if (score.hasChanged()) {
+					score.updateRevision(universe.getRevision());
+				}
+			}
+		}
+		return update;
 	}
 
 }

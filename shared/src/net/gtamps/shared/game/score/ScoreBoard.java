@@ -1,5 +1,7 @@
 package net.gtamps.shared.game.score;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,6 +86,10 @@ public class ScoreBoard implements IGameEventListener {
 			internalDispatcher.addEventListener(score.getEventType(), score);
 		}
 		scores.put(type, score);
+	}
+
+	public Collection<? extends Score> getAllScores() {
+		return Collections.unmodifiableCollection(scores.values());
 	}
 
 }

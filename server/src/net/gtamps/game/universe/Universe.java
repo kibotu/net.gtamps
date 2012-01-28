@@ -7,6 +7,7 @@ import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
 import net.gtamps.game.physics.Box2DEngine;
 import net.gtamps.game.player.PlayerManager;
+import net.gtamps.game.score.ScoreManager;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.GameObject;
@@ -38,8 +39,10 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 	public final EventManager eventManager;
 	public final PlayerManager playerManager;
 	public final EntityManager entityManager;
+	public final ScoreManager scoreManager;
 
 	private long revision;
+
 
 	// TODO universe builder!
 
@@ -51,13 +54,14 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 		eventManager = new EventManager(this);
 		entityManager = new EntityManager(this);
 		playerManager = new PlayerManager(this);
+		scoreManager = new ScoreManager(this);
 
 		addEventListener(EventType.SESSION_EVENT, playerManager);
 		addEventListener(EventType.SESSION_EVENT, entityManager);
 		addEventListener(EventType.ACTION_EVENT, playerManager);
 		addEventListener(EventType.PLAYER_EVENT, playerManager);
 		addEventListener(EventType.ENTITY_EVENT, entityManager);
-
+		addEventListener(EventType.GAME_EVENT, scoreManager);
 	}
 
 	public void setPhysics (final Box2DEngine physics)  {
