@@ -1,10 +1,9 @@
 package net.gtamps.android.core.net;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import net.gtamps.android.core.sound.SoundEngine;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.android.game.content.scenes.World;
 import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -13,6 +12,7 @@ import net.gtamps.shared.game.GameobjectStore;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.game.score.Score;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;
@@ -62,12 +62,24 @@ public class MessageHandler {
                 	updateOrCreateEntity(e);
                 }
 
+                // events
                 ListNode<DataMap> events = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_GAMEEVENTS));
                 for (DataMap emap: events) {
                 	int uid = SendableDataConverter.getGameObjectUid(emap);
                 	GameEvent e = store.getGameEvent(uid);
                 	SendableDataConverter.updateGameobject(e, emap);
                 	handleEvent(e);
+                }
+
+                // scores
+                ListNode<DataMap> scores = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_SCORES));
+                for (DataMap emap: scores) {
+                	int uid = SendableDataConverter.getGameObjectUid(emap);
+                	Score score = store.getScore(uid);
+                	SendableDataConverter.updateGameobject(score, emap);
+                	if (belongsToActivePlayer(score)) {
+                		world.setPlayerFragScore(score.getCount());
+                	}
                 }
                 break;
 
@@ -201,6 +213,10 @@ public class MessageHandler {
         message.recycle();
         message = null;
     }
+
+	private boolean belongsToActivePlayer(Score score) throws NoSuchElementException {
+		return world.playerManager.getActivePlayer().useProperty(StringConstants.PROPERTY_FRAGSCORE_UID, GameObject.INVALID_UID).value() == score.getUid();
+	}
 
     private void updateOrCreateEntity(@NotNull Entity serverEntity) {
 

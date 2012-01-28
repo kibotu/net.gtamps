@@ -1,6 +1,7 @@
 package net.gtamps.android.fakerenderer;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
@@ -27,8 +28,11 @@ public class FakeGame extends View {
 	private static final boolean RENDER_ENTITIES = true;
 	private static final boolean RENDER_HUD = true;
 	private static final boolean RENDER_FPS = true;
-	private static final int EVERY_N_TH_FRAME = 100;
-	private static final char[] SCORE_LABEL = "SCORE ".toCharArray();
+	private static final int EVERY_N_TH_FRAME = 3;
+	private static final char[] DIGITS = "0123456789 ".toCharArray();
+	private static final char[] SCORE_LABEL = "SCORE         ".toCharArray();
+	private static final int SCORE_COUNTER_OFFSET = 6;
+	
 	FakeCamera camera;
 	private FakeWorld world;
 	private Paint paint = new Paint();
@@ -145,27 +149,52 @@ public class FakeGame extends View {
 	}
 
 	private void drawHUD(Canvas canvas) {
+		updateScoreLabel();
 		drawHudFont(SCORE_LABEL, canvas, 30, 30);
 	}
 	
+	int scoreCount = 0;
+	int scorePos = SCORE_COUNTER_OFFSET;
+	private void updateScoreLabel() {
+		Arrays.fill(SCORE_LABEL, SCORE_COUNTER_OFFSET, SCORE_LABEL.length, ' ');
+		scoreCount = world.getPlayerFragScore();
+		scorePos = Math.min(SCORE_COUNTER_OFFSET +  getNumberOfDigits(scoreCount+1)-1, SCORE_LABEL.length - 1);
+		do {
+//			Logger.d(this, "POSITION " + scorePos);
+			SCORE_LABEL[scorePos] = (char) (scoreCount % 10 + 48);
+			scoreCount /= 10; 
+			scorePos--;
+		} while (scoreCount != 0 && scorePos >= SCORE_COUNTER_OFFSET);
+	}
+	
+	int count = 0;
+	private int getNumberOfDigits(int n) {
+		count = 0;
+		while (n != 0) {
+			count ++;
+			n /= 10;
+		}
+		return count;
+	}
+
 	Rect fontRenderDest = new Rect();
 	Rect fontRenderSrc = new Rect();
 	int charNumber = 0;
+	char drawChar = ' ';
 	private void drawHudFont(char[] s, Canvas canvas, int positionx, int positiony){
-		charNumber = 0;
-		for(char c : s){
-			if(c>255) continue;
+		for (charNumber = 0; charNumber < s.length; charNumber++) {
+			drawChar = s[charNumber];
+			if(drawChar>255) continue;
 			fontRenderDest.left = positionx+hudFontCharSize*charNumber;
 			fontRenderDest.top = positiony;
 			fontRenderDest.right = positionx+hudFontCharSize*(charNumber+1);
 			fontRenderDest.bottom = positiony+hudFontCharSize;
 			
-			fontRenderSrc.top = (c/hudFontCharSize)*hudFontCharSize;
-			fontRenderSrc.left = (c%hudFontCharSize)*hudFontCharSize;
+			fontRenderSrc.top = (drawChar/hudFontCharSize)*hudFontCharSize;
+			fontRenderSrc.left = (drawChar%hudFontCharSize)*hudFontCharSize;
 			fontRenderSrc.right = fontRenderSrc.left+hudFontCharSize;			
 			fontRenderSrc.bottom = fontRenderSrc.top+hudFontCharSize;
 			canvas.drawBitmap(hudFont, fontRenderSrc, fontRenderDest, paint);
-			charNumber++;
 		}
 	}
 
