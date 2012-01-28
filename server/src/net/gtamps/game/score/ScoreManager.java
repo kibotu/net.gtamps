@@ -1,5 +1,6 @@
 package net.gtamps.game.score;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,6 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.IGameEventListener;
 import net.gtamps.shared.game.score.Score;
-import net.gtamps.shared.game.score.ScoreBoard;
 
 public class ScoreManager implements IGameEventListener {
 
@@ -23,10 +23,6 @@ public class ScoreManager implements IGameEventListener {
 		this.universe = universe;
 	}
 
-
-
-
-
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		final EventType type = event.getType();
@@ -35,35 +31,41 @@ public class ScoreManager implements IGameEventListener {
 		}
 	}
 
+	public Iterable<Score> getScores() {
+		return Collections.unmodifiableCollection(fragScores.values());
+	}
+
 	private void dispatchToPlayerScoreBoards(final GameEvent event) {
 		final int sourceUid = event.getSourceUid();
 		final int targetUid = event.getTargetUid();
 		if (universe.isPlayer(sourceUid)) {
-			getPlayerScoreBoard(sourceUid).receiveEvent(event);
+			getPlayerFragScore(sourceUid).receiveEvent(event);
 		}
 		if (universe.isPlayer(sourceUid)) {
-			getPlayerScoreBoard(targetUid).receiveEvent(event);
+			getPlayerFragScore(targetUid).receiveEvent(event);
 		}
 	}
 
-	private ScoreBoard getPlayerScoreBoard(final int uid) {
-		ScoreBoard board = fragScores.get(uid);
+	private Score getPlayerFragScore(final int uid) {
+		Score board = fragScores.get(uid);
 		if (board == null) {
-			board = createPlayerScoreBoard(uid);
+			board = createPlayerFragScore(uid);
 		}
 		return board;
 	}
 
-	private ScoreBoard createPlayerScoreBoard(final int uid) throws IllegalArgumentException {
+	private Score createPlayerFragScore(final int uid) throws IllegalArgumentException {
 		if (GameObject.isValidUid(uid)) {
 			throw new IllegalArgumentException("invalid uid: " + uid);
 		}
 		if (fragScores.containsKey(uid)) {
-			throw new IllegalArgumentException("board already createt for player " + uid);
+			throw new IllegalArgumentException("already created for player " + uid);
 		}
-		final ScoreBoard board = new ScoreBoard();
-		board.addScoresForAllTypes();
-		return board;
+		final Score score = new Score();
+		score.setType(Score.ScoreType.FRAGS);
+		score.setFilter(Score.getSourceUidFilter(uid));
+		universe.getPlayer(uid).setFragScoreUid(score.getUid());
+		return score;
 	}
 
 }
