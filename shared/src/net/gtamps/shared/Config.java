@@ -84,6 +84,8 @@ final public class Config {
 
 	public static final boolean SHOW_NETWORK_BANDWITH_USAGE = false;
 
+	public static final int SERIALIZER_BUFFER_SIZE = 65535;
+
 	private Config() {
 	}
 }

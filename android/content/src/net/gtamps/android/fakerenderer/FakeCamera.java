@@ -19,7 +19,7 @@ public class FakeCamera {
 
 	private static final float CAMERA_SPEED = 5;
 
-	private int[] resolution = { 1024, 600 };
+	private int[] resolution = { 600, 300 };
 
 	private float x = 0f;
 	private float y = 0f;

@@ -2,6 +2,7 @@ package net.gtamps.shared.serializer.communication;
 
 import java.util.HashMap;
 
+import net.gtamps.shared.Config;
 import net.gtamps.shared.serializer.communication.data.AbstractSendableData;
 import net.gtamps.shared.serializer.communication.data.DataMap;
 import net.gtamps.shared.serializer.communication.data.ListNode;
@@ -19,8 +20,7 @@ import net.gtamps.shared.serializer.helper.SerializedMessage;
  */
 public class BinaryObjectSerializer implements ISerializer {
 
-	private final int BUFFER_SIZE = 655360;
-	private final byte[] buf = new byte[BUFFER_SIZE];
+	private final byte[] buf = new byte[Config.SERIALIZER_BUFFER_SIZE];
 
 	/*
 	 * This array represents the "headers" of all byte wise serialized objects
@@ -50,9 +50,11 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	private HashMap<Class<?>, Byte> classByteLookup = null;
 
+	private SendableProvider cache;
 
 	public BinaryObjectSerializer() {
 		init();
+		cache = SendableProviderSingleton.getInstance();
 	}
 
 	/*
@@ -90,7 +92,8 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		serializedMessage.message = buf;
 		serializedMessage.length = ps.pos();
-
+		m.sendables.recycle();
+		m.recycle();
 		return serializedMessage;
 	}
 
@@ -103,7 +106,8 @@ public class BinaryObjectSerializer implements ISerializer {
 	public NewMessage deserializeNewMessage(final byte[] bytes) {
 		final ArrayPointer pd = new ArrayPointer();
 		pd.set(0);
-		final NewMessage m = new NewMessage();
+//		final NewMessage m = new NewMessage();
+		NewMessage m = cache.getMessage();
 
 		m.sendables = (ListNode<NewSendable>) deserializeListNode(bytes, pd);
 
@@ -122,9 +126,8 @@ public class BinaryObjectSerializer implements ISerializer {
 			return deserializeDataMap(bytes, pd);
 		} else if (classByte[b] == Value.class) {
 			return deserializeValue(bytes, pd);
-		} else if (classByte[b] == ListNode.EmptyListNode.class) {
-            ListNode<Value<Object>> emptyList = ListNode.emptyList();
-			return emptyList;
+		} else if (classByte[b] == ListNode.EmptyListNode.class) {			
+			return ListNode.emptyList();
 		} else {
 			throw new SendableSerializationException("Can't resolve to a valid class with byte header " + b
 					+ " in this context!");
@@ -157,7 +160,9 @@ public class BinaryObjectSerializer implements ISerializer {
 		// read sendable header
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		// TODO Enum should be send in a more intelligent manner...
-		final NewSendable ns = new NewSendable(SendableType.valueOf(readTranslatedStringFromBytes(bytes, pd)));
+//		final NewSendable ns = new NewSendable(SendableType.valueOf(readTranslatedStringFromBytes(bytes, pd)));
+		NewSendable ns = cache.getSendable();
+		ns.type = SendableType.valueOf(readTranslatedStringFromBytes(bytes, pd));
 		// read session id
 		ns.sessionId = BinaryConverter.readStringFromBytes(bytes, pd);
 		// read sendable id
@@ -263,53 +268,65 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		final Class<?> valueClass = classByte[BinaryConverter.readByteFromBytes(bytes, p)];
 		if(valueClass == Null.class){
-			final Value<Object> v = new Value<Object>();
-			v.set(null);
-			return v;
+			return cache.getValue(null);
+//			final Value<Object> v = new Value<Object>();
+//			v.set(null);
+//			return v;
 		} else if (valueClass == Integer.class) {
-			final Value<Integer> v = new Value<Integer>();
-			v.set(BinaryConverter.readIntFromBytes(bytes, p));
-			return v;
+//			final Value<Integer> v = new Value<Integer>();
+//			v.set(BinaryConverter.readIntFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readIntFromBytes(bytes, p));
 		} else if (valueClass == Long.class) {
-			final Value<Long> v = new Value<Long>();
-			v.set(BinaryConverter.readLongFromBytes(bytes, p));
-			return v;
+//			final Value<Long> v = new Value<Long>();
+//			v.set(BinaryConverter.readLongFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readLongFromBytes(bytes, p));
 		} else if (valueClass == Float.class) {
-			final Value<Float> v = new Value<Float>();
-			v.set(BinaryConverter.readFloatFromBytes(bytes, p));
-			return v;
+//			final Value<Float> v = new Value<Float>();
+//			v.set(BinaryConverter.readFloatFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readFloatFromBytes(bytes, p));
 		} else if (valueClass == Byte.class) {
-			final Value<Byte> v = new Value<Byte>();
-			v.set(BinaryConverter.readByteFromBytes(bytes, p));
-			return v;
+//			final Value<Byte> v = new Value<Byte>();
+//			v.set(BinaryConverter.readByteFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readByteFromBytes(bytes, p));
 		} else if (valueClass == Boolean.class) {
-			final Value<Boolean> v = new Value<Boolean>();
-			v.set(BinaryConverter.readBooleanFromBytes(bytes, p));
-			return v;
+//			final Value<Boolean> v = new Value<Boolean>();
+//			v.set(BinaryConverter.readBooleanFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readBooleanFromBytes(bytes, p));
 		} else if (valueClass == String.class) {
-			final Value<String> v = new Value<String>();
-			v.set(BinaryConverter.readStringFromBytes(bytes, p));
-			return v;
+//			final Value<String> v = new Value<String>();
+//			v.set(BinaryConverter.readStringFromBytes(bytes, p));
+//			return v;
+			return cache.getValue(BinaryConverter.readStringFromBytes(bytes, p));
 		} else if (valueClass == Const.class) {
-			final Value<String> v = new Value<String>();
-			v.set(Translator.lookup(BinaryConverter.readByteFromBytes(bytes, p)));
-			return v;
+//			final Value<String> v = new Value<String>();
+//			v.set(Translator.lookup(BinaryConverter.readByteFromBytes(bytes, p)));
+//			return v;
+			return cache.getValue(Translator.lookup(BinaryConverter.readByteFromBytes(bytes, p)));
 		} else {
 			throw new SendableSerializationException(valueClass + " cant be deserialized!");
 		}
 	}
 
+	//preallocate 
+	Byte dmhead = null;
 	protected DataMap deserializeDataMap(final byte[] bytes, final ArrayPointer pd) {
 
 		// read data map header
-		final Byte dmhead = BinaryConverter.readByteFromBytes(bytes, pd);
+		dmhead = BinaryConverter.readByteFromBytes(bytes, pd);
 
-		final DataMap dm = new DataMap();
+//		final DataMap dm = new DataMap();
+		DataMap dm = cache.getDataMap();
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == MapEntry.class) {
-			final MapEntry<AbstractSendableData<?>> me = new MapEntry<AbstractSendableData<?>>();
-			me.setKey(readTranslatedStringFromBytes(bytes, pd));
-			me.setValue((AbstractSendableData<?>) deserializeAbstractSendable(bytes, pd));
+//			final MapEntry<AbstractSendableData<?>> me = new MapEntry<AbstractSendableData<?>>();
+//			me.setKey(readTranslatedStringFromBytes(bytes, pd));
+//			me.setValue((AbstractSendableData<?>) deserializeAbstractSendable(bytes, pd));
+			MapEntry<?> me = cache.getMapEntry(readTranslatedStringFromBytes(bytes, pd),(AbstractSendableData<?>)deserializeAbstractSendable(bytes, pd));
 			dm.add(me);
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
@@ -338,20 +355,16 @@ public class BinaryObjectSerializer implements ISerializer {
 	protected ListNode<? extends AbstractSendable<?>> deserializeListNode(final byte[] bytes, final ArrayPointer pd) {
 		// TODO avoid allocations
 		Byte b = BinaryConverter.readByteFromBytes(bytes, pd);
-		// System.out.println(classByte[b]);
 		final Byte classB = BinaryConverter.readByteFromBytes(bytes, pd);
-		// System.out.println(classByte[classB]);
-
-		final SendableCacheFactory scf = new SendableCacheFactory();
-		final SendableProvider sp = new SendableProvider(scf);
 
 		// read first header
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
-		ListNode rootNode = sp.getListNode(deserializeAbstractSendable(bytes, pd));
+//		ListNode rootNode = sp.getListNode();
+		ListNode rootNode = cache.getListNode(deserializeAbstractSendable(bytes, pd));
 
 		b = BinaryConverter.readByteFromBytes(bytes, pd);
 		while (classByte[b] == ListNodeHeader.class) {
-			rootNode = rootNode.append(sp.getListNode(deserializeAbstractSendable(bytes, pd)));
+			rootNode = rootNode.append(cache.getListNode(deserializeAbstractSendable(bytes, pd)));
 			b = BinaryConverter.readByteFromBytes(bytes, pd);
 		}
 

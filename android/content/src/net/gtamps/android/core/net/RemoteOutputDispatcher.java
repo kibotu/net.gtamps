@@ -7,6 +7,8 @@ import net.gtamps.android.core.net.RemoteOutputDispatcher;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.SendableProvider;
+import net.gtamps.shared.serializer.communication.SendableProviderSingleton;
 import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import java.util.Observable;
@@ -55,6 +57,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 			}
 			serializedMessage = ConnectionManager.INSTANCE.serialize(outbox.poll());
 			tcpStream.send(serializedMessage.message,serializedMessage.length);
+			
 		}
 		Logger.i(this, "Stops socket-listening loop.");
 	}

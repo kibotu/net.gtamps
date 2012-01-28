@@ -81,13 +81,14 @@ public class BinaryConverter {
 
 	public static void writeStringToBytes(final String s, final byte[] modifyBytes, final ArrayPointer p) {
 		try {
-			final byte[] byteString = s.getBytes();
-			writeIntToBytes(byteString.length, modifyBytes, p);
+//			final byte[] byteString = s.getBytes();
+			writeIntToBytes(s.length(), modifyBytes, p);
 
-			for (int i = 0; i < byteString.length; i++) {
-				modifyBytes[i + p.pos()] = byteString[i];
-			}
-			p.inc(byteString.length);
+			s.getBytes(0, s.length(), modifyBytes, p.pos());
+//			for (int i = 0; i < byteString.length; i++) {
+//				modifyBytes[i + p.pos()] = byteString[i];
+//			}
+			p.inc(s.length());
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			System.out.println("error serializing string: "+s);
 		}
@@ -95,7 +96,7 @@ public class BinaryConverter {
 
 	public static String readStringFromBytes(final byte[] modifyBytes, final ArrayPointer p) {
 		final int length = readIntFromBytes(modifyBytes, p);
-		final String s = new String(modifyBytes, p.pos(), length);
+		final String s = new String(modifyBytes, 0, p.pos(), length);
 		p.inc(length);
 		return s;
 	}

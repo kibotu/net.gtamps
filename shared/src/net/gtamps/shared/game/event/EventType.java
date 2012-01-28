@@ -2,6 +2,7 @@ package net.gtamps.shared.game.event;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,6 +76,8 @@ public enum EventType {
 	ENTITY_SENSE_SPAWN(ENTITY_SENSE),//
 	ENTITY_SENSE_DOOR(ENTITY_SENSE),//
 	ENTITY_SENSE_EXPLOSION(ENTITY_SENSE);
+	
+	private static final EventType[] values = EventType.values(); 
 
 	private static final Map<Integer, EventType> idLookupTable = new HashMap<Integer, EventType>(100, 0.75f);
 
@@ -141,7 +144,7 @@ public enum EventType {
 	}
 
 	private static EventType lookup(final int id) {
-		for(final EventType et : EventType.values()){
+		for(final EventType et : EventType.values){
 			if(et.ordinal()==id) {
 				return et;
 			}
@@ -151,7 +154,7 @@ public enum EventType {
 	}
 
 	private static boolean hasLookupId(final int id) {
-		for(final EventType et : EventType.values()){
+		for(final EventType et : EventType.values){
 			if(et.ordinal()==id) {
 				return true;
 			}

@@ -197,6 +197,8 @@ public class MessageHandler {
             default:
                 break;
         }
+        message.recycle();
+        message = null;
     }
 
     private void updateOrCreateEntity(@NotNull Entity serverEntity) {
@@ -227,7 +229,7 @@ public class MessageHandler {
     Entity targetEntity;
 
     public void handleEvent(GameEvent event) {
-//		Logger.i(this, "Handle event " + event);
+		Logger.i(this, "Handle event "+event.getName()+" type: " + event.getType());
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:
@@ -244,6 +246,8 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ACTION_SUICIDE:
                 break;
@@ -258,6 +262,8 @@ public class MessageHandler {
             case ENTITY_BULLET_HIT:
                 break;
             case ENTITY_COLLIDE:
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ENTITY_CREATE:
                 break;
@@ -267,6 +273,9 @@ public class MessageHandler {
                 break;
             case ENTITY_DESTROYED:
             	world.remove(event.getTargetUid());
+            	store.reclaim(event.getTargetUid());
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ENTITY_EVENT:
                 break;
@@ -313,7 +322,7 @@ public class MessageHandler {
                 // new active object
                 AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
                 world.setActiveView(entityView);
-
+                store.reclaim(event);
                 Logger.i(this, "PLAYER_NEWENTITY " + entityView.entity.getUid());
 
                 break;
