@@ -47,8 +47,7 @@ public class Entity extends SharedGameActor {
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
 	public Entity(final Type type) {
-		super(type.name().toLowerCase());
-		this.type = type;
+		this(type.name(), INVALID_UID);
 	}
 
 	public Entity(final String name) {
