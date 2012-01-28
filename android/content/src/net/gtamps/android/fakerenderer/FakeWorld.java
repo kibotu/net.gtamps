@@ -62,13 +62,22 @@ public class FakeWorld implements IWorld {
 		synchronized (this) {
 			this.fakeEntityMap.put(entityView.entity.getUid(), entityView);
 		}
+		refreshEntityViewList();
 	}
 
+	LinkedList<AbstractEntityView> entityViewList = null; 
 	@Override
 	public List<AbstractEntityView> getAllEntities() {
-		synchronized (this) {
-			return new LinkedList<AbstractEntityView>(this.fakeEntityMap.values());
+		if(entityViewList==null){
+			refreshEntityViewList();
 		}
+		return entityViewList;
+	}
+
+	private void refreshEntityViewList() {
+		synchronized (this) {
+			entityViewList = new LinkedList<AbstractEntityView>(this.fakeEntityMap.values());
+		}		
 	}
 
 	@Override
@@ -129,6 +138,7 @@ public class FakeWorld implements IWorld {
 	@Override
 	public void remove(int targetUid) {
 		fakeEntityMap.remove(targetUid);
+		refreshEntityViewList();
 	}
 
 	public void ensureEntityAppearance() {

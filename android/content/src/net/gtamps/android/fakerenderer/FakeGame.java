@@ -29,10 +29,12 @@ public class FakeGame extends View {
 	private static final boolean RENDER_FPS = true;
 	private static final int EVERY_N_TH_FRAME = 100;
 	private static final char[] SCORE_LABEL = "SCORE ".toCharArray();
+	private static final long MILLIS_PER_FRAME = 1000/MAX_FPS;
 	FakeCamera camera;
 	private FakeWorld world;
 	private Paint paint = new Paint();
 	
+	private Bitmap hudScoreBoard;
 	private Bitmap hudFont;
 	private int hudFontCharSize = 16;
 
@@ -54,6 +56,7 @@ public class FakeGame extends View {
 			} else {
 				Logger.e(this, "Loaded HUD font successfully!");
 			}
+			hudScoreBoard = BitmapFactory.decodeStream(context.getAssets().open("scoreboard.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -70,10 +73,23 @@ public class FakeGame extends View {
 	int FPScounter = 0;
 	int frameCounter = 0;
 	private char[] FPSchars = "   FPS".toCharArray();
+	private long currentTimeMillis;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-//		super.onDraw(canvas);
+		if (LIMIT_FPS) {
+			currentTimeMillis = System.currentTimeMillis();
+			if (((currentTimeMillis+1) - lastDraw) < MILLIS_PER_FRAME) {
+				try {
+					synchronized (this) {
+						wait(MILLIS_PER_FRAME - ((currentTimeMillis+1) - lastDraw));
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		paint.setColor(0xff000000);
 		canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
 		
@@ -105,18 +121,6 @@ public class FakeGame extends View {
 			drawHUD(canvas);
 		}
 
-		if (LIMIT_FPS) {
-			if ((1000 / (System.currentTimeMillis() - lastDraw)) > MAX_FPS) {
-				try {
-					synchronized (this) {
-						wait(5);
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
 		if (RENDER_FPS) {
 			if (FPScounter < FPS_AVERAGE_AMOUNT) {
 				FPScounter++;
@@ -130,26 +134,34 @@ public class FakeGame extends View {
 			FPSchars[0] = (char) (((FPS/10)%10)+48);
 			FPSchars[1] = (char) (((FPS)%10)+48);
 			drawHudFont(FPSchars, canvas, 10, 10);
-			lastDraw = System.currentTimeMillis();
 		}
 		frameCounter++;
 		if (frameCounter > EVERY_N_TH_FRAME) {
 			frameCounter = 0;
 			everyNthFrameDo();
 		}
+		lastDraw = System.currentTimeMillis();
 		this.invalidate();
 	}
 
 	private void everyNthFrameDo() {
 		world.ensureEntityAppearance();
 	}
-
-	private void drawHUD(Canvas canvas) {
-		drawHudFont(SCORE_LABEL, canvas, 30, 30);
-	}
 	
 	Rect fontRenderDest = new Rect();
 	Rect fontRenderSrc = new Rect();
+	
+	private void drawHUD(Canvas canvas) {
+		drawHudFont(SCORE_LABEL, canvas, 30, 30);
+		//walk circle
+//		paint.setStyle(Paint.Style.STROKE);
+//		canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, (canvas.getHeight()*100)/180, paint);
+		fontRenderSrc.set(0, 0, hudScoreBoard.getWidth(), hudScoreBoard.getHeight());
+		fontRenderDest.set(0, 0, hudScoreBoard.getWidth(), canvas.getHeight());
+		canvas.drawBitmap(hudScoreBoard, fontRenderSrc, fontRenderDest, paint);
+	}
+	
+
 	int charNumber = 0;
 	private void drawHudFont(char[] s, Canvas canvas, int positionx, int positiony){
 		charNumber = 0;

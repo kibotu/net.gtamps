@@ -87,6 +87,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 						// we're fine.
 					}
 				} else {
+					//					onDisconnect(nbc);
 					throw new ClosedChannelException();
 				}
 			}
