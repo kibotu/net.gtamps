@@ -5,6 +5,7 @@ public class StringConstants {
 	public static final String UPDATE_REVISION_OLD = "revold";
 	public static final String UPDATE_ENTITIES = "updateEnt";
 	public static final String UPDATE_GAMEEVENTS = "updateEvt";
+	public static final String UPDATE_SCORES = "updateScores";
 	public static final String PLAYER_DATA = "playerData";
 	public static final String ERROR_MESSAGE = "errorMsg";
 	public static final String SESSION_ID = "sessionID";
@@ -47,4 +48,5 @@ public class StringConstants {
 	public static final String GETUPDATE_OK = "GETUPDATE_OK"; 
 	public static final String GETMAPDATA = "GETMAPDATA";
 	public static final String ACTION_ACCELERATE = "ACTION_ACCELERATE";
+
 }
