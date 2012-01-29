@@ -127,7 +127,7 @@ public class BinaryObjectSerializer implements ISerializer {
 		} else if (classByte[b] == Value.class) {
 			return deserializeValue(bytes, pd);
 		} else if (classByte[b] == ListNode.EmptyListNode.class) {			
-			return ListNode.emptyList();
+			return ListNode.<ListNode<Value<Object>>>emptyList();   // bogus explicit typing to happify the compiler
 		} else {
 			throw new SendableSerializationException("Can't resolve to a valid class with byte header " + b
 					+ " in this context!");
