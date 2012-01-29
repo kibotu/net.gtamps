@@ -126,6 +126,7 @@ public class FakeWorld implements IWorld {
 
 	// preallocate
 	Bitmap returnBitmap = null;
+	private int playerFragScore;
 
 	public Bitmap getTileBitmap(String bitmap) {
 		returnBitmap = tileBitmapLookup.get(bitmap);
@@ -152,6 +153,16 @@ public class FakeWorld implements IWorld {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void setPlayerFragScore(int count) {
+		this.playerFragScore = count;
+	}
+	
+	@Override
+	public int getPlayerFragScore() {
+		return playerFragScore;
 	}
 
 }

@@ -161,19 +161,7 @@ public class ManualTypeSerializer implements ISerializer {
 		if (isNextToken(scanner, DATAMAP_START_TOKEN)) {
 			sendable = deserializeDataMap(scanner);
 		} else if (isNextToken(scanner, LIST_START_TOKEN)) {
-
-
-            // TODO make me compatible q.q
-
-            /*
-
-            incompatible types; inferred type argument(s) net.gtamps.shared.serializer.communication.AbstractSendable<?> do not conform to bounds of type variable(s) T
-found   : <T>net.gtamps.shared.serializer.communication.data.ListNode<T>
-required: net.gtamps.shared.serializer.communication.data.ListNode<?>
-
-             */
-
-//			sendable =  deserializeList(scanner);
+			sendable =  this.<Value<Object>>deserializeList(scanner);   // bogus explicit typing to happify the compiler
 		} else if (isNextToken(scanner, SENDABLE_START_TOKEN)) {
 			sendable = deserializeSendable(scanner);
 		} else if (isNextToken(scanner, MESSAGE_START_TOKEN)) {

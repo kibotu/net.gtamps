@@ -6,6 +6,7 @@ import java.util.Map;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.game.score.Score;
 
 
 /**
@@ -22,6 +23,7 @@ public class GameobjectStore {
 		initCache(Entity.class);
 		initCache(GameEvent.class);
 		initCache(Player.class);
+		initCache(Score.class);
 	}
 
 	private <T extends GameObject> void initCache(final Class<T> type) {
@@ -57,6 +59,10 @@ public class GameobjectStore {
 
 	public Player getPlayer(final int uid) {
 		return getActiveOrCached(uid, Player.class);
+	}
+
+	public Score getScore(final int uid) {
+		return getActiveOrCached(uid, Score.class);
 	}
 
 	private <T extends GameObject> void reclaim(final T obj, final Class<T> type) {

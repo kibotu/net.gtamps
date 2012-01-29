@@ -26,5 +26,7 @@ public interface IWorld {
 	public boolean supports2DTileMap();
 	void setTileMap(LinkedList<Tile> linkedList);
 	void remove(int targetUid);
+	void setPlayerFragScore(int count);
+	int getPlayerFragScore();
 
 }

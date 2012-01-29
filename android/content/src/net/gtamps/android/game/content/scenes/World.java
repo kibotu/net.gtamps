@@ -202,6 +202,16 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 		
 	}
 
-	
+	@Override
+	public void setPlayerFragScore(int count) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getPlayerFragScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
