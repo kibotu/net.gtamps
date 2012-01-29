@@ -22,5 +22,9 @@
                   android:screenOrientation="landscape" android:label="@string/app_name"
                   android:theme="@style/Theme.NoBackground">
         </activity>
+        <activity android:name="GTA3Dsimple" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name"
+                  android:theme="@style/Theme.NoBackground">
+        </activity>
     </application>
 </manifest> 
