@@ -22,6 +22,8 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	private final byte[] buf = new byte[Config.SERIALIZER_BUFFER_SIZE];
 
+	private static boolean useStringConstants = false;
+	
 	/*
 	 * This array represents the "headers" of all byte wise serialized objects
 	 * The indexes represent the value of the written or read byte.
@@ -212,7 +214,7 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	private void writeTranslatedStringToBytes(String s, byte[] bytes, ArrayPointer ps){
 		translated = Translator.lookup(s);
-		if(translated>-1){
+		if(!useStringConstants && translated>-1){
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Const.class), bytes, ps);
 			BinaryConverter.writeByteToBytes(translated, bytes, ps);
 		} else {
