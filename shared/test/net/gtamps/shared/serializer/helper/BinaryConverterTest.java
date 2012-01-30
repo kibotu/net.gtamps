@@ -64,7 +64,7 @@ public class BinaryConverterTest {
 	
 	@Test
 	public void testCharArrayToBytes() {
-		String s = "eabcæ?ß";
+		String s = "eabcæ?123ß";
 		String s2 = "oiausd";
 		ArrayPointer inputpointer = new ArrayPointer();
 		ArrayPointer outputpointer = new ArrayPointer();

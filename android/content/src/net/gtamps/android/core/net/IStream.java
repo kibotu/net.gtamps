@@ -1,7 +1,8 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.SocketException;
 
 import net.gtamps.shared.serializer.communication.NewMessage;
 
@@ -14,16 +15,18 @@ public interface IStream {
      *
      * @param message
      * @return <code>true</code> if succeeded
+     * @throws SocketException 
      */
-    public boolean send(byte[] message);
+    public boolean send(byte[] message) throws SocketException;
     
     /**
      * Sends a message.
      *
      * @param message
      * @return <code>true</code> if succeeded
+     * @throws SocketException 
      */
-    public boolean send(byte[] buffer, int length);
+    public boolean send(byte[] buffer, int length) throws SocketException;
 
     /**
      * receives a message and returns its byte array

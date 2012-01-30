@@ -1,10 +1,9 @@
 package net.gtamps.android.core.net;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import net.gtamps.android.core.sound.SoundEngine;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.android.game.content.scenes.World;
 import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -13,7 +12,7 @@ import net.gtamps.shared.game.GameobjectStore;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
-import net.gtamps.shared.serializer.ConnectionManager;
+import net.gtamps.shared.game.score.Score;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;
@@ -63,12 +62,24 @@ public class MessageHandler {
                 	updateOrCreateEntity(e);
                 }
 
+                // events
                 ListNode<DataMap> events = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_GAMEEVENTS));
                 for (DataMap emap: events) {
                 	int uid = SendableDataConverter.getGameObjectUid(emap);
                 	GameEvent e = store.getGameEvent(uid);
                 	SendableDataConverter.updateGameobject(e, emap);
                 	handleEvent(e);
+                }
+
+                // scores
+                ListNode<DataMap> scores = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_SCORES));
+                for (DataMap emap: scores) {
+                	int uid = SendableDataConverter.getGameObjectUid(emap);
+                	Score score = store.getScore(uid);
+                	SendableDataConverter.updateGameobject(score, emap);
+                	if (belongsToActivePlayer(score)) {
+                		world.setPlayerFragScore(score.getCount());
+                	}
                 }
                 break;
 
@@ -196,9 +207,16 @@ public class MessageHandler {
             	break;
             
             default:
+            	sendable.recycle();
                 break;
         }
+        message.recycle();
+        message = null;
     }
+
+	private boolean belongsToActivePlayer(Score score) throws NoSuchElementException {
+		return world.playerManager.getActivePlayer().useProperty(StringConstants.PROPERTY_FRAGSCORE_UID, GameObject.INVALID_UID).value() == score.getUid();
+	}
 
     private void updateOrCreateEntity(@NotNull Entity serverEntity) {
 
@@ -219,7 +237,7 @@ public class MessageHandler {
         } else {
             // update
             entityView.update(serverEntity);
-            Logger.i(this, "Update existing entity " + serverEntity.getUid());
+//            Logger.i(this, "Update existing entity " + serverEntity.getUid());
         }
     }
 
@@ -228,7 +246,7 @@ public class MessageHandler {
     Entity targetEntity;
 
     public void handleEvent(GameEvent event) {
-//		Logger.i(this, "Handle event " + event);
+//		Logger.i(this, "Handle event "+event.getName()+" type: " + event.getType());
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:
@@ -245,6 +263,8 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ACTION_SUICIDE:
                 break;
@@ -259,6 +279,8 @@ public class MessageHandler {
             case ENTITY_BULLET_HIT:
                 break;
             case ENTITY_COLLIDE:
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ENTITY_CREATE:
                 break;
@@ -267,6 +289,10 @@ public class MessageHandler {
             case ENTITY_DEACTIVATE:
                 break;
             case ENTITY_DESTROYED:
+            	world.remove(event.getTargetUid());
+            	store.reclaim(event.getTargetUid());
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ENTITY_EVENT:
                 break;
@@ -313,7 +339,7 @@ public class MessageHandler {
                 // new active object
                 AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
                 world.setActiveView(entityView);
-
+                store.reclaim(event);
                 Logger.i(this, "PLAYER_NEWENTITY " + entityView.entity.getUid());
 
                 break;
@@ -333,6 +359,8 @@ public class MessageHandler {
                 break;
             case SESSION_UPDATE:
                 break;
+            default:
+            	store.reclaim(event);
         }
     }
 

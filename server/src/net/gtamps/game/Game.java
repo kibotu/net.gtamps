@@ -23,6 +23,7 @@ import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.game.score.Score;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
@@ -176,25 +177,25 @@ public class Game implements IGame, Runnable {
 			throw new IllegalArgumentException("'r' must not be null");
 		}
 		switch (sendable.type) {
-		case ACTION_ACCELERATE:
-		case ACTION_DECELERATE:
-		case ACTION_ENTEREXIT:
-		case ACTION_LEFT:
-		case ACTION_RIGHT:
-		case ACTION_SHOOT:
-		case ACTION_SUICIDE:
-			commandQueue.add(sendable);
-			break;
-		case GETMAPDATA:
-		case GETPLAYER:
-		case GETUPDATE:
-		case GETTILEMAP:
-		case JOIN:
-		case LEAVE:
-			requestQueue.add(sendable);
-			break;
-		default:
-			break;
+			case ACTION_ACCELERATE:
+			case ACTION_DECELERATE:
+			case ACTION_ENTEREXIT:
+			case ACTION_LEFT:
+			case ACTION_RIGHT:
+			case ACTION_SHOOT:
+			case ACTION_SUICIDE:
+				commandQueue.add(sendable);
+				break;
+			case GETMAPDATA:
+			case GETPLAYER:
+			case GETUPDATE:
+			case GETTILEMAP:
+			case JOIN:
+			case LEAVE:
+				requestQueue.add(sendable);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -228,26 +229,26 @@ public class Game implements IGame, Runnable {
 			return request.createResponse(request.type.getNeedResponse());
 		}
 		switch (request.type) {
-		case JOIN:
-			response = join(request);
-			break;
-		case GETMAPDATA:
-			//					response = getMapData(session, request);
-			break;
-		case GETPLAYER:
-			response = getPlayer(request);
-			break;
-		case GETUPDATE:
-			response = getUpdate(request);
-			break;
-		case GETTILEMAP:
-			response = getTileMap(request);
-			break;
-		case LEAVE:
-			response = leave(request);
-			break;
-		default:
-			break;
+			case JOIN:
+				response = join(request);
+				break;
+			case GETMAPDATA:
+				//					response = getMapData(session, request);
+				break;
+			case GETPLAYER:
+				response = getPlayer(request);
+				break;
+			case GETUPDATE:
+				response = getUpdate(request);
+				break;
+			case GETTILEMAP:
+				response = getTileMap(request);
+				break;
+			case LEAVE:
+				response = leave(request);
+				break;
+			default:
+				break;
 
 		}
 		return response;
@@ -283,30 +284,30 @@ public class Game implements IGame, Runnable {
 		}
 		EventType type = null;
 		switch (cmd.type) {
-		case ACTION_ACCELERATE:
-			type = EventType.ACTION_ACCELERATE;
-			break;
-		case ACTION_DECELERATE:
-			type = EventType.ACTION_DECELERATE;
-			break;
-		case ACTION_LEFT:
-			type = EventType.ACTION_TURNLEFT;
-			break;
-		case ACTION_RIGHT:
-			type = EventType.ACTION_TURNRIGHT;
-			break;
-		case ACTION_ENTEREXIT:
-			type = EventType.ACTION_ENTEREXIT;
-			GUILogger.i().log(TAG, "ENTER/EXIT received");
-			break;
-		case ACTION_SHOOT:
-			type = EventType.ACTION_SHOOT;
-			break;
-		case ACTION_HANDBRAKE:
-			type = EventType.ACTION_HANDBRAKE;
-			break;
-		case ACTION_SUICIDE:
-			type = EventType.ACTION_SUICIDE;
+			case ACTION_ACCELERATE:
+				type = EventType.ACTION_ACCELERATE;
+				break;
+			case ACTION_DECELERATE:
+				type = EventType.ACTION_DECELERATE;
+				break;
+			case ACTION_LEFT:
+				type = EventType.ACTION_TURNLEFT;
+				break;
+			case ACTION_RIGHT:
+				type = EventType.ACTION_TURNRIGHT;
+				break;
+			case ACTION_ENTEREXIT:
+				type = EventType.ACTION_ENTEREXIT;
+				GUILogger.i().log(TAG, "ENTER/EXIT received");
+				break;
+			case ACTION_SHOOT:
+				type = EventType.ACTION_SHOOT;
+				break;
+			case ACTION_HANDBRAKE:
+				type = EventType.ACTION_HANDBRAKE;
+				break;
+			case ACTION_SUICIDE:
+				type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
 			universe.dispatchEvent(new GameEvent(type, player));
@@ -374,19 +375,37 @@ public class Game implements IGame, Runnable {
 
 		final ListNode<DataMap> entityNodes = SendableDataConverter.toSendableData(entities, sendableProvider);
 		final ListNode<DataMap> eventNodes = SendableDataConverter.toSendableData(events, sendableProvider);
+		final ListNode<DataMap> scoreNodes = SendableDataConverter.toSendableData(getScoreUpdate(baseRevision), sendableProvider);
 
 		final DataMap updateData = new DataMap();
 		final MapEntry<Value<Long>> revEntry = new MapEntry<Value<Long>>(StringConstants.UPDATE_REVISION, sendableProvider.getValue(universe.getRevision()));
 		final MapEntry<ListNode<DataMap>> entEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_ENTITIES, entityNodes);
 		final MapEntry<ListNode<DataMap>> evtEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_GAMEEVENTS, eventNodes);
+		final MapEntry<ListNode<DataMap>> scrEntry = new MapEntry<ListNode<DataMap>>(StringConstants.UPDATE_SCORES, scoreNodes);
+
 		updateData.add(revEntry);
 		updateData.add(entEntry);
 		updateData.add(evtEntry);
+		updateData.add(scrEntry);
 
 
 		final NewSendable updateResponse = sendable.createResponse(SendableType.GETUPDATE_OK);
 		updateResponse.data = updateData;
 		return updateResponse;
+	}
+
+	private List<Score> getScoreUpdate(final long baseRev) {
+		final Iterable<Score> allScores = universe.scoreManager.getScores();
+		final List<Score> update = new LinkedList<Score>();
+		for (final Score score: allScores) {
+			if (score.getRevision() > baseRev || score.hasChanged()) {
+				update.add(score);
+				if (score.hasChanged()) {
+					score.updateRevision(universe.getRevision());
+				}
+			}
+		}
+		return update;
 	}
 
 }

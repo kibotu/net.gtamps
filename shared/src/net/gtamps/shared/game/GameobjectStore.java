@@ -6,6 +6,7 @@ import java.util.Map;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.player.Player;
+import net.gtamps.shared.game.score.Score;
 
 
 /**
@@ -22,10 +23,18 @@ public class GameobjectStore {
 		initCache(Entity.class);
 		initCache(GameEvent.class);
 		initCache(Player.class);
+		initCache(Score.class);
 	}
 
 	private <T extends GameObject> void initCache(final Class<T> type) {
 		caches.put(type, new GameObjectCache<T>(type));
+	}
+
+	public void reclaim(final int uid) {
+		final GameObject target = active.get(uid);
+		if (target != null) {
+			reclaim(target, (Class<GameObject>) target.getClass());
+		}
 	}
 
 	public void reclaim(final Entity e) {
@@ -52,10 +61,14 @@ public class GameobjectStore {
 		return getActiveOrCached(uid, Player.class);
 	}
 
-	private <T extends GameObject, U extends T> void reclaim(final U obj, final Class<T> type) {
+	public Score getScore(final int uid) {
+		return getActiveOrCached(uid, Score.class);
+	}
+
+	private <T extends GameObject> void reclaim(final T obj, final Class<T> type) {
 		active.remove(obj.getUid());
 		@SuppressWarnings("unchecked")
-		final GameObjectCache<T> cache =  (GameObjectCache<T>) caches.get(type);
+		final GameObjectCache<T> cache =  caches.get(type);
 		cache.registerElement(obj);
 	}
 
@@ -63,7 +76,7 @@ public class GameobjectStore {
 		T obj = type.cast(active.get(uid));
 		if (obj == null) {
 			@SuppressWarnings("unchecked")
-			final GameObjectCache<T> cache = (GameObjectCache<T>) caches.get(type);
+			final GameObjectCache<T> cache = caches.get(type);
 			obj = cache.getOrCreate(uid);
 		}
 		return obj;

@@ -1,11 +1,18 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
 
+import net.gtamps.android.core.net.ConnectionManager;
+import net.gtamps.android.core.net.IStream;
+import net.gtamps.android.core.net.RemoteOutputDispatcher;
+import net.gtamps.android.game.StopTheGameException;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.NewMessage;
+import net.gtamps.shared.serializer.communication.SendableProvider;
+import net.gtamps.shared.serializer.communication.SendableProviderSingleton;
 import net.gtamps.shared.serializer.helper.SerializedMessage;
 
+import java.net.SocketException;
 import java.util.Observable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -51,7 +58,13 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 				continue;
 			}
 			serializedMessage = ConnectionManager.INSTANCE.serialize(outbox.poll());
-			tcpStream.send(serializedMessage.message,serializedMessage.length);
+			try {
+				tcpStream.send(serializedMessage.message,serializedMessage.length);
+			} catch (SocketException e) {
+				isRunning = false;
+//				throw new StopTheGameException("Connection lost.");
+			}
+			
 		}
 		Logger.i(this, "Stops socket-listening loop.");
 	}

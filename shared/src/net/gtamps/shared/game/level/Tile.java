@@ -2,12 +2,12 @@ package net.gtamps.shared.game.level;
 
 import java.io.Serializable;
 
-public class Tile implements Serializable{
+public class Tile implements Serializable, Comparable<Tile>{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8696118686755612819L;
+	private static final long serialVersionUID = 8696118686715512819L;
 	private String bitmapName;
 	private float x;
 	private float y;
@@ -87,4 +87,12 @@ public class Tile implements Serializable{
 	public String toString(){
 		return "Tile x:"+x+" y:"+y+" h:"+height+" bitmap:"+bitmapName;
 	}
+
+
+
+	@Override
+	public int compareTo(Tile o) {
+		return (int) (o.getHeight()-this.getHeight());
+	}
+	
 }

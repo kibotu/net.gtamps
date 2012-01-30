@@ -52,6 +52,10 @@ public class FakeEntityView extends AbstractEntityView {
 	public Bitmap getBitmap() {
 		return bitmap;
 	}
+	
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
+	}
 
 	public boolean hasBitmap() {
 		return bitmap!=null;

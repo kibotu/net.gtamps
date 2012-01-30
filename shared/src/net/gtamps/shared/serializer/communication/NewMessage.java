@@ -100,7 +100,7 @@ public class NewMessage extends AbstractSendable<NewMessage> {// extends
 
 	@Override
 	protected void recycleHook() {
-		sendables.recycle();
+//		sendables.recycle();
 		sessionId = null;
 		sendables = null;
 	}

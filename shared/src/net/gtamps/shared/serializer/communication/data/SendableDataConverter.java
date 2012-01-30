@@ -8,16 +8,9 @@ import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.communication.SendableProvider;
+import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class SendableDataConverter {
-
-	private static final String PROPERTY_VALUE = "PV";
-	private static final String PROPERTY_NAME = "PN";
-	private static final String GAMEOBJECT_ID = "GOID";
-	private static final String GAMEOBJECT_NAME = "GON";
-	private static final String GAMEOBJECT_REVISION = "GOR";
-	private static final String GAMEOBJECT_PROPERTIES = "GOP";
-	private static final String GAMEOBJECT_TYPE = "GOT";
 
 	public static <T extends GameObject> DataMap toSendableData(final T e, final SendableProvider provider) {
 		Validate.notNull(e);
@@ -72,47 +65,47 @@ public class SendableDataConverter {
 	}
 
 	public static int getGameObjectUid(final DataMap map) {
-		final Value<Integer> idValue = (Value<Integer>) map.get(GAMEOBJECT_ID);
+		final Value<Integer> idValue = (Value<Integer>) map.get(StringConstants.GAMEOBJECT_ID);
 		return idValue.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectUid(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<Integer> idValue = provider.getValue(gob.getUid());
-		final MapEntry<Value<Integer>> entry = provider.getMapEntry(GAMEOBJECT_ID, idValue);
+		final MapEntry<Value<Integer>> entry = provider.getMapEntry(StringConstants.GAMEOBJECT_ID, idValue);
 		map.add(entry);
 	}
 
 	private static <T extends GameObject> void putGameObjectName(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<String> value = provider.getValue(gob.getName());
 		assert value.get() != null;
-		final MapEntry<Value<String>> entry = provider.getMapEntry(GAMEOBJECT_NAME, value);
+		final MapEntry<Value<String>> entry = provider.getMapEntry(StringConstants.GAMEOBJECT_NAME, value);
 		map.add(entry);
 	}
 
 	private static String getGameObjectName(final DataMap map) {
-		final Value<String> value = (Value<String>) map.get(GAMEOBJECT_NAME);
+		final Value<String> value = (Value<String>) map.get(StringConstants.GAMEOBJECT_NAME);
 		return value.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectRevision(final T gob, final DataMap map, final SendableProvider provider) {
 		final Value<Long> value = provider.getValue(gob.getRevision());
-		final MapEntry<Value<Long>> entry = provider.getMapEntry(GAMEOBJECT_REVISION, value);
+		final MapEntry<Value<Long>> entry = provider.getMapEntry(StringConstants.GAMEOBJECT_REVISION, value);
 		map.add(entry);
 	}
 
 	private static long getGameObjectRevision(final DataMap map) {
-		final Value<Long> value = (Value<Long>) map.get(GAMEOBJECT_REVISION);
+		final Value<Long> value = (Value<Long>) map.get(StringConstants.GAMEOBJECT_REVISION);
 		return value.get();
 	}
 
 	private static <T extends GameObject> void putGameObjectProperties(final T gob, final DataMap map, final SendableProvider provider) {
 		final AbstractSendableData<?> propData = toSendableData(gob.getAllProperties(), provider);
-		final MapEntry<?> propEntry = provider.getMapEntry(GAMEOBJECT_PROPERTIES, propData);
+		final MapEntry<?> propEntry = provider.getMapEntry(StringConstants.GAMEOBJECT_PROPERTIES, propData);
 		map.add(propEntry);
 	}
 
 	private static ListNode<DataMap> getGameObjectProperties(final DataMap map) {
-		return (ListNode<DataMap>) map.get(GAMEOBJECT_PROPERTIES);
+		return (ListNode<DataMap>) map.get(StringConstants.GAMEOBJECT_PROPERTIES);
 	}
 
 	private static <T extends GameObject> void updateProperties(final T gob, final DataMap updateData) {
@@ -125,9 +118,9 @@ public class SendableDataConverter {
 	}
 
 	private static <T extends GameObject> void updateProperty(final T gob, final DataMap propertyData) {
-		final Value<String> nameValue = (Value<String>) propertyData.get(PROPERTY_NAME);
+		final Value<String> nameValue = (Value<String>) propertyData.get(StringConstants.PROPERTY_NAME);
 		final String name = nameValue.get();
-		final Value<?> valueValue = (Value<?>) propertyData.get(PROPERTY_VALUE);
+		final Value<?> valueValue = (Value<?>) propertyData.get(StringConstants.PROPERTY_VALUE);
 		final Object value = valueValue.get();
 		gob.updateProperty(name, value);
 	}
@@ -146,12 +139,12 @@ public class SendableDataConverter {
 
 		// name
 		final Value<?> nameValue = provider.getValue(p.getName());
-		final MapEntry<?> nameEntry = provider.getMapEntry(PROPERTY_NAME, nameValue);
+		final MapEntry<?> nameEntry = provider.getMapEntry(StringConstants.PROPERTY_NAME, nameValue);
 		dataMap.add(nameEntry);
 
 		// value
 		final Value<?> valueValue = provider.getValue(p.value());
-		final MapEntry<?> valueEntry = provider.getMapEntry(PROPERTY_VALUE, valueValue);
+		final MapEntry<?> valueEntry = provider.getMapEntry(StringConstants.PROPERTY_VALUE, valueValue);
 		dataMap.add(valueEntry);
 
 		return dataMap;
@@ -181,7 +174,7 @@ public class SendableDataConverter {
 	private static <T extends GameObject> MapEntry<Value<String>> createTypeEntry(final T o, final SendableProvider provider) {
 		final Class<?> type = o.getClass();
 		final Value<String> typeValue = provider.getValue(type.getSimpleName());
-		final MapEntry<Value<String>> entry = provider.getMapEntry(GAMEOBJECT_TYPE, typeValue);
+		final MapEntry<Value<String>> entry = provider.getMapEntry(StringConstants.GAMEOBJECT_TYPE, typeValue);
 		return entry;
 	}
 

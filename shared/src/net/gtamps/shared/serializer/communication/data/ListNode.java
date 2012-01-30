@@ -133,8 +133,10 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	void unlink() {
 		iterator.unlink();
 		value = null;
-		next.unlink();
-		next = null;
+		if(next!=null){
+			next.unlink();
+		}
+		next = emptyList();
 	}
 
 	private void ensureIteratorReset() {

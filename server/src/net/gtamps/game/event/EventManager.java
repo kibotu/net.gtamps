@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EventManager extends GameEventDispatcher implements IGameEventListener {
 
-	public static final long EVENT_TIMEOUT_MILLIS = 500;
+	public static final long EVENT_TIMEOUT_MILLIS = 200;
 
 	@NotNull
 	private final Universe universe;

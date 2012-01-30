@@ -18,6 +18,7 @@ import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewSendable;
 import net.gtamps.shared.serializer.communication.SendableCacheFactory;
 import net.gtamps.shared.serializer.communication.SendableProvider;
+import net.gtamps.shared.serializer.communication.SendableProviderSingleton;
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.StringConstants;
 import net.gtamps.shared.serializer.communication.data.DataMap;
@@ -42,9 +43,11 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	private boolean run = true;
 	private IGame game; //tmp
+	private final SendableProvider cache;
 
 	private ControlCenter() {
 		createGame(null); // tmp
+		cache = SendableProviderSingleton.getInstance();
 		new Thread(this, "ControlCenter").start();
 	}
 
@@ -133,47 +136,47 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	private void handleSendable(final NewSendable request) {
 		switch (request.type) {
-			case SESSION:
-				handleSession(request);
-				break;
-			case REGISTER:
-				handleRegister(request);
-				break;
-			case LOGIN:
-				handleLogin(request);
-				break;
-			case JOIN:
-			case LEAVE:
-				handleAuthenticatedRequest(request);
-				break;
-			case GETUPDATE:
-				//FIXME easy way out, just throw some packages away.
-				//needs more delicate handling later
-				//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
-				//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
-				//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
-				handlePlayingRequest(request);
-				//				System.out.println("ansering update request");
-				//			}
-				//			System.out.println("throwing away update request");
-				//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
-				break;
-			case GETMAPDATA:
-			case GETTILEMAP:
-			case GETPLAYER:
-			case ACTION_ACCELERATE:
-			case ACTION_DECELERATE:
-			case ACTION_HANDBRAKE:
-			case ACTION_ENTEREXIT:
-			case ACTION_LEFT:
-			case ACTION_RIGHT:
-			case ACTION_SHOOT:
-			case ACTION_SUICIDE:
-				handlePlayingRequest(request);
-				break;
-			default:
-				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
-				break;
+		case SESSION:
+			handleSession(request);
+			break;
+		case REGISTER:
+			handleRegister(request);
+			break;
+		case LOGIN:
+			handleLogin(request);
+			break;
+		case JOIN:
+		case LEAVE:
+			handleAuthenticatedRequest(request);
+			break;
+		case GETUPDATE:
+			//FIXME easy way out, just throw some packages away.
+			//needs more delicate handling later
+			//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
+			//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
+			//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
+			handlePlayingRequest(request);
+			//				System.out.println("ansering update request");
+			//			}
+			//			System.out.println("throwing away update request");
+			//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
+			break;
+		case GETMAPDATA:
+		case GETTILEMAP:
+		case GETPLAYER:
+		case ACTION_ACCELERATE:
+		case ACTION_DECELERATE:
+		case ACTION_HANDBRAKE:
+		case ACTION_ENTEREXIT:
+		case ACTION_LEFT:
+		case ACTION_RIGHT:
+		case ACTION_SHOOT:
+		case ACTION_SUICIDE:
+			handlePlayingRequest(request);
+			break;
+		default:
+			handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
+			break;
 		}
 	}
 
@@ -296,9 +299,10 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 
 	private void sendInMessage(final NewSendable response) {
-		final NewMessage msg = new NewMessage();
+		final NewMessage msg = cache.getMessage();
+		msg.sendables = cache.getListNode(response);
+		//msg.sendables = msg.sendables.append(cache.getListNode(response));
 		msg.setSessionId(response.sessionId);
-		msg.sendables = msg.sendables.append(sendableProvider.getListNode(response));
 		SessionManager.instance.sendMessage(msg);
 	}
 

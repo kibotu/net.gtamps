@@ -1,5 +1,8 @@
-package net.gtamps.shared.serializer;
+package net.gtamps.android.core.net;
 
+import net.gtamps.android.core.net.ConnectionManager;
+import net.gtamps.android.core.net.IStream;
+import net.gtamps.android.core.net.RemoteInputDispatcher;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.NewMessage;

@@ -43,7 +43,7 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	private boolean silent = false;
 	private boolean mutable = false;
 	private Map<String, IProperty<?>> properties = null;
-	private final Map<String, IProperty<?>> inactiveProperties = null;
+	private Map<String, IProperty<?>> inactiveProperties = null;
 
 
 	protected GameObject() {
@@ -63,6 +63,30 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		}
 		this.uid = (uid == INVALID_UID) ? UIDGenerator.getNewUID() : uid;
 		setName(name);
+	}
+
+	public GameObject(final GameObject other) {
+		this.uid = UIDGenerator.getNewUID();
+		this.name = other.name;
+		this.silent = other.silent;
+		this.hasChanged = other.hasChanged;
+		this.revision = other.revision;
+		this.properties = copyPropertyMap(inactiveProperties);
+		deactivateAllProperties();
+		this.properties = copyPropertyMap(properties);
+	}
+
+	private Map<String, IProperty<?>> copyPropertyMap(final Map<String, IProperty<?>> original) {
+		if (original == null) {
+			return null;
+		}
+		final Map<String, IProperty<?>> cloneMap = new HashMap<String, IProperty<?>>();
+		for (final String key: original.keySet()) {
+			final IProperty<?> p = original.get(key);
+			final IProperty<?> newP = useProperty(key, p.value());
+			cloneMap.put(key, newP);
+		}
+		return cloneMap;
 	}
 
 	public int getUid() {
@@ -252,6 +276,12 @@ public abstract class GameObject extends SharedObject implements Serializable {
 	}
 
 	void deactivateAllProperties() {
+		if (properties == null) {
+			return;
+		}
+		if (inactiveProperties == null) {
+			inactiveProperties = new HashMap<String, IProperty<?>>();
+		}
 		inactiveProperties.putAll(properties);
 		properties.clear();
 	}
@@ -327,6 +357,10 @@ public abstract class GameObject extends SharedObject implements Serializable {
 		}
 		final Propertay<?> p = (Propertay<?>) this.inactiveProperties.get(name);
 		return (Propertay<T>) p;
+	}
+
+	public static boolean isValidUid(final int uid) {
+		return UIDGenerator.isValid(uid);
 	}
 
 

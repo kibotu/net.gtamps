@@ -21,7 +21,8 @@ final public class Config {
 	public static final float ALPHA_KILL_FRAGMENTS_TOLERANCE = 0.3f;
 	public static final boolean USEVBO = true;
 	public static final boolean FORCE_GL10 = false;
-	public static final boolean FORCE_GTA_2D = true;
+	public static final boolean FORCE_GTA_2D = false;
+	public static final boolean FORCE_GTA_3D_SIMPLE = true;
 
 	/**
 	 * FONT
@@ -81,6 +82,10 @@ final public class Config {
 	public static final String DEFAULT_PASSWORD = "blub";
 
 	public static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
+
+	public static final boolean SHOW_NETWORK_BANDWITH_USAGE = false;
+
+	public static final int SERIALIZER_BUFFER_SIZE = 65535;
 
 	private Config() {
 	}

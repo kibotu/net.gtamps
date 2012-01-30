@@ -22,7 +22,8 @@ public class Entity extends SharedGameActor {
 	static public enum Type {
 		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
 	}
-
+	
+	
 	//TODO: use!
 	public static String normalizeName(final String name) {
 		return name.toUpperCase();
@@ -47,8 +48,7 @@ public class Entity extends SharedGameActor {
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
 
 	public Entity(final Type type) {
-		super(type.name().toLowerCase());
-		this.type = type;
+		this(type.name(), INVALID_UID);
 	}
 
 	public Entity(final String name) {
@@ -61,12 +61,16 @@ public class Entity extends SharedGameActor {
 		this.type = getType(name);
 	}
 
+	//preallocate
+	Type retGetType = null;
 	private Type getType(final String name) {
-		try {
+		retGetType = EntityTypeProvider.valueOf(name);
+		return retGetType==null ? Type.PLACEHOLDER : retGetType;
+		/*try {
 			return Type.valueOf(name.toUpperCase());
 		} catch (final IllegalArgumentException e) {
 			return Type.PLACEHOLDER;
-		}
+		}*/
 	}
 
 	@Override

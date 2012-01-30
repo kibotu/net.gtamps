@@ -14,4 +14,7 @@ public class ArrayPointer {
 	public void set(int i){
 		val = i;
 	}
+	public void reset() {
+		this.set(0);
+	}
 }

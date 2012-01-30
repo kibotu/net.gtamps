@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.gtamps.shared.Utils.Logger;
+
 
 public class Translator {
 	private static String[] lookup = null;
@@ -29,6 +31,7 @@ public class Translator {
 	}
 	private static void init(){
 		lookup = new String[StringConstants.class.getDeclaredFields().length];
+		Logger.d("Translator", lookup.length+" String Constants declared: "+(255-lookup.length)+" left.");
 		Byte i = 0;
 		LinkedList<String> fieldList = new LinkedList<String>();
 		for(Field f: StringConstants.class.getDeclaredFields()){

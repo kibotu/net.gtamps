@@ -12,6 +12,7 @@ import net.gtamps.server.Connection;
 import net.gtamps.server.ISocketHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.helper.BinaryConverter;
 import net.gtamps.shared.serializer.helper.SerializedMessage;
@@ -86,6 +87,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 						// we're fine.
 					}
 				} else {
+					//					onDisconnect(nbc);
 					throw new ClosedChannelException();
 				}
 			}
@@ -135,7 +137,9 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 	}
 
 	private void receive(final INonBlockingConnection nbc, final byte[] data) {
-		System.out.println("received >> " + data.length);
+		if(Config.SHOW_NETWORK_BANDWITH_USAGE){
+			System.out.println("received >> " + data.length);
+		}
 		//send(nbc, data)
 		final Connection<?> c = abstractConnections.get(nbc.getId());
 		c.onData(data);
@@ -180,7 +184,9 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 			nbc.write(lengthByte);
 			nbc.write(bytes,0,length);
 			nbc.flush();
-			System.out.println("sent >> 4 + "+length + " bytes");
+			if(Config.SHOW_NETWORK_BANDWITH_USAGE){
+				System.out.println("sent >> 4 + "+length + " bytes");
+			}
 		} catch (final BufferOverflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -74,7 +74,7 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 	}
 
 	public int getInt(final String key) throws NoSuchElementException {
-		return (int) getValue(key, Integer.class);
+		return getValue(key, Integer.class);
 	}
 
 	public float getFloat(final String key) throws NoSuchElementException {
@@ -173,6 +173,7 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 	protected void recycleHook() {
 		for (int i = 0; i < load; i++) {
 			table[i].recycle();
+			table[i] = null;
 		}
 	}
 

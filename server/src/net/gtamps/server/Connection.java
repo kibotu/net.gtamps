@@ -2,6 +2,7 @@ package net.gtamps.server;
 
 import net.gtamps.GTAMultiplayerServer;
 import net.gtamps.helper.FileDumper;
+import net.gtamps.shared.Config;
 import net.gtamps.shared.serializer.communication.ISerializer;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.helper.SerializedMessage;
@@ -34,11 +35,17 @@ public final class Connection<H extends ISocketHandler> {
 
 	public void send(final NewMessage msg) {
 		if(this.isActive){
-			final SerializedMessage serializedMessage = serializer.serializeAndPackNewMessage(msg);
-			if(GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS){
-				FileDumper.writeBytesToFile(id, serializedMessage.message,serializedMessage.length);
+			try{
+				final SerializedMessage serializedMessage = serializer.serializeAndPackNewMessage(msg);
+				if(GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS){
+					FileDumper.writeBytesToFile(id, serializedMessage.message,serializedMessage.length);
+				}
+				socketHandler.send(id, serializedMessage);
+			} catch (final ArrayIndexOutOfBoundsException e){
+				System.err.println("Network Buffer is to small: "+Config.SERIALIZER_BUFFER_SIZE+"K");
+				System.err.println(e.getMessage());
+				throw e;
 			}
-			socketHandler.send(id, serializedMessage);
 		} else {
 			System.out.println("Handle of client request on closed connection, on ID: "+id);
 		}

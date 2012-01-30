@@ -6,15 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileDumper {
+	private static final String DUMP_DIR = "message_dumps/";
+
 	public static void writeBytesToFile(String filename , final byte[] bytes, final int length){
 		try {
-			final String basefilename = new String(filename);
-			filename = filename+"000";
-			File f = new File(filename);
-			if(f.exists()){
-				final int nr = Integer.parseInt(filename.substring(filename.length()-3));
-				f = new File(filename+(nr+1));
-			}
+			filename = DUMP_DIR+filename+("_"+System.currentTimeMillis()).substring(5);
+			final File f = new File(filename);
 			final FileOutputStream fos = new FileOutputStream(f);
 			fos.write(bytes,0,length);
 			fos.close();

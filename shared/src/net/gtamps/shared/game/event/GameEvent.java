@@ -40,9 +40,6 @@ public class GameEvent extends GameObject {
 	public static final String END_VALUE = "END";
 	private static final long serialVersionUID = 4026988656700611249L;
 
-	@Deprecated
-	protected EventType type = null;
-
 	protected IProperty<Integer> eventType = useProperty(StringConstants.PROPERTY_TYPE, EventType.GAME_EVENT.ordinal());
 	protected IProperty<Integer> sourceUid = useProperty(StringConstants.PROPERTY_SOURCE_UID, INVALID_UID);
 	protected IProperty<Integer> targetUid = useProperty(StringConstants.PROPERTY_TARGET_UID, INVALID_UID);
@@ -94,15 +91,11 @@ public class GameEvent extends GameObject {
 	}
 
 	public void setType(final EventType type) {
-		this.type = null;
 		eventType.set(type.getId());
 	}
 
 	public EventType getType() {
-		if (type == null) {
-			type = EventType.fromId(eventType.value());
-		}
-		return this.type;
+		return EventType.fromId(eventType.value());
 	}
 
 	/**

@@ -2,6 +2,7 @@ package net.gtamps.android.core.net;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.game.PlayerManager;
@@ -24,5 +25,8 @@ public interface IWorld {
 	
 	public boolean supports2DTileMap();
 	void setTileMap(LinkedList<Tile> linkedList);
+	void remove(int targetUid);
+	void setPlayerFragScore(int count);
+	int getPlayerFragScore();
 
 }

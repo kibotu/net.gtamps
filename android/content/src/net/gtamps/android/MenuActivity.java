@@ -36,11 +36,20 @@ public class MenuActivity extends Activity implements OnClickListener {
         ((Button) findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
 
         // autostart
-        if(Config.FORCE_GTA_2D) startGTA2D();
-        else startGTA3D();
+        if(Config.FORCE_GTA_2D){
+        	startGTA2D();
+        } else if(Config.FORCE_GTA_3D_SIMPLE){
+        	startGTA2DSimple();
+        } else startGTA3D();
     }
 
-    private void startGTA2D() {
+    private void startGTA2DSimple() {
+    	Intent intent = new Intent();
+        intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA3Dsimple");
+        startActivity(intent);
+	}
+
+	private void startGTA2D() {
         Intent intent = new Intent();
         intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA2D");
         startActivity(intent);

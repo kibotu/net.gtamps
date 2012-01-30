@@ -14,6 +14,8 @@ public class Player extends SharedGameActor {
 	@Deprecated
 	private Entity entity;
 	private final IProperty<Integer> entityUid = useProperty(StringConstants.PROPERTY_ENTITY_UID, GameObject.INVALID_UID);
+	private final IProperty<Integer> fragScoreUid = useProperty(StringConstants.PROPERTY_FRAGSCORE_UID, GameObject.INVALID_UID);
+
 
 	public Player() {
 		super();
@@ -70,9 +72,25 @@ public class Player extends SharedGameActor {
 		return entity != null ? entity.getUid() : entityUid.value();
 	}
 
+	public int getFragScoreUid() {
+		return fragScoreUid.value();
+	}
+
+	public void setFragScoreUid(final int uid) {
+		if (!GameObject.isValidUid(uid)) {
+			throw new IllegalArgumentException("invalid uid. call removeFragScoreUid() to remove uid");
+		}
+		fragScoreUid.set(uid);
+	}
+
+	public void removeFragScoreUid() {
+		fragScoreUid.set(GameObject.INVALID_UID);
+	}
+
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		dispatchEvent(event);
 	}
+
 
 }
