@@ -149,7 +149,7 @@ public class BinaryObjectSerializerTest {
 			// deserialize
 			final Value<?> out = bos.deserializeValue(buf, pd);
 
-			assertEquals(out, tv);
+			assertEquals(tv,out);
 		}
 		assertEquals(ps.pos(), pd.pos());
 	}
