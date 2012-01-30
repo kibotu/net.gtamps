@@ -136,6 +136,7 @@ public class SimpleWorld implements IWorld {
 
 	// preallocate
 	Bitmap returnBitmap = null;
+	private int fragCount;
 
 	public Bitmap getTileBitmap(String bitmap) {
 		returnBitmap = tileBitmapLookup.get(bitmap);
@@ -164,6 +165,16 @@ public class SimpleWorld implements IWorld {
 
 	public LinkedList<CubeTile> getCubeTileMap() {
 		return cubeTileMap;
+	}
+
+	@Override
+	public void setPlayerFragScore(int count) {
+		this.fragCount = count;
+	}
+
+	@Override
+	public int getPlayerFragScore() {
+		return fragCount;
 	}
 
 }
