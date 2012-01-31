@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.renderer;
+package net.gtamps.android.graphics.utils;
 
 import android.opengl.GLSurfaceView;
 import net.gtamps.shared.Utils.Logger;

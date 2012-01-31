@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.graphics.renderer.*;
+import net.gtamps.android.graphics.utils.BasicEGLConfigChooser;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.renderer.RenderCapabilities;
 import net.gtamps.android.utils.AndroidLogger;
