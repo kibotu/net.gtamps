@@ -16,45 +16,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
-    <orderEntry type="module-library" exported="">
-      <library name="JBox2D-2.0.1-b250-Full.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/JBox2D-2.0.1-b250-Full.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="jdom.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jdom.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="xSocket-2.8.15.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/xSocket-2.8.15.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/xSocket-2.8.15-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="derby.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/derby.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="jdk" jdkName="jdk1.6.0_30" jdkType="JavaSDK" />
+    <orderEntry type="module" module-name="shared" />
+    <orderEntry type="library" name="derby" level="application" />
+    <orderEntry type="library" name="JBox2D-2.0.1-b250-Full" level="application" />
+    <orderEntry type="library" name="xSocket-2.8.15-sources" level="application" />
   </component>
 </module>
 

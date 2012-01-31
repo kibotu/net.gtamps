@@ -3,7 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GTA.iml" filepath="$PROJECT_DIR$/GTA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" filepath="$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphic/graphic.iml" filepath="$PROJECT_DIR$/../graphic/graphic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" filepath="$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/graphics-engine/graphics-engine.iml" filepath="$PROJECT_DIR$/graphics-engine/graphics-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../graphics-engine-test/graphics-engine-test.iml" filepath="$PROJECT_DIR$/../graphics-engine-test/graphics-engine-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/graphics-engine-test/graphics-engine-test.iml" filepath="$PROJECT_DIR$/graphics-engine-test/graphics-engine-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphics-test/graphics-test.iml" filepath="$PROJECT_DIR$/../graphics-test/graphics-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../shared/shared.iml" filepath="$PROJECT_DIR$/../../shared/shared.iml" />
       <module fileurl="file://$PROJECT_DIR$/../utils/utils.iml" filepath="$PROJECT_DIR$/../utils/utils.iml" />

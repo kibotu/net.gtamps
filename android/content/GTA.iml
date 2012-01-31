@@ -35,8 +35,6 @@
     <orderEntry type="jdk" jdkName="Android 2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="graphic" />
-    <orderEntry type="module" module-name="shared" />
-    <orderEntry type="module" module-name="utils" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

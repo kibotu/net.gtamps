@@ -9,9 +9,9 @@ import net.gtamps.shared.Utils.math.Color4;
 import static net.gtamps.android.graphic.R.drawable.crate;
 import static net.gtamps.android.graphic.R.drawable.earth;
 
-public class World extends BasicScene {
+public class TestScene extends BasicScene {
 
-    public World() {
+    public TestScene() {
     }
 
     @Override
