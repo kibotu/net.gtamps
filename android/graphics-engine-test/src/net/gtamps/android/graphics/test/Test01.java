@@ -1,19 +1,22 @@
 package net.gtamps.android.graphics.test;
 
-import android.app.Activity;
 import android.os.Bundle;
+import net.gtamps.android.graphics.BasicRenderActivity;
+import net.gtamps.android.graphics.test.actions.Test01Action;
+import net.gtamps.android.graphics.test.scenes.Test01Scene;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
  * Date: 31/01/12
  * Time: 17:57
  */
-public class Test01 extends Activity {
+public class Test01 extends BasicRenderActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.main);
+
+        renderAction = new Test01Action(new Test01Scene());
+        setRenderAction(renderAction);
     }
 }
