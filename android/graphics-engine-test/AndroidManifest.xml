@@ -15,5 +15,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="Test01" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name="Test02" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name="Test03" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
     </application>
 </manifest> 

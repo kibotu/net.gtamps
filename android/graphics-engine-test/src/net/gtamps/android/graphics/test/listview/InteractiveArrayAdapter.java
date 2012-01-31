@@ -17,12 +17,12 @@ import java.util.List;
  * Date: 31/01/12
  * Time: 16:22
  */
-public class InteractiveArrayAdapter extends ArrayAdapter<Model> {
+public class InteractiveArrayAdapter extends ArrayAdapter<ListModel> {
 
-    private final List<Model> list;
+    private final List<ListModel> list;
     private final Activity context;
 
-    public InteractiveArrayAdapter(Activity context, List<Model> list) {
+    public InteractiveArrayAdapter(Activity context, List<ListModel> list) {
         super(context, R.layout.rowbuttonlayout, list);
         this.context = context;
         this.list = list;
@@ -48,7 +48,7 @@ public class InteractiveArrayAdapter extends ArrayAdapter<Model> {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView,
                                                      boolean isChecked) {
-                            Model element = (Model) viewHolder.checkbox
+                            ListModel element = (ListModel) viewHolder.checkbox
                                     .getTag();
                             element.setSelected(buttonView.isChecked());
 

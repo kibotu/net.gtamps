@@ -1,12 +1,10 @@
-package net.gtamps.android.graphics.test;
+package net.gtamps.android.graphics.test.listview;
 
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
-import net.gtamps.android.graphics.test.listview.InteractiveArrayAdapter;
-import net.gtamps.android.graphics.test.listview.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +25,8 @@ public class MyInteractiveActivity extends ListActivity {
         setListAdapter(adapter);
     }
 
-    private List<Model> getModel() {
-        List<Model> list = new ArrayList<Model>();
+    private List<ListModel> getModel() {
+        List<ListModel> list = new ArrayList<ListModel>();
         list.add(get("Linux"));
         list.add(get("Windows7"));
         list.add(get("Suse"));
@@ -44,12 +42,12 @@ public class MyInteractiveActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Model item = (Model) l.getAdapter().getItem(position);
+        ListModel item = (ListModel) l.getAdapter().getItem(position);
         Toast.makeText(this, item.getName(), Toast.LENGTH_SHORT).show();
         super.onListItemClick(l, v, position, id);
     }
 
-    private Model get(String s) {
-        return new Model(s);
+    private ListModel get(String s) {
+        return new ListModel(s);
     }
 }
