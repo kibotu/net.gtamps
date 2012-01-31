@@ -1,55 +1,37 @@
-package net.gtamps.android.renderer;
+package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import net.gtamps.android.renderer.graph.ProcessingState;
-import net.gtamps.android.renderer.graph.SceneNode;
-import net.gtamps.android.renderer.mesh.texture.TextureLibrary;
-import net.gtamps.android.renderer.shader.Shader;
-import net.gtamps.android.renderer.utils.Utils;
+import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
-import net.gtamps.shared.Utils.math.Vector3;
-import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * User: Jan Rabe, Tom Walroth, Til Börner
+ * Date: 31/01/12
+ * Time: 18:30
+ */
 public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
-    protected IRenderAction renderAction;
-    protected ProcessingState glState;
-
-    private ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
+    private IRenderAction renderAction;
 
     public BasicRenderer(IRenderAction renderAction) {
-        Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
         this.renderAction = renderAction;
-        runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
-        glState = new ProcessingState();
     }
 
     @Override
-    final public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        Logger.I(this, "Surface created.");
-
-        // get opengl context
-        glState = new ProcessingState(gl10);
-
-        Registry.setTextureLibrary(new TextureLibrary(gl10));
+    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
         // get mobile capabilities
         RenderCapabilities.setRenderCaps(gl10);
 
-        // activities on create
-        renderAction.onCreate();
-        for (int i = 0; i < renderAction.getScenes().size(); i++) {
-            renderAction.getScenes().get(i).onCreate();
-        }
+        Logger.I(this, "Surface created.");
 
         // last best gc call
         final Runtime r = Runtime.getRuntime();
@@ -58,21 +40,20 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         // log how much memory is available
         Utils.logAvailableMemory();
 
-        reset();
+        onSurfaceCreatedHook(gl10, eglConfig);
         getDelta(); // call once before loop to initialise lastFrame
         lastFPS = getTime(); // call before loop to initialise fps timer
     }
 
-    protected abstract void reset();
+    @Override
+    public void onSurfaceChanged(GL10 gl10, int width, int height) {
+        Logger.I(this, "Surface changed.");
+        height = height == 0 ? 1 : height;
+    }
 
     @Override
-    final public void onDrawFrame(GL10 gl10) {
+    public void onDrawFrame(GL10 gl10) {
         if (!renderAction.isRunning() || renderAction.isPaused()) return;
-
-        // setup on the fly
-        for (int i = 0; i < runtimeSetupQueue.size(); i++) {
-            runtimeSetupQueue.poll().setup(glState);
-        }
 
         // get time difference since last frame
         int delta = getDelta();
@@ -80,45 +61,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         // limits frame rate
         limitFrameRate(delta);
 
-        // activities draw loop
-        for(int i = 0; i < renderAction.getScenes().size(); i++) {
-            if(renderAction.getScenes().get(i).isDirty()) renderAction.getScenes().get(i).onDirty();
-        }
         renderAction.onDrawFrame();
 
         // render draw loop
-        draw(gl10);
+        onDrawFrameHook(gl10);
 
         // update real fps
         updateFPS();
-    }
-
-    public abstract void draw(GL10 unusedGL);
-
-    @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height) {
-        Logger.i(this, "Surface changed.");
-        height = height == 0 ? 1 : height;
-
-        // re-allocate and re-validate texture
-        Registry.getTextureLibrary().invalidate();
-
-        // reload shader
-        if(RenderCapabilities.supportsGLES20()) Shader.load();
-
-        // inform camera that surface has changed
-        for (int i = 0; i < renderAction.getScenes().size(); i++) {
-            renderAction.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
-
-            // re-allocate and re-validate hardware buffers
-            renderAction.getScenes().get(i).getScene().onResume(glState);
-
-            renderAction.getScenes().get(i).onDirty();
-        }
-    }
-
-    final public void addToSetupQueue(@NotNull SceneNode node) {
-        runtimeSetupQueue.add(node);
     }
 
     /**
@@ -179,6 +128,22 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
+     * Call back method for onDrawFrame()
+     *
+     * @param unusedGL
+     */
+    public abstract void onDrawFrameHook(GL10 unusedGL);
+
+
+    /**
+     * Call back method for onSurfaceCreated()
+     *
+     * @param gl10
+     * @param eglConfig
+     */
+    protected abstract void onSurfaceCreatedHook(GL10 gl10, EGLConfig eglConfig);
+
+    /**
      * Uploads a texture to hardware.
      *
      * @param texture
@@ -196,15 +161,33 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     public abstract int newTextureID();
 
     /**
-     * Deletes a texture by id.
+     * Deletes textures by id.
      *
      * @param gl
      */
     public abstract void deleteTexture(int... textureIds);
 
+    /**
+     * Clears screen and sets background color.
+     *
+     * @param bgcolor
+     */
     public abstract void clearScreen(Color4 bgcolor);
 
+    /**
+     * Sets viewport.
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public abstract void setViewPort(int x, int y, int width, int height);
 
+    /**
+     * Applies camera.
+     *
+     * @param frustum
+     */
     public abstract void applyCamera(Frustum frustum);
 }

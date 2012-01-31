@@ -1,8 +1,7 @@
-package net.gtamps.android.renderer.utils;
+package net.gtamps.android.graphics.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Utils.Logger;
 
 import java.io.IOException;

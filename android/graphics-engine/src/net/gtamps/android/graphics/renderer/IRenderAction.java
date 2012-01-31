@@ -1,13 +1,13 @@
-package net.gtamps.android.renderer;
+package net.gtamps.android.graphics.renderer;
 
-import net.gtamps.android.renderer.graph.scene.BasicScene;
+import net.gtamps.android.graphics.graph.scene.BasicScene;
 
 import java.util.ArrayList;
 
 /**
  * Defines an life cycle for an activities.
  */
-interface IRenderAction {
+public interface IRenderAction {
 
     /**
      * Called when renderer is created.
@@ -33,13 +33,30 @@ interface IRenderAction {
      */
     public boolean isPaused();
 
+    /**
+     * Holds all scenes within the action.
+     *
+     * @return
+     */
     public ArrayList<BasicScene> getScenes();
 
+    /**
+     * Stops the action.
+     */
     public void stop();
 
+    /**
+     * Pauses the action.
+     */
     public void pause();
 
+    /**
+     * Resumes the action.
+     */
     public void resume();
 
+    /**
+     * Starts the action.
+     */
     void start();
 }

@@ -26,7 +26,7 @@ public class GTA3Dsimple extends Activity{
 		this.setContentView(glView);
 	}
 
-	// Call back when the activity is going into the background
+	// Call back when the activities is going into the background
 	@Override
 	protected void onPause() {
 		super.onPause();

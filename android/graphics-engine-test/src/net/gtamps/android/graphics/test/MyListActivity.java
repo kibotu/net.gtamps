@@ -42,9 +42,9 @@ public class MyListActivity extends ListActivity {
 
     private List<ActivityModel> getModel() {
         List<ActivityModel> list = new ArrayList<ActivityModel>();
-        list.add(new ActivityModel("Triangle", PACKAGE_NAME, "Test01"));
-        list.add(new ActivityModel("Cube", PACKAGE_NAME, "Test02"));
-        list.add(new ActivityModel("Sphere", PACKAGE_NAME, "Test03"));
+        list.add(new ActivityModel("Triangle", PACKAGE_NAME, "Test01Activity"));
+        list.add(new ActivityModel("Cube", PACKAGE_NAME, "Test02Activity"));
+        list.add(new ActivityModel("Sphere", PACKAGE_NAME, "Test03Activity"));
         // Initially select one of the items
         list.get(1).setSelected(true);
         return list;
