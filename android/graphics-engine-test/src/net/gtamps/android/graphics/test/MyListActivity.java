@@ -22,6 +22,9 @@ public class MyListActivity extends ListActivity {
 
         ArrayAdapter<ActivityModel> adapter = new ArrayAdapter<ActivityModel>(this, R.layout.simple_list_item_1, getModel());
         setListAdapter(adapter);
+
+        // autostart
+        startActivity(PACKAGE_NAME,"Test01Activity");
     }
 
     @Override

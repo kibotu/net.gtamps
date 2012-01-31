@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.renderer;
+package net.gtamps.android.graphics.utils;
 
 import android.opengl.GLSurfaceView;
 import net.gtamps.shared.Utils.Logger;
@@ -7,7 +7,7 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-public class BasicEGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
+public class EGLConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
     @Override
     public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {

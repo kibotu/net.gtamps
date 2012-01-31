@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.renderer;
 
 import net.gtamps.android.graphics.graph.scene.BasicScene;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 
 /**
@@ -11,13 +12,17 @@ public interface IRenderAction {
 
     /**
      * Called when renderer is created.
+     *
+     * @param gl10
      */
-    public void onCreate();
+    void onSurfaceCreated(GL10 gl10);
 
     /**
      * Called every frame.
+     *
+     * @param gl10
      */
-    public void onDrawFrame();
+    public void onDrawFrame(GL10 gl10);
 
     /**
      * Method returns if the game is running.

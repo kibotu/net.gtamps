@@ -5,8 +5,9 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import net.gtamps.android.graphics.renderer.*;
-import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.renderer.RenderCapabilities;
+import net.gtamps.android.graphics.utils.EGLConfigChooser;
+import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.utils.AndroidLogger;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -62,7 +63,7 @@ public abstract class BasicRenderActivity extends Activity {
         // manifest theme:translucent
         view.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
-        view.setEGLConfigChooser(new BasicEGLConfigChooser());
+        view.setEGLConfigChooser(new EGLConfigChooser());
 
         view.getHolder().setFormat(PixelFormat.RGBA_8888);
 

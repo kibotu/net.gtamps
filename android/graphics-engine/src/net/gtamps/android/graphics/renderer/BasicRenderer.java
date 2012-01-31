@@ -3,14 +3,17 @@ package net.gtamps.android.graphics.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import net.gtamps.android.graphics.graph.scene.SceneNode;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -20,9 +23,12 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     private IRenderAction renderAction;
+    private final ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
     public BasicRenderer(IRenderAction renderAction) {
+        Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
         this.renderAction = renderAction;
+        runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
     }
 
     @Override
@@ -32,6 +38,12 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         RenderCapabilities.setRenderCaps(gl10);
 
         Logger.I(this, "Surface created.");
+
+        // activities on create
+        renderAction.onSurfaceCreated(gl10);
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).onSurfaceCreated(gl10);
+        }
 
         // last best gc call
         final Runtime r = Runtime.getRuntime();
@@ -49,11 +61,24 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         Logger.I(this, "Surface changed.");
         height = height == 0 ? 1 : height;
+
+        // inform camera that surface has changed
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
+
+            // re-allocate and re-validate hardware buffers
+            renderAction.getScenes().get(i).onResume(gl10);
+        }
     }
 
     @Override
     public void onDrawFrame(GL10 gl10) {
         if (!renderAction.isRunning() || renderAction.isPaused()) return;
+
+        // setup on the fly
+        for (int i = 0; i < runtimeSetupQueue.size(); i++) {
+            runtimeSetupQueue.poll().onDrawFrame(gl10);
+        }
 
         // get time difference since last frame
         int delta = getDelta();
@@ -61,13 +86,21 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         // limits frame rate
         limitFrameRate(delta);
 
-        renderAction.onDrawFrame();
+        // activities draw loop
+        renderAction.onDrawFrame(gl10);
+        for (int i = 0; i < renderAction.getScenes().size(); i++) {
+            renderAction.getScenes().get(i).onDrawFrame(gl10);
+        }
 
         // render draw loop
         onDrawFrameHook(gl10);
 
         // update real fps
         updateFPS();
+    }
+
+    final public void addToSetupQueue(@NotNull SceneNode node) {
+        runtimeSetupQueue.add(node);
     }
 
     /**

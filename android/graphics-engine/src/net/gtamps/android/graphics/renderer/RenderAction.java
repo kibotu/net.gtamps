@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.renderer;
 import android.os.SystemClock;
 import net.gtamps.android.graphics.graph.scene.BasicScene;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 
 public abstract class RenderAction implements IRenderAction {
@@ -53,4 +54,15 @@ public abstract class RenderAction implements IRenderAction {
         isRunning = true;
         startTime = SystemClock.elapsedRealtime();
     }
+
+    @Override
+    public void onDrawFrame(GL10 gl10) {
+        if (!isRunning || isPaused) {
+            return;
+        }
+
+        onDrawFrameHook(gl10);
+    }
+
+    protected abstract void onDrawFrameHook(GL10 gl10);
 }

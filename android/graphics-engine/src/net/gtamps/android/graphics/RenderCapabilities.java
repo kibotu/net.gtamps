@@ -158,9 +158,9 @@ public class RenderCapabilities {
             maxLights = i.get(0);
         }
 
-        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion );
+        Logger.i(TAG, "RenderCapabilities - openGLVersion: " + openGLVersion);
         Logger.i(TAG, "RenderCapabilities - " + (supportsOpenGLES ? "With " : "Without ") + "OpenGLES20 support.");
-        if(useVBO) Logger.i(TAG, "RenderCapabilities - Uses VBO");
+        if (useVBO) Logger.i(TAG, "RenderCapabilities - Uses VBO");
         if (openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxTextureUnits: " + maxTextureUnits);
         Logger.i(TAG, "RenderCapabilities - maxTextureSize: " + maxTextureSize);
         if (openGLVersion <= 1.1) Logger.i(TAG, "RenderCapabilities - maxLights: " + maxLights);
