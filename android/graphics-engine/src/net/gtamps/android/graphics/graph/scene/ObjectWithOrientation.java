@@ -17,6 +17,12 @@ import org.jetbrains.annotations.NotNull;
  */
 abstract class ObjectWithOrientation implements ISpatialObject {
 
+
+    /**
+     * Defines if the Object is visible.
+     */
+    private boolean isVisible = true;
+
     /**
      * Gibt an, ob das Objekt eingefroren ist
      */
@@ -343,6 +349,14 @@ abstract class ObjectWithOrientation implements ISpatialObject {
     public void setOrientationMatrix(@NotNull Matrix4 orientation) {
         this.orientation = orientation;
         isDirty = false;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 }
 

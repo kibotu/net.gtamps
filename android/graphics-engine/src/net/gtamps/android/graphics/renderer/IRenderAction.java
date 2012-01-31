@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.renderer;
 
-import net.gtamps.android.graphics.graph.scene.BasicScene;
+import net.gtamps.android.graphics.graph.scene.SceneGraph;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public interface IRenderAction {
      *
      * @return
      */
-    public ArrayList<BasicScene> getScenes();
+    public ArrayList<SceneGraph> getScenes();
 
     /**
      * Stops the action.

@@ -23,10 +23,6 @@ public class Cube extends RenderableNode {
     }
 
     @Override
-    public void onCreate(GL10 gl10) {
-    }
-
-    @Override
     public Mesh getMesh() {
         return mesh;
     }

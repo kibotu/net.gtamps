@@ -1,5 +1,8 @@
 package net.gtamps.android.graphics.graph.scene;
 
+import net.gtamps.shared.Utils.math.Matrix4;
+import org.jetbrains.annotations.NotNull;
+
 import javax.microedition.khronos.opengles.GL10;
 
 /**
@@ -9,12 +12,66 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public abstract class SceneNode extends ObjectWithOrientation {
 
-    public void onDrawFrame(GL10 gl10) {
-        onTransformation(gl10);
+    protected SceneNode parent;
+    protected boolean combinedTransformationDirty = true;
+    protected Matrix4 combinedTransformation = Matrix4.UNIT;
+
+    public SceneNode(@NotNull SceneNode parent) {
+        this.parent = parent;
     }
 
-    private void onTransformation(GL10 gl10) {
+    public SceneNode() {
+    }
+
+    public void setParent(SceneNode parent) {
+        this.parent = parent;
+    }
+
+    public SceneNode getParent() {
+        return parent;
     }
 
     public abstract void onCreate(GL10 gl10);
+
+    protected abstract void onCreateInternal(GL10 gl10);
+
+    protected abstract void onTransformation(GL10 gl10);
+
+    protected void onTransformationInternal(GL10 gl10) {
+
+        // Orientierung neu berechnen
+        if (updateOrientation()) {
+            // Orientierungsmatrix hat sich geändert, combined transformation als dirty markieren
+            combinedTransformationDirty = true;
+        }
+
+        // Wenn combined transformation als dirty markiert, neu berechnen
+        if (combinedTransformationDirty) {
+            updateCombinedTransformation();
+        }
+
+        combinedTransformationDirty = false;
+    }
+
+    /**
+     * Aktualisiert die kombinierte Transformationsmatrix
+     */
+    protected final void updateCombinedTransformation() {
+        // Elternknoten existiert, also "obere" Orientierung mit dieser verheiraten
+        if (parent != null) {
+            combinedTransformation = parent.getCombinedTransformation().mul(orientation);
+        }
+    }
+
+    protected Matrix4 getCombinedTransformation() {
+        return combinedTransformation;
+    }
+
+    public abstract void onDrawFrame(GL10 gl10);
+
+    protected abstract void onDrawFrameInternal(GL10 gl10);
+
+    public abstract void onResume(GL10 gl10);
+
+    protected abstract void onResumeInternal(GL10 gl10);
 }

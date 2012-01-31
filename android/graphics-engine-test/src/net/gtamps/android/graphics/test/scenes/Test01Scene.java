@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import net.gtamps.android.graphics.graph.scene.BasicScene;
+import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.primitives.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
@@ -13,12 +13,12 @@ import javax.microedition.khronos.opengles.GL10;
  * Date: 31/01/12
  * Time: 18:48
  */
-public class Test01Scene extends BasicScene {
+public class Test01Scene extends SceneGraph {
 
     @Override
     public void onSurfaceCreated(GL10 gl10) {
-        setActiveCamera(new Camera(0,0,10,0,0,-1,0,1,0));
-        add(new Light(0,0,10,0,0,-1));
+        setActiveCamera(new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0));
+        add(new Light(0, 0, 10, 0, 0, -1));
         add(new Cube());
         add(new Cube());
         add(new Triangle());

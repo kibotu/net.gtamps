@@ -1,7 +1,7 @@
 package net.gtamps.android.graphics.renderer;
 
 import android.os.SystemClock;
-import net.gtamps.android.graphics.graph.scene.BasicScene;
+import net.gtamps.android.graphics.graph.scene.SceneGraph;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ public abstract class RenderAction implements IRenderAction {
 
     protected boolean isRunning;
     protected boolean isPaused;
-    protected final ArrayList<BasicScene> scenes;
+    protected final ArrayList<SceneGraph> scenes;
     protected long startTime;
 
     public RenderAction() {
-        scenes = new ArrayList<BasicScene>();
+        scenes = new ArrayList<SceneGraph>();
         start();
     }
 
@@ -29,7 +29,7 @@ public abstract class RenderAction implements IRenderAction {
     }
 
     @Override
-    public ArrayList<BasicScene> getScenes() {
+    public ArrayList<SceneGraph> getScenes() {
         return scenes;
     }
 

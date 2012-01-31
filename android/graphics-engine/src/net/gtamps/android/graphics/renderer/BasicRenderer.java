@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
-    private IRenderAction renderAction;
+    protected IRenderAction renderAction;
     private final ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
 
     public BasicRenderer(IRenderAction renderAction) {
