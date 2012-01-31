@@ -1,16 +1,16 @@
-package net.gtamps.android.graphics.test;
+package net.gtamps.android.graphics.test.listview;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
  * Date: 31/01/12
  * Time: 16:23
  */
-public class Model {
+public class ListModel {
 
     private String name;
     private boolean selected;
 
-    public Model(String name) {
+    public ListModel(String name) {
         this.name = name;
         selected = false;
     }
@@ -31,4 +31,8 @@ public class Model {
         this.selected = selected;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
