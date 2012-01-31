@@ -49,4 +49,11 @@ public class MyListActivity extends ListActivity {
         list.get(1).setSelected(true);
         return list;
     }
+<<<<<<< HEAD
+=======
+
+    private ListModel get(String s) {
+        return new ListModel(s);
+    }
+>>>>>>> origin/refactoring3d
 }
