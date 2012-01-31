@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Date: 31/01/12
  * Time: 19:50
  */
-public class SceneGraph {
+class SceneGraph {
 
     private ArrayList<SceneNode> children;
     private Camera activeCamera;
@@ -29,5 +29,9 @@ public class SceneGraph {
 
     public Camera getActiveCamera() {
         return activeCamera;
+    }
+
+    public void remove(SceneNode node) {
+        children.remove(node);
     }
 }

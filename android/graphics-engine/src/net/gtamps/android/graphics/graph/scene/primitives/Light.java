@@ -18,4 +18,8 @@ public class Light extends SceneNode {
     @Override
     public void onDrawFrame(GL10 gl10) {
     }
+
+    @Override
+    public void onCreate(GL10 gl10) {
+    }
 }

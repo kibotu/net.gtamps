@@ -64,7 +64,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
         // inform camera that surface has changed
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
-            renderAction.getScenes().get(i).getScene().getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
+            renderAction.getScenes().get(i).getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
 
             // re-allocate and re-validate hardware buffers
             renderAction.getScenes().get(i).onResume(gl10);
@@ -77,7 +77,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
         // setup on the fly
         for (int i = 0; i < runtimeSetupQueue.size(); i++) {
-            runtimeSetupQueue.poll().onDrawFrame(gl10);
+            runtimeSetupQueue.poll().onCreate(gl10);
         }
 
         // get time difference since last frame

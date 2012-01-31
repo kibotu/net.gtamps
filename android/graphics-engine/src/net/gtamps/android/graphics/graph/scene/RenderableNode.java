@@ -14,6 +14,9 @@ public abstract class RenderableNode extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        super.onDrawFrame(gl10);
+
+
     }
 
     public abstract Mesh getMesh();
