@@ -33,22 +33,8 @@ public class GLES20Renderer extends BasicRenderer {
         super(renderAction);
     }
 
-    float[] lightC = {0.5f, 0.5f, 0.5f, 1f};
-
     @Override
     public void onDrawFrameHook(GL10 unusedGL) {
-        if (!RenderCapabilities.supportsGLES20()) return;
-
-        int program = Shader.Type.PHONG.shader.getProgram();
-
-        // unbound last shader
-        glUseProgram(program);
-        Logger.checkGlError(this, "glUseProgram");
-
-        glUniform3fv(glGetUniformLocation(program, "lightPosition"), 1, renderAction.getScenes().get(0).getActiveCamera().getPosition().asArray(), 0);
-        Logger.checkGlError(this, "lightPosition");
-        glUniform4fv(glGetUniformLocation(program, "lightColor"), 1, lightC, 0);
-        Logger.checkGlError(this, "lightColor");
     }
 
     @Override

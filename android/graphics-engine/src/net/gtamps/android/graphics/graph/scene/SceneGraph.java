@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class SceneGraph {
 
     private Camera activeCamera;
-    private final GroupSceneNode rootNode = new GroupSceneNode();
+    private final RootNode rootNode = new RootNode();
 
     public SceneGraph(Camera camera) {
         setActiveCamera(camera);
@@ -37,7 +37,7 @@ public abstract class SceneGraph {
         Registry.getRenderer().addToSetupQueue(node);
     }
 
-    public GroupSceneNode getRootNode() {
+    public RootNode getRootNode() {
         return rootNode;
     }
 

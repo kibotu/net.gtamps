@@ -10,11 +10,11 @@ import java.util.ArrayList;
  * Date: 31/01/12
  * Time: 23:13
  */
-public class GroupSceneNode extends SceneNode {
+public class RootNode extends SceneNode {
 
     private ArrayList<SceneNode> children;
 
-    public GroupSceneNode() {
+    public RootNode() {
     }
 
     @Override

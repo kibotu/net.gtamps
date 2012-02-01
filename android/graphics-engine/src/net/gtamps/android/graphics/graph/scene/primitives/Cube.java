@@ -2,9 +2,11 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 
 import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.shared.Utils.math.Color4;
 
 import javax.microedition.khronos.opengles.GL10;
+import java.util.ArrayList;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner

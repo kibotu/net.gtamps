@@ -90,11 +90,11 @@ public class Camera extends SceneNode {
         viewport.applyViewPort();
     }
 
-    public void setPerspectiveView(boolean isPerspective) {
-        isPersectiveView = isPerspective;
+    public void setPerspectiveView() {
+        isPersectiveView = true;
     }
 
-    public void setOrthographicView(boolean isOrthographic) {
-        isPersectiveView = !isOrthographic;
+    public void setOrthographicView() {
+        isPersectiveView = false;
     }
 }

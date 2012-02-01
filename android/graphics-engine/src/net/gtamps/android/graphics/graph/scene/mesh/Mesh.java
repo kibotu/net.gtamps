@@ -22,8 +22,6 @@ public class Mesh {
     public Vbo vbo;
 
     public Mesh(int maxFaces, int maxVertices) {
-        Logger.I(this, "new Mesh(" + maxFaces + ", " + maxVertices + ")");
-
         faces = new FaceManager(maxFaces);
         vertices = new VertexManager(maxVertices);
         textures = new TextureManager();

@@ -5,7 +5,6 @@ import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.android.graphics.renderer.RenderState;
 import net.gtamps.android.graphics.utils.Registry;
-import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
  * Date: 31/01/12
  * Time: 20:00
  */
-public abstract class RenderableNode extends GroupSceneNode {
+public abstract class RenderableNode extends RootNode {
 
     protected Material material = Material.DEFAULT;
 
@@ -41,8 +40,8 @@ public abstract class RenderableNode extends GroupSceneNode {
 
     @Override
     final public void onResumeInternal(GL10 gl10) {
-        if(getMesh() != null) getMesh().onResume();
-        for(int i = 0; i < textureSamples.size(); i++) {
+        if (getMesh() != null) getMesh().onResume();
+        for (int i = 0; i < textureSamples.size(); i++) {
             textureSamples.get(i).allocate();
         }
     }
@@ -72,5 +71,13 @@ public abstract class RenderableNode extends GroupSceneNode {
 
     final public ArrayList<TextureSample> getTextureSamples() {
         return textureSamples;
+    }
+
+    final public void addTexture(ArrayList<TextureSample> textureSamples) {
+        this.textureSamples.addAll(textureSamples);
+    }
+
+    final public void removeTexture(ArrayList<TextureSample> textureSamples) {
+        this.textureSamples.removeAll(textureSamples);
     }
 }

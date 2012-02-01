@@ -18,13 +18,30 @@ public class Test01Scene extends SceneGraph {
 
     public Test01Scene() {
         super(new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0));
+//        getActiveCamera().setOrthographicView();
     }
 
     @Override
     public void onSurfaceCreatedInternal(GL10 gl10) {
+
         add(new Light(0, 0, 10, 0, 0, -1));
+
+        // creating objects
         Cube cube = new Cube();
+        cube.setPosition(0,0,-10);
+        Cube cube2 = new Cube();
+        cube2.setPosition(-5,0,-10);
+        Cube cube3 = new Cube();
+        cube3.setPosition(5,0,-10);
+
+        // adding texture
         cube.addTexture(new TextureSample(R.drawable.crate, TextureSample.Type.texture_01));
+        cube2.addTexture(cube.getTextureSamples());
+        cube3.addTexture(cube.getTextureSamples());
+
+        // add to scene
         add(cube);
+        add(cube2);
+        add(cube3);
     }
 }

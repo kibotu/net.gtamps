@@ -8,7 +8,7 @@ package net.gtamps.android.graphics.renderer;
 public class RenderState {
 
     private Shader.Type shader = Shader.Type.PHONG;
-    private boolean hasLighting = false;
+    private boolean hasLighting = true;
 
     public RenderState() {
     }
