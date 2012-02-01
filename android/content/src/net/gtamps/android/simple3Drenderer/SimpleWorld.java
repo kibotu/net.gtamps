@@ -1,45 +1,50 @@
 package net.gtamps.android.simple3Drenderer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
-
-import net.gtamps.android.R;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.IWorld;
+import net.gtamps.android.simple3Drenderer.shapes.AbstractShape;
 import net.gtamps.android.simple3Drenderer.shapes.TexturedCube;
 import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
-import net.gtamps.shared.Utils.Logger;
+import net.gtamps.android.simple3Drenderer.textures.TileBitmapBuilder;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.level.Tile;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
 
 public class SimpleWorld implements IWorld {
 
-	private Bitmap car1bitmap;
-	private Bitmap car2bitmap;
-	private Bitmap characterdeadbitmap;
-	private Bitmap characterbitmap;
-	private HashMap<String, Bitmap> tileBitmapLookup = new HashMap<String, Bitmap>();
-	private Bitmap defaulttile;
+	private TexturedQuad character1;
+	private TexturedQuad car1;
+	private AbstractShape defaultshape;
 	private AssetManager assetManager;
 
 	SimpleWorld(Context context) {
-		car1bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.car1_90);
-		car2bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.car2);
-		characterbitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.char1_90);
-		characterdeadbitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.char1dead);
-		defaulttile = BitmapFactory.decodeResource(context.getResources(), R.drawable.defaulttile);
+		// car1bitmap = BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.car1_90);
+		// car2bitmap = BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.car2);
+		// characterbitmap =
+		// BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.char1_90);
+		// characterdeadbitmap =
+		// BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.char1dead);
+		// defaulttile = BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.defaulttile);
 		assetManager = context.getAssets();
+
+		TileBitmapBuilder tbb = new TileBitmapBuilder(assetManager, "entities");
+		tbb.putIfAbsent("char1_90.png");
+		tbb.putIfAbsent("car1_90.png");
+		StaticTextureHolder.add(tbb.generateTextureMapper());
+		character1 = new TexturedQuad("char1_90.png", 0.3f, 0.3f);
+		car1 = new TexturedQuad("car1_90.png", 1.0f, 0.5f);
+		defaultshape = new TexturedQuad("car1_90.png");
 	}
 
 	private HashMap<Integer, AbstractEntityView> fakeEntityMap = new HashMap<Integer, AbstractEntityView>();
@@ -92,11 +97,13 @@ public class SimpleWorld implements IWorld {
 	@Override
 	public SimpleEntityView createEntityView(Entity e) {
 		if (e.getName().toUpperCase().equals("CAR")) {
-			return new SimpleEntityView(e, car1bitmap);
+			return new SimpleEntityView(e, car1);
 		} else if (e.getName().toUpperCase().equals("HUMAN")) {
-			return new SimpleEntityView(e, characterbitmap);
+			return new SimpleEntityView(e, character1);
+		} else if (e.getName().toUpperCase().equals("SPAWNPOINT")) {
+			return new SimpleEntityView(e, defaultshape);
 		} else {
-			return new SimpleEntityView(e, null);
+			return new SimpleEntityView(e, defaultshape);
 		}
 	}
 
@@ -111,40 +118,33 @@ public class SimpleWorld implements IWorld {
 			this.cubeTileMap = new LinkedList<CubeTile>();
 		}
 		synchronized (this) {
+			TileBitmapBuilder tbb = new TileBitmapBuilder(assetManager, "tiles");
 			for (Tile t : tileMap) {
-				if (!tileBitmapLookup.containsKey(t.getBitmap())) {
-					Bitmap bitmapLoader = null;
-					try {
-						bitmapLoader = BitmapFactory.decodeStream(assetManager.open("tiles/" + t.getBitmap()));
-					} catch (IOException e) {
-						Logger.e(this, "unable to load tile: " + t.getBitmap());
-					}
-					if (bitmapLoader != null) {
-						tileBitmapLookup.put(t.getBitmap(), bitmapLoader);
-						Logger.e(this, "Sucessfully loaded tile: " + t.getBitmap());
-					}
-				}
-				if(t.getHeight()==0){
-					this.cubeTileMap.add(new CubeTile(t, new TexturedQuad(getTileBitmap(t.getBitmap()))));
+				tbb.putIfAbsent(t.getBitmap());
+			}
+			StaticTextureHolder.add(tbb.generateTextureMapper());
+			// now that all textures have been loaded, create the corresponding
+			// 3d objects
+			for (Tile t : tileMap) {
+				if (t.getHeight() == 0) {
+					this.cubeTileMap.add(new CubeTile(t, new TexturedQuad(t.getBitmap())));
 				} else {
-					this.cubeTileMap.add(new CubeTile(t, new TexturedCube(getTileBitmap(t.getBitmap()))));
+					this.cubeTileMap.add(new CubeTile(t, new TexturedCube(t.getBitmap())));
 				}
 			}
 		}
 		// this.tileMap = tileMap;
 	}
 
-	// preallocate
-	Bitmap returnBitmap = null;
 	private int fragCount;
 
-	public Bitmap getTileBitmap(String bitmap) {
-		returnBitmap = tileBitmapLookup.get(bitmap);
-		if (returnBitmap == null) {
-			return defaulttile;
-		}
-		return returnBitmap;
-	}
+	/*
+	 * // preallocate Bitmap returnBitmap = null;
+	 * 
+	 * public Bitmap getTileBitmap(String bitmap) { returnBitmap =
+	 * tileBitmapLookup.get(bitmap); if (returnBitmap == null) { return
+	 * defaulttile; } return returnBitmap; }
+	 */
 
 	@Override
 	public void remove(int targetUid) {
@@ -153,14 +153,17 @@ public class SimpleWorld implements IWorld {
 	}
 
 	public void ensureEntityAppearance() {
-		/*
-		 * for (AbstractEntityView aev : getAllEntities()) { SimpleEntityView
-		 * fev = (SimpleEntityView) aev; if (!fev.hasBitmap()) { if
-		 * (aev.entity.getName().equals("HUMAN")) {
-		 * fev.setBitmap(characterbitmap); } else if
-		 * (aev.entity.getName().equals("CAR")) { fev.setBitmap(car1bitmap); } }
-		 * }
-		 */
+		for (AbstractEntityView aev : getAllEntities()) {
+			SimpleEntityView fev = (SimpleEntityView) aev;
+			if (!fev.hasBitmap()) {
+				if (aev.entity.getName().equals("HUMAN")) {
+					fev.set3DShape(this.character1);
+				} else if (aev.entity.getName().equals("CAR")) {
+					fev.set3DShape(this.car1);
+				}
+			}
+		}
+
 	}
 
 	public LinkedList<CubeTile> getCubeTileMap() {

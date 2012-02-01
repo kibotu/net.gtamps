@@ -1,17 +1,10 @@
 package net.gtamps.android.simple3Drenderer;
 
-import java.io.IOException;
-
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.Context;
-import android.graphics.BitmapFactory;
-
-import net.gtamps.android.R;
 import net.gtamps.android.core.net.AbstractEntityView;
-import net.gtamps.android.fakerenderer.FakeEntityView;
-import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import net.gtamps.shared.Utils.Logger;
+import android.content.Context;
 
 public class SimpleCamera {
 
@@ -24,7 +17,8 @@ public class SimpleCamera {
 
 	private static final float CAMERA_SPEED = 5;
 
-	private static final float CAMERA_FOV = 300;
+//	private static final float CAMERA_FOV = 300;
+	private static final float ENTITY_GROUND_DISTANCE = 1.3f;
 
 	private float x = 0f;
 	private float y = 0f;
@@ -32,21 +26,15 @@ public class SimpleCamera {
 	private float rot = 0f;
 
 	private SimpleWorld world;
-	private TexturedQuad human;
-	private TexturedQuad car;
 
 	SimpleCamera(SimpleWorld world, Context context) {
 		this.world = world;
-		try {
-			this.human = new TexturedQuad(BitmapFactory.decodeStream(context.getAssets().open("char1_90.png")));
+
+		/*try {
+//			this.car = new TexturedQuad(BitmapFactory.decodeStream(context.getAssets().open("car1_90.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		try {
-			this.car = new TexturedQuad(BitmapFactory.decodeStream(context.getAssets().open("car1_90.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		}*/
 	}
 
 	public void setGL(GL10 gl) {
@@ -65,7 +53,8 @@ public class SimpleCamera {
 			xtilepos = t.getX() - this.x;
 			ytilepos = -t.getY() + this.y;
 			ztilepos = t.getHeight() - this.z;
-
+			gl.glRotatef(this.rot, 0, 0, 1);
+			
 			if (world != null) {
 				gl.glTranslatef(xtilepos, ytilepos, ztilepos);
 				gl.glRotatef(-t.getRotation(), 0, 0, 1);
@@ -86,25 +75,44 @@ public class SimpleCamera {
 	}
 
 	public void renderEntityView(SimpleEntityView ev, GL10 gl) {
-		gl.glPushMatrix();
-
-		gl.glTranslatef(ev.entity.x.value() / (WORLD_TO_GRAPHICS_FACTOR) - this.x, -ev.entity.y.value()
-				/ (WORLD_TO_GRAPHICS_FACTOR) + this.y, -this.z);
-		// matrix.postTranslate(ev.getWidth() / 2, ev.getHeight() / 2);
-		if (ev.hasBitmap()) {
+		
+		if (gl != null) {
 			gl.glPushMatrix();
-			gl.glTranslatef(-ev.getWidth() / (2 * WORLD_TO_GRAPHICS_FACTOR), -ev.getHeight()
-					/ (2 * WORLD_TO_GRAPHICS_FACTOR), 0);
-			gl.glRotatef(ev.entity.rota.value(), 0, 0, 1);
-			human.draw(gl);
+			xtilepos = ev.getX() - this.x;
+			ytilepos = -ev.getY() + this.y;
+			ztilepos = ENTITY_GROUND_DISTANCE - this.z;
+			gl.glRotatef(this.rot, 0, 0, 1);
+
+			if (world != null) {
+				gl.glTranslatef(xtilepos, ytilepos, ztilepos);
+				gl.glRotatef(-ev.getRotation(), 0, 0, 1);
+				ev.draw(gl);
+			} else {
+				Logger.e(this, "World is not set!");
+			}
 			gl.glPopMatrix();
-		} else if (ev.entity.getName().equals("SPAWNPOINT")) {
-			car.bindTexture(gl);
-			car.draw(gl);
 		} else {
-			car.bindTexture(gl);
-			car.draw(gl);
+			Logger.e(this, "GL Context is not set");
 		}
-		gl.glPopMatrix();
+		
+//		gl.glPushMatrix();
+//
+//		gl.glTranslatef(ev.entity.x.value() / (WORLD_TO_GRAPHICS_FACTOR) - this.x, -ev.entity.y.value()
+//				/ (WORLD_TO_GRAPHICS_FACTOR) + this.y, -this.z);
+//		if (ev.hasBitmap()) {
+//			gl.glPushMatrix();
+//			gl.glTranslatef(-ev.getWidth() / (2 * WORLD_TO_GRAPHICS_FACTOR), -ev.getHeight()
+//					/ (2 * WORLD_TO_GRAPHICS_FACTOR), 0);
+//			gl.glRotatef(ev.entity.rota.value(), 0, 0, 1);
+//			human.draw(gl);
+//			gl.glPopMatrix();
+//		} else if (ev.entity.getName().equals("SPAWNPOINT")) {
+//			car.bindTexture(gl);
+//			car.draw(gl);
+//		} else {
+//			car.bindTexture(gl);
+//			car.draw(gl);
+//		}
+//		gl.glPopMatrix();
 	}
 }

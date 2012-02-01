@@ -2,13 +2,8 @@ package net.gtamps.android.simple3Drenderer.shapes;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
-
-import android.graphics.Bitmap;
-import android.opengl.GLUtils;
 
 /*
  * A cube with texture. 
@@ -24,16 +19,17 @@ public class TexturedCube extends AbstractShape {
 			1.0f, 1.0f, 0.0f // 3. right-top-front
 	};
 
-	float[] texCoords = { // Texture coords for the above face (NEW)
+/*= { // Texture coords for the above face (NEW)
 	0.0f, 1.0f, // A. left-bottom (NEW)
 			1.0f, 1.0f, // B. right-bottom (NEW)
 			0.0f, 0.0f, // C. left-top (NEW)
 			1.0f, 0.0f // D. right-top (NEW)
-	};
+	};*/
 
 	// Constructor - Set up the buffers
-	public TexturedCube(Bitmap bitmap) {
+	public TexturedCube(String bitmap) {
 		super(bitmap);
+		
 		// Setup vertex-array buffer. Vertices in float. An float has 4 bytes
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
 		vbb.order(ByteOrder.nativeOrder()); // Use native byte order
@@ -43,14 +39,14 @@ public class TexturedCube extends AbstractShape {
 
 		// Setup texture-coords-array buffer, in float. An float has 4 bytes
 		// (NEW)
-		ByteBuffer tbb = ByteBuffer.allocateDirect(texCoords.length * 4);
-		tbb.order(ByteOrder.nativeOrder());
-		texBuffer = tbb.asFloatBuffer();
-		texBuffer.put(texCoords);
-		texBuffer.position(0);
+		
+//		Logger.i(this, "Hello. I'm a Cube. My texture is "+this.texture+". Also, i would like to show you some floats.");
+//		for(float f : this.texCoords){
+//			Logger.i(this, f);
+//		}
+		
 	}
 
-	// Draw the shape
 	public void draw(GL10 gl) {
 		bindTexture(gl);
 		gl.glFrontFace(GL10.GL_CCW); // Front face in counter-clockwise
@@ -61,11 +57,7 @@ public class TexturedCube extends AbstractShape {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY); // Enable
-																// texture-coords-array
-																// (NEW)
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuffer); // Define
-																// texture-coords
-																// buffer (NEW)
 
 		// front
 		gl.glPushMatrix();

@@ -22,7 +22,7 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	private final byte[] buf = new byte[Config.SERIALIZER_BUFFER_SIZE];
 
-	private static boolean useStringConstants = false;
+	private static boolean useStringConstants = true;
 	
 	/*
 	 * This array represents the "headers" of all byte wise serialized objects
