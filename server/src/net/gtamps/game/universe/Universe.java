@@ -2,6 +2,7 @@ package net.gtamps.game.universe;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import net.gtamps.game.entity.EntityManager;
 import net.gtamps.game.event.EventManager;
@@ -26,6 +27,8 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 	private static final long serialVersionUID = 1821222727619509975L;
 
 	private transient GameEventDispatcher eventRoot = new GameEventDispatcher();
+
+	private final Queue<GameEvent> eventQueue = new LinkedList<GameEvent>();
 
 	private final String name;
 	private final int width;
@@ -129,8 +132,13 @@ public class Universe implements IGameEventListener, IGameEventDispatcher {
 
 	@Override
 	public void dispatchEvent(final GameEvent event) {
-		eventRoot.dispatchEvent(event);
+		eventQueue.offer(event);
+	}
 
+	public void processEvents() {
+		while (!eventQueue.isEmpty()) {
+			eventRoot.dispatchEvent(eventQueue.poll());
+		}
 	}
 
 	@Override

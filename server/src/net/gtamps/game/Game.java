@@ -117,14 +117,14 @@ public class Game implements IGame, Runnable {
 		}
 
 
-		//		universe.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, world));
+		universe.dispatchEvent(new GameEvent(EventType.SESSION_STARTS, NullGameObject.DUMMY));
 		while (run) {
 			gameTime.startCycle();
 			doCycle();
 			gameTime.endCycle();
 			sleepIfCycleTimeRemaining();
 		}
-		//		universe.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, world));
+		universe.dispatchEvent(new GameEvent(EventType.SESSION_ENDS, NullGameObject.DUMMY));
 
 		if (GTAMultiplayerServer.DEBUG) {
 			DebugGameBridge.instance.setWorld(null);
@@ -148,6 +148,7 @@ public class Game implements IGame, Runnable {
 		//			updates = 0;
 		//		}
 
+		universe.processEvents();
 		processCommandQueue();
 		processRequestQueue();
 	}
