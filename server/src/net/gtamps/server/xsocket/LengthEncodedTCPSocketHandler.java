@@ -46,6 +46,17 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 		this.serializer = serializer;
 	}
 
+	private S createNewSerializerByReflection() {
+		try {
+			return (S) serializer.getClass().newInstance();
+		} catch (final InstantiationException e) {
+			e.printStackTrace();
+		} catch (final IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private byte readByte(final INonBlockingConnection nbc) {
 		Byte b = null;
 		while (b == null) {
@@ -163,7 +174,7 @@ public class LengthEncodedTCPSocketHandler<S extends ISerializer> implements ISo
 		final String id = nbc.getId();
 		System.out.println("New Connection: " + id);
 		GUILogger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-		abstractConnections.put(id, new Connection<LengthEncodedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
+		abstractConnections.put(id, new Connection<LengthEncodedTCPSocketHandler<S>>(nbc.getId(), this, createNewSerializerByReflection()));
 		actualConnections.put(id, nbc);
 		return true;
 	}
