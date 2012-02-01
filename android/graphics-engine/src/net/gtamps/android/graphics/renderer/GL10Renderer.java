@@ -27,6 +27,10 @@ public class GL10Renderer extends BasicRenderer {
     }
 
     @Override
+    protected void onSurfaceChangedHook(GL10 gl10, int width, int height) {
+    }
+
+    @Override
     public int allocTexture(Bitmap texture, boolean generateMipMap) {
         return 0;
     }

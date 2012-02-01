@@ -25,11 +25,11 @@ public class ViewPort {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.aspectRatio = (float)width / height;
+        this.aspectRatio = (float) width / height;
     }
 
     public void applyViewPort() {
-        Registry.getRenderer().setViewPort(x, y, width,height);
+        Registry.getRenderer().setViewPort(x, y, width, height);
         Logger.i(this, this.toString());
     }
 
@@ -40,7 +40,7 @@ public class ViewPort {
     @Override
     public String toString() {
         return "ViewPort[" +
-                 + x +
+                +x +
                 "|" + y +
                 "|" + width +
                 "|" + height +

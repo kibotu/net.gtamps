@@ -5,7 +5,6 @@ import net.gtamps.android.graphics.utils.Registry;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.util.ArrayList;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner

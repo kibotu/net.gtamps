@@ -63,7 +63,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
         }
     }
 
-    protected Matrix4 getCombinedTransformation() {
+    public Matrix4 getCombinedTransformation() {
         return combinedTransformation;
     }
 

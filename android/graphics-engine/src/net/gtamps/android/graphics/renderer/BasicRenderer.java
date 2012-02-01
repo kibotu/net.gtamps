@@ -3,7 +3,9 @@ package net.gtamps.android.graphics.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.SceneNode;
+import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -13,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -62,6 +66,8 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         Logger.I(this, "Surface changed.");
         height = height == 0 ? 1 : height;
 
+        onSurfaceChangedHook(gl10, width, height);
+
         // inform camera that surface has changed
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
             renderAction.getScenes().get(i).getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
@@ -99,6 +105,11 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         updateFPS();
     }
 
+    /**
+     * Runs a node's onCreate() method once in next render loop.
+     *
+     * @param node
+     */
     final public void addToSetupQueue(@NotNull SceneNode node) {
         runtimeSetupQueue.add(node);
     }
@@ -176,6 +187,16 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      */
     protected abstract void onSurfaceCreatedHook(GL10 gl10, EGLConfig eglConfig);
 
+
+    /**
+     * Call back method for onSurfaceChanged()
+     *
+     * @param gl10
+     * @param width
+     * @param height
+     */
+    protected abstract void onSurfaceChangedHook(GL10 gl10, int width, int height);
+
     /**
      * Uploads a texture to hardware.
      *
@@ -223,4 +244,24 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      * @param frustum
      */
     public abstract void applyCamera(Frustum frustum);
+
+    /**
+     * Actually draws a node.
+     *
+     * @param node
+     */
+    public abstract void draw(RenderableNode node);
+
+    /**
+     * Allocates hardwarebuffer.
+     *
+     * @param vertexBuffer
+     * @param normalBuffer
+     * @param colorBuffer
+     * @param uvBuffer
+     * @param indexBuffer
+     *
+     * @return allocated vbo
+     */
+    public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer);
 }

@@ -2,7 +2,7 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 
 import net.gtamps.android.graphics.graph.scene.SceneNode;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
-import net.gtamps.shared.Utils.Logger;
+import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.math.Frustum;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +37,7 @@ public class Camera extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        Registry.getRenderer().applyCamera(frustum);
     }
 
     @Override

@@ -15,20 +15,30 @@ public class Triangle extends RenderableNode {
     private static Mesh mesh;
 
     public Triangle() {
-        this(3, 1);
-    }
-
-    public Triangle(int faces, int maxVertices) {
-        if(mesh == null) mesh = new Mesh(faces,maxVertices);
-    }
-
-    @Override
-    public void onCreate(GL10 gl10) {
     }
 
     @Override
     public Mesh getMesh() {
         return mesh;
+    }
+
+    @Override
+    public void onCreateInternal(GL10 gl10) {
+        if (mesh != null) return;
+
+        mesh = new Mesh(3, 1);
+    }
+
+    @Override
+    protected void onDrawFrameInternal(GL10 gl10) {
+    }
+
+    @Override
+    public void onResumeInternal(GL10 gl10) {
+    }
+
+    @Override
+    protected void onTransformationInternal(GL10 gl10) {
     }
 }
 
