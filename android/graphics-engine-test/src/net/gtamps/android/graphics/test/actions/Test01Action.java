@@ -22,10 +22,11 @@ public class Test01Action extends RenderAction {
 
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
-        rot += 0.03;
+        rot += 0.01;
         RootNode rootNode = getScenes().get(0).getRootNode();
         for (int i = 0; i < rootNode.size(); i++) {
-            rootNode.getChild(i).setRotation(rot, rot, rot);
+            //rootNode.getChild(i).setRotation(rot, rot, rot);
+            rootNode.setRotation(rot,rot,rot);
         }
     }
 }

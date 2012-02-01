@@ -24,7 +24,7 @@ public class MyListActivity extends ListActivity {
 
         // autostart
 //        startActivity(PACKAGE_NAME, "Test01Activity");
-        startActivity(PACKAGE_NAME, "Test02Activity");
+//        startActivity(PACKAGE_NAME, "Test02Activity");
 //        startActivity(PACKAGE_NAME, "Test03Activity");
     }
 

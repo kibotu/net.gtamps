@@ -31,16 +31,6 @@ public class RootNode extends SceneNode {
     }
 
     @Override
-    final protected void onTransformation(GL10 gl10) {
-        super.onTransformation(gl10);
-
-        for (int i = 0; i < size(); ++i) {
-            children.get(i).onTransformation(gl10);
-        }
-        onTransformationInternal(gl10);
-    }
-
-    @Override
     final public void onCreate(GL10 gl10) {
         for (int i = 0; i < size(); ++i) {
             children.get(i).onCreate(gl10);
@@ -91,7 +81,10 @@ public class RootNode extends SceneNode {
     }
 
     @Override
-    protected void onTransformationInternal(GL10 gl10) {
-        // do nothing
+    protected void onTransformationInternal(GL10 gl10, boolean isDirty) {
+        for (int i = 0; i < size(); ++i) {
+            if(isDirty)children.get(i).forceCombinedOrientationDirty();
+            children.get(i).onTransformation(gl10);
+        }
     }
 }

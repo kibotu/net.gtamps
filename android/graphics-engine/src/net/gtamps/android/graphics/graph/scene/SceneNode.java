@@ -15,7 +15,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
 
     protected SceneNode parent;
     protected boolean combinedTransformationDirty = true;
-    protected Matrix4 combinedTransformation = Matrix4.UNIT;
+    protected Matrix4 combinedTransformation = Matrix4.createNew();
 
     public SceneNode(@NotNull SceneNode parent) {
         this.parent = parent;
@@ -39,27 +39,35 @@ public abstract class SceneNode extends ObjectWithOrientation {
     protected void onTransformation(GL10 gl10) {
 
         // Orientierung neu berechnen
-        if (updateOrientation()) {
-            // Orientierungsmatrix hat sich geändert, combined transformation als dirty markieren
+        if(updateOrientation()) {
             combinedTransformationDirty = true;
         }
 
         // Wenn combined transformation als dirty markiert, neu berechnen
         if (combinedTransformationDirty) {
             updateCombinedTransformation();
-            combinedTransformationDirty = false;
         }
+
+        onTransformationInternal(gl10, combinedTransformationDirty);
+
+        combinedTransformationDirty = false;
     }
 
-    protected abstract void onTransformationInternal(GL10 gl10);
+    private boolean hasParent() {
+        return parent != null;
+    }
+
+    protected abstract void onTransformationInternal(GL10 gl10, boolean isDirty);
 
     /**
      * Aktualisiert die kombinierte Transformationsmatrix
      */
     protected final void updateCombinedTransformation() {
         // Elternknoten existiert, also "obere" Orientierung mit dieser verheiraten
-        if (parent != null) {
-            combinedTransformation = parent.getCombinedTransformation().mul(orientation);
+        if (hasParent()) {
+            Matrix4 comb = parent.getCombinedTransformation().mul(orientation);
+            combinedTransformation.set(comb);
+            comb.recycle();
         }
     }
 
@@ -74,4 +82,8 @@ public abstract class SceneNode extends ObjectWithOrientation {
     public abstract void onResume(GL10 gl10);
 
     protected abstract void onResumeInternal(GL10 gl10);
+
+    public void forceCombinedOrientationDirty() {
+        combinedTransformationDirty = true;
+    }
 }

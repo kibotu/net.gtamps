@@ -49,9 +49,6 @@ public abstract class RenderableNode extends RootNode {
         }
     }
 
-    @Override
-    protected abstract void onTransformationInternal(GL10 gl10);
-
     final public Material getMaterial() {
         return material;
     }

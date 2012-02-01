@@ -63,15 +63,15 @@ public class Camera extends SceneNode {
     }
 
     @Override
-    protected void onTransformationInternal(GL10 gl10) {
-    }
-
-    @Override
     public void onCreate(GL10 gl10) {
     }
 
     @Override
     protected void onCreateInternal(GL10 gl10) {
+    }
+
+    @Override
+    protected void onTransformationInternal(GL10 gl10, boolean isDirty) {
     }
 
     @Override

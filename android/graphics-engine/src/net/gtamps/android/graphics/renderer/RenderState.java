@@ -33,4 +33,8 @@ public class RenderState {
     public boolean isDoubleSided() {
         return isDoubleSided;
     }
+
+    public void setLighting(boolean enableLighting) {
+        hasLighting = enableLighting;
+    }
 }

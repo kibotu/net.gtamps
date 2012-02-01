@@ -6,7 +6,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.android.graphics.graph.scene.primitives.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
-import net.gtamps.android.graphics.graph.scene.primitives.Triangle;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -18,7 +18,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Test02Scene extends SceneGraph {
 
     public Test02Scene() {
-        super(new Camera(0, 0, 30, 0, 0, -1, 0, 1, 0));
+        super(new Camera(0, 0, 15, 0, 0, -1, 0, 1, 0));
     }
 
     @Override
@@ -30,16 +30,22 @@ public class Test02Scene extends SceneGraph {
 
         float scale = 0.3f;
 
-        for(int x = -5; x < 5; x++) {
-            for(int y = -5; y < 5; y++) {
-                for(int z = -5; z < 5; z++) {
-                    Cube cube = new Cube();
-                    cube.setPosition(x, y, z);
-                    cube.setScaling(scale,scale,scale);
-                    cube.addTexture(crateTexture);
-                    add(cube);
+        int counter = 0;
+
+        for (int x = -3; x < 3; x++) {
+            for (int y = -3; y < 3; y++) {
+                for (int z = -3; z < 3; z++) {
+                    Cube obj = new Cube();
+                    obj.setPosition(x, y, z);
+//                    obj.getRenderState().setLighting(false);
+                    obj.setScaling(scale, scale, scale);
+                    obj.addTexture(crateTexture);
+                    add(obj);
+                    counter++;
                 }
             }
         }
+
+        Logger.V(this, counter + " Cubes created.");
     }
 }

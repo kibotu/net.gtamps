@@ -7,7 +7,6 @@ varying vec3 eyedirV;
 varying vec3 lightdirV;
 varying vec2 uvV;
 
-uniform int textureunits;
 uniform sampler2D texture_01;
 uniform sampler2D texture_02;
 uniform sampler2D texture_03;

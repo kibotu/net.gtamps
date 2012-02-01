@@ -10,7 +10,6 @@ import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
-import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -37,7 +36,6 @@ public class GLES20Renderer extends BasicRenderer {
 
     @Override
     public void onDrawFrameHook(GL10 unusedGL) {
-        Logger.checkGlError(this, "glUseProgram");
         glUseProgram(activeShaderProgram);
     }
 
@@ -106,18 +104,9 @@ public class GLES20Renderer extends BasicRenderer {
 
         Matrix4 viewMatrix = frustum.getViewMatrix();
         Matrix4.setLookAt(viewMatrix, frustum.getPosition(), frustum.getTarget(), frustum.getUp());
-
-        // send to the shader
         glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "projectionMatrix"), 1, false, frustum.getProjectionMatrix().values, 0);
-        Logger.checkGlError(this, "projectionMatrix");
-
-        // send to the shader
         glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "normalMatrix"), 1, false, frustum.getNormalMatrix().values, 0);
-        Logger.checkGlError(this, "normalMatrix");
-
-        // eye view matrix
         glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "viewMatrix"), 1, false, viewMatrix.values, 0);
-        Logger.checkGlError(this, "viewMatrix");
     }
 
     @Override
@@ -133,45 +122,36 @@ public class GLES20Renderer extends BasicRenderer {
         activeShaderProgram = node.getRenderState().getShader().getProgram();
         RenderState renderState = node.getRenderState();
 
-        if(renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
+        // back face culling
+        if (renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
         else glDisable(GL_CULL_FACE);
 
         // send to the shader
         glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "modelMatrix"), 1, false, node.getCombinedTransformation().values, 0);
-        Logger.checkGlError(this, "modelMatrix");
 
         // vertices
         glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexPosition"), 3, GL_FLOAT, false, 0, mesh.vertices.getVertices().getBuffer());
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexPosition"));
-        Logger.checkGlError(this, "vertexPosition");
 
         // normals
         glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexNormal"), 3, GL_FLOAT, false, 0, mesh.vertices.getNormals().getBuffer());
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexNormal"));
-        Logger.checkGlError(this, "vertexNormal");
 
         // colors
         glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexColor"), 4, GL_FLOAT, false, 0, mesh.vertices.getColors().getBuffer());
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexColor"));
-        Logger.checkGlError(this, "vertexColor");
 
         // material
         Material material = node.getMaterial();
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.emission"), 1, material.getEmission().asArray(), 0);
-        Logger.checkGlError(this, "material.emission");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.ambient"), 1, material.getAmbient().asArray(), 0);
-        Logger.checkGlError(this, "material.ambient");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.diffuse"), 1, material.getDiffuse().asArray(), 0);
-        Logger.checkGlError(this, "material.diffuse");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.specular"), 1, material.getSpecular().asArray(), 0);
-        Logger.checkGlError(this, "material.specular");
         glUniform1f(glGetUniformLocation(activeShaderProgram, "material.shininess"), material.getShininess());
-        Logger.checkGlError(this, "material.shininess");
 
         // multiple textures
         if (!node.getTextureSamples().isEmpty()) {
             glUniform1i(glGetUniformLocation(activeShaderProgram, "hasTextures"), 2);
-            Logger.checkGlError(this, "hasTextures");
             if (node.getTextureSamples().size() > 8)
                 Logger.V(this, node.getClass().getSimpleName() + " has exceeded it's max texture limit : " + node.getTextureSamples().size() + "/" + RenderCapabilities.maxTextureUnits());
             for (int i = 0; i < node.getTextureSamples().size(); i++) {
@@ -185,19 +165,15 @@ public class GLES20Renderer extends BasicRenderer {
             // uvs
             glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexUv"), 2, GL_FLOAT, false, 0, mesh.vertices.getUvs().getBuffer());
             glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexUv"));
-            Logger.checkGlError(this, "vertexUv");
         } else {
             glUniform1i(glGetUniformLocation(activeShaderProgram, "hasTextures"), 0);
-            Logger.checkGlError(this, "hasTextures");
         }
 
         // uses lightning
         glUniform1i(glGetUniformLocation(activeShaderProgram, "hasLighting"), renderState.hasLighting() ? 1 : 0);
-        Logger.checkGlError(this, "hasLighting");
 
         // Draw with indices
         glDrawElements(GL_TRIANGLES, mesh.faces.getBuffer().capacity(), GL_UNSIGNED_SHORT, mesh.faces.getBuffer());
-        Logger.checkGlError(this, "glDrawElements");
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -210,48 +186,38 @@ public class GLES20Renderer extends BasicRenderer {
         activeShaderProgram = node.getRenderState().getShader().getProgram();
         RenderState renderState = node.getRenderState();
 
-        if(renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
+        if (renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
         else glDisable(GL_CULL_FACE);
-        
+
         // send to the shader
         glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "modelMatrix"), 1, false, node.getCombinedTransformation().values, 0);
-        Logger.checkGlError(this, "modelMatrix");
 
         // vertices
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexPosition"), 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexPosition"));
-        Logger.checkGlError(this, "vertexPosition");
 
         // normals
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexNormal"), 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexNormal"));
-        Logger.checkGlError(this, "vertexNormal");
 
         // colors
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.colorBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexColor"), 4, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexColor"));
-        Logger.checkGlError(this, "vertexColor");
 
         // material
         Material material = node.getMaterial();
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.emission"), 1, material.getEmission().asArray(), 0);
-        Logger.checkGlError(this, "material.emission");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.ambient"), 1, material.getAmbient().asArray(), 0);
-        Logger.checkGlError(this, "material.ambient");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.diffuse"), 1, material.getDiffuse().asArray(), 0);
-        Logger.checkGlError(this, "material.diffuse");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.specular"), 1, material.getSpecular().asArray(), 0);
-        Logger.checkGlError(this, "material.specular");
         glUniform1f(glGetUniformLocation(activeShaderProgram, "material.shininess"), material.getShininess());
-        Logger.checkGlError(this, "material.shininess");
 
         // multiple textures
         if (!node.getTextureSamples().isEmpty()) {
             glUniform1i(glGetUniformLocation(activeShaderProgram, "hasTextures"), 2);
-            Logger.checkGlError(this, "hasTextures");
             if (node.getTextureSamples().size() > 8)
                 Logger.V(this, node.getClass().getSimpleName() + " has exceeded it's max texture limit : " + node.getTextureSamples().size() + "/" + RenderCapabilities.maxTextureUnits());
             for (int i = 0; i < node.getTextureSamples().size(); i++) {
@@ -266,20 +232,16 @@ public class GLES20Renderer extends BasicRenderer {
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.uvBufferID);
             GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexUv"), 2, GL_FLOAT, false, 0, 0);
             glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexUv"));
-            Logger.checkGlError(this, "vertexUv");
         } else {
             glUniform1i(glGetUniformLocation(activeShaderProgram, "hasTextures"), 0);
-            Logger.checkGlError(this, "hasTextures");
         }
 
         // uses lightning
         glUniform1i(glGetUniformLocation(activeShaderProgram, "hasLighting"), renderState.hasLighting() ? 1 : 0);
-        Logger.checkGlError(this, "hasLighting");
 
         // Draw with indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.indexBufferID);
         GLES20.glDrawElements(GL_TRIANGLES, mesh.faces.getBuffer().capacity(), GL_UNSIGNED_SHORT, 0);
-        Logger.checkGlError(this, "glDrawElements");
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -326,7 +288,7 @@ public class GLES20Renderer extends BasicRenderer {
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
+
         Logger.i(this, vbo + " Vbo successfully allocated.");
 
         return vbo;
@@ -335,8 +297,6 @@ public class GLES20Renderer extends BasicRenderer {
     @Override
     public void applyLight(Light light) {
         glUniform3fv(glGetUniformLocation(activeShaderProgram, "lightPosition"), 1, light.getPosition().asArray(), 0);
-        Logger.checkGlError(this, "lightPosition");
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "lightColor"), 1, light.getColor(), 0);
-        Logger.checkGlError(this, "lightColor");
     }
 }

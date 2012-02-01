@@ -34,7 +34,7 @@ public class Light extends SceneNode {
     }
 
     @Override
-    protected void onTransformationInternal(GL10 gl10) {
+    protected void onTransformationInternal(GL10 gl10, boolean isDirty) {
     }
 
     @Override

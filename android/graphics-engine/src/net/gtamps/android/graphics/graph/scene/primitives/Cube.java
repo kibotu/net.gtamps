@@ -83,8 +83,4 @@ public class Cube extends RenderableNode {
     @Override
     protected void onDrawFrameInternal(GL10 gl10) {
     }
-
-    @Override
-    protected void onTransformationInternal(GL10 gl10) {
-    }
 }
