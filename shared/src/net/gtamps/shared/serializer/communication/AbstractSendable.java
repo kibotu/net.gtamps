@@ -36,7 +36,7 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 				cache.registerElement((Type)this);
 			}
 		} catch (final NullPointerException e) {
-				throw new IllegalStateException(ERROR_CACHE_UNDEFINED_MSG, e);
+				throw new IllegalStateException(this.toString() +" "+ ERROR_CACHE_UNDEFINED_MSG, e);
 		}
 	}
 
