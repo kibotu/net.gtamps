@@ -400,8 +400,8 @@ public class MatrixFactory {
      */
     @NotNull
     @ReturnsCachedValue
-    public static Matrix4 getTransformation(@NotNull Vector3 scaling, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
-       return setTransformation(Matrix4.createNew(),scaling,rotation,translation);
+    public static Matrix4 getTransformation(@NotNull Vector3 scaling, @NotNull Vector3 dimension, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
+       return setTransformation(Matrix4.createNew(),scaling,dimension,rotation,translation);
     }
 
     /**
@@ -414,7 +414,7 @@ public class MatrixFactory {
      * @return
      * @see <a href="http://db-in.com/blog/2011/04/cameras-on-opengl-es-2-x/">cameras-on-opengl-es-2-x</a>
      */
-    public static Matrix4 setTransformation(@NotNull Matrix4 matrix, @NotNull Vector3 scaling, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
+    public static Matrix4 setTransformation(@NotNull Matrix4 matrix, @NotNull Vector3 scaling, @NotNull Vector3 dimension, @NotNull Vector3 rotation, @NotNull Vector3 translation) {
         float cr = (float) Math.cos(rotation.x); // Φ
         float sr = (float) Math.sin(rotation.x);
 
@@ -425,9 +425,9 @@ public class MatrixFactory {
         float sy = (float) Math.sin(rotation.z);
 
         return matrix.set(
-                scaling.x * (cp * cy), cp * sy, -sp, 0,
-                sr * sp * cy - cr * sy, scaling.y * (sr * sp * sy + cr * cy), sr * cp, 0,
-                cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, scaling.z * (cr * cp), 0,
+                (dimension.x * scaling.x) * (cp * cy), cp * sy, -sp, 0,
+                sr * sp * cy - cr * sy, (dimension.y * scaling.y) * (sr * sp * sy + cr * cy), sr * cp, 0,
+                cr * sp * cy + sr * sy, cr * sp * sy - sr * cy, (dimension.z * scaling.z) * (cr * cp), 0,
                 translation.x, translation.y, translation.z, 1f
         );
 

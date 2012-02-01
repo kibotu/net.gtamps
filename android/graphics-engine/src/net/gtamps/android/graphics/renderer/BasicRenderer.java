@@ -7,6 +7,7 @@ import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.SceneNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
+import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
@@ -30,6 +31,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     protected IRenderAction renderAction;
     private final ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
+    protected int activeShaderProgram;
 
     public BasicRenderer(IRenderAction renderAction) {
         Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
@@ -97,14 +99,14 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         // limits frame rate
         limitFrameRate(delta);
 
+        // render draw loop
+        onDrawFrameHook(gl10);
+
         // activities draw loop
         renderAction.onDrawFrame(gl10);
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
             renderAction.getScenes().get(i).onDrawFrame(gl10);
         }
-
-        // render draw loop
-        onDrawFrameHook(gl10);
 
         // update real fps
         updateFPS();
@@ -269,4 +271,10 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      * @return allocated vbo
      */
     public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer);
+
+    public int geActiveShaderProgram() {
+        return activeShaderProgram;
+    }
+
+    public abstract void applyLight(Light light);
 }

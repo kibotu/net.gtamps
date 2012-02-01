@@ -37,6 +37,8 @@ public class Triangle extends RenderableNode {
         mesh.addVertex(-c, -c, c, 0, -c, 0, emissive.r, emissive.g, emissive.b, emissive.a, c, c);
 
         mesh.faces.add(0, 1, 2);
+
+        mesh.allocate();
     }
 
     @Override

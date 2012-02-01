@@ -63,5 +63,5 @@ public interface IRenderAction {
     /**
      * Starts the action.
      */
-    void start();
+    public void start();
 }

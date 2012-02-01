@@ -112,8 +112,4 @@ public class TextureLibrary {
         textureResourceIds.put(atlasId, textureId);
         return textureId;
     }
-
-    public void invalidate() {
-        // TODO re-allocate all loaded textures
-    }
 }

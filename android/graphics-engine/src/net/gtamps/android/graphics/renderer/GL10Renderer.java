@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.renderer;
 import android.graphics.Bitmap;
 import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
+import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 
@@ -67,5 +68,9 @@ public class GL10Renderer extends BasicRenderer {
     @Override
     public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
         return null;
+    }
+
+    @Override
+    public void applyLight(Light light) {
     }
 }

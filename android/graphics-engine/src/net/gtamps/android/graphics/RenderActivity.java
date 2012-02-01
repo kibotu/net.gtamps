@@ -91,6 +91,7 @@ public abstract class RenderActivity extends Activity {
     public void onPause() {
         super.onPause();
         view.onPause();
+        finish();
         Logger.I(this, "Application paused.");
     }
 

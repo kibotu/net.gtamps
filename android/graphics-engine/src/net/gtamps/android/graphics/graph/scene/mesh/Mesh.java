@@ -92,9 +92,7 @@ public class Mesh {
         this.vertices.addAll(vertices);
     }
 
-    /**
-     * Reloads hardware buffers.
-     */
-    public void onResume() {
+    public void invalidate() {
+        vbo.isAllocated = false;
     }
 }

@@ -9,6 +9,7 @@ public class RenderState {
 
     private Shader.Type shader = Shader.Type.PHONG;
     private boolean hasLighting = true;
+    private boolean isDoubleSided = false;
 
     public RenderState() {
     }
@@ -23,5 +24,13 @@ public class RenderState {
 
     public boolean hasLighting() {
         return hasLighting;
+    }
+
+    public void setDoubleSided(boolean isDoubleSided) {
+        this.isDoubleSided = isDoubleSided;
+    }
+
+    public boolean isDoubleSided() {
+        return isDoubleSided;
     }
 }

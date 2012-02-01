@@ -40,7 +40,10 @@ public abstract class RenderableNode extends RootNode {
 
     @Override
     final public void onResumeInternal(GL10 gl10) {
-        if (getMesh() != null) getMesh().onResume();
+        if (getMesh() != null) {
+            getMesh().invalidate();
+            getMesh().allocate();
+        }
         for (int i = 0; i < textureSamples.size(); i++) {
             textureSamples.get(i).allocate();
         }

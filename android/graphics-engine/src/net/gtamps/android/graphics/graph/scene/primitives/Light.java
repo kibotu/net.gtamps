@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 
 import net.gtamps.android.graphics.graph.scene.SceneNode;
 import net.gtamps.android.graphics.renderer.Shader;
+import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
 
@@ -38,14 +39,7 @@ public class Light extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        int program = Shader.Type.PHONG.shader.getProgram();
-        // unbound last shader
-        glUseProgram(program);
-        Logger.checkGlError(this, "glUseProgram");
-        glUniform3fv(glGetUniformLocation(program, "lightPosition"), 1, getPosition().asArray(), 0);
-        Logger.checkGlError(this, "lightPosition");
-        glUniform4fv(glGetUniformLocation(program, "lightColor"), 1, color, 0);
-        Logger.checkGlError(this, "lightColor");
+        Registry.getRenderer().applyLight(this);
     }
 
     @Override
@@ -58,5 +52,9 @@ public class Light extends SceneNode {
 
     @Override
     protected void onResumeInternal(GL10 gl10) {
+    }
+
+    public float[] getColor() {
+        return color;
     }
 }
