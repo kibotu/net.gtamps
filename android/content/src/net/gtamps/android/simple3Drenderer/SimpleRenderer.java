@@ -1,5 +1,7 @@
 package net.gtamps.android.simple3Drenderer;
 
+import java.util.Arrays;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -8,7 +10,9 @@ import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.ConnectionThread;
 import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
+import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
@@ -21,12 +25,15 @@ public class SimpleRenderer implements Renderer {
 	private static final boolean RENDER_ENTITIES = true;
 	private static final boolean RENDER_HUD = true;
 	private static final boolean RENDER_FPS = true;
-	private static final int EVERY_N_TH_FRAME = 100;
-	// private static final char[] SCORE_LABEL = "SCORE ".toCharArray();
+	private static final int EVERY_N_TH_FRAME = 50;
+	private int SCORE_COUNTER_OFFSET = 6;
+	private static final char[] SCORE_LABEL = "SCORE         ".toCharArray();
 	private static final long MILLIS_PER_FRAME = 1000 / MAX_FPS;
 
 	private SimpleCamera camera;
 	private SimpleWorld world;
+
+	TexturedQuad[] fontQuads = new TexturedQuad[256];
 
 	// private Bitmap hudScoreBoard;
 	// private Bitmap hudFont;
@@ -40,6 +47,17 @@ public class SimpleRenderer implements Renderer {
 		this.camera = new SimpleCamera(world, context);
 		ConnectionThread connection = new ConnectionThread(world);
 		new Thread(connection).start();
+
+		for (int i = 0; i < 256; i++) {
+			float[] f = { 	
+							(1f / 16f) * ((i) % 16), 	(1f / 16f) * ((i / 16)+1),
+							(1f / 16f) * ((i % 16)+1),	(1f / 16f) * ((i / 16)+1),
+							(1f / 16f) * ((i) % 16), 	(1f / 16f) * ((i) / 16),
+							(1f / 16f) * ((i % 16)+1), (1f / 16f) * ((i) / 16),
+							};
+			fontQuads[i] = new TexturedQuad("spritefont_256.png");
+			fontQuads[i].setTextureCoord(f);
+		}
 
 		InputEngineController.getInstance().setLayout(new InputLayoutIngame(world));
 		CameraMovementListener pml = new CameraMovementListener(world, camera);
@@ -62,6 +80,8 @@ public class SimpleRenderer implements Renderer {
 										// performance
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL10.GL_BLEND);
 	}
 
 	// Call back after onSurfaceCreated() or whenever the window's size changes
@@ -101,9 +121,7 @@ public class SimpleRenderer implements Renderer {
 	public void onDrawFrame(GL10 gl) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity(); // Reset model-view matrix ( NEW )
-		gl.glTranslatef(-1.5f, 0.0f, -6.0f); // Translate left and into the
-												// screen ( NEW )
-
+		gl.glTranslatef(0f, 0.0f, -6.0f);
 		if (LIMIT_FPS) {
 			currentTimeMillis = System.currentTimeMillis();
 			if (((currentTimeMillis + 1) - lastDraw) < MILLIS_PER_FRAME) {
@@ -136,50 +154,49 @@ public class SimpleRenderer implements Renderer {
 		gl.glPushMatrix();
 		gl.glScalef(0.6f, 0.6f, 0.6f);
 
-		if (RENDER_ENTITIES) {
-			// lets assume all entities are inside one texture
-			if (!world.getAllEntities().isEmpty()) {
-				((SimpleEntityView) world.getAllEntities().get(0)).bindTexture(gl);
-				len = world.getAllEntities().size();
-				for (i=0; i<len; i++) {
-					camera.renderEntityView((SimpleEntityView) world.getAllEntities().get(i), gl);
-				}
-			}
-
-		}
-
 		if (RENDER_TILES) {
 			if (world.getCubeTileMap() != null) {
 				synchronized (world) {
 					// lets assume, all tiles are always in one texture.
 					world.getCubeTileMap().get(0).bindTexture(gl);
 					len = world.getCubeTileMap().size();
-					for (i=0; i<len; i++) {
+					for (i = 0; i < len; i++) {
 						camera.renderTile(world.getCubeTileMap().get(i));
 					}
 				}
 			}
 		}
+		if (RENDER_ENTITIES) {
+			// lets assume all entities are inside one texture
+			if (!world.getAllEntities().isEmpty()) {
+				((SimpleEntityView) world.getAllEntities().get(0)).bindTexture(gl);
+				len = world.getAllEntities().size();
+				for (i = 0; i < len; i++) {
+					camera.renderEntityView((SimpleEntityView) world.getAllEntities().get(i), gl);
+				}
+			}
+
+		}
 		gl.glPopMatrix();
 
 		if (RENDER_HUD) {
-			// drawHUD(gl);
+			fontQuads[0].bindTexture(gl);
+			gl.glLoadIdentity();
+			gl.glTranslatef(-2f, 1.0f, -4.0f);
+			gl.glScalef(0.1f, 0.1f, 0.1f);
+			drawHUD(gl);
 		}
+		
 
-		if (RENDER_FPS) {
-			if (FPScounter < FPS_AVERAGE_AMOUNT) {
-				FPScounter++;
-				avgFPS += (int) (1000 / ((System.currentTimeMillis() + 1) - lastDraw));
-			} else {
-				FPS = avgFPS / FPScounter;
-				avgFPS = 0;
-				FPScounter = 0;
-			}
-
-			FPSchars[0] = (char) (((FPS / 10) % 10) + 48);
-			FPSchars[1] = (char) (((FPS) % 10) + 48);
-			// drawHudFont(FPSchars, canvas, 10, 10);
+		if (FPScounter < FPS_AVERAGE_AMOUNT) {
+			FPScounter++;
+			avgFPS += (int) (1000 / ((System.currentTimeMillis() + 1) - lastDraw));
+		} else {
+			FPS = avgFPS / FPScounter;
+			avgFPS = 0;
+			FPScounter = 0;
 		}
+		
 		frameCounter++;
 		if (frameCounter > EVERY_N_TH_FRAME) {
 			frameCounter = 0;
@@ -189,7 +206,60 @@ public class SimpleRenderer implements Renderer {
 
 	}
 
+	private void drawHUD(GL10 gl) {
+		gl.glDisable(GL10.GL_DEPTH_TEST);
+		drawHudFont(SCORE_LABEL, gl, -2f, -2f);
+		if (RENDER_FPS) {
+			FPSchars[0] = (char) (((FPS / 10) % 10) + 48);
+			FPSchars[1] = (char) (((FPS) % 10) + 48);
+			drawHudFont(FPSchars, gl, -2f, -4f);
+		}
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+	}
+
 	private void everyNthFrameDo() {
 		world.ensureEntityAppearance();
+		updateScoreLabel();
+	}
+
+	char drawChar = ' ';
+	private int charNumber;
+
+	private void drawHudFont(char[] s, GL10 gl, float positionx, float positiony) {
+		gl.glPushMatrix();
+		gl.glTranslatef(positionx, positiony, 0f);
+		for (charNumber = 0; charNumber < s.length; charNumber++) {
+			drawChar = s[charNumber];
+			if (drawChar > 255)
+				continue;
+			fontQuads[drawChar].draw(gl);
+			gl.glTranslatef(1f, 0f, 0f);
+
+		}
+		gl.glPopMatrix();
+	}
+	
+	int scoreCount = 0;
+	int scorePos = SCORE_COUNTER_OFFSET;
+	private void updateScoreLabel() {
+		Arrays.fill(SCORE_LABEL, SCORE_COUNTER_OFFSET, SCORE_LABEL.length, ' ');
+		scoreCount = world.getPlayerFragScore();
+		scorePos = Math.min(SCORE_COUNTER_OFFSET +  getNumberOfDigits(scoreCount+1)-1, SCORE_LABEL.length - 1);
+		do {
+//			Logger.d(this, "POSITION " + scorePos);
+			SCORE_LABEL[scorePos] = (char) (scoreCount % 10 + 48);
+			scoreCount /= 10; 
+			scorePos--;
+		} while (scoreCount != 0 && scorePos >= SCORE_COUNTER_OFFSET);
+	}
+	
+	int count = 0;
+	private int getNumberOfDigits(int n) {
+		count = 0;
+		while (n != 0) {
+			count ++;
+			n /= 10;
+		}
+		return count;
 	}
 }

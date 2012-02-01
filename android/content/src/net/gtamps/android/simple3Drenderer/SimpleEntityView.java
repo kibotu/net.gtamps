@@ -27,11 +27,11 @@ public class SimpleEntityView extends AbstractEntityView{
 	}
 
 	public float getX() {
-		return this.entity.x.value()/WORLD_TO_GRAPHICS_FACTOR;
+		return (this.entity.x.value())/WORLD_TO_GRAPHICS_FACTOR;
 	}
 
 	public float getY() {
-		return this.entity.y.value()/WORLD_TO_GRAPHICS_FACTOR;
+		return (this.entity.y.value())/WORLD_TO_GRAPHICS_FACTOR;
 	}
 
 	public int getRotation() {
