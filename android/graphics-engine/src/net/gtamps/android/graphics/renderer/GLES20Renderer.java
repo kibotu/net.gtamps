@@ -8,6 +8,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
+import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -16,7 +17,6 @@ import net.gtamps.shared.Utils.math.Matrix4;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -200,15 +200,11 @@ public class GLES20Renderer extends BasicRenderer {
 
         // uses lightning
         glUniform1i(glGetUniformLocation(program, "hasLighting"), node.getRenderState().hasLighting() ? 1 : 0);
-        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-            Logger.checkGlError(this, "hasLighting");
-        }
+        Logger.checkGlError(this, "hasLighting");
 
         // Draw with indices
         glDrawElements(GL_TRIANGLES, mesh.faces.getBuffer().capacity(), GL_UNSIGNED_SHORT, mesh.faces.getBuffer());
-        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-            Logger.checkGlError(this, "glDrawElements");
-        }
+        Logger.checkGlError(this, "glDrawElements");
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -281,16 +277,12 @@ public class GLES20Renderer extends BasicRenderer {
 
         // uses lightning
         glUniform1i(glGetUniformLocation(program, "hasLighting"), node.getRenderState().hasLighting() ? 1 : 0);
-        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-            Logger.checkGlError(this, "hasLighting");
-        }
+        Logger.checkGlError(this, "hasLighting");
 
         // Draw with indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.indexBufferId);
         GLES20.glDrawElements(GL_TRIANGLES, mesh.faces.getBuffer().capacity(), GL_UNSIGNED_SHORT, 0);
-        if (net.gtamps.shared.Config.LOG_LEVEL == Logger.Level.DEBUG_LOG_GL_CALLS) {
-            Logger.checkGlError(this, "glDrawElements");
-        }
+        Logger.checkGlError(this, "glDrawElements");
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -299,7 +291,52 @@ public class GLES20Renderer extends BasicRenderer {
     @Override
     public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
 
+        // position zero
+        if (vertexBuffer != null) vertexBuffer.position(0);
+        if (indexBuffer != null) indexBuffer.position(0);
+        if (normalBuffer != null) normalBuffer.position(0);
+        if (colorBuffer != null) colorBuffer.position(0);
+        if (uvBuffer != null) uvBuffer.position(0);
 
+        // get buffer ids
+        final int[] buffer = new int[5];
+        glGenBuffers(5, buffer, 0);
+        Vbo vbo = new Vbo(buffer, true);
 
+        // bind vertex buffer
+        if (vertexBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferId);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_DYNAMIC_DRAW);
+        }
+
+        // bind index buffer
+        if (indexBuffer != null) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.indexBufferId);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GL_DYNAMIC_DRAW);
+        }
+
+        // bind normal buffer
+        if (normalBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.normalBufferId);
+            glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_DYNAMIC_DRAW);
+        }
+
+        // bind color buffer
+        if (colorBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.colorBufferId);
+            glBufferData(GL_ARRAY_BUFFER, colorBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, colorBuffer, GL_DYNAMIC_DRAW);
+        }
+
+        // bind uv buffer
+        if (uvBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.uvBufferId);
+            glBufferData(GL_ARRAY_BUFFER, uvBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, uvBuffer, GL_DYNAMIC_DRAW);
+        }
+
+        // deselect buffers
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        return vbo;
     }
 }
