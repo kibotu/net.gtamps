@@ -57,7 +57,7 @@ public class TabbedPane extends JTabbedPane implements ChangeListener, ActionLis
 					if (tpc != null) {
 						synchronized (GUILogger.lock) {
 							final LinkedList<String> copy = new LinkedList<String>(GUILogger.getLogs(tpc.getLogType()));
-							tpc.updateLog(copy.subList(Math.max(copy.size()-GTAMultiplayerServer.MAX_LOG_ENTRY_DISPLAY,0), copy.size()-1));
+							tpc.updateLog(copy.subList(Math.max(copy.size()-GTAMultiplayerServer.MAX_LOG_ENTRY_DISPLAY,0), copy.size()));
 						}
 						tpc.invalidate();
 					}
