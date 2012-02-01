@@ -58,7 +58,7 @@ public class SimpleWorld implements IWorld {
 		StaticTextureHolder.add(spritefont.putInsideTextureMapper());
 	}
 
-	private HashMap<Integer, AbstractEntityView> fakeEntityMap = new HashMap<Integer, AbstractEntityView>();
+	private HashMap<Integer, AbstractEntityView> simpleEntityMap = new HashMap<Integer, AbstractEntityView>();
 
 	AbstractEntityView activeEntityView;
 	private LinkedList<CubeTile> cubeTileMap;
@@ -66,7 +66,7 @@ public class SimpleWorld implements IWorld {
 	@Override
 	public AbstractEntityView getViewById(int uid) {
 		synchronized (this) {
-			return fakeEntityMap.get(uid);
+			return simpleEntityMap.get(uid);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class SimpleWorld implements IWorld {
 	public void add(AbstractEntityView entityView) {
 		Log.d("FakeWorld", "Adding Entity! " + entityView.entity.getName());
 		synchronized (this) {
-			this.fakeEntityMap.put(entityView.entity.getUid(), entityView);
+			this.simpleEntityMap.put(entityView.entity.getUid(), entityView);
 		}
 		refreshEntityViewList();
 	}
@@ -96,7 +96,7 @@ public class SimpleWorld implements IWorld {
 
 	private void refreshEntityViewList() {
 		synchronized (this) {
-			entityViewList = new LinkedList<AbstractEntityView>(this.fakeEntityMap.values());
+			entityViewList = new LinkedList<AbstractEntityView>(this.simpleEntityMap.values());
 		}
 	}
 
@@ -161,7 +161,7 @@ public class SimpleWorld implements IWorld {
 
 	@Override
 	public void remove(int targetUid) {
-		fakeEntityMap.remove(targetUid);
+		simpleEntityMap.remove(targetUid);
 		refreshEntityViewList();
 	}
 
@@ -193,6 +193,11 @@ public class SimpleWorld implements IWorld {
 	@Override
 	public int getPlayerFragScore() {
 		return fragCount;
+	}
+
+	@Override
+	public void deactivate(int targetUid) {
+		this.simpleEntityMap.get(targetUid).deactivate();
 	}
 
 }

@@ -20,6 +20,7 @@ public class SimpleEntityView extends AbstractEntityView{
 	@Override
 	public void update(Entity serverEntity) {
 		this.entity = serverEntity;
+		this.activated = true;
 	}
 	
 	public boolean hasBitmap() {
@@ -39,7 +40,9 @@ public class SimpleEntityView extends AbstractEntityView{
 	}
 
 	public void draw(GL10 gl) {
-		this.texturedQuad.draw(gl);
+		if(this.activated){
+			this.texturedQuad.draw(gl);
+		}
 	}
 
 	public void set3DShape(AbstractShape character1) {
@@ -48,6 +51,11 @@ public class SimpleEntityView extends AbstractEntityView{
 
 	public void bindTexture(GL10 gl) {
 		this.texturedQuad.bindTexture(gl);
+	}
+
+	@Override
+	public void deactivate() {
+		this.activated = false;
 	}
 
 }

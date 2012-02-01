@@ -165,4 +165,9 @@ public class FakeWorld implements IWorld {
 		return playerFragScore;
 	}
 
+	@Override
+	public void deactivate(int targetUid) {
+		this.fakeEntityMap.get(targetUid).deactivate();
+	}
+
 }

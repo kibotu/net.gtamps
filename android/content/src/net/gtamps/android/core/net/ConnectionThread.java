@@ -7,6 +7,7 @@ import net.gtamps.shared.serializer.communication.NewSendable;
 
 public class ConnectionThread implements Runnable{
 
+	private static final long NETWORK_WAIT_FOR_ACTIVITY = 3;
 	private MessageHandler messageHandler;
 	private ConnectionManager connection;
 	private IWorld world ;
@@ -39,8 +40,6 @@ public class ConnectionThread implements Runnable{
 		connection.start();
 		Log.i("ConnectionThread", "Sending session request");
 		connection.add(NewMessageFactory.createSessionRequest());
-		Log.i("ConnectionThread", "Sending join request");
-		connection.add(NewMessageFactory.createJoinRequest());
 		while(true){
 			if(connection.isEmpty() && connection.currentRevId>0){
 				connection.add(NewMessageFactory.createGetUpdateRequest(connection.currentRevId));
@@ -55,7 +54,7 @@ public class ConnectionThread implements Runnable{
 			}
 			try {
 				synchronized (this) {
-					wait(20);	
+					wait(NETWORK_WAIT_FOR_ACTIVITY);	
 				}				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

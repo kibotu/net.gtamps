@@ -292,8 +292,7 @@ public class MessageHandler {
             case ENTITY_DAMAGE:
                 break;
             case ENTITY_DEACTIVATE:
-            	world.remove(event.getTargetUid());
-            	store.reclaim(event.getTargetUid());
+            	world.deactivate(event.getTargetUid());
             	store.reclaim(event);
             	event = null;
                 break;

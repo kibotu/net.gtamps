@@ -214,4 +214,10 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 		return 0;
 	}
 
+	@Override
+	public void deactivate(int targetUid) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
