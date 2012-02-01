@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph.scene;
 
+import net.gtamps.shared.Utils.Logger;
+
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ public class GroupSceneNode extends SceneNode {
     }
 
     @Override
-    protected void onTransformation(GL10 gl10) {
+    final protected void onTransformation(GL10 gl10) {
         super.onTransformation(gl10);
 
         for (int i = 0; i < size(); ++i) {
@@ -34,37 +36,37 @@ public class GroupSceneNode extends SceneNode {
     }
 
     @Override
-    public void onCreate(GL10 gl10) {
+    final public void onCreate(GL10 gl10) {
         for (int i = 0; i < size(); ++i) {
             children.get(i).onCreate(gl10);
         }
         onCreateInternal(gl10);
     }
 
-    public void onResume(GL10 gl10) {
+    final public void onResume(GL10 gl10) {
         for (int i = 0; i < size(); ++i) {
             children.get(i).onResume(gl10);
         }
         onResumeInternal(gl10);
     }
 
-    public void add(SceneNode child) {
+    final public void add(SceneNode child) {
         if (children == null) children = new ArrayList<SceneNode>();
         children.add(child);
         child.setParent(this);
     }
 
-    public void remove(SceneNode child) {
+    final public void remove(SceneNode child) {
         if (children == null) return;
         children.remove(child);
         child.setParent(null);
     }
 
-    public SceneNode getChild(int index) {
+    final public SceneNode getChild(int index) {
         return index > size() ? null : children.get(index);
     }
 
-    public int size() {
+    final public int size() {
         return children == null ? 0 : children.size();
     }
 

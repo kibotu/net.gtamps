@@ -6,6 +6,8 @@ import android.os.SystemClock;
 import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.SceneNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
+import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -42,6 +44,9 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         RenderCapabilities.setRenderCaps(gl10);
 
         Logger.I(this, "Surface created.");
+
+        // new texturelibrary
+        Registry.setTextureLibrary(new TextureLibrary(gl10));
 
         // activities on create
         renderAction.onSurfaceCreated(gl10);

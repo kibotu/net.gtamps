@@ -74,6 +74,8 @@ public class Cube extends RenderableNode {
         mesh.faces.add(16, 18, 19);
         mesh.faces.add(20, 21, 22);
         mesh.faces.add(20, 22, 23);
+
+        mesh.allocate();
     }
 
     @Override

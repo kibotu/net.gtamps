@@ -11,40 +11,44 @@ import javax.microedition.khronos.opengles.GL10;
  * Date: 31/01/12
  * Time: 19:50
  */
-public class SceneGraph {
+public abstract class SceneGraph {
 
     private Camera activeCamera;
-    private GroupSceneNode group = new GroupSceneNode();
+    private final GroupSceneNode group = new GroupSceneNode();
 
-    public SceneGraph() {
+    public SceneGraph(Camera camera) {
+        setActiveCamera(camera);
     }
 
-    public void setActiveCamera(@NotNull Camera camera) {
+    final public void setActiveCamera(@NotNull Camera camera) {
         this.activeCamera = camera;
     }
 
-    public Camera getActiveCamera() {
+    final public Camera getActiveCamera() {
         return activeCamera;
     }
 
-    public void remove(SceneNode node) {
+    final public void remove(SceneNode node) {
         group.remove(node);
     }
 
-    public void add(SceneNode node) {
+    final public void add(SceneNode node) {
         group.add(node);
         Registry.getRenderer().addToSetupQueue(node);
     }
 
-    public void onSurfaceCreated(GL10 gl10) {
+    final public void onSurfaceCreated(GL10 gl10) {
         activeCamera.onCreate(gl10);
+        onSurfaceCreatedInternal(gl10);
     }
 
-    public void onResume(GL10 gl10) {
+    protected abstract void onSurfaceCreatedInternal(GL10 gl10);
+
+    final public void onResume(GL10 gl10) {
         group.onResume(gl10);
     }
 
-    public void onDrawFrame(GL10 gl10) {
+    final public void onDrawFrame(GL10 gl10) {
         group.onDrawFrame(gl10);
     }
 }

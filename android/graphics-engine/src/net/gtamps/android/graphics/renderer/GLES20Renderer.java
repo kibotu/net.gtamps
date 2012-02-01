@@ -257,7 +257,7 @@ public class GLES20Renderer extends BasicRenderer {
             Logger.checkGlError(this, "hasTextures");
             if (node.getTextureSamples().size() > 8)
                 Logger.V(this, node.getClass().getSimpleName() + " has exceeded it's max texture limit : " + node.getTextureSamples().size() + "/" + RenderCapabilities.maxTextureUnits());
-            for (int i = 0; i < node.getTextureSamples().size() || i < 8; i++) {
+            for (int i = 0; i < node.getTextureSamples().size(); i++) {
                 TextureSample textureSample = node.getTextureSamples().get(i);
                 glActiveTexture(GL_TEXTURE0 + i);
                 glBindTexture(GL_TEXTURE_2D, textureSample.textureId);
@@ -337,7 +337,7 @@ public class GLES20Renderer extends BasicRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         
-        Logger.i(this, vbo + " successfully allocated.");
+        Logger.i(this, vbo + " Vbo successfully allocated.");
 
         return vbo;
     }

@@ -44,10 +44,6 @@ public class Triangle extends RenderableNode {
     }
 
     @Override
-    public void onResumeInternal(GL10 gl10) {
-    }
-
-    @Override
     protected void onTransformationInternal(GL10 gl10) {
     }
 }

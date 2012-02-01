@@ -30,7 +30,6 @@ public class Vbo {
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer();
-        sb.append("Vbo");
         sb.append("[vertexID=").append(vertexBufferID);
         sb.append("|normalID=").append(normalBufferID);
         sb.append("|colorID=").append(colorBufferID);

@@ -28,8 +28,26 @@ public class Camera extends SceneNode {
     @NotNull
     private ViewPort viewport = new ViewPort(0, 0, 800, 480);
 
+    /**
+     * Defines how it the view will be rendered.
+     * <code>true</code> for perspective
+     * <code>false</code> for orthographic
+     */
     private boolean isPersectiveView = true;
 
+    /**
+     * Constructs a new camera object.
+     *
+     * @param positionX
+     * @param positionY
+     * @param positionZ
+     * @param targetX
+     * @param targetY
+     * @param targetZ
+     * @param upX
+     * @param upY
+     * @param upZ
+     */
     public Camera(float positionX, float positionY, float positionZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
         setPosition(positionX, positionY, positionZ);
         frustum.setCamera(this.position, Vector3.createNew(targetX, targetY, targetZ), Vector3.createNew(upX, upY, upZ));
