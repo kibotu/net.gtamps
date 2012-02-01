@@ -220,4 +220,10 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 		
 	}
 
+	@Override
+	public void invokeExplosion(AbstractEntityView viewById) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

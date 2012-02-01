@@ -122,8 +122,10 @@ public class NewSendable extends AbstractSendable<NewSendable> {//extends Shared
 
 	@Override
 	protected void recycleHook() {
-		this.data.recycle();
-		this.data = null;
+		if(data!=null){
+			this.data.recycle();
+			this.data = null;
+		}
 		this.id = INVALID_ID;
 		this.sessionId = null;
 		this.type = null;

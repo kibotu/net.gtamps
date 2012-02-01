@@ -29,5 +29,6 @@ public interface IWorld {
 	void setPlayerFragScore(int count);
 	int getPlayerFragScore();
 	void deactivate(int targetUid);
+	void invokeExplosion(AbstractEntityView viewById);
 
 }

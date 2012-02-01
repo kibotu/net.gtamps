@@ -136,47 +136,47 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 
 	private void handleSendable(final NewSendable request) {
 		switch (request.type) {
-			case SESSION:
-				handleSession(request);
-				break;
-			case REGISTER:
-				handleRegister(request);
-				break;
-			case LOGIN:
-				handleLogin(request);
-				break;
-			case JOIN:
-			case LEAVE:
-				handleAuthenticatedRequest(request);
-				break;
-			case GETUPDATE:
-				//FIXME easy way out, just throw some packages away.
-				//needs more delicate handling later
-				//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
-				//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
-				//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
-				handlePlayingRequest(request);
-				//				System.out.println("ansering update request");
-				//			}
-				//			System.out.println("throwing away update request");
-				//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
-				break;
-			case GETMAPDATA:
-			case GETTILEMAP:
-			case GETPLAYER:
-			case ACTION_ACCELERATE:
-			case ACTION_DECELERATE:
-			case ACTION_HANDBRAKE:
-			case ACTION_ENTEREXIT:
-			case ACTION_LEFT:
-			case ACTION_RIGHT:
-			case ACTION_SHOOT:
-			case ACTION_SUICIDE:
-				handlePlayingRequest(request);
-				break;
-			default:
-				handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
-				break;
+		case SESSION:
+			handleSession(request);
+			break;
+		case REGISTER:
+			handleRegister(request);
+			break;
+		case LOGIN:
+			handleLogin(request);
+			break;
+		case JOIN:
+		case LEAVE:
+			handleAuthenticatedRequest(request);
+			break;
+		case GETUPDATE:
+			//FIXME easy way out, just throw some packages away.
+			//needs more delicate handling later
+			//			updateRequestThrottler.putIfAbsent(request.sessionId, 0);
+			//			final int requestCounter = updateRequestThrottler.get(request.sessionId);
+			//			if(requestCounter%KEEP_EVERY_NTH_UPDATE_REQUEST==0) {
+			handlePlayingRequest(request);
+			//				System.out.println("ansering update request");
+			//			}
+			//			System.out.println("throwing away update request");
+			//			updateRequestThrottler.replace(request.sessionId, requestCounter+1);
+			break;
+		case GETMAPDATA:
+		case GETTILEMAP:
+		case GETPLAYER:
+		case ACTION_ACCELERATE:
+		case ACTION_DECELERATE:
+		case ACTION_HANDBRAKE:
+		case ACTION_ENTEREXIT:
+		case ACTION_LEFT:
+		case ACTION_RIGHT:
+		case ACTION_SHOOT:
+		case ACTION_SUICIDE:
+			handlePlayingRequest(request);
+			break;
+		default:
+			handleResponse(request.createResponse(SendableType.BAD_SENDABLE));
+			break;
 		}
 	}
 
@@ -261,7 +261,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 			final Value<String> errorMessage = new Value<String>(e.getMessage());
 			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
 			(StringConstants.ERROR_MESSAGE, errorMessage);
-			final DataMap errorData = new DataMap();
+			final DataMap errorData = sendableProvider.getDataMap();
 			errorData.add(errorMessageEntry);
 
 			response.data = errorData;

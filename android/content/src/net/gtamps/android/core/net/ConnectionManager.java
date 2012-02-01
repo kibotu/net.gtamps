@@ -111,9 +111,13 @@ public enum ConnectionManager implements IMessageManager {
 		remoteOutputDispatcher.stop();
 	}
 
+	SerializedMessage sm = null;
 	public SerializedMessage serialize(@NotNull final NewMessage message) {
 		message.setSessionId(currentSessionId);
-		return serializer.serializeAndPackNewMessage(message);
+		sm = serializer.serializeAndPackNewMessage(message);
+		message.sendables.recycle();
+		message.recycle();
+		return sm; 
 	}
 
 	public NewMessage deserialize(@NotNull final byte[] message) {

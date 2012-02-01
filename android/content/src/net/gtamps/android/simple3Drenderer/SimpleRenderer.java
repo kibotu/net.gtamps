@@ -1,5 +1,7 @@
 package net.gtamps.android.simple3Drenderer;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -10,6 +12,7 @@ import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.ConnectionThread;
 import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
+import net.gtamps.android.simple3Drenderer.helper.GL10Utils;
 import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -82,6 +85,13 @@ public class SimpleRenderer implements Renderer {
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL10.GL_BLEND);
+		
+		
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, GL10Utils.floatsToFloatBuffer(new float[]{0.5f,0.5f,0.5f,1f}));
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, GL10Utils.floatsToFloatBuffer(new float[]{0.8f,0.7f,0.5f,1f}));
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, GL10Utils.floatsToFloatBuffer(new float[]{0.1f,0.1f,10f,1f}));
+		gl.glEnable(GL10.GL_LIGHT1);
+		gl.glEnable(GL10.GL_LIGHTING);
 	}
 
 	// Call back after onSurfaceCreated() or whenever the window's size changes
@@ -140,6 +150,7 @@ public class SimpleRenderer implements Renderer {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		camera.setGL(gl);
+		camera.setLastExplosion(world.getLastExplosionMillis());
 
 		if (world.getActiveView() == null) {
 			for (AbstractEntityView aev : world.getAllEntities()) {

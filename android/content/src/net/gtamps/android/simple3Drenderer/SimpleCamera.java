@@ -36,6 +36,8 @@ public class SimpleCamera {
 	private float rotz = 0f;
 
 	private SimpleWorld world;
+	private long lastExplosionMillis = 0;
+	private final long EXPLOSION_TIMEOUT= 0;
 
 	SimpleCamera(SimpleWorld world, Context context) {
 		this.world = world;
@@ -60,6 +62,11 @@ public class SimpleCamera {
 			this.rotx -= (this.rotx - CAMERA_BIRDSEYE_BIAS) / CAMERA_BIRDSEYE_SPEED;
 			this.rotz -= (this.rotz - CAMERA_BIRDSEYE_ROTATION) / CAMERA_BIRDSEYE_SPEED;
 		}
+//		if(lastExplosionMillis+EXPLOSION_TIMEOUT>System.currentTimeMillis()){
+//			this.x += Math.sin(System.currentTimeMillis())*(lastExplosionMillis+EXPLOSION_TIMEOUT)/System.currentTimeMillis();
+//			this.y += Math.sin(System.currentTimeMillis())*(lastExplosionMillis+EXPLOSION_TIMEOUT)/System.currentTimeMillis();
+//			this.z += Math.sin(System.currentTimeMillis())*(lastExplosionMillis+EXPLOSION_TIMEOUT)/System.currentTimeMillis();
+//		}
 	}
 
 	public void renderTile(CubeTile t) {
@@ -114,5 +121,9 @@ public class SimpleCamera {
 			Logger.e(this, "GL Context is not set");
 		}
 
+	}
+	
+	public void setLastExplosion(long lastExplosionMillis) {
+		this.lastExplosionMillis  = lastExplosionMillis;
 	}
 }

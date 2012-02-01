@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import net.gtamps.shared.serializer.communication.AbstractSendable;
 
-public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableData<ListNode<T>> implements Iterable<T>{
+public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableData<ListNode<T>> implements Iterable<T> {
 
 	private static final long serialVersionUID = 408802690961330006L;
 	private static final String errorIteratorNotResetMsg = "iterator is not ininitial state; call resetIterator() first.";
@@ -45,7 +45,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	 */
 	public ListNode<T> append(final ListNode<T> newNode) {
 		final ListNode<T> end = gotoLastNonEmptyElement();
-		end.next = end.next.append(newNode);	// calls append on EmptyListNode
+		end.next = end.next.append(newNode); // calls append on EmptyListNode
 		return this;
 	}
 
@@ -97,7 +97,8 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 
 	@Override
 	public String toString() {
-		return "ListNode [" + (value == null ? "null" : value.toString()) + "] -> " + (next == null ? "null" : next.toString()) + " ";
+		return "ListNode [" + (value == null ? "null" : value.toString()) + "] -> "
+				+ (next == null ? "null" : next.toString()) + " ";
 	}
 
 	@Override
@@ -114,7 +115,8 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	}
 
 	/**
-	 * @param value	not <code>null</code>
+	 * @param value
+	 *            not <code>null</code>
 	 * @return
 	 */
 	public ListNode<T> set(final T value) {
@@ -132,9 +134,10 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 
 	ListNode<T> unlinkNode;
 	ListNode<T> tmplink;
+
 	void unlink() {
 		unlinkNode = this;
-		while(unlinkNode != null) {
+		while (unlinkNode != null) {
 			unlinkNode.value = null;
 			tmplink = unlinkNode;
 			unlinkNode = unlinkNode.next;
@@ -156,33 +159,38 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	protected void initHook() {
 		resetIterator();
 	}
-	
-	
 
 	ListNode<T> recycleThis;
 	ListNode<T> tmplist;
+
 	@Override
 	public void recycle() {
 		recycleThis = this.next;
-		while(recycleThis != emptyList()) {
+		while (recycleThis != emptyList()) {
 			tmplist = recycleThis.next;
-			this.next.value.recycle();
-			this.next.value = null;
-			this.next.resetIterator();
-			this.next.cache.registerElement(this.next);
-			this.next = emptyList();
+			if (recycleThis.value != null) {
+				recycleThis.value.recycle();
+				recycleThis.value = null;
+			}
+			recycleThis.resetIterator();
+			recycleThis.cache.registerElement(recycleThis);
+			recycleThis.next = emptyList();
 			recycleThis = tmplist;
 		}
-		this.value.recycle();
-		this.value = null;
+		if (this.value != null) {
+			this.value.recycle();
+			this.value = null;
+		}
 		this.resetIterator();
 		this.cache.registerElement(this);
-		
+		this.next = emptyList();
+
 	}
+
 	protected void recycleHook() {
 	}
-		
-	static class ListNodeIterator<T extends AbstractSendable<T>>  implements Iterator<T> {
+
+	static class ListNodeIterator<T extends AbstractSendable<T>> implements Iterator<T> {
 
 		final ListNode<T> startElement;
 		ListNode<T> iteratorNextElement;
@@ -208,6 +216,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		public boolean hasNext() {
 			return !(iteratorNextElement.isEmpty());
 		}
+
 		@Override
 		public T next() {
 			if (!hasNext()) {
@@ -217,13 +226,12 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 			iteratorNextElement = iteratorNextElement.next;
 			return value;
 		}
+
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 	};
-
-
 
 	public static class EmptyListNode<T extends AbstractSendable<T>> extends ListNode<T> {
 
@@ -235,7 +243,11 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		private EmptyListNode() {
 			next = null;
 		}
-
+		
+		public void recycle(){
+			
+		}
+		
 		@Override
 		void unlink() {
 			// do nothing
@@ -267,6 +279,5 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 			return "EmptyListNode";
 		}
 	}
-
 
 }

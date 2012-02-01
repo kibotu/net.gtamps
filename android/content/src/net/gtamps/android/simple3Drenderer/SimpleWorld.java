@@ -150,6 +150,7 @@ public class SimpleWorld implements IWorld {
 	}
 
 	private int fragCount;
+	private long lastExplosionMillis;
 
 	/*
 	 * // preallocate Bitmap returnBitmap = null;
@@ -198,6 +199,14 @@ public class SimpleWorld implements IWorld {
 	@Override
 	public void deactivate(int targetUid) {
 		this.simpleEntityMap.get(targetUid).deactivate();
+	}
+
+	@Override
+	public void invokeExplosion(AbstractEntityView viewById) {
+		this.lastExplosionMillis = System.currentTimeMillis();
+	}
+	public long getLastExplosionMillis() {
+		return lastExplosionMillis;
 	}
 
 }

@@ -170,4 +170,10 @@ public class FakeWorld implements IWorld {
 		this.fakeEntityMap.get(targetUid).deactivate();
 	}
 
+	@Override
+	public void invokeExplosion(AbstractEntityView viewById) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

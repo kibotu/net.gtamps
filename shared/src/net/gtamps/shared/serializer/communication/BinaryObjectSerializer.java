@@ -98,8 +98,7 @@ public class BinaryObjectSerializer implements ISerializer {
 
 		serializedMessage.message = buf;
 		serializedMessage.length = ps.pos();
-		m.sendables.recycle();
-		m.recycle();
+
 		return serializedMessage;
 	}
 

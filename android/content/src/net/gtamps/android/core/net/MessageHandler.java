@@ -212,9 +212,11 @@ public class MessageHandler {
             	break;
             
             default:
-            	sendable.recycle();
                 break;
         }
+        sendable.recycle();
+        message.sendables = null;
+        sendable = null;
         message.recycle();
         message = null;
     }
@@ -297,6 +299,9 @@ public class MessageHandler {
             	event = null;
                 break;
             case ENTITY_DESTROYED:
+            	if(world.getViewById(event.getTargetUid()).entity.getName().equals("CAR")){
+            		world.invokeExplosion(world.getViewById(event.getTargetUid()));
+            	}
             	world.remove(event.getTargetUid());
             	store.reclaim(event.getTargetUid());
             	store.reclaim(event);
