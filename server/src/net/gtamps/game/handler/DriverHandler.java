@@ -75,7 +75,7 @@ public class DriverHandler extends ServersideHandler<Entity> {
 			chuckOutCurrentDriver();
 		}
 		driversHumanBody = player.getEntity();
-		driversHumanBody.disable();
+		getUniverse().dispatchEvent(new GameEvent(EventType.ENTITY_DEACTIVATE, driversHumanBody));
 
 		setDriver(player);
 		eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
@@ -99,8 +99,8 @@ public class DriverHandler extends ServersideHandler<Entity> {
 			driversHumanBody.x.set((int) newPos.x);
 			driversHumanBody.y.set((int) newPos.y);
 			driversHumanBody.rota.set(carRota + exitRotation);
-			driversHumanBody.enable();
 			exDriver.setEntity(driversHumanBody);
+			getUniverse().dispatchEvent(new GameEvent(EventType.ENTITY_ACTIVATE, driversHumanBody));
 			eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
 		}
 		{ // LOGGING

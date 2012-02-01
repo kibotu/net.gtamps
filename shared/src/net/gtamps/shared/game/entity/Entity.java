@@ -81,7 +81,12 @@ public class Entity extends SharedGameActor {
 		}
 		if (type.isType(EventType.ENTITY_DESTROYED) && event.getTargetUid() == getUid()) {
 			destroy();
+		} else if (type.isType(EventType.ENTITY_DEACTIVATE)) {
+			disable();
+		} else if (type.isType(EventType.ENTITY_ACTIVATE)) {
+			enable();
 		}
+		
 	}
 
 	public void setOwner(final Player p) {
