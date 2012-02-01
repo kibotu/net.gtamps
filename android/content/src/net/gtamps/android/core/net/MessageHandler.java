@@ -123,7 +123,12 @@ public class MessageHandler {
 
             case SESSION_OK:
                 connection.currentSessionId = message.getSessionId();
-                connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                //FIXME workaround for presentation
+                if(android.os.Build.VERSION.SDK_INT>8){
+                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME_TIL, Config.DEFAULT_PASSWORD_TIL));
+                } else {
+                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                }
                 break;
             case SESSION_NEED:
                 break;
@@ -287,6 +292,10 @@ public class MessageHandler {
             case ENTITY_DAMAGE:
                 break;
             case ENTITY_DEACTIVATE:
+            	world.remove(event.getTargetUid());
+            	store.reclaim(event.getTargetUid());
+            	store.reclaim(event);
+            	event = null;
                 break;
             case ENTITY_DESTROYED:
             	world.remove(event.getTargetUid());

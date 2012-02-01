@@ -5,6 +5,9 @@ import java.nio.ByteOrder;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import net.gtamps.android.simple3Drenderer.StaticTextureHolder;
+import net.gtamps.shared.Utils.Logger;
+
 public class TexturedQuad extends AbstractShape{
 
 	protected float[] vertices = { // Vertices for a face
@@ -58,5 +61,14 @@ public class TexturedQuad extends AbstractShape{
 		gl.glPopMatrix();
 		
 		gl.glPopMatrix();
+	}
+
+	public void setTextureCoord(float[] f) {
+		
+		ByteBuffer tbb = ByteBuffer.allocateDirect(f.length * 4);
+		tbb.order(ByteOrder.nativeOrder());
+		texBuffer = tbb.asFloatBuffer();
+		texBuffer.put(f);
+		texBuffer.position(0);
 	}
 }

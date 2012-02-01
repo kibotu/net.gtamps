@@ -23,6 +23,7 @@ public class SimpleWorld implements IWorld {
 	private AbstractShape bullet;
 	private AbstractShape defaultshape;
 	private AssetManager assetManager;
+//	private TexturedQuad spawnpoint;
 
 	SimpleWorld(Context context) {
 		// car1bitmap = BitmapFactory.decodeResource(context.getResources(),
@@ -43,15 +44,18 @@ public class SimpleWorld implements IWorld {
 		entityTextures.putIfAbsent("char1_90.png");
 		entityTextures.putIfAbsent("car1_90.png");
 		entityTextures.putIfAbsent("bullet.png");
+//		entityTextures.putIfAbsent("spawnpoint.png");
 		entityTextures.putIfAbsent("default.png");
 		StaticTextureHolder.add(entityTextures.generateTextureMapper());
 		character1 = new TexturedQuad("char1_90.png", 0.3f, 0.3f);
 		car1 = new TexturedQuad("car1_90.png", 1.0f, 0.5f);
 		bullet = new TexturedQuad("bullet.png", 0.15f, 0.15f);
+//		spawnpoint = new TexturedQuad("spawnpoint.png", 0.15f, 0.15f);
 		defaultshape = new TexturedQuad("default.png");
 		
 		TileBitmapBuilder spritefont = new TileBitmapBuilder(assetManager, "spritefont");
 		spritefont.putIfAbsent("spritefont_256.png");
+		StaticTextureHolder.add(spritefont.putInsideTextureMapper());
 	}
 
 	private HashMap<Integer, AbstractEntityView> fakeEntityMap = new HashMap<Integer, AbstractEntityView>();
@@ -138,7 +142,6 @@ public class SimpleWorld implements IWorld {
 				if (t.getHeight() == 0) {
 					this.cubeTileMap.add(new CubeTile(t, new TexturedQuad(t.getBitmap())));
 				} else {
-					
 					this.cubeTileMap.add(new CubeTile(t, new TexturedCube(t.getBitmap())));
 				}
 			}
@@ -170,6 +173,8 @@ public class SimpleWorld implements IWorld {
 					fev.set3DShape(this.character1);
 				} else if (aev.entity.getName().equals("CAR")) {
 					fev.set3DShape(this.car1);
+				} else if (aev.entity.getName().equals("SPAWNPOINT")) {
+					fev.set3DShape(this.defaultshape);
 				}
 			}
 		}

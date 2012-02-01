@@ -60,6 +60,18 @@ public class TileBitmapBuilder {
 		}
 		return new TextureMapper(textureCoords,tileMap);
 	}
+	public TextureMapper putInsideTextureMapper() {
+		float[] f = {0f,1f,1f,1f,0f,0f,1f,0f};
+		HashMap<String, float[]> map = new HashMap<String, float[]>();
+		map.put(tileFileNames.get(0), f);
+		Bitmap b = null;
+		try {
+			b = BitmapFactory.decodeStream(am.open(foldername+"/"+tileFileNames.get(0)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new TextureMapper(map,b);
+	}
 
 	public void put(String bitmap) {
 		this.tileFileNames.add(bitmap);
