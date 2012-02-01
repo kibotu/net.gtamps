@@ -37,6 +37,10 @@ public final class DataMap extends AbstractSendableData<DataMap> implements Iter
 		}
 
 	};
+	
+	public DataMap() {
+		// nothing
+	}
 
 
 	public DataMap add(final MapEntry<?> entry) throws IllegalArgumentException, IllegalStateException {
