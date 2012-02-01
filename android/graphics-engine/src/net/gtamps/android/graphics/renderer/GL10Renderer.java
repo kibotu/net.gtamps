@@ -1,11 +1,15 @@
 package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
+import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -54,5 +58,14 @@ public class GL10Renderer extends BasicRenderer {
 
     @Override
     public void applyCamera(Frustum frustum) {
+    }
+
+    @Override
+    public void draw(RenderableNode node) {
+    }
+
+    @Override
+    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
+        return null;
     }
 }

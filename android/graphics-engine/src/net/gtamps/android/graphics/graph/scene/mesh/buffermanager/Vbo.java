@@ -7,23 +7,37 @@ package net.gtamps.android.graphics.graph.scene.mesh.buffermanager;
  */
 public class Vbo {
 
-    public int vertexBufferId;
-    public int normalBufferId;
-    public int colorBufferId;
-    public int uvBufferId;
-    public int indexBufferId;
+    public int vertexBufferID;
+    public int normalBufferID;
+    public int colorBufferID;
+    public int uvBufferID;
+    public int indexBufferID;
     public boolean isAllocated;
 
     public Vbo(int[] buffer, boolean isAllocated) {
         this(buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], isAllocated);
     }
 
-    public Vbo(int vertexBufferId, int normalBufferId, int colorBufferId, int uvBufferId, int indexBufferId, boolean isAllocated) {
-        this.vertexBufferId = vertexBufferId;
-        this.normalBufferId = normalBufferId;
-        this.colorBufferId = colorBufferId;
-        this.uvBufferId = uvBufferId;
-        this.indexBufferId = indexBufferId;
+    public Vbo(int vertexBufferID, int normalBufferID, int colorBufferID, int uvBufferID, int indexBufferID, boolean isAllocated) {
+        this.vertexBufferID = vertexBufferID;
+        this.normalBufferID = normalBufferID;
+        this.colorBufferID = colorBufferID;
+        this.uvBufferID = uvBufferID;
+        this.indexBufferID = indexBufferID;
         this.isAllocated = isAllocated;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer();
+        sb.append("Vbo");
+        sb.append("[vertexID=").append(vertexBufferID);
+        sb.append("|normalID=").append(normalBufferID);
+        sb.append("|colorID=").append(colorBufferID);
+        sb.append("|uvID=").append(uvBufferID);
+        sb.append("|indexID=").append(indexBufferID);
+        sb.append("|allocated=").append(isAllocated);
+        sb.append(']');
+        return sb.toString();
     }
 }

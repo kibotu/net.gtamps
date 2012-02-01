@@ -221,19 +221,19 @@ public class GLES20Renderer extends BasicRenderer {
         Logger.checkGlError(this, "modelMatrix");
 
         // vertices
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(program, "vertexPosition"), 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(program, "vertexPosition"));
         Logger.checkGlError(this, "vertexPosition");
 
         // normals
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(program, "vertexNormal"), 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(program, "vertexNormal"));
         Logger.checkGlError(this, "vertexNormal");
 
         // colors
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.colorBufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.colorBufferID);
         GLES20.glVertexAttribPointer(glGetAttribLocation(program, "vertexColor"), 4, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(glGetAttribLocation(program, "vertexColor"));
         Logger.checkGlError(this, "vertexColor");
@@ -266,7 +266,7 @@ public class GLES20Renderer extends BasicRenderer {
             }
 
             // uvs
-            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.uvBufferId);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.uvBufferID);
             GLES20.glVertexAttribPointer(glGetAttribLocation(program, "vertexUv"), 2, GL_FLOAT, false, 0, 0);
             glEnableVertexAttribArray(glGetAttribLocation(program, "vertexUv"));
             Logger.checkGlError(this, "vertexUv");
@@ -280,7 +280,7 @@ public class GLES20Renderer extends BasicRenderer {
         Logger.checkGlError(this, "hasLighting");
 
         // Draw with indices
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.indexBufferId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.indexBufferID);
         GLES20.glDrawElements(GL_TRIANGLES, mesh.faces.getBuffer().capacity(), GL_UNSIGNED_SHORT, 0);
         Logger.checkGlError(this, "glDrawElements");
 
@@ -305,37 +305,39 @@ public class GLES20Renderer extends BasicRenderer {
 
         // bind vertex buffer
         if (vertexBuffer != null) {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferId);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferID);
             glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind index buffer
         if (indexBuffer != null) {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.indexBufferId);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.indexBufferID);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind normal buffer
         if (normalBuffer != null) {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.normalBufferId);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.normalBufferID);
             glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind color buffer
         if (colorBuffer != null) {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.colorBufferId);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.colorBufferID);
             glBufferData(GL_ARRAY_BUFFER, colorBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, colorBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind uv buffer
         if (uvBuffer != null) {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.uvBufferId);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.uvBufferID);
             glBufferData(GL_ARRAY_BUFFER, uvBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, uvBuffer, GL_DYNAMIC_DRAW);
         }
 
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+        Logger.i(this, vbo + " successfully allocated.");
 
         return vbo;
     }

@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.graph.scene.mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.FaceManager;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.VertexManager;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureManager;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -16,7 +17,7 @@ import net.gtamps.shared.Utils.math.Vector3;
 public class Mesh {
 
     public final VertexManager vertices;
-    //    public final TextureManager textures;
+    public final TextureManager textures;
     public final FaceManager faces;
     public Vbo vbo;
 
@@ -25,6 +26,7 @@ public class Mesh {
 
         faces = new FaceManager(maxFaces);
         vertices = new VertexManager(maxVertices);
+        textures = new TextureManager();
     }
 
     public void allocate() {

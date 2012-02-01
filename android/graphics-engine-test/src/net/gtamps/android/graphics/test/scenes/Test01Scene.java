@@ -20,6 +20,9 @@ public class Test01Scene extends SceneGraph {
         setActiveCamera(new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0));
         add(new Light(0, 0, 10, 0, 0, -1));
         add(new Cube());
+//        add(new Triangle());
+//        add(new Cube());
+//        add(new Triangle());
     }
 
     @Override

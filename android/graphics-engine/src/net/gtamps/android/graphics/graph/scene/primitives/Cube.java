@@ -32,7 +32,7 @@ public class Cube extends RenderableNode {
     public void onCreateInternal(GL10 gl10) {
         if (mesh != null) return;
 
-        mesh = new Mesh(24, 12);
+        mesh = new Mesh(12, 24);
 
         final float c = 1f;
         Color4 emissive = material.getEmission();
