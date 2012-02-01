@@ -18,8 +18,9 @@ import android.util.Log;
 
 public class SimpleWorld implements IWorld {
 
-	private TexturedQuad character1;
-	private TexturedQuad car1;
+	private AbstractShape character1;
+	private AbstractShape car1;
+	private AbstractShape bullet;
 	private AbstractShape defaultshape;
 	private AssetManager assetManager;
 
@@ -38,13 +39,19 @@ public class SimpleWorld implements IWorld {
 		// R.drawable.defaulttile);
 		assetManager = context.getAssets();
 
-		TileBitmapBuilder tbb = new TileBitmapBuilder(assetManager, "entities");
-		tbb.putIfAbsent("char1_90.png");
-		tbb.putIfAbsent("car1_90.png");
-		StaticTextureHolder.add(tbb.generateTextureMapper());
+		TileBitmapBuilder entityTextures = new TileBitmapBuilder(assetManager, "entities");
+		entityTextures.putIfAbsent("char1_90.png");
+		entityTextures.putIfAbsent("car1_90.png");
+		entityTextures.putIfAbsent("bullet.png");
+		entityTextures.putIfAbsent("default.png");
+		StaticTextureHolder.add(entityTextures.generateTextureMapper());
 		character1 = new TexturedQuad("char1_90.png", 0.3f, 0.3f);
 		car1 = new TexturedQuad("car1_90.png", 1.0f, 0.5f);
-		defaultshape = new TexturedQuad("car1_90.png");
+		bullet = new TexturedQuad("bullet.png", 0.15f, 0.15f);
+		defaultshape = new TexturedQuad("default.png");
+		
+		TileBitmapBuilder spritefont = new TileBitmapBuilder(assetManager, "spritefont");
+		spritefont.putIfAbsent("spritefont_256.png");
 	}
 
 	private HashMap<Integer, AbstractEntityView> fakeEntityMap = new HashMap<Integer, AbstractEntityView>();
@@ -100,6 +107,8 @@ public class SimpleWorld implements IWorld {
 			return new SimpleEntityView(e, car1);
 		} else if (e.getName().toUpperCase().equals("HUMAN")) {
 			return new SimpleEntityView(e, character1);
+		} else if (e.getName().toUpperCase().equals("BULLET")) {
+			return new SimpleEntityView(e, bullet);
 		} else if (e.getName().toUpperCase().equals("SPAWNPOINT")) {
 			return new SimpleEntityView(e, defaultshape);
 		} else {
@@ -129,6 +138,7 @@ public class SimpleWorld implements IWorld {
 				if (t.getHeight() == 0) {
 					this.cubeTileMap.add(new CubeTile(t, new TexturedQuad(t.getBitmap())));
 				} else {
+					
 					this.cubeTileMap.add(new CubeTile(t, new TexturedCube(t.getBitmap())));
 				}
 			}

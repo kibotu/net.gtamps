@@ -22,18 +22,6 @@ public class SimpleEntityView extends AbstractEntityView{
 		this.entity = serverEntity;
 	}
 	
-//	public int getHeight() {
-//		return bitmap.getHeight();
-//	}
-
-//	public int getWidth() {
-//		return bitmap.getWidth();
-//	}
-
-//	public Bitmap getBitmap() {
-//		return bitmap;
-//	}
-
 	public boolean hasBitmap() {
 		return false;
 	}
@@ -54,8 +42,12 @@ public class SimpleEntityView extends AbstractEntityView{
 		this.texturedQuad.draw(gl);
 	}
 
-	public void set3DShape(TexturedQuad shape3D) {
-		this.texturedQuad = shape3D;		
+	public void set3DShape(AbstractShape character1) {
+		this.texturedQuad = character1;		
+	}
+
+	public void bindTexture(GL10 gl) {
+		this.texturedQuad.bindTexture(gl);
 	}
 
 }

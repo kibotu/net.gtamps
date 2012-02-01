@@ -32,12 +32,12 @@ public class SimpleRenderer implements Renderer {
 	// private Bitmap hudFont;
 	// private int hudFontCharSize = 16;
 
-//	private Context context;
+	// private Context context;
 
 	public SimpleRenderer(Context context) {
-//		this.context = context;
+		// this.context = context;
 		this.world = new SimpleWorld(context);
-		this.camera = new SimpleCamera(world,context);
+		this.camera = new SimpleCamera(world, context);
 		ConnectionThread connection = new ConnectionThread(world);
 		new Thread(connection).start();
 
@@ -94,6 +94,10 @@ public class SimpleRenderer implements Renderer {
 	private char[] FPSchars = "   FPS".toCharArray();
 	private long currentTimeMillis;
 
+	// preallocate
+	int i = 0;
+	int len = 0;
+
 	public void onDrawFrame(GL10 gl) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity(); // Reset model-view matrix ( NEW )
@@ -118,7 +122,7 @@ public class SimpleRenderer implements Renderer {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		camera.setGL(gl);
-		
+
 		if (world.getActiveView() == null) {
 			for (AbstractEntityView aev : world.getAllEntities()) {
 				if (aev.entity.getUid() == world.playerManager.getActivePlayer().getEntityUid()) {
@@ -131,24 +135,31 @@ public class SimpleRenderer implements Renderer {
 
 		gl.glPushMatrix();
 		gl.glScalef(0.6f, 0.6f, 0.6f);
-		
-			if (RENDER_ENTITIES) {
-				for (AbstractEntityView ev : world.getAllEntities()) {
-					camera.renderEntityView((SimpleEntityView) ev, gl);
+
+		if (RENDER_ENTITIES) {
+			// lets assume all entities are inside one texture
+			if (!world.getAllEntities().isEmpty()) {
+				((SimpleEntityView) world.getAllEntities().get(0)).bindTexture(gl);
+				len = world.getAllEntities().size();
+				for (i=0; i<len; i++) {
+					camera.renderEntityView((SimpleEntityView) world.getAllEntities().get(i), gl);
 				}
-				
 			}
-			
-			if (RENDER_TILES) {
-				if (world.getCubeTileMap() != null) {
-					synchronized (world) {
-						world.getCubeTileMap().get(0).bindTexture(gl);
-						for (CubeTile t : world.getCubeTileMap()) {
-							camera.renderTile(t);
-						}
+
+		}
+
+		if (RENDER_TILES) {
+			if (world.getCubeTileMap() != null) {
+				synchronized (world) {
+					// lets assume, all tiles are always in one texture.
+					world.getCubeTileMap().get(0).bindTexture(gl);
+					len = world.getCubeTileMap().size();
+					for (i=0; i<len; i++) {
+						camera.renderTile(world.getCubeTileMap().get(i));
 					}
 				}
 			}
+		}
 		gl.glPopMatrix();
 
 		if (RENDER_HUD) {
@@ -179,6 +190,6 @@ public class SimpleRenderer implements Renderer {
 	}
 
 	private void everyNthFrameDo() {
-
+		world.ensureEntityAppearance();
 	}
 }

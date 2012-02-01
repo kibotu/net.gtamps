@@ -15,15 +15,24 @@ public class SimpleCamera {
 
 	private static final float WORLD_TO_GRAPHICS_FACTOR = 32f;
 
-	private static final float CAMERA_SPEED = 5;
+	private static final float CAMERA_SPEED = 25;
 
 //	private static final float CAMERA_FOV = 300;
-	private static final float ENTITY_GROUND_DISTANCE = 1.3f;
+	private static final float ENTITY_GROUND_DISTANCE = 0.1f;
+	
+private static final float CAMERA_FOLLOWER_BIAS = -40; //degree
+private static final float CAMERA_FOLLOWER_HEIGHT = 10f;
+
+private static final float CAMERA_BIRDSEYE_HEIGHT = 300f;
+private static final float CAMERA_BIRDSEYE_BIAS = 0; //degree
+private static final float CAMERA_BIRDSEYE_ROTATION = 0;
 
 	private float x = 0f;
 	private float y = 0f;
-	private float z = 30f;
-	private float rot = 0f;
+	private float z = CAMERA_BIRDSEYE_HEIGHT;
+	private float rotx = 0f;
+	private float roty = 0f;
+	private float rotz = 0f;
 
 	private SimpleWorld world;
 
@@ -44,6 +53,15 @@ public class SimpleCamera {
 	public void follow(AbstractEntityView activeView) {
 		this.x -= (this.x - activeView.entity.x.value() / WORLD_TO_GRAPHICS_FACTOR) / CAMERA_SPEED;
 		this.y -= (this.y - activeView.entity.y.value() / WORLD_TO_GRAPHICS_FACTOR) / CAMERA_SPEED;
+		if(activeView.entity.getName().equals("CAR")){
+			this.z -= (this.z - CAMERA_FOLLOWER_HEIGHT / WORLD_TO_GRAPHICS_FACTOR) / CAMERA_SPEED;
+			this.rotx -= (this.rotx - CAMERA_FOLLOWER_BIAS ) / CAMERA_SPEED;
+			this.rotz -= (this.rotz - (activeView.entity.rota.value()+90) ) / CAMERA_SPEED;
+		} else {
+			this.z -= (this.z - CAMERA_BIRDSEYE_HEIGHT / WORLD_TO_GRAPHICS_FACTOR) / CAMERA_SPEED;
+			this.rotx -= (this.rotx - CAMERA_BIRDSEYE_BIAS) / CAMERA_SPEED;
+			this.rotz -= (this.rotz - CAMERA_BIRDSEYE_ROTATION ) / CAMERA_SPEED;
+		}
 	}
 
 	public void renderTile(CubeTile t) {
@@ -53,7 +71,8 @@ public class SimpleCamera {
 			xtilepos = t.getX() - this.x;
 			ytilepos = -t.getY() + this.y;
 			ztilepos = t.getHeight() - this.z;
-			gl.glRotatef(this.rot, 0, 0, 1);
+			gl.glRotatef(this.rotx, 1, 0, 0);
+			gl.glRotatef(this.rotz, 0, 0, 1);
 			
 			if (world != null) {
 				gl.glTranslatef(xtilepos, ytilepos, ztilepos);
@@ -81,7 +100,8 @@ public class SimpleCamera {
 			xtilepos = ev.getX() - this.x;
 			ytilepos = -ev.getY() + this.y;
 			ztilepos = ENTITY_GROUND_DISTANCE - this.z;
-			gl.glRotatef(this.rot, 0, 0, 1);
+			gl.glRotatef(this.rotx, 1, 0, 0);
+			gl.glRotatef(this.rotz, 0, 0, 1);
 
 			if (world != null) {
 				gl.glTranslatef(xtilepos, ytilepos, ztilepos);
@@ -95,24 +115,5 @@ public class SimpleCamera {
 			Logger.e(this, "GL Context is not set");
 		}
 		
-//		gl.glPushMatrix();
-//
-//		gl.glTranslatef(ev.entity.x.value() / (WORLD_TO_GRAPHICS_FACTOR) - this.x, -ev.entity.y.value()
-//				/ (WORLD_TO_GRAPHICS_FACTOR) + this.y, -this.z);
-//		if (ev.hasBitmap()) {
-//			gl.glPushMatrix();
-//			gl.glTranslatef(-ev.getWidth() / (2 * WORLD_TO_GRAPHICS_FACTOR), -ev.getHeight()
-//					/ (2 * WORLD_TO_GRAPHICS_FACTOR), 0);
-//			gl.glRotatef(ev.entity.rota.value(), 0, 0, 1);
-//			human.draw(gl);
-//			gl.glPopMatrix();
-//		} else if (ev.entity.getName().equals("SPAWNPOINT")) {
-//			car.bindTexture(gl);
-//			car.draw(gl);
-//		} else {
-//			car.bindTexture(gl);
-//			car.draw(gl);
-//		}
-//		gl.glPopMatrix();
 	}
 }

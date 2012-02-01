@@ -214,7 +214,7 @@ public class BinaryObjectSerializer implements ISerializer {
 
 	private void writeTranslatedStringToBytes(String s, byte[] bytes, ArrayPointer ps){
 		translated = Translator.lookup(s);
-		if(!useStringConstants && translated>-1){
+		if(useStringConstants && translated>-1){
 			BinaryConverter.writeByteToBytes(classByteLookup.get(Const.class), bytes, ps);
 			BinaryConverter.writeByteToBytes(translated, bytes, ps);
 		} else {

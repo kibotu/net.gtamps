@@ -33,7 +33,7 @@ public class TexturedQuad extends AbstractShape{
 	}
 
 	public void draw(GL10 gl) {
-		bindTexture(gl);
+//		bindTexture(gl);
 		gl.glPushMatrix();
 		gl.glScalef(scalex, scaley, 1.0f);
 		

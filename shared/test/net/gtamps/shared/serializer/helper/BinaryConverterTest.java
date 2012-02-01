@@ -63,7 +63,7 @@ public class BinaryConverterTest {
 		}
 	
 	@Test
-	public void testCharArrayToBytes() {
+	public void testASCIICharArrayToBytes() {
 		String s = "$%&/()=;:_,.-RFDVBNKIUZTGF";
 		String s2 = "oiausd";
 		ArrayPointer inputpointer = new ArrayPointer();

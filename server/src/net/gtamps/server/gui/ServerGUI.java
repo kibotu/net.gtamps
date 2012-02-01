@@ -87,6 +87,20 @@ public class ServerGUI {
 			}
 		});
 
+		final JButton toggleMessageDumpsButton = new JButton("Enable MSG Dumps");
+		toggleMessageDumpsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if(toggleMessageDumpsButton.getText().equals("Enable MSG Dumps")){
+					toggleMessageDumpsButton.setText("Disable MSG Dumps");
+					GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS = true;
+				} else {
+					toggleMessageDumpsButton.setText("Enable MSG Dumps");
+					GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS = false;
+				}
+			}
+		});
+
 
 
 		checkTimer = new Timer(1000, new ActionListener() {
@@ -113,6 +127,8 @@ public class ServerGUI {
 		buttonContainer.add(networkReceiveActivity);
 		buttonContainer.add(previewGameButton);
 		buttonContainer.add(restartGameButton);
+		buttonContainer.add(toggleMessageDumpsButton);
+
 
 		final Container container = new Container();
 		container.setLayout(new BorderLayout());

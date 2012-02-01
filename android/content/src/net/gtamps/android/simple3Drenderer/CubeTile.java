@@ -24,11 +24,11 @@ public class CubeTile {
 	}
 
 	public float getX() {
-		return tile.getX()/TILESIZE;
+		return (tile.getX()+TILESIZE)/TILESIZE;
 	}
 
 	public float getY() {
-		return tile.getY()/TILESIZE;
+		return (tile.getY()+TILESIZE)/TILESIZE;
 	}
 
 	public float getRotation() {

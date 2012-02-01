@@ -12,6 +12,7 @@ public abstract class AbstractShape {
 	protected FloatBuffer vertexBuffer;
 	protected FloatBuffer texBuffer;
 	protected float[] texCoords;
+	protected int textureID = -1;
 
 	protected String texture;
 	AbstractShape(String texture){
@@ -26,7 +27,10 @@ public abstract class AbstractShape {
 	}
 	
 	public void bindTexture(GL10 gl){
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, StaticTextureHolder.getTextureID(this.texture, gl));
+		if(textureID==-1){
+			textureID = StaticTextureHolder.getTextureID(this.texture, gl);
+		}
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureID);
 	}
 
 	public abstract void draw(GL10 gl);
