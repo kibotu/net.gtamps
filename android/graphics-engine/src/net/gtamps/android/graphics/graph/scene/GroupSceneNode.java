@@ -19,6 +19,11 @@ public class GroupSceneNode extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+
+        // transform
+        onTransformation(gl10);
+
+        // render
         for (int i = 0; i < size(); ++i) {
             children.get(i).onDrawFrame(gl10);
         }

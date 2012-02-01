@@ -1,5 +1,6 @@
 package net.gtamps.android.graphics.graph.scene;
 
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,9 +47,8 @@ public abstract class SceneNode extends ObjectWithOrientation {
         // Wenn combined transformation als dirty markiert, neu berechnen
         if (combinedTransformationDirty) {
             updateCombinedTransformation();
+            combinedTransformationDirty = false;
         }
-
-        combinedTransformationDirty = false;
     }
 
     protected abstract void onTransformationInternal(GL10 gl10);
