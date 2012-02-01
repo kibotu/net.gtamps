@@ -153,10 +153,13 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		resetIterator();
 	}
 
+	T sdb;
 	@Override
 	protected void recycleHook() {
-		if (!next.isEmpty()) {
-			next.recycle();
+		resetIterator();
+		while(iterator.hasNext()) {
+			sdb = iterator.next();
+			sdb.recycle();
 		}
 		unlink();
 	}
