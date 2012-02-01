@@ -4,8 +4,8 @@ import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.android.graphics.graph.scene.primitives.Camera;
-import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.Triangle;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -14,9 +14,9 @@ import javax.microedition.khronos.opengles.GL10;
  * Date: 31/01/12
  * Time: 18:48
  */
-public class Test01Scene extends SceneGraph {
+public class Test02Scene extends SceneGraph {
 
-    public Test01Scene() {
+    public Test02Scene() {
         super(new Camera(0, 0, 10, 0, 0, -1, 0, 1, 0));
 //        getActiveCamera().setOrthographicView();
     }
@@ -27,21 +27,13 @@ public class Test01Scene extends SceneGraph {
         add(new Light(0, 0, 10, 0, 0, -1));
 
         // creating objects
-        Cube cube = new Cube();
-        cube.setPosition(0, 0, -10);
-        Cube cube2 = new Cube();
-        cube2.setPosition(-5, 0, -10);
-        Cube cube3 = new Cube();
-        cube3.setPosition(5, 0, -10);
+        Triangle triangle = new Triangle();
+        triangle.setPosition(0, 0, -10);
 
         // adding texture
-        cube.addTexture(new TextureSample(R.drawable.crate, TextureSample.Type.texture_01));
-        cube2.addTexture(cube.getTextureSamples());
-        cube3.addTexture(cube.getTextureSamples());
+        triangle.addTexture(new TextureSample(R.drawable.crate, TextureSample.Type.texture_01));
 
         // add to scene
-        add(cube);
-        add(cube2);
-        add(cube3);
+        add(triangle);
     }
 }

@@ -1,7 +1,7 @@
 package net.gtamps.android.graphics.test;
 
 import android.os.Bundle;
-import net.gtamps.android.graphics.BasicRenderActivity;
+import net.gtamps.android.graphics.RenderActivity;
 import net.gtamps.android.graphics.test.actions.Test01Action;
 import net.gtamps.android.graphics.test.scenes.Test01Scene;
 
@@ -10,7 +10,7 @@ import net.gtamps.android.graphics.test.scenes.Test01Scene;
  * Date: 31/01/12
  * Time: 17:57
  */
-public class Test01Activity extends BasicRenderActivity {
+public class Test01Activity extends RenderActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

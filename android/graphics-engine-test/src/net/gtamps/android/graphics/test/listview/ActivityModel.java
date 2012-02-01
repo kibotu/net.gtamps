@@ -6,7 +6,7 @@ package net.gtamps.android.graphics.test.listview;
  * Time: 18:06
  */
 public class ActivityModel extends ListModel {
-    
+
     private final String packageName;
     private final String className;
 

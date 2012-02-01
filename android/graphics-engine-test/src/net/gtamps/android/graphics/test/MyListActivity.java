@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import net.gtamps.android.graphics.test.listview.ActivityModel;
 import net.gtamps.android.graphics.test.listview.ListModel;
 
@@ -24,14 +23,15 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-        startActivity(PACKAGE_NAME,"Test01Activity");
+        startActivity(PACKAGE_NAME, "Test01Activity");
+//        startActivity(PACKAGE_NAME, "Test02Activity");
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         ActivityModel item = (ActivityModel) l.getAdapter().getItem(position);
 //        Toast.makeText(this, item.getName(), Toast.LENGTH_SHORT).show();
-        startActivity(item.getPackageName(),item.getClassName());
+        startActivity(item.getPackageName(), item.getClassName());
         super.onListItemClick(l, v, position, id);
     }
 

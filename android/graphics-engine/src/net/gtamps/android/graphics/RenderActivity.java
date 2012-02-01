@@ -12,7 +12,7 @@ import net.gtamps.android.utils.AndroidLogger;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 
-public abstract class BasicRenderActivity extends Activity {
+public abstract class RenderActivity extends Activity {
 
     protected GLSurfaceView view;
     protected IRenderAction renderAction;
