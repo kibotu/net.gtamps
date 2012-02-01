@@ -9,13 +9,18 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
  * Date: 31/01/12
- * Time: 20:25
+ * Time: 20:00
  */
-public class Triangle extends RenderableNode {
+public class Plane extends RenderableNode {
 
     private static Mesh mesh;
 
-    public Triangle() {
+    public Plane() {
+        this(1, 1, 1);
+    }
+
+    public Plane(float width, float height, float depth) {
+        dimension.set(width, height, depth);
     }
 
     @Override
@@ -27,24 +32,14 @@ public class Triangle extends RenderableNode {
     public void onCreateInternal(GL10 gl10) {
         if (mesh != null) return;
 
-        mesh = new Mesh(1, 3);
-
-        addUperLeftTriangle(mesh);
-//        addLowerRightTriangle(mesh);
-
-        mesh.allocate();
-    }
-
-    private void addUperLeftTriangle(Mesh mesh) {
-
-        final float c = 0.5f;
+        mesh = new Mesh(2, 4);
         Color4 emissive = material.getEmission();
 
         /**
          * 1----0
-         * |  /
-         * | /
-         * 2
+         * |  / |
+         * | /  |
+         * 2----3
          */
 
         // oben rechts
@@ -53,36 +48,16 @@ public class Triangle extends RenderableNode {
         mesh.addVertex(-0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
         // unten links
         mesh.addVertex(-0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 1);
-
-        mesh.faces.add(0, 1, 2);
-    }
-
-    private void addLowerRightTriangle(Mesh mesh) {
-
-        final float c = 0.5f;
-        Color4 emissive = material.getEmission();
-
-        /**
-         *      0
-         *    / |
-         *   /  |
-         * 1----2
-         */
-
-        // oben rechts
-        mesh.addVertex(0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 0);
-        // unten links
-        mesh.addVertex(-0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 1);
         // unten rechts
         mesh.addVertex(0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 1);
 
         mesh.faces.add(0, 1, 2);
+        mesh.faces.add(2, 3, 0);
+
+        mesh.allocate();
     }
-
-
 
     @Override
     protected void onDrawFrameInternal(GL10 gl10) {
     }
 }
-

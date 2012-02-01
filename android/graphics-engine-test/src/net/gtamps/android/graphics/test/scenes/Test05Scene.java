@@ -4,8 +4,9 @@ import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
 import net.gtamps.android.graphics.graph.scene.primitives.Camera;
-import net.gtamps.android.graphics.graph.scene.primitives.Cube;
+import net.gtamps.android.graphics.graph.scene.primitives.Cylinder;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.Torus;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -15,9 +16,9 @@ import javax.microedition.khronos.opengles.GL10;
  * Date: 31/01/12
  * Time: 18:48
  */
-public class Test02Scene extends SceneGraph {
+public class Test05Scene extends SceneGraph {
 
-    public Test02Scene() {
+    public Test05Scene() {
         super(new Camera(0, 0, 15, 0, 0, -1, 0, 1, 0));
     }
 
@@ -25,7 +26,6 @@ public class Test02Scene extends SceneGraph {
     public void onSurfaceCreatedInternal(GL10 gl10) {
 
         add(new Light(0, 0, 10, 0, 0, -1));
-
         TextureSample crateTexture = new TextureSample(R.drawable.crate, TextureSample.Type.texture_01);
 
         float scale = 0.3f;
@@ -35,7 +35,7 @@ public class Test02Scene extends SceneGraph {
         for (int x = -3; x < 3; x++) {
             for (int y = -3; y < 3; y++) {
                 for (int z = -3; z < 3; z++) {
-                    Cube obj = new Cube();
+                    Cylinder obj = new Cylinder();
                     obj.setPosition(x, y, z);
                     obj.setScaling(scale, scale, scale);
                     obj.addTexture(crateTexture);
@@ -45,6 +45,6 @@ public class Test02Scene extends SceneGraph {
             }
         }
 
-        Logger.V(this, counter + " Cubes created.");
+        Logger.V(this, counter + " Cylinder created.");
     }
 }
