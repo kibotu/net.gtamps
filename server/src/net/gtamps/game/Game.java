@@ -148,6 +148,7 @@ public class Game implements IGame, Runnable {
 		//			updates = 0;
 		//		}
 
+		universe.processEvents();
 		processCommandQueue();
 		processRequestQueue();
 	}

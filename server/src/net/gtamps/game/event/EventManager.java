@@ -19,6 +19,7 @@ public class EventManager extends GameEventDispatcher implements IGameEventListe
 
 	@NotNull
 	private final Universe universe;
+
 	private final ConcurrentMap<GameEvent, Object> archive = new ConcurrentHashMap<GameEvent, Object>();
 
 	public EventManager(final Universe universe) {
