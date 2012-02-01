@@ -32,6 +32,10 @@ public class CompressedObjectSerializer implements ISerializer {
 	public CompressedObjectSerializer() {
 		this(1024);
 	}
+	
+	public CompressedObjectSerializer clone() {
+		return new CompressedObjectSerializer(bufferSize);
+	}
 
 	@Override
 	public byte[] serializeNewMessage(final NewMessage message) {

@@ -59,6 +59,11 @@ public class BinaryObjectSerializer implements ISerializer {
 		cache = SendableProviderSingleton.getInstance();
 	}
 
+	public BinaryObjectSerializer clone() {
+		//TODO use same cache
+		return new BinaryObjectSerializer();
+	}
+	
 	/*
 	 * the init() method creates the reverse lookup table, so that classes can
 	 * be resolved to bytes for serialization. Must be called before any action

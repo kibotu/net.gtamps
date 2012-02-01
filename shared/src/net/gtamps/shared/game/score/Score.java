@@ -42,7 +42,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 
 	public static enum ScoreType {
 		DUMMY(null, null),
-		FRAGS(EventType.ACTION_SHOOT, null);
+		FRAGS(EventType.PLAYER_KILLED, null);
 
 		private EventType triggerEventType;
 		private Predicate<GameEvent> filter;

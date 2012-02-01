@@ -88,7 +88,7 @@ public class LineBasedTCPSocketHandler<S extends ISerializer> implements ISocket
 		final String id = nbc.getId();
 		System.out.println("New Connection: " + id);
 		GUILogger.i().log(LogType.SERVER, "New Connection! ip:" + nbc.getRemoteAddress() + " id:" + id);
-		abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer));
+		abstractConnections.put(id, new Connection<LineBasedTCPSocketHandler<S>>(nbc.getId(), this, serializer.clone()));
 		actualConnections.put(id, nbc);
 	}
 

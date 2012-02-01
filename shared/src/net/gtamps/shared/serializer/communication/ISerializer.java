@@ -2,7 +2,7 @@ package net.gtamps.shared.serializer.communication;
 
 import net.gtamps.shared.serializer.helper.SerializedMessage;
 
-public interface ISerializer {
+public interface ISerializer extends Cloneable {
 	
 	SerializedMessage serializedMessage = new SerializedMessage();
 	
@@ -11,5 +11,7 @@ public interface ISerializer {
 	public NewMessage deserializeNewMessage(byte[] bytes);
 	
 	SerializedMessage serializeAndPackNewMessage(NewMessage m);
+	
+	public ISerializer clone();
 
 }

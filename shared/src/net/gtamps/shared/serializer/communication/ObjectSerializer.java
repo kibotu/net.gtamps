@@ -16,6 +16,10 @@ public class ObjectSerializer implements ISerializer {
 	
 	public ObjectSerializer() {
 	}
+	
+	public ObjectSerializer clone() {
+		return new ObjectSerializer();
+	}
 
 	@Override
 	public byte[] serializeNewMessage(final NewMessage message) {

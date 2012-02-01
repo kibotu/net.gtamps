@@ -183,6 +183,8 @@ def main(ip,username,password,robotmode):
 				sendMessage(s,sessionID,'ACTION_SHOOT',messageID)
 			if (a=='e' ):
 				sendMessage(s,sessionID,'ACTION_ENTEREXIT',messageID)
+			if (a=='x' ):
+				sendMessage(s,sessionID,'ACTION_SUICIDE',messageID)
 			
 			if (a=='i' ):
 				print(usage)
@@ -243,6 +245,7 @@ H - GET_UPDATE_OK
 WASD - ACTION MOVEMENT
 T - ACTION_SHOOT
 E - ACTION_ENTEREXIT
+X - ACTION_SUICIDE
 
 I - SHOW THIS INFO
 Q - QUIT
