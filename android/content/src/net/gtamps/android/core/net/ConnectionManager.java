@@ -47,7 +47,7 @@ public enum ConnectionManager implements IMessageManager {
 	@Override
 	public NewMessage poll() {
 		final NewMessage message = inbox.poll();
-		currentSessionId = message.getSessionId();
+//		currentSessionId = message.getSessionId();
 		//remove string allocations
 //		if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
 //			Logger.i(this, "inbox poll: " + message.toString());
