@@ -3,7 +3,6 @@ package net.gtamps.android.simple3Drenderer;
 import javax.microedition.khronos.opengles.GL10;
 
 import net.gtamps.android.simple3Drenderer.shapes.AbstractShape;
-import net.gtamps.android.simple3Drenderer.shapes.TexturedCube;
 import net.gtamps.shared.game.level.Tile;
 
 public class CubeTile {
@@ -18,6 +17,10 @@ public class CubeTile {
 	
 	public void draw(GL10 gl){
 		this.texturedCube.draw(gl);
+	}
+	
+	public void bindTexture(GL10 gl){
+		this.texturedCube.bindTexture(gl);
 	}
 
 	public float getX() {

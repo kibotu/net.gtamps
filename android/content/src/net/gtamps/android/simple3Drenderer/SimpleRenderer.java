@@ -7,15 +7,8 @@ import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.ConnectionThread;
-import net.gtamps.android.fakerenderer.FakeCamera;
-import net.gtamps.android.fakerenderer.FakeEntityView;
-import net.gtamps.android.fakerenderer.FakeWorld;
 import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
-import net.gtamps.shared.game.level.Tile;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Paint;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
@@ -39,10 +32,10 @@ public class SimpleRenderer implements Renderer {
 	// private Bitmap hudFont;
 	// private int hudFontCharSize = 16;
 
-	private Context context;
+//	private Context context;
 
 	public SimpleRenderer(Context context) {
-		this.context = context;
+//		this.context = context;
 		this.world = new SimpleWorld(context);
 		this.camera = new SimpleCamera(world,context);
 		ConnectionThread connection = new ConnectionThread(world);
@@ -122,11 +115,10 @@ public class SimpleRenderer implements Renderer {
 		}
 
 		gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		// clear the color buffer to show the ClearColor we called above...
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		camera.setGL(gl);
-
+		
 		if (world.getActiveView() == null) {
 			for (AbstractEntityView aev : world.getAllEntities()) {
 				if (aev.entity.getUid() == world.playerManager.getActivePlayer().getEntityUid()) {
@@ -138,24 +130,27 @@ public class SimpleRenderer implements Renderer {
 		}
 
 		gl.glPushMatrix();
-		gl.glScalef(0.2f, 0.2f, 0.2f);
-		if (RENDER_TILES) {
-			if (world.getCubeTileMap() != null) {
-				synchronized (world) {
-					for (CubeTile t : world.getCubeTileMap()) {
-						camera.renderTile(t);
+		gl.glScalef(0.6f, 0.6f, 0.6f);
+		
+			if (RENDER_ENTITIES) {
+				for (AbstractEntityView ev : world.getAllEntities()) {
+					camera.renderEntityView((SimpleEntityView) ev, gl);
+				}
+				
+			}
+			
+			if (RENDER_TILES) {
+				if (world.getCubeTileMap() != null) {
+					synchronized (world) {
+						world.getCubeTileMap().get(0).bindTexture(gl);
+						for (CubeTile t : world.getCubeTileMap()) {
+							camera.renderTile(t);
+						}
 					}
 				}
 			}
-		}
 		gl.glPopMatrix();
 
-		if (RENDER_ENTITIES) {
-			for (AbstractEntityView ev : world.getAllEntities()) {
-				camera.renderEntityView((SimpleEntityView) ev, gl);
-			}
-
-		}
 		if (RENDER_HUD) {
 			// drawHUD(gl);
 		}
