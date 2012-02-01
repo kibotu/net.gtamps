@@ -130,13 +130,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		return next;
 	}
 
+	ListNode<T> unlinkNode;
+	ListNode<T> tmplink;
 	void unlink() {
-		iterator.unlink();
-		value = null;
-		if(next!=null){
-			next.unlink();
+		unlinkNode = this;
+		while(unlinkNode != null) {
+			unlinkNode.value = null;
+			tmplink = unlinkNode;
+			unlinkNode = unlinkNode.next;
+			tmplink.iterator.unlink();
+			tmplink.next = emptyList();
 		}
-		next = emptyList();
 	}
 
 	private void ensureIteratorReset() {
@@ -152,19 +156,33 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	protected void initHook() {
 		resetIterator();
 	}
+	
+	
 
-	T sdb;
+	ListNode<T> recycleThis;
+	ListNode<T> tmplist;
 	@Override
-	protected void recycleHook() {
-		resetIterator();
-		while(iterator.hasNext()) {
-			sdb = iterator.next();
-			sdb.recycle();
+	public void recycle() {
+		recycleThis = this.next;
+		while(recycleThis != emptyList()) {
+			tmplist = recycleThis.next;
+			this.next.value.recycle();
+			this.next.value = null;
+			this.next.resetIterator();
+			this.next.cache.registerElement(this.next);
+			this.next = emptyList();
+			recycleThis = tmplist;
 		}
-		unlink();
+		this.value.recycle();
+		this.value = null;
+		this.resetIterator();
+		this.cache.registerElement(this);
+		
 	}
-
-	private static class ListNodeIterator<T extends AbstractSendable<T>>  implements Iterator<T> {
+	protected void recycleHook() {
+	}
+		
+	static class ListNodeIterator<T extends AbstractSendable<T>>  implements Iterator<T> {
 
 		final ListNode<T> startElement;
 		ListNode<T> iteratorNextElement;
@@ -175,7 +193,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		}
 
 		public void unlink() {
-			iteratorNextElement = null;
+			iteratorNextElement = startElement;
 		}
 
 		public boolean isReset() {
