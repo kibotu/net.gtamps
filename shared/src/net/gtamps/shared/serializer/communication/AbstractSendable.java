@@ -3,6 +3,7 @@ package net.gtamps.shared.serializer.communication;
 import java.io.Serializable;
 
 import net.gtamps.shared.Utils.cache.IObjectCache;
+import net.gtamps.shared.serializer.communication.data.ListNode;
 
 public abstract class AbstractSendable<Type extends AbstractSendable<Type>> implements Serializable {
 
@@ -31,9 +32,11 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 	public final void recycle() throws IllegalStateException {
 		recycleHook();
 		try {
-			cache.registerElement((Type)this);
+			if (this != ListNode.EmptyListNode.INSTANCE) {
+				cache.registerElement((Type)this);
+			}
 		} catch (final NullPointerException e) {
-			throw new IllegalStateException(ERROR_CACHE_UNDEFINED_MSG, e);
+				throw new IllegalStateException(ERROR_CACHE_UNDEFINED_MSG, e);
 		}
 	}
 
