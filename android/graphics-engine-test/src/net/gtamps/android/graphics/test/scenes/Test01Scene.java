@@ -26,8 +26,5 @@ public class Test01Scene extends SceneGraph {
         Cube cube = new Cube();
         cube.addTexture(new TextureSample(R.drawable.crate, TextureSample.Type.texture_01));
         add(cube);
-//        add(new Triangle());
-//        add(new Cube());
-//        add(new Triangle());
     }
 }

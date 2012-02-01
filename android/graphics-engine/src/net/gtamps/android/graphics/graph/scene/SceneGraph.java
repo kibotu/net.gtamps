@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class SceneGraph {
 
     private Camera activeCamera;
-    private final GroupSceneNode group = new GroupSceneNode();
+    private final GroupSceneNode rootNode = new GroupSceneNode();
 
     public SceneGraph(Camera camera) {
         setActiveCamera(camera);
@@ -29,12 +29,16 @@ public abstract class SceneGraph {
     }
 
     final public void remove(SceneNode node) {
-        group.remove(node);
+        rootNode.remove(node);
     }
 
     final public void add(SceneNode node) {
-        group.add(node);
+        rootNode.add(node);
         Registry.getRenderer().addToSetupQueue(node);
+    }
+
+    public GroupSceneNode getRootNode() {
+        return rootNode;
     }
 
     final public void onSurfaceCreated(GL10 gl10) {
@@ -45,10 +49,12 @@ public abstract class SceneGraph {
     protected abstract void onSurfaceCreatedInternal(GL10 gl10);
 
     final public void onResume(GL10 gl10) {
-        group.onResume(gl10);
+        activeCamera.onResume(gl10);
+        rootNode.onResume(gl10);
     }
 
     final public void onDrawFrame(GL10 gl10) {
-        group.onDrawFrame(gl10);
+        activeCamera.onDrawFrame(gl10);
+        rootNode.onDrawFrame(gl10);
     }
 }

@@ -17,7 +17,11 @@ public class Test01Action extends RenderAction {
     public void onSurfaceCreated(GL10 gl10) {
     }
 
+    float rot = 0;
+    
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
+        rot+=0.01;
+        getScenes().get(0).getRootNode().getChild(1).setRotation(rot,rot,rot);
     }
 }
