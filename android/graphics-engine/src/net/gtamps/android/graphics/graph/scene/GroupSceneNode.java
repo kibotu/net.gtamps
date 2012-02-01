@@ -25,12 +25,17 @@ public class GroupSceneNode extends SceneNode {
 
     @Override
     protected void onTransformation(GL10 gl10) {
+        super.onTransformation(gl10);
+
         for(int i = 0; i < size(); ++i) {
             children.get(i).onTransformation(gl10);
         }
         onTransformationInternal(gl10);
     }
 
+    @Override
+    protected void onTransformationInternal(GL10 gl10) {
+    }
 
     @Override
     public void onCreate(GL10 gl10) {

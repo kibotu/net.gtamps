@@ -35,9 +35,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
 
     protected abstract void onCreateInternal(GL10 gl10);
 
-    protected abstract void onTransformation(GL10 gl10);
-
-    protected void onTransformationInternal(GL10 gl10) {
+    protected void onTransformation(GL10 gl10) {
 
         // Orientierung neu berechnen
         if (updateOrientation()) {
@@ -52,6 +50,8 @@ public abstract class SceneNode extends ObjectWithOrientation {
 
         combinedTransformationDirty = false;
     }
+
+    protected abstract void onTransformationInternal(GL10 gl10);
 
     /**
      * Aktualisiert die kombinierte Transformationsmatrix
