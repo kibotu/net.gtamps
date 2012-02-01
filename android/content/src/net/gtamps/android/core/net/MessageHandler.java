@@ -122,7 +122,7 @@ public class MessageHandler {
                 break;
 
             case SESSION_OK:
-                connection.currentSessionId = message.getSessionId();
+                connection.currentSessionId = sendable.data.asMap().getString(StringConstants.SESSION_ID);
                 //FIXME workaround for presentation
                 if(android.os.Build.VERSION.SDK_INT>8){
                 	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME_TIL, Config.DEFAULT_PASSWORD_TIL));
