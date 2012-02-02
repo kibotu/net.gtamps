@@ -83,6 +83,7 @@ public class SimpleWorld implements IWorld {
 			this.simpleEntityMap.put(entityView.entity.getUid(), entityView);
 		}
 		refreshEntityViewList();
+		
 	}
 
 	LinkedList<AbstractEntityView> entityViewList = null;
@@ -96,7 +97,7 @@ public class SimpleWorld implements IWorld {
 	}
 
 	private void refreshEntityViewList() {
-		synchronized (this) {
+		synchronized (entityViewList) {
 			entityViewList = new LinkedList<AbstractEntityView>(this.simpleEntityMap.values());
 		}
 	}

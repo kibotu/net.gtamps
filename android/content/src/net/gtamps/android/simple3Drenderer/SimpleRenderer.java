@@ -83,11 +83,11 @@ public class SimpleRenderer implements Renderer {
 		gl.glEnable(GL10.GL_BLEND);
 		
 		
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, GL10Utils.floatsToFloatBuffer(new float[]{0.5f,0.5f,0.5f,1f}));
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, GL10Utils.floatsToFloatBuffer(new float[]{0.8f,0.7f,0.5f,1f}));
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, GL10Utils.floatsToFloatBuffer(new float[]{0.1f,0.1f,10f,1f}));
-		gl.glEnable(GL10.GL_LIGHT1);
-		gl.glEnable(GL10.GL_LIGHTING);
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, GL10Utils.floatsToFloatBuffer(new float[]{0.5f,0.5f,0.5f,1f}));
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, GL10Utils.floatsToFloatBuffer(new float[]{0.8f,0.7f,0.5f,1f}));
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, GL10Utils.floatsToFloatBuffer(new float[]{0.1f,0.1f,10f,1f}));
+//		gl.glEnable(GL10.GL_LIGHT1);
+//		gl.glEnable(GL10.GL_LIGHTING);
 	}
 
 	// Call back after onSurfaceCreated() or whenever the window's size changes
