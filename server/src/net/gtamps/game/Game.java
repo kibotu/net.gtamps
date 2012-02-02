@@ -311,7 +311,7 @@ public class Game implements IGame, Runnable {
 			type = EventType.ACTION_SUICIDE;
 		}
 		if (type != null) {
-			universe.dispatchEvent(new GameEvent(type, player));
+			universe.dispatchEvent(new GameEvent(type, player, player.getEntity()));
 		}
 	}
 

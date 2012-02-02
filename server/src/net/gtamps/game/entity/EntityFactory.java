@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.gtamps.game.conf.PhysicalProperties;
 import net.gtamps.game.conf.WorldConstants;
+import net.gtamps.game.handler.DeathExplosionHandler;
 import net.gtamps.game.handler.DriverHandler;
 import net.gtamps.game.handler.SensorDoorHandler;
 import net.gtamps.game.handler.ShootingHandler;
@@ -43,7 +44,9 @@ public class EntityFactory {
 		if (normName.equals("CAR")) {
 			physprop = PhysicalProperties.Sportscar;
 			blup.addHandlerPrototype(new GenericHandlerBlueprint<DriverHandler>(universe, DriverHandler.class, Handler.Type.DRIVER));
+			blup.addHandlerPrototype(new GenericHandlerBlueprint<DeathExplosionHandler>(universe, DeathExplosionHandler.class, Handler.Type.AUTODISPOSE));
 			blup.addHandlerPrototype(new CollisionDamageBlueprint(universe, 0, 1f));
+			blup.addHandlerPrototype(new HealthBlueprint(universe, 700, 1f, 50));
 		} else if (normName.equals("HUMAN")) {
 			physprop = PhysicalProperties.Human;
 			blup.addHandlerPrototype(new HealthBlueprint(universe, 100, 1f, 1));
