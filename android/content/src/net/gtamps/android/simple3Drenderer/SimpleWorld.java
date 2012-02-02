@@ -86,7 +86,7 @@ public class SimpleWorld implements IWorld {
 		
 	}
 
-	LinkedList<AbstractEntityView> entityViewList = null;
+	LinkedList<AbstractEntityView> entityViewList = new LinkedList<AbstractEntityView>();
 
 	@Override
 	public List<AbstractEntityView> getAllEntities() {
