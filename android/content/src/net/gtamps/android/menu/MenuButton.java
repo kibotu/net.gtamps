@@ -31,7 +31,7 @@ public class MenuButton extends Button {
         float density = getContext().getApplicationContext().getResources().getDisplayMetrics().density;
         float measuredTextWidth = getPaint().measureText(currentText, 0, currentText.length());
 
-        setWidth((int) (measuredTextWidth * density));
+        setWidth((int) (measuredTextWidth * density)*2);
         setHeight(40);
     }
 

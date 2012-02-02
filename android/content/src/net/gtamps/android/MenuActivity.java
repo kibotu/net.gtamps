@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import net.gtamps.shared.Config;
+import net.gtamps.shared.Utils.Logger;
 
 import java.util.HashMap;
 
@@ -32,18 +34,19 @@ public class MenuActivity extends Activity implements OnClickListener {
 
         ((Button) findViewById(R.id.menuButtonStartGame)).setOnClickListener(this);
         ((Button) findViewById(R.id.menuButtonConfiguration)).setOnClickListener(this);
+        ((Button) findViewById(R.id.menuAddIpButton)).setOnClickListener(this);
         ((Button) findViewById(R.id.menuButtonQuit)).setOnClickListener(this);
         ((Button) findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
 
         // autostart
-        if(Config.FORCE_GTA_2D){
+        /*if(Config.FORCE_GTA_2D){
         	startGTA2D();
         } else if(Config.FORCE_GTA_3D_SIMPLE){
         	startGTA2DSimple();
-        } else startGTA3D();
+        } else startGTA3D();*/
     }
 
-    private void startGTA2DSimple() {
+    private void startGTA3DSimple() {
     	Intent intent = new Intent();
         intent.setClassName("net.gtamps.android", "net.gtamps.android.GTA3Dsimple");
         startActivity(intent);
@@ -76,14 +79,20 @@ public class MenuActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         if (v.equals(findViewById(R.id.menuButtonStartGame))) {
             setMenuMode(menuMode.LOADING);
-            if(Config.FORCE_GTA_2D) startGTA2D();
-            else startGTA3D();
+//            if(Config.FORCE_GTA_2D) startGTA2D();
+//            else 
+            startGTA3DSimple();
+    
         }
         if (v.equals(findViewById(R.id.menuButtonConfiguration))) {
             setMenuMode(menuMode.CONFIGURATION);
         }
         if (v.equals(findViewById(R.id.menuButtonGoToMain))) {
             setMenuMode(menuMode.MAIN);
+        }
+        if (v.equals(findViewById(R.id.menuAddIpButton))) {
+        	net.gtamps.shared.Config.IPS.add(((EditText)findViewById(R.id.ipText)).getText().toString());
+        	Logger.toast("", "IP was added!");
         }
         if (v.equals(findViewById(R.id.menuButtonQuit))) {
             finish();
