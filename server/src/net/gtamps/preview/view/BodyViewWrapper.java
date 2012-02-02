@@ -17,6 +17,7 @@ public class BodyViewWrapper extends BodyView {
 	private float savedScale = 1f;
 	private final BodyView bodyView;
 
+
 	BodyViewWrapper(final Body body) {
 		this(new BodyView(body));
 	}
@@ -26,7 +27,9 @@ public class BodyViewWrapper extends BodyView {
 		clearChildren();
 		bodyView = bodyview;
 		addChild(bodyview);
-		addChild(new VectorView(body.getLinearVelocity(), body.getLocalCenter()));
+		if (body.isDynamic()) {
+			addChild(new VectorView(body.getLinearVelocity(), body.getLocalCenter()));
+		}
 	}
 
 	@Override

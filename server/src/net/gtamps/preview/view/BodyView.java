@@ -5,6 +5,7 @@ import java.awt.Color;
 import net.gtamps.shared.game.entity.Entity;
 
 import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 public class BodyView extends PhysicsView {
@@ -28,6 +29,7 @@ public class BodyView extends PhysicsView {
 		}
 		final Object userData = body.getUserData();
 		if (userData != null && userData instanceof Entity) {
+			addChild(new VectorView(new Vec2(1,0), body.getLocalCenter()));
 			entity = (Entity) userData;
 		} else {
 			// TODO warn
