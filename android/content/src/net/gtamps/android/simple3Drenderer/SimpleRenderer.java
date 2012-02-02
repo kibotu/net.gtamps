@@ -1,21 +1,18 @@
 package net.gtamps.android.simple3Drenderer;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.inputlistener.CameraMovementListener;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
-import net.gtamps.android.core.net.ConnectionThread;
-import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
+import net.gtamps.android.core.net.threaded.ConnectionThread;
 import net.gtamps.android.simple3Drenderer.helper.GL10Utils;
 import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
@@ -44,12 +41,11 @@ public class SimpleRenderer implements Renderer {
 
 	// private Context context;
 
-	public SimpleRenderer(Context context) {
+	public SimpleRenderer(Context context, SimpleWorld world) {
+		this.world = world;
 		// this.context = context;
-		this.world = new SimpleWorld(context);
-		this.camera = new SimpleCamera(world, context);
-		ConnectionThread connection = new ConnectionThread(world);
-		new Thread(connection).start();
+		this.camera = new SimpleCamera(this.world, context);
+		
 
 		for (int i = 0; i < 256; i++) {
 			float[] f = { 	

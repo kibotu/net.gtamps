@@ -1,7 +1,8 @@
 package net.gtamps.android.game;
 
-import net.gtamps.android.core.net.ConnectionManager;
+import net.gtamps.android.core.net.AbstractConnectionManager;
 import net.gtamps.android.core.net.MessageHandler;
+import net.gtamps.android.core.net.threaded.ThreadedConnectionManager;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.game.content.scenes.Hud;
 import net.gtamps.android.game.content.scenes.Menu;
@@ -22,7 +23,7 @@ public class Game extends RenderAction {
     private final Hud hud;
     private final World world;
     private final Menu menu;
-    private final ConnectionManager connection;
+    private final ThreadedConnectionManager connection;
     private final MessageHandler messageHandler;
 
     public Game() {
@@ -30,7 +31,7 @@ public class Game extends RenderAction {
         hud = new Hud();
         world = new World();
         menu = new Menu();
-        connection = ConnectionManager.INSTANCE;
+        connection = (ThreadedConnectionManager) AbstractConnectionManager.getInstance();
         this.messageHandler = new MessageHandler(connection, world);
     }
 

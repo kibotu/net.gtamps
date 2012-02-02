@@ -30,10 +30,10 @@ public class MessageHandler {
 
 	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
 	private GameobjectStore store = new GameobjectStore();
-    private ConnectionManager connection;
+    private AbstractConnectionManager connection;
     private IWorld world;
 
-    public MessageHandler(ConnectionManager connection, IWorld world2) {
+    public MessageHandler(AbstractConnectionManager connection, IWorld world2) {
         this.connection = connection;
         this.world = world2;
     }
@@ -270,8 +270,8 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ACTION_SUICIDE:
                 break;
@@ -286,8 +286,8 @@ public class MessageHandler {
             case ENTITY_BULLET_HIT:
                 break;
             case ENTITY_COLLIDE:
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_CREATE:
                 break;
@@ -295,17 +295,17 @@ public class MessageHandler {
                 break;
             case ENTITY_DEACTIVATE:
             	world.deactivate(event.getTargetUid());
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_DESTROYED:
-            	if(world.getViewById(event.getTargetUid()).entity.getName().equals("CAR")){
-            		world.invokeExplosion(world.getViewById(event.getTargetUid()));
-            	}
+//            	if(world.getViewById(event.getTargetUid()).entity.getName().equals("CAR")){
+//            		world.invokeExplosion(world.getViewById(event.getTargetUid()));
+//            	}
             	world.remove(event.getTargetUid());
-            	store.reclaim(event.getTargetUid());
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event.getTargetUid());
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_EVENT:
                 break;
@@ -352,9 +352,11 @@ public class MessageHandler {
                 // new active object
                 AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
                 world.setActiveView(entityView);
-                store.reclaim(event);
+//                store.reclaim(event);
                 Logger.i(this, "PLAYER_NEWENTITY " + entityView.entity.getUid());
 
+//                store.reclaim(event.getTargetUid());
+//                store.reclaim(event.getSourceUid());
                 break;
 
             case PLAYER_POWERUP:
@@ -373,8 +375,11 @@ public class MessageHandler {
             case SESSION_UPDATE:
                 break;
             default:
-            	store.reclaim(event);
+            	break;
         }
+        store.reclaim(event.getSourceUid());
+        store.reclaim(event.getTargetUid());
+        store.reclaim(event);
     }
 
 }

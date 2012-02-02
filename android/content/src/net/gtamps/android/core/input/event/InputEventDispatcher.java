@@ -1,10 +1,9 @@
 package net.gtamps.android.core.input.event;
 
-import net.gtamps.shared.Utils.Logger;
+import java.util.LinkedList;
+
 import net.gtamps.shared.serializer.communication.SendableType;
 import net.gtamps.shared.serializer.communication.data.ISendableData;
-
-import java.util.LinkedList;
 
 public class InputEventDispatcher {
 

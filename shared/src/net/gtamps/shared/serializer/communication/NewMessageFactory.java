@@ -16,17 +16,8 @@ import net.gtamps.shared.Utils.cache.annotations.ReturnsCachedValue;
 @Deprecated
 final public class NewMessageFactory {
 
-	private static final TypableObjectCacheFactory cacheFactory = createDefaultCacheFactory();
+	private static final TypableObjectCacheFactory cacheFactory = new SendableCacheFactory();
 	private static final SendableFactory sendableFactory = new SendableFactory(cacheFactory);
-
-	private static final TypableObjectCacheFactory createDefaultCacheFactory() {
-		return new TypableObjectCacheFactory() {
-			@Override
-			public <T> IObjectCache<T> createObjectCache(final Class<T> type) {
-				return new ThreadLocalObjectCache<T>( createTypedObjectFactory(type) );
-			}
-		};
-	}
 
 	private static final <T> ObjectFactory<T> createTypedObjectFactory(final Class<T> type) {
 		return new ObjectFactory<T>() {

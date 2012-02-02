@@ -1,9 +1,10 @@
-package net.gtamps.android.core.net;
+package net.gtamps.android.core.net.threaded;
 
 
-import net.gtamps.android.core.net.ConnectionManager;
+import net.gtamps.android.core.net.AbstractConnectionManager;
 import net.gtamps.android.core.net.IStream;
-import net.gtamps.android.core.net.RemoteOutputDispatcher;
+import net.gtamps.android.core.net.threaded.RemoteOutputDispatcher;
+import net.gtamps.android.core.net.threaded.ThreadedConnectionManager;
 import net.gtamps.android.game.StopTheGameException;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -57,7 +58,7 @@ public class RemoteOutputDispatcher extends Observable implements Runnable {
 			if (outbox.isEmpty()) {
 				continue;
 			}
-			serializedMessage = ConnectionManager.INSTANCE.serialize(outbox.poll());
+			serializedMessage = AbstractConnectionManager.getInstance().serialize(outbox.poll());
 			try {
 				tcpStream.send(serializedMessage.message,serializedMessage.length);
 			} catch (SocketException e) {
