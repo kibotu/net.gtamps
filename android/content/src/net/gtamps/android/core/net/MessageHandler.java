@@ -2,7 +2,9 @@ package net.gtamps.android.core.net;
 
 import java.util.NoSuchElementException;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.sound.SoundEngine;
+import net.gtamps.android.core.sound.SoundEngine.Sounds;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
@@ -257,8 +259,8 @@ public class MessageHandler {
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:
-                SoundEngine.getInstance().playSound(sourceEntity.type, event.getType());
-                break;
+            	SoundEngine.getInstance().playSound(Sounds.FOOTSTEP);
+            	break;
             case ACTION_DECELERATE:
                 break;
             case ACTION_ENTEREXIT:
@@ -270,6 +272,8 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
+            	SoundEngine.getInstance().playSound(Sounds.SHOOT);
+//            	SoundEngine.getInstance().playSound("");
 //            	store.reclaim(event);
 //            	event = null;
                 break;
@@ -299,9 +303,7 @@ public class MessageHandler {
 //            	event = null;
                 break;
             case ENTITY_DESTROYED:
-//            	if(world.getViewById(event.getTargetUid()).entity.getName().equals("CAR")){
-//            		world.invokeExplosion(world.getViewById(event.getTargetUid()));
-//            	}
+            	
             	world.remove(event.getTargetUid());
 //            	store.reclaim(event.getTargetUid());
 //            	store.reclaim(event);
@@ -321,6 +323,7 @@ public class MessageHandler {
                 break;
 
             case PLAYER_ENTERSCAR:
+            	SoundEngine.getInstance().playSound(Sounds.CAR_DOOR);
                 break;
             case PLAYER_JOINS:
                 break;
