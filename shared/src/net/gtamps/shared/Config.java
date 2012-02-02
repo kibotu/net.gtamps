@@ -83,7 +83,7 @@ final public class Config {
 	public static String DEFAULT_USERNAME_TIL = "til";
 	public static final String DEFAULT_PASSWORD_TIL = "secretpassword";
 
-	public static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
+	public static final String TEST_LEVEL_PATH = "./assets/map1.map.lvl";
 
 	public static final boolean SHOW_NETWORK_BANDWITH_USAGE = false;
 
