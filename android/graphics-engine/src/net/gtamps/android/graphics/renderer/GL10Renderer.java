@@ -4,12 +4,16 @@ import android.graphics.Bitmap;
 import net.gtamps.android.graphics.graph.scene.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.utils.OpenGLUtils;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 /**
@@ -72,5 +76,22 @@ public class GL10Renderer extends BasicRenderer {
 
     @Override
     public void applyLight(Light light) {
+    }
+
+    @Override
+    public int allocate(FloatBuffer floatBuffer) {
+
+        GL11 gl11 = (GL11) gl10;
+        
+        // generate id
+        final IntBuffer buffer = IntBuffer.allocate(1);
+        gl11.glGenBuffers(1, buffer);
+        int id = buffer.get(0);
+
+        // bind float buffer to generated id
+        gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, id);
+        gl11.glBufferData(GL11.GL_ARRAY_BUFFER, floatBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, floatBuffer, GL11.GL_STATIC_DRAW);
+
+        return id;
     }
 }

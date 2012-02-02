@@ -32,6 +32,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     protected IRenderAction renderAction;
     private final ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
     protected int activeShaderProgram;
+    protected GL10 gl10;
 
     public BasicRenderer(IRenderAction renderAction) {
         Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
@@ -41,6 +42,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+        this.gl10 = gl10;
 
         // get mobile capabilities
         RenderCapabilities.setRenderCaps(gl10);
@@ -70,6 +72,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
+        this.gl10 = gl10;
         Logger.I(this, "Surface changed.");
         height = height == 0 ? 1 : height;
 
@@ -86,6 +89,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        this.gl10 = gl10;
         if (!renderAction.isRunning() || renderAction.isPaused()) return;
 
         // setup on the fly
@@ -126,7 +130,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      *
      * @return The system time in milliseconds
      */
-    final public long getTime() {
+    final static public long getTime() {
         return SystemClock.elapsedRealtime();
     }
 
@@ -267,7 +271,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      * @param colorBuffer
      * @param uvBuffer
      * @param indexBuffer
-     *
      * @return allocated vbo
      */
     public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer);
@@ -277,4 +280,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     }
 
     public abstract void applyLight(Light light);
+
+    /**
+     * Allocates a float buffer and returns the generated id to which it has been bound.
+     *
+     * @param gl
+     * @param floatBuffer
+     * @return generated id
+     */
+    public abstract int allocate(FloatBuffer floatBuffer);
 }

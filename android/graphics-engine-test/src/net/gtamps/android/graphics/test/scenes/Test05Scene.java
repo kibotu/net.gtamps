@@ -2,11 +2,10 @@ package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Cylinder;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
-import net.gtamps.android.graphics.graph.scene.primitives.Torus;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -26,7 +25,7 @@ public class Test05Scene extends SceneGraph {
     public void onSurfaceCreatedInternal(GL10 gl10) {
 
         add(new Light(0, 0, 10, 0, 0, -1));
-        TextureSample crateTexture = new TextureSample(R.drawable.crate, TextureSample.Type.texture_01);
+        Texture crateTexture = new Texture(R.drawable.crate, Texture.Type.texture_01);
 
         float scale = 0.3f;
 

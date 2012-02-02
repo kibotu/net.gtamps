@@ -3,7 +3,7 @@ package net.gtamps.android.graphics.graph.scene.mesh.texture;
 /**
  * Container Class for holding runtime needed variables of textures.
  */
-public class SpriteTetxure {
+public class TextureSprite {
 
     /**
      * For resizing purposes of nodes.
@@ -26,7 +26,7 @@ public class SpriteTetxure {
      * @param width
      * @param height
      */
-    public SpriteTetxure(final float width, final float height, final int offsetId) {
+    public TextureSprite(final float width, final float height, final int offsetId) {
         this.width = width;
         this.height = height;
         this.offsetId = offsetId;
@@ -35,13 +35,13 @@ public class SpriteTetxure {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SpriteTetxure)) return false;
+        if (!(o instanceof TextureSprite)) return false;
 
-        SpriteTetxure spriteTetxure = (SpriteTetxure) o;
+        TextureSprite that = (TextureSprite) o;
 
-        if (Float.compare(spriteTetxure.height, height) != 0) return false;
-        if (offsetId != spriteTetxure.offsetId) return false;
-        if (Float.compare(spriteTetxure.width, width) != 0) return false;
+        if (Float.compare(that.height, height) != 0) return false;
+        if (offsetId != that.offsetId) return false;
+        if (Float.compare(that.width, width) != 0) return false;
 
         return true;
     }

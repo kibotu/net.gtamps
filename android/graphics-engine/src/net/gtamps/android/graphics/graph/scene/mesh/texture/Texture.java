@@ -1,45 +1,49 @@
 package net.gtamps.android.graphics.graph.scene.mesh.texture;
 
-import java.util.ArrayList;
+import net.gtamps.android.graphics.utils.Registry;
 
 public class Texture {
 
-    /**
-     * The texureId in the TextureManager that corresponds to an uploaded Bitmap
-     */
+    public int textureResourceId;
     public String textureId;
+    public boolean isAllocated;
+    public boolean hasMipMap;
+    public Type type;
 
-    /**
-     * Determines if U and V ("S" and "T" in OpenGL parlance) repeat, or are 'clamped'
-     * (Defaults to true, matching OpenGL's default setting)
-     */
     public boolean repeatU = true;
     public boolean repeatV = true;
-
-    /**
-     * The U/V offsets for the texture (rem, normal range of U and V are 0 to 1)
-     */
     public float offsetU = 0;
     public float offsetV = 0;
 
-    /**
-     * A list of TexEnvVo's that define how texture is composited in the output.
-     * Normally contains just one element.
-     */
-    public ArrayList<TextureEnvironment> textureEnvs;
-
-    public Texture(String textureId, ArrayList<TextureEnvironment> textureEnvVo) {
-        this.textureId = textureId;
-        textureEnvs = textureEnvVo;
-    }
-
     public Texture(String textureId) {
         this.textureId = textureId;
-        textureEnvs = new ArrayList<TextureEnvironment>();
-        textureEnvs.add(new TextureEnvironment());
+    }
+    
+    /**
+     * Types supported by shader.
+     */
+    public enum Type {
+        texture_01, texture_02, texture_03, texture_04, texture_05, texture_06, texture_07, texture_08;
     }
 
-    public String getTextureId() {
-        return textureId;
+    public Texture(int resourceId, Type type) {
+        this(resourceId, type, true);
+    }
+
+    public Texture(int textureResourceId, Type type, boolean generateMipMaps) {
+        this.textureResourceId = textureResourceId;
+        isAllocated = false;
+        this.hasMipMap = generateMipMaps;
+        this.type = type;
+    }
+
+    public void allocate() {
+        if (isAllocated) return;
+        textureId = String.valueOf(Registry.getTextureLibrary().loadTexture(textureResourceId, hasMipMap));
+        isAllocated = true;
+    }
+
+    public void invalidate() {
+        isAllocated = false;
     }
 }

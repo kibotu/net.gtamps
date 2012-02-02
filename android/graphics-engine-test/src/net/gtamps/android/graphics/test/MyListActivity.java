@@ -24,15 +24,13 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-//        startActivity(PACKAGE_NAME, "Test01Activity");
-//        startActivity(PACKAGE_NAME, "Test02Activity");
-//        startActivity(PACKAGE_NAME, "Test03Activity");
+        startActivity(PACKAGE_NAME, "Test07Activity");
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         ActivityModel item = (ActivityModel) l.getAdapter().getItem(position);
-        Toast.makeText(this, item.getName(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, item.getName(), Toast.LENGTH_SHORT).show();
         startActivity(item.getPackageName(), item.getClassName());
         super.onListItemClick(l, v, position, id);
     }
@@ -53,7 +51,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Torus", PACKAGE_NAME, "Test04Activity"));
         list.add(new ActivityModel("Cylinder", PACKAGE_NAME, "Test05Activity"));
         list.add(new ActivityModel("Planes", PACKAGE_NAME, "Test06Activity"));
-        list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test07Activity"));
+        list.add(new ActivityModel("Sprite", PACKAGE_NAME, "Test07Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test08Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test09Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test10Activity"));

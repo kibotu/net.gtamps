@@ -2,7 +2,7 @@ package net.gtamps.android.graphics.test;
 
 import android.os.Bundle;
 import net.gtamps.android.graphics.RenderActivity;
-import net.gtamps.android.graphics.test.actions.Test01Action;
+import net.gtamps.android.graphics.test.actions.Test07Action;
 import net.gtamps.android.graphics.test.scenes.Test07Scene;
 
 /**
@@ -16,7 +16,7 @@ public class Test07Activity extends RenderActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        renderAction = new Test01Action(new Test07Scene());
+        renderAction = new Test07Action(new Test07Scene());
         setRenderAction(renderAction);
     }
 }

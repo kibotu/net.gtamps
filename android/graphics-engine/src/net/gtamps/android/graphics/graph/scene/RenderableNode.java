@@ -2,9 +2,12 @@ package net.gtamps.android.graphics.graph.scene;
 
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
-import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSample;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureAnimation;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSprite;
 import net.gtamps.android.graphics.renderer.RenderState;
 import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.shared.game.state.State;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -20,7 +23,11 @@ public abstract class RenderableNode extends RootNode {
 
     protected RenderState renderState = new RenderState();
 
-    protected final ArrayList<TextureSample> textureSamples = new ArrayList<TextureSample>(8);
+    protected final ArrayList<Texture> textures = new ArrayList<Texture>(8);
+
+    protected TextureAnimation textureAnimation;
+    protected TextureSprite textureSprite;
+    protected float lastPercentage = 0;
 
     @Override
     final public void onDrawFrame(GL10 gl10) {
@@ -44,8 +51,8 @@ public abstract class RenderableNode extends RootNode {
             getMesh().invalidate();
             getMesh().allocate();
         }
-        for (int i = 0; i < textureSamples.size(); i++) {
-            textureSamples.get(i).allocate();
+        for (int i = 0; i < textures.size(); i++) {
+            textures.get(i).allocate();
         }
     }
 
@@ -61,23 +68,54 @@ public abstract class RenderableNode extends RootNode {
         return renderState;
     }
 
-    final public void addTexture(TextureSample textureSample) {
-        textureSamples.add(textureSample);
+    final public void addTexture(Texture texture) {
+        textures.add(texture);
     }
 
-    final public void removeTexture(TextureSample textureSample) {
-        textureSamples.remove(textureSample);
+    final public void removeTexture(Texture texture) {
+        textures.remove(texture);
     }
 
-    final public ArrayList<TextureSample> getTextureSamples() {
-        return textureSamples;
+    final public ArrayList<Texture> getTextures() {
+        return textures;
     }
 
-    final public void addTexture(ArrayList<TextureSample> textureSamples) {
-        this.textureSamples.addAll(textureSamples);
+    final public void addTexture(ArrayList<Texture> textures) {
+        this.textures.addAll(textures);
     }
 
-    final public void removeTexture(ArrayList<TextureSample> textureSamples) {
-        this.textureSamples.removeAll(textureSamples);
+    final public void removeTexture(ArrayList<Texture> textures) {
+        this.textures.removeAll(textures);
+    }
+
+    public void addTextureAnimation(TextureAnimation textureAnimation) {
+        this.textureAnimation = textureAnimation;
+    }
+
+    public boolean hasTextureAnimation() {
+        return textureAnimation != null;
+    }
+
+    public TextureAnimation getTextureAnimation() {
+        return textureAnimation;
+    }
+
+    public TextureSprite getTextureSprite() {
+        return textureSprite;
+    }
+
+    public void animate(State.Type type, float percentage) {
+        if (lastPercentage == percentage)return;
+        lastPercentage = percentage;
+        percentage *= 100;
+        percentage %= 100;
+        TextureSprite [] textureSprites = textureAnimation.getAnimation(type);
+        final int index = (int) (textureSprites.length / 100f * percentage);
+        setImage(textureSprites[index]);
+    }
+
+    public void setImage(TextureSprite textureSprite) {
+        this.textureSprite = textureSprite;
+        setDimension(textureSprite.width,textureSprite.height,0);
     }
 }
