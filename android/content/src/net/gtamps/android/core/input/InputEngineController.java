@@ -46,6 +46,10 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
    		return instance.layout.getTouchWindow().onTouch(v, event);
     }
 
+    public void setResolution(int x, int y){
+    	instance.layout.getTouchWindow().setResolution(x, y);
+    }
+    
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return false;

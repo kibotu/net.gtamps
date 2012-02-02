@@ -109,6 +109,8 @@ public class SimpleRenderer implements Renderer {
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select model-view matrix
 		gl.glLoadIdentity(); // Reset
+		
+		InputEngineController.getInstance().setResolution(width, height);
 
 		// You OpenGL|ES display re-sizing code here
 		// ......
