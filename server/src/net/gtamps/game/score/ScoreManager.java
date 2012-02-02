@@ -10,6 +10,7 @@ import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.IGameEventListener;
+import net.gtamps.shared.game.player.Player;
 import net.gtamps.shared.game.score.Score;
 import net.gtamps.shared.game.score.ScoreBoard;
 
@@ -41,12 +42,17 @@ public class ScoreManager implements IGameEventListener {
 	private void dispatchToPlayerScoreBoards(final GameEvent event) {
 		final int sourceUid = event.getSourceUid();
 		final int targetUid = event.getTargetUid();
-		if (universe.isPlayer(sourceUid)) {
+		if (isPlayer(sourceUid)) {
 			getPlayerScoreBoard(sourceUid).receiveEvent(event);
 		}
-		if (targetUid != sourceUid && universe.isPlayer(sourceUid)) {
+		if (targetUid != sourceUid && isPlayer(targetUid)) {
 			getPlayerScoreBoard(targetUid).receiveEvent(event);
 		}
+	}
+
+	private boolean isPlayer(final int uid) {
+		final Player test = universe.getPlayer(uid);
+		return test != null;
 	}
 
 	private ScoreBoard getPlayerScoreBoard(final int uid) {
@@ -71,7 +77,8 @@ public class ScoreManager implements IGameEventListener {
 		final Score score = new Score();
 		score.setType(Score.ScoreType.FRAGS);
 		score.setFilter(Score.getSourceUidFilter(uid));
-		universe.getPlayer(uid).setFragScoreUid(score.getUid());
+		final Player player = universe.getPlayer(uid);
+		player.setFragScoreUid(score.getUid());
 		return score;
 	}
 
