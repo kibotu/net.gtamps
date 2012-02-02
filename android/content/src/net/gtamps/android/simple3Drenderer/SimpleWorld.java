@@ -25,7 +25,7 @@ public class SimpleWorld implements IWorld {
 	private AssetManager assetManager;
 //	private TexturedQuad spawnpoint;
 
-	SimpleWorld(Context context) {
+	public SimpleWorld(Context context) {
 		// car1bitmap = BitmapFactory.decodeResource(context.getResources(),
 		// R.drawable.car1_90);
 		// car2bitmap = BitmapFactory.decodeResource(context.getResources(),

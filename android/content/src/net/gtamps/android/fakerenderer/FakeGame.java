@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.inputlistener.CameraMovementListener;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
-import net.gtamps.android.core.net.ConnectionThread;
-import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
+import net.gtamps.android.core.net.threaded.ConnectionThread;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.level.Tile;
 

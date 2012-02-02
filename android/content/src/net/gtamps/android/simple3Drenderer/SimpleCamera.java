@@ -103,8 +103,8 @@ public class SimpleCamera {
 
 		if (gl != null) {
 			gl.glPushMatrix();
-			xtilepos = ev.getX() - this.x;
-			ytilepos = -ev.getY() + this.y;
+			xtilepos = ev.getX() - (this.x-ev.getSpeedX()*ev.getLastUpdateSeconds());
+			ytilepos = -ev.getY() + (this.y-ev.getSpeedY()*ev.getLastUpdateSeconds());
 			ztilepos = ENTITY_GROUND_DISTANCE - this.z;
 			gl.glRotatef(this.rotx, 1, 0, 0);
 			gl.glRotatef(this.rotz, 0, 0, 1);

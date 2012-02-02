@@ -1,11 +1,9 @@
-package net.gtamps.android.core.net;
+package net.gtamps.android.core.net.threaded;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.gtamps.android.core.net.IMessageManager;
+import net.gtamps.android.core.net.AbstractConnectionManager;
 import net.gtamps.android.core.net.IStream;
-import net.gtamps.android.core.net.RemoteInputDispatcher;
-import net.gtamps.android.core.net.RemoteOutputDispatcher;
 import net.gtamps.android.core.net.TcpStream;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -16,27 +14,26 @@ import net.gtamps.shared.serializer.helper.SerializedMessage;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum ConnectionManager implements IMessageManager {
-
-	INSTANCE;
+public class ThreadedConnectionManager extends AbstractConnectionManager {
 
 	private final ConcurrentLinkedQueue<NewMessage> inbox;
 	private final ConcurrentLinkedQueue<NewMessage> outbox;
 	private IStream stream;
 	private RemoteInputDispatcher remoteInputDispatcher;
 	private RemoteOutputDispatcher remoteOutputDispatcher;
-	public volatile String currentSessionId;
-	public volatile long currentRevId;
+//	public volatile String currentSessionId;
+//	public volatile long currentRevId;
 	private final int currentSocketTimeOut = Config.MAX_SOCKET_TIMEOUT;
 
 	private static ISerializer serializer = new BinaryObjectSerializer();
+	private static ThreadedConnectionManager INSTANCE = null;
 
-	private ConnectionManager() {
+	public ThreadedConnectionManager() {
 		stream = new TcpStream();
 		inbox = new ConcurrentLinkedQueue<NewMessage>();
 		outbox = new ConcurrentLinkedQueue<NewMessage>();
-		currentSessionId = "0";
-		currentRevId = 0;
+//		currentSessionId = "0";
+//		currentRevId = 0;
 	}
 	
 	@Override
@@ -47,21 +44,12 @@ public enum ConnectionManager implements IMessageManager {
 	@Override
 	public NewMessage poll() {
 		final NewMessage message = inbox.poll();
-//		currentSessionId = message.getSessionId();
-		//remove string allocations
-//		if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
-//			Logger.i(this, "inbox poll: " + message.toString());
-//		}
 		return message;
 	}
 
 	@Override
 	public boolean add(@NotNull final NewMessage message) {
 		message.setSessionId(currentSessionId);
-		//remove string allocations
-//		if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
-//			Logger.i(this, "outbox add: " + message.toString());
-//		}
 		if(outbox.size()<Config.MAX_MESSAGES_OUTBOX){
 			return outbox.add(message);
 		} else {

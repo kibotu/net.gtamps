@@ -38,15 +38,18 @@ public class HudInterpreter extends InputInterpreter {
 
 			if (world.getActiveView() != null) {
 				if (world.getActiveView().entity.getName().equals("CAR")) {
-					if (y < 0.5f) {
-						eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
+					if (x < 0.6 && x > 0.4) {
+						if (y < 0.5f) {
+							eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
+						} else {
+							eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
+						}
 					} else {
-						eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
-					}
-					if (x < 0.5f) {
-						eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
-					} else {
-						eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
+						if (x < 0.5f) {
+							eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
+						} else {
+							eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
+						}
 					}
 				} else {
 					// convert to radians
@@ -61,7 +64,7 @@ public class HudInterpreter extends InputInterpreter {
 					} else if (directionTrigger < 0) {
 						eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
 
-					}					
+					}
 				}
 			}
 		}

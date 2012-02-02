@@ -1,17 +1,15 @@
-package net.gtamps.android.core.net;
+package net.gtamps.android.core.net.threaded;
 
-import net.gtamps.android.core.net.ConnectionManager;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import net.gtamps.android.core.net.AbstractConnectionManager;
 import net.gtamps.android.core.net.IStream;
-import net.gtamps.android.core.net.RemoteInputDispatcher;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.serializer.communication.NewMessage;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RemoteInputDispatcher implements Runnable {
 
@@ -56,7 +54,7 @@ public class RemoteInputDispatcher implements Runnable {
 				response = inputStream.receive();
 				if(response!=null){
 					if(inbox.size()<Config.MAX_MESSAGES_INBOX){
-						final NewMessage message = ConnectionManager.INSTANCE.deserialize(response);
+						final NewMessage message = AbstractConnectionManager.getInstance().deserialize(response);
 	//					Logger.d(this, message);
 						if (message != null) {
 							inbox.add(message);
