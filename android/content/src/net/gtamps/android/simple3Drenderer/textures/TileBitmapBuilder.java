@@ -31,6 +31,9 @@ public class TileBitmapBuilder {
 	}
 	public TextureMapper generateTextureMapper() {
 		int tileMapSize = (int) Math.ceil(Math.sqrt(tileFileNames.size()));
+		if(tileMapSize%2==1){
+			tileMapSize++;
+		}
 		this.tileMap = Bitmap.createBitmap(tileMapSize*TILE_SIZE, tileMapSize*TILE_SIZE, Config.ARGB_8888);
 		int ts = TILE_SIZE;	
 		int tileMapResolution = tileMapSize*TILE_SIZE;
