@@ -26,6 +26,7 @@ public class StringConstants {
 	public static final String PROPERTY_CAUSE_UID = "causeUid";
 	public static final String PROPERTY_PLAYER = "player";
 	public static final String PROPERTY_ENTITY_UID = "entityUid";
+	public static final String PROPERTY_INVINCIBLE = "isInvincible";
 	public static final String PROPERTY_ALIVE = "isAlive";
 	public static final String PROPERTY_HEALTH = "health";
 	public static final String PROPERTY_HEALTHRATIO = "healthRatio";

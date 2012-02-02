@@ -3,7 +3,6 @@ package net.gtamps.game.physics;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
 import net.gtamps.shared.game.entity.Entity;
-import net.gtamps.shared.game.event.CollisionEvent;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.event.IGameEventDispatcher;
@@ -49,10 +48,6 @@ public final class RawContactHandler implements ContactListener {
 
 	@Override
 	public void persist(final ContactPoint point) {
-		// Entity one = (Entity) point.shape1.getBody().getUserData();
-		// Entity two = (Entity) point.shape2.getBody().getUserData();
-		// Logger.i().log(TAG, String.format("persist contact: %s, %s", one,
-		// two));
 	}
 
 	@Override
@@ -99,16 +94,6 @@ public final class RawContactHandler implements ContactListener {
 				remove ? GameEvent.END_VALUE : GameEvent.BEGIN_VALUE);
 		GUILogger.i().log(TAG, event.toString());
 		eventRoot.dispatchEvent(event);
-
-		//		SimplePhysicsHandler handler1 = sensorEntity.getPhysicsHandler();
-		//		SimplePhysicsHandler handler2 = sensedEntity.getPhysicsHandler();
-		//		if (handler1 != null) {
-		//			handler1.dispatchEvent(event);
-		//		}
-		//		if (handler2 != null) {
-		//			handler2.dispatchEvent(event);
-		//		}
-
 	}
 
 	private void hardContact(final Object one, final Object two, final float impulse) {
@@ -123,7 +108,7 @@ public final class RawContactHandler implements ContactListener {
 				String.format("collision: %s, %s [%d]", oneEntity, twoEntity,
 						(int) impulse));
 		GameEvent event = null;
-		event = new CollisionEvent(oneEntity, twoEntity, impulse);
+		event = new GameEvent(EventType.ENTITY_COLLIDE, oneEntity, twoEntity, ""+impulse);
 		eventRoot.dispatchEvent(event);
 	}
 }
