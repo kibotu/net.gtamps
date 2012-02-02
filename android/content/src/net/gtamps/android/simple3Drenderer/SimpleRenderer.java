@@ -1,6 +1,8 @@
 package net.gtamps.android.simple3Drenderer;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -124,6 +126,10 @@ public class SimpleRenderer implements Renderer {
 	int i = 0;
 	int len = 0;
 
+	
+	List<AbstractEntityView> allEntities;
+	LinkedList<CubeTile> allTiles;
+	
 	public void onDrawFrame(GL10 gl) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity(); // Reset model-view matrix ( NEW )
@@ -162,24 +168,27 @@ public class SimpleRenderer implements Renderer {
 		gl.glScalef(0.6f, 0.6f, 0.6f);
 
 		if (RENDER_TILES) {
-			if (world.getCubeTileMap() != null) {
+			allTiles = world.getCubeTileMap();
+			if (allTiles != null) {
 				synchronized (world) {
 					// lets assume, all tiles are always in one texture.
-					world.getCubeTileMap().get(0).bindTexture(gl);
-					len = world.getCubeTileMap().size();
+					allTiles.get(0).bindTexture(gl);
+					len = allTiles.size();
 					for (i = 0; i < len; i++) {
-						camera.renderTile(world.getCubeTileMap().get(i));
+						camera.renderTile(allTiles.get(i));
 					}
 				}
 			}
 		}
+		
 		if (RENDER_ENTITIES) {
 			// lets assume all entities are inside one texture
-			if (!world.getAllEntities().isEmpty()) {
-				((SimpleEntityView) world.getAllEntities().get(0)).bindTexture(gl);
-				len = world.getAllEntities().size();
+			allEntities = world.getAllEntities();
+			if (!allEntities.isEmpty()) {
+				((SimpleEntityView) allEntities.get(0)).bindTexture(gl);
+				len = allEntities.size();
 				for (i = 0; i < len; i++) {
-					camera.renderEntityView((SimpleEntityView) world.getAllEntities().get(i), gl);
+					camera.renderEntityView((SimpleEntityView) allEntities.get(i), gl);
 				}
 			}
 
