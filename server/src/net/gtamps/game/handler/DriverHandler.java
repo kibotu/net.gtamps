@@ -79,6 +79,7 @@ public class DriverHandler extends ServersideHandler<Entity> {
 
 		setDriver(player);
 		eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
+		getUniverse().dispatchEvent(new GameEvent(EventType.PLAYER_ENTERSCAR, player, parent));
 		GUILogger.i().log(TAG, player + " enters car " + getParent());
 	}
 
@@ -102,6 +103,7 @@ public class DriverHandler extends ServersideHandler<Entity> {
 			exDriver.setEntity(driversHumanBody);
 			getUniverse().dispatchEvent(new GameEvent(EventType.ENTITY_ACTIVATE, driversHumanBody));
 			eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
+			getUniverse().dispatchEvent(new GameEvent(EventType.PLAYER_EXITSCAR, exDriver, parent));
 		}
 		{ // LOGGING
 			final String logMsg = String.format("%s exits car %s", exDriver, getParent());
