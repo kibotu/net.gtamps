@@ -61,11 +61,14 @@ def sendMessage(sock,sessionid,message,messageid):
 		respstr = data.decode('utf-8')
 		if( not robotmode ):
 			print('RESP: '+respstr)
-		
-		if(message.startswith('LOGIN')):
-			sID = re.findall('\s(\w+?)\s',respstr)[0];
-			print('setting session ID to '+sID)
+		if(message.startswith('SESSION')):
+			sID = re.findall(r': (\w+?) ;',respstr)[0];
 			return sID
+		if(message.startswith('LOGIN')):
+			pass
+			#sID = re.findall('\s(\w+?)\s',respstr)[0];
+			#print('setting session ID to '+sID)
+			#return sID
 			#global sessionID
 			#sessionID = sID
 		if(message.startswith('GETUPDATE')):
@@ -138,9 +141,9 @@ def main(ip,username,password,robotmode):
 
 	if(robotmode):
 		print('Robot mode enabled! hit ctrl-c to stop')
-		
+		sessionID = sendMessage(s,sessionID,'SESSION',messageID)
 		sendMessage(s,sessionID,'REGISTER '+ str(DataMap({'authuser': username, 'authpass': password })),messageID)
-		sessionID = sendMessage(s,sessionID,'LOGIN '+ str(DataMap({'authuser': username, 'authpass': password })),messageID)
+		sendMessage(s,sessionID,'LOGIN '+ str(DataMap({'authuser': username, 'authpass': password })),messageID)
 		sendMessage(s,sessionID,'JOIN',messageID)
 		while(True):
 			revisionID = sendMessage(s,sessionID,'GETUPDATE '+ str(DataMap({'rev': revisionID})),messageID)
@@ -162,8 +165,10 @@ def main(ip,username,password,robotmode):
 	else:
 		while(True):
 			#fake switch statement
+			if (a=='m'):
+				sessionID = sendMessage(s,sessionID,'SESSION',messageID)
 			if (a=='l' ):
-				sessionID = sendMessage(s,sessionID,'LOGIN ' + str(DataMap({'authuser': username, 'authpass': password })),messageID)
+				sendMessage(s,sessionID,'LOGIN ' + str(DataMap({'authuser': username, 'authpass': password })),messageID)
 			if (a=='j' ):
 				revisionID = sendMessage(s,sessionID,'GETUPDATE '+ str(DataMap({'rev': revisionID})),messageID)
 			if (a=='k' ):
@@ -237,6 +242,7 @@ class _GetchWindows:
 getch = _Getch()
 
 usage = '''Usage:
+M - SESSION REQUEST
 L - LOGIN
 K - JOIN
 J - GET_UPDATE
