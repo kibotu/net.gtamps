@@ -127,7 +127,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		Validate.notNull(event);
-		if (getType().isTriggeredBy(event) && filter.isTrueFor(event)) {
+		if (getType().isTriggeredBy(event) && (filter == null || filter.isTrueFor(event))) {
 			increaseCountBy(1);
 		}
 	}
