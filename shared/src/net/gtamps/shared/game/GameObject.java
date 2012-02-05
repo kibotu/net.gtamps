@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import net.gtamps.shared.SharedObject;
 import net.gtamps.shared.Utils.UIDGenerator;
 import net.gtamps.shared.Utils.validate.Validate;
 
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author til, tom, jan
  */
-public abstract class GameObject extends SharedObject implements Serializable {
+public abstract class GameObject implements Serializable {
 
 	public static final int INVALID_UID = UIDGenerator.INVALID_UID;
 
