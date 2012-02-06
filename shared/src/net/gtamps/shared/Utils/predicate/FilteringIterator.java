@@ -1,6 +1,7 @@
 package net.gtamps.shared.Utils.predicate;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import net.gtamps.shared.Utils.validate.Validate;
 
@@ -53,6 +54,9 @@ public class FilteringIterator<E> implements Iterator<E> {
 
 	@Override
 	public E next() {
+		if (next == null) {
+			throw new NoSuchElementException();
+		}
 		final E tmp = next;
 		next = findNext();
 		return tmp;
