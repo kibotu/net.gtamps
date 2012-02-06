@@ -12,7 +12,9 @@ import java.util.Collection;
 public class Predicates {
 
 	/**
-	 * negates a {@link Predicate}
+	 * negates a {@link Predicate}: returns {@code false} if the original
+	 * predicate would return {@code true} and vice versa
+	 * 
 	 * @param p	the predicate to be negated
 	 * @return	a predicate with the opposite behavior of <tt>p</tt>
 	 * @throws IllegalArgumentException	if <tt>p</tt> is {@code null}
@@ -24,11 +26,11 @@ public class Predicates {
 
 	/**
 	 * merges predicates into a new predicate that returns {@code true} for
-	 * a given argument if at least one of the merged predicates is {@code true}
+	 * a given argument if all of the merged predicates are {@code true}
 	 * for this argument
 	 * 
 	 * @param predicates	the predicates to be joined
-	 * @return	the disjunction of the <tt>predicates</tt>
+	 * @return	the conjunction of the <tt>predicates</tt>
 	 * @throws IllegalArgumentException	if no predicates are given
 	 */
 	@SuppressWarnings("unchecked")
@@ -38,11 +40,11 @@ public class Predicates {
 
 	/**
 	 * merges predicates into a new predicate that returns {@code true} for
-	 * a given argument if all of the merged predicates are {@code true}
+	 * a given argument if at least one of the merged predicates is {@code true}
 	 * for this argument
 	 * 
 	 * @param predicates	the predicates to be joined
-	 * @return	the conjunction of the <tt>predicates</tt>
+	 * @return	the disjunction of the <tt>predicates</tt>
 	 * @throws IllegalArgumentException	if no predicates are given
 	 */
 	@SuppressWarnings("unchecked")
