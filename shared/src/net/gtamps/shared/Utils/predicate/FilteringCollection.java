@@ -2,6 +2,8 @@ package net.gtamps.shared.Utils.predicate;
 
 import java.util.Collection;
 
+//TODO force overriding of remaining collection methods where necessary
+
 /**
  * A collection that can be made to ignore some of its elements by setting a
  * filter in the form of a {@link Predicate}. Elements which do not satisfy the
