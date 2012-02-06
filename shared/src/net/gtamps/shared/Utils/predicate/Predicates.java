@@ -2,8 +2,6 @@ package net.gtamps.shared.Utils.predicate;
 
 import java.util.Collection;
 
-import net.gtamps.shared.Utils.validate.Validate;
-
 
 /**
  * static utility methods for dealing with {@link Predicate Predicates}
@@ -21,7 +19,6 @@ public class Predicates {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Predicate<T> not(final Predicate<T> p) {
-		Validate.notNull(p);
 		return PredicateModifiers.NOT.applyTo(p);
 	}
 
@@ -36,7 +33,6 @@ public class Predicates {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Predicate<T> and(final Predicate<T>... predicates) {
-		Validate.notNull(predicates);
 		return PredicateModifiers.AND.applyTo(predicates);
 	}
 
@@ -51,7 +47,6 @@ public class Predicates {
 	 */
 	@SuppressWarnings("unchecked")
 	public static final <T> Predicate<T> or(final Predicate<T>... p) {
-		Validate.notNull(p);
 		return PredicateModifiers.OR.applyTo(p);
 	}
 

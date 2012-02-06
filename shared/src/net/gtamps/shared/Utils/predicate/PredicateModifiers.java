@@ -1,5 +1,6 @@
 package net.gtamps.shared.Utils.predicate;
 
+
 /**
  * common {@link Predicate} compositions
  *
@@ -13,7 +14,7 @@ class PredicateModifiers {
 	static final IPredicateModifier NOT = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
-			assert subjects.length == 1 : "expects exactly one argument";
+			validateVarargs(1, 1, false, subjects);
 			final String sigString = buildSignatureString("not", subjects);
 			return new Predicate() {
 				@Override
@@ -33,9 +34,7 @@ class PredicateModifiers {
 	static final IPredicateModifier OR = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
-			if (subjects.length < 1) {
-				throw new IllegalArgumentException("must give at least one argument");
-			}
+			validateVarargs(1, Integer.MAX_VALUE, false, subjects);
 			final String sigString = buildSignatureString("or", subjects);
 			return new Predicate() {
 				@Override
@@ -60,15 +59,13 @@ class PredicateModifiers {
 	static final IPredicateModifier AND = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
-			if (subjects.length < 1) {
-				throw new IllegalArgumentException("must give at least one argument");
-			}
+			validateVarargs(1, Integer.MAX_VALUE, false, subjects);
 			final String sigString = buildSignatureString("and", subjects);
 			return new Predicate() {
 				@Override
 				public boolean appliesTo(final Object x) {
 					for (final Predicate p : subjects) {
-						if (p.appliesTo(x)) {
+						if (!p.appliesTo(x)) {
 							return false;
 						}
 					}
@@ -87,9 +84,7 @@ class PredicateModifiers {
 	static final IPredicateModifier XOR = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
-			if (subjects.length < 2) {
-				throw new IllegalArgumentException("must give at least two arguments");
-			}
+			validateVarargs(2, Integer.MAX_VALUE, false, subjects);
 			final String sigString = buildSignatureString("xor", subjects);
 			return new Predicate() {
 				@Override
@@ -109,8 +104,8 @@ class PredicateModifiers {
 				}
 			};
 		}
-	};
 
+	};
 	@SuppressWarnings("rawtypes")
 	protected static final String buildSignatureString(final String name, final Predicate... subjects) {
 		final StringBuilder string = new StringBuilder(String.format("Predicate %s( ", name));
@@ -119,6 +114,22 @@ class PredicateModifiers {
 		}
 		string.append(")");
 		return string.toString();
+	}
+
+	private static <T> void validateVarargs(final Integer lowerBound, final Integer upperBound, final boolean allowNull, final T... varargs) throws IllegalArgumentException {
+		if (varargs.length < lowerBound) {
+			throw new IllegalArgumentException("must provide at least " +  lowerBound + (lowerBound == 1 ? "argument" : "arguments"));
+		}
+		if (varargs.length > upperBound) {
+			throw new IllegalArgumentException("must provide at most " +  upperBound + (upperBound == 1 ? "argument" : "arguments"));
+		}
+		if (!allowNull) {
+			for (final Object arg: varargs) {
+				if (arg == null) {
+					throw new IllegalArgumentException("null arguments not allowed");
+				}
+			}
+		}
 	}
 
 }
