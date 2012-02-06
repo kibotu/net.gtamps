@@ -6,7 +6,8 @@ import java.util.Collection;
 import net.gtamps.shared.Utils.validate.Validate;
 
 /**
- * a wrapper that adds filtering capabilities to an existing collection
+ * A wrapper that adds filtering capabilities to an existing collection;
+ * changes to the original collection will be reflected in its filtering version.
  *
  * @author Jan Rabe, Tom Wallroth, Til Boerner
  *

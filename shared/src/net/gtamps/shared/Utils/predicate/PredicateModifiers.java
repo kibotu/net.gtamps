@@ -1,10 +1,16 @@
 package net.gtamps.shared.Utils.predicate;
 
-public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
+/**
+ * common {@link Predicate} compositions
+ *
+ * @author Jan Rabe, Tom Wallroth, Til Boerner
+ *
+ */
+class PredicateModifiers {
 
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	static final IPredicateModifier NOT = new PredicateModifier() {
+	static final IPredicateModifier NOT = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
 			assert subjects.length == 1 : "expects exactly one argument";
@@ -24,7 +30,7 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
 	};
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	static final IPredicateModifier OR = new PredicateModifier() {
+	static final IPredicateModifier OR = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
 			if (subjects.length < 1) {
@@ -51,7 +57,7 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
 	};
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	static final IPredicateModifier AND = new PredicateModifier() {
+	static final IPredicateModifier AND = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
 			if (subjects.length < 1) {
@@ -78,11 +84,11 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
 	};
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	static final IPredicateModifier XOR = new PredicateModifier() {
+	static final IPredicateModifier XOR = new IPredicateModifier() {
 		@Override
 		public Predicate applyTo(final Predicate... subjects) {
-			if (subjects.length < 1) {
-				throw new IllegalArgumentException("must give at least one argument");
+			if (subjects.length < 2) {
+				throw new IllegalArgumentException("must give at least two arguments");
 			}
 			final String sigString = buildSignatureString("xor", subjects);
 			return new Predicate() {
@@ -106,7 +112,7 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
 	};
 
 	@SuppressWarnings("rawtypes")
-	private static final String buildSignatureString(final String name, final Predicate... subjects) {
+	protected static final String buildSignatureString(final String name, final Predicate... subjects) {
 		final StringBuilder string = new StringBuilder(String.format("Predicate %s( ", name));
 		for (final Predicate p : subjects) {
 			string.append(String.format("(%s) ", p.toString()));
