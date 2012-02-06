@@ -26,8 +26,8 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
             final String sigString = buildSignatureString("not", subjects);
             return new Predicate() {
                 @Override
-                public boolean isTrueFor(final Object x) {
-                    return !subjects[0].isTrueFor(x);
+                public boolean appliesTo(final Object x) {
+                    return !subjects[0].appliesTo(x);
                 }
 
                 @Override
@@ -48,9 +48,9 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
             final String sigString = buildSignatureString("or", subjects);
             return new Predicate() {
                 @Override
-                public boolean isTrueFor(final Object x) {
+                public boolean appliesTo(final Object x) {
                     for (final Predicate p : subjects) {
-                        if (p.isTrueFor(x)) {
+                        if (p.appliesTo(x)) {
                             return true;
                         }
                     }
@@ -75,9 +75,9 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
             final String sigString = buildSignatureString("and", subjects);
             return new Predicate() {
                 @Override
-                public boolean isTrueFor(final Object x) {
+                public boolean appliesTo(final Object x) {
                     for (final Predicate p : subjects) {
-                        if (p.isTrueFor(x)) {
+                        if (p.appliesTo(x)) {
                             return false;
                         }
                     }
@@ -102,10 +102,10 @@ public abstract class PredicateModifier<T> implements IPredicateModifier<T> {
             final String sigString = buildSignatureString("xor", subjects);
             return new Predicate() {
                 @Override
-                public boolean isTrueFor(final Object x) {
+                public boolean appliesTo(final Object x) {
                     int sum = 0;
                     for (final Predicate p : subjects) {
-                        if (p.isTrueFor(x)) {
+                        if (p.appliesTo(x)) {
                             sum++;
                         }
                     }

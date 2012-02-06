@@ -33,7 +33,7 @@ public class FilteringArrayList<T> extends ArrayList<T> implements FilteringColl
     public FilteringArrayList<T> removeAll(final Predicate<T> p) {
         int i = 0;
         while (i < size()) {
-            if (p.isTrueFor(get(i))) {
+            if (p.appliesTo(get(i))) {
                 remove(i);
             } else {
                 i++;
@@ -51,7 +51,7 @@ public class FilteringArrayList<T> extends ArrayList<T> implements FilteringColl
     public boolean trueForOne(final Predicate<T> p) {
         final int size = size();
         for (int i = 0; i < size; i++) {
-            if (p.isTrueFor(get(i))) {
+            if (p.appliesTo(get(i))) {
                 return true;
             }
         }

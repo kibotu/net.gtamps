@@ -27,7 +27,7 @@ public class Predicates {
         public FilteringCollection<T> removeAll(final Predicate<T> p) {
             final Iterator<T> iterator = backingCollection.iterator();
             while (iterator.hasNext()) {
-                if (p.isTrueFor(iterator.next())) {
+                if (p.appliesTo(iterator.next())) {
                     iterator.remove();
                 }
             }
@@ -37,7 +37,7 @@ public class Predicates {
         @Override
         public boolean trueForAll(final Predicate<T> p) {
             for (final T element : backingCollection) {
-                if (!p.isTrueFor(element)) {
+                if (!p.appliesTo(element)) {
                     return false;
                 }
             }
@@ -47,7 +47,7 @@ public class Predicates {
         @Override
         public boolean trueForOne(final Predicate<T> p) {
             for (final T element : backingCollection) {
-                if (!p.isTrueFor(element)) {
+                if (!p.appliesTo(element)) {
                     return true;
                 }
             }
