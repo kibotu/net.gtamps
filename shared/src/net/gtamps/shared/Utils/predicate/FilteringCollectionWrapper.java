@@ -36,6 +36,11 @@ class FilteringCollectionWrapper<T> extends AbstractCollection<T> implements Fil
 	}
 
 	@Override
+	public Predicate<T> getFilter() {
+		return filter;
+	}
+
+	@Override
 	public FilteringCollectionWrapper<T> withFilter(final Predicate<T> filter) {
 		Validate.notNull(filter);
 		return new FilteringCollectionWrapper<T>(backingCollection, filter);

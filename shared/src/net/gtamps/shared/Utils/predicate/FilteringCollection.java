@@ -18,6 +18,14 @@ import java.util.Collection;
 public interface FilteringCollection<T> extends Collection<T> {
 
 	/**
+	 * returns the filtering predicate currently in use for this filtering collection
+	 * @return the filtering predicate currently in use for this filtering collection
+	 * 
+	 * @see Predicate
+	 */
+	public Predicate<T> getFilter();
+
+	/**
 	 * Returns a filtering collection with the {@link Predicate} set that will operate
 	 * as its filter by counting in all elements that satisfy the predicate, and
 	 * discounting all elements for which the predicate evaluates to
@@ -67,5 +75,6 @@ public interface FilteringCollection<T> extends Collection<T> {
 	 * @see Predicate
 	 */
 	public boolean trueForOne();
+
 
 }

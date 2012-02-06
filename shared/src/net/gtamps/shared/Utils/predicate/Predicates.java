@@ -61,6 +61,10 @@ public class Predicates {
 			public boolean appliesTo(final T x) {
 				return true;
 			}
+			@Override
+			public String toString() {
+				return "alwaysTrue()";
+			}
 		};
 	}
 
@@ -74,6 +78,10 @@ public class Predicates {
 			@Override
 			public boolean appliesTo(final T x) {
 				return false;
+			}
+			@Override
+			public String toString() {
+				return "alwaysFalse()";
 			}
 		};
 	}
