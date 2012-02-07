@@ -57,17 +57,9 @@ public class Predicates {
 	 * 
 	 * @return	the tautology
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Predicate<T> alwaysTrue() {
-		return new Predicate<T>() {
-			@Override
-			public boolean appliesTo(final T x) {
-				return true;
-			}
-			@Override
-			public String toString() {
-				return "alwaysTrue()";
-			}
-		};
+		return (Predicate<T>) TRUE;
 	}
 
 	/**
@@ -75,17 +67,9 @@ public class Predicates {
 	 * 
 	 * @return	the contradiction
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Predicate<T> alwaysFalse() {
-		return new Predicate<T>() {
-			@Override
-			public boolean appliesTo(final T x) {
-				return false;
-			}
-			@Override
-			public String toString() {
-				return "alwaysFalse()";
-			}
-		};
+		return (Predicate<T>) FALSE;
 	}
 
 	/**
@@ -99,4 +83,25 @@ public class Predicates {
 		return new FilteringCollectionWrapper<T>(c);
 	}
 
+	private static final Predicate<?> TRUE = new Predicate<Object>() {
+		@Override
+		public boolean appliesTo(final Object x) {
+			return true;
+		}
+		@Override
+		public String toString() {
+			return "alwaysTrue()";
+		}
+	};
+
+	private static final Predicate<?> FALSE = new Predicate<Object>() {
+		@Override
+		public boolean appliesTo(final Object x) {
+			return false;
+		}
+		@Override
+		public String toString() {
+			return "alwaysFalse()";
+		}
+	};
 }
