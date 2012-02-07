@@ -9,17 +9,14 @@ import net.gtamps.shared.game.event.GameEvent;
 import net.gtamps.shared.game.handler.Handler;
 
 public class ShootingHandler extends ServersideHandler<Entity> {
-	private final EventType[] sendsUp = {};
-	private final EventType[] receivesDown = {EventType.ACTION_SHOOT};
+	private static final EventType[] receivesDown = {EventType.ACTION_SHOOT};
 
 	EntityManager entityManager;
 	long lastShot = System.currentTimeMillis();
 
 	public ShootingHandler(final Universe universe, final Entity parent) {
-		super(universe, Handler.Type.SHOOTING, parent);
+		super(universe, Handler.Type.SHOOTING, parent, receivesDown);
 		entityManager = universe.entityManager;
-		setReceives(receivesDown);
-		connectUpwardsActor(parent);
 	}
 
 	@Override
@@ -38,13 +35,4 @@ public class ShootingHandler extends ServersideHandler<Entity> {
 		}
 	}
 
-	//	@Override
-	//	public Element toXMLElement(long baseRevision, RevisionKeeper keeper) {
-	//		Element e = super.toXMLElement(baseRevision, keeper);
-	//		if (e != null) {
-	//			//Attribute value = new Attribute(XmlElements.ATTRIB_VALUE.tagName(), driverStr);
-	//			//e.setAttribute(value);
-	//		}
-	//		return e;
-	//	}
 }

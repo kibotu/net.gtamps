@@ -7,6 +7,7 @@ import net.gtamps.game.physics.MobilityProperties;
 import net.gtamps.game.universe.Universe;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.LogType;
+import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.event.EventType;
 import net.gtamps.shared.game.event.GameEvent;
@@ -38,7 +39,8 @@ public class MobilityHandler extends ServersideHandler<Entity> {
 	protected float slidyness;
 
 	public MobilityHandler(final Universe universe, final Entity parent, final MobilityProperties mobilityProperties, final SimplePhysicsHandler physicsHandler) {
-		super(universe, Handler.Type.MOBILITY, parent);
+		super(universe, Handler.Type.MOBILITY, parent, down);
+		Validate.notNull(physicsHandler);
 		this.mobilityProperties = mobilityProperties;
 		velocityForce = mobilityProperties.VELOCITY_FORCE;
 		steeringForce = mobilityProperties.STEERING_FORCE;
@@ -46,9 +48,6 @@ public class MobilityHandler extends ServersideHandler<Entity> {
 		slidyness = mobilityProperties.SLIDYNESS;
 		physics = physicsHandler;
 		world = physics.getWorld();
-		setReceives(down);
-		connectUpwardsActor(parent);
-
 	}
 
 	@Override

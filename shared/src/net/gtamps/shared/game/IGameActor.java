@@ -19,7 +19,7 @@ public interface IGameActor extends IGameEventListener, IGameEventDispatcher {
 	/**
 	 * Connect another gameActor to this one so that events will be passed
 	 * between them; links will be set up for the eventTypes declared by
-	 * {@link #setReceives(EventType[])}. The other actor is
+	 * {@link #getReceivedEventTypes(EventType[])}. The other actor is
 	 * implicitly considered to be "upwards" in the hierarchy, which is
 	 * really just a semantic convention that has no meaning beyond who
 	 * will be added as {@link IGameEventListener listener} to whom
@@ -29,8 +29,6 @@ public interface IGameActor extends IGameEventListener, IGameEventDispatcher {
 	 *              to and received from; not <code>null</code>
 	 * @throws IllegalArgumentException if an attempt is made to connect
 	 *                                  an actor to itself
-	 * @throws IllegalStateException    if an EventType is declared to be sent
-	 *                                  both ways between this actor and the other one
 	 * @see EventType
 	 */
 	public void connectUpwardsActor(final IGameActor other);
@@ -38,10 +36,10 @@ public interface IGameActor extends IGameEventListener, IGameEventDispatcher {
 	public void disconnectUpwardsActor(final IGameActor other);
 
 	/**
-	 * Declare the types of gameEvents this actor is interested in receiving
+	 * Returns the types of gameEvents this actor is interested in receiving
 	 * from upwards. Use before {@link #connectUpwardsActor(IGameActor)}.
 	 */
-	public void setReceives(final EventType[] receivesDown);
+	public Set<EventType> getReceivedEventTypes();
 
 	public void registerListeningActor(final IGameActor listener, final Set<EventType> types);
 

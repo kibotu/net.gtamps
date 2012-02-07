@@ -18,10 +18,7 @@ import org.jbox2d.dynamics.World;
 public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	@SuppressWarnings("unused")
 	private static final LogType TAG = LogType.PHYSICS;
-	private static final EventType[] down = {
-		EventType.SESSION_UPDATE,
-		EventType.ENTITY_DESTROYED
-	};
+	private static final EventType[] down = { EventType.SESSION_UPDATE };
 
 	protected Body body;
 
@@ -32,9 +29,7 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 	private float initialImpulse = 0f;
 
 	public SimplePhysicsHandler(final Universe universe, final Entity parent, final PhysicsBlueprint blueprint) {
-		super(universe, Handler.Type.PHYSICS, parent);
-		setReceives(down);
-		connectUpwardsActor(parent);
+		super(universe, Handler.Type.PHYSICS, parent, down);
 
 		this.blueprint = blueprint;
 
@@ -49,16 +44,7 @@ public class SimplePhysicsHandler extends ServersideHandler<Entity> {
 
 	@Override
 	public void receiveEvent(final GameEvent event) {
-		final EventType type = event.getType();
-		if (type.isType(EventType.ACTION_EVENT)) {
-			// nothing
-		} else if (type.isType(EventType.SESSION_UPDATE)) {
-			update();
-		} else if (type.isType(EventType.ENTITY_DESTROYED)) {
-			// FIXME handle deactivation of action events differently
-			// there's supposed to be a driver handler or something anyway
-			parent.removeEventListener(EventType.ACTION_EVENT, this);
-		}
+		update();
 	}
 
 	public void applyImpulse(final Vec2 impulse) {

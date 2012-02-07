@@ -43,18 +43,17 @@ public class DriverHandler extends ServersideHandler<Entity> {
 	private static final Vec2 exitOffset = new Vec2(30f, 0);
 	private static final int exitRotation = 90;
 
+	private static final EventType[] receivesDown = {
+		EventType.ENTITY_DESTROYED,
+		EventType.ACTION_ENTEREXIT
+	};
+
 	private Player driver = null;
 	private Entity driversHumanBody = null;
 	private long lastActivationMillis = 0;
-	private final EventType[] sendsUp = {EventType.PLAYER_ENTERSCAR,
-			EventType.PLAYER_EXITSCAR};
-	private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
-			EventType.ACTION_ENTEREXIT};
 
 	public DriverHandler(final Universe universe, final Entity parent) {
-		super(universe, Handler.Type.DRIVER, parent);
-		setReceives(receivesDown);
-		connectUpwardsActor(parent);
+		super(universe, Handler.Type.DRIVER, parent, receivesDown);
 	}
 
 	public boolean isAvailable() {
