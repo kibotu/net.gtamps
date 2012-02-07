@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import net.gtamps.shared.Utils.validate.Validate;
 
-//FIXME override remaining abstract collection methods where necessary
-
 /**
  * A wrapper that adds filtering capabilities to an existing collection;
  * changes to the original collection will be reflected in its filtering version.
@@ -60,6 +58,14 @@ class FilteringCollectionWrapper<T> extends AbstractCollection<T> implements Fil
 			sum++;
 		}
 		return sum;
+	}
+
+	@Override
+	public boolean add(final T e) {
+		if (filter.appliesTo(e)) {
+			return backingCollection.add(e);
+		}
+		return false;
 	}
 
 	@Override

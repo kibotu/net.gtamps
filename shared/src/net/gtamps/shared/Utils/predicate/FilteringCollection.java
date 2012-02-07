@@ -2,14 +2,16 @@ package net.gtamps.shared.Utils.predicate;
 
 import java.util.Collection;
 
-//TODO force overriding of remaining collection methods where necessary
-
 /**
  * A collection that can be made to ignore some of its elements by setting a
  * filter in the form of a {@link Predicate}. Elements which do not satisfy the
  * predicate (it evaluates to {@code false} for the specific element) are kept
  * in the collection, but are not counted towards its size, and will be skipped
  * by the collection's iterators.
+ * <p/>
+ * If the collection is mutable, changes will only apply to elements that
+ * satisfy the filtering predicate. What passes the filter gets added or removed;
+ * what doesn't, doesn't. No surprises.
  * 
  *
  * @author Jan Rabe, Tom Wallroth, Til Boerner
@@ -52,6 +54,25 @@ public interface FilteringCollection<T> extends Collection<T> {
 
 	@Override
 	public FilteringIterator<T> iterator();
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * The element gets added to this collection if it satisfies the
+	 * {@link #getFilter() filter}.
+	 * <p/>
+	 * If the filter rejects it, the element is not added at all. Not even in
+	 * a hidden way: subsequently changing the collection's filter to one
+	 * that accepts the element will not cause the element to suddenly appear;
+	 * because it's not there.
+	 * 
+	 * @param e	the element to be added
+	 * @return {@code true} if the element was added
+	 * @throws UnsupportedOperationException if this collection is immutable
+	 * 
+	 */
+	@Override
+	public boolean add(T e) throws UnsupportedOperationException;
 
 	/**
 	 * {@code true} if the collection's {@link #withFilter(Predicate) filter}
