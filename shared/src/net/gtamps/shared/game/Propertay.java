@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> it is highly recommended that this type properly
  *            implement {@link Object#toString() toString()},
- *            {@link Object#hashCode() hashCode()} and {@link Object#equals() equals()}
+ *            {@link Object#hashCode() hashCode()} and {@link Object#equals(Object) equals()}
  * @author jan, tom, til
  */
 public class Propertay<T> extends GameObject implements IProperty<T> {
@@ -46,14 +46,14 @@ public class Propertay<T> extends GameObject implements IProperty<T> {
 			return false;
 		}
 		this.value = value;
-		this.hasChanged = true;
+		hasChanged = true;
 		this.parent.hasChanged = true;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		final String s = String.format("%s: %s", this.name, this.value.toString());
+		final String s = String.format("%s: %s", name, this.value.toString());
 		return s;
 	}
 

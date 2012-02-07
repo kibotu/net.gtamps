@@ -12,7 +12,7 @@ public interface Predicate<T> {
 	 * {@code true} if the argument satisfies the semantics of this predicate
 	 * 
 	 * @param x	the test object to be evaluated
-	 * @return	{@true} or {@code false}
+	 * @return	{@code true} or {@code false}
 	 */
 	boolean appliesTo(T x);
 }

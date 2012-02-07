@@ -48,8 +48,8 @@ public class Predicates {
 	 * @throws IllegalArgumentException	if no predicates are given
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T> Predicate<T> or(final Predicate<T>... p) {
-		return PredicateModifiers.OR.applyTo(p);
+	public static final <T> Predicate<T> or(final Predicate<T>... predicates) {
+		return PredicateModifiers.OR.applyTo(predicates);
 	}
 
 	/**

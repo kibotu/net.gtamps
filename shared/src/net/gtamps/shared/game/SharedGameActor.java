@@ -1,10 +1,14 @@
 package net.gtamps.shared.game;
 
-import net.gtamps.shared.game.event.*;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
  * <p>
@@ -19,7 +23,7 @@ import java.util.Set;
  * By declaring which types of events a gameActor intends
  * to send upwards, and which types it will handle when passed down, these
  * connections can be joined automatically, by using
- * {@link #connectUpwardsActor(SharedGameActor)}.
+ * {@link #connectUpwardsActor(IGameActor)}.
  * </p><p>
  * Owing to the indiscriminate nature of {@link IGameEventDispatcher}-style
  * event handling (events themselves have no sense of the direction they're
@@ -131,9 +135,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 
 	/**
 	 * Declare the types of gameEvents this actor is interested in receiving
-	 * from upwards. Must have no types in common with {@link #setSendsUp(EventType[]) sendsUp}.
-	 * Use before {@link #connectUpwardsActor(SharedGameActor)} or
-	 * {@link #connectDownwardsActor(SharedGameActor)}.
+	 * from upwards. Use before {@link #connectUpwardsActor(IGameActor)}.
 	 */
 	@Override
 	public void setReceives(final EventType[] receivesDown) {

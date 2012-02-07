@@ -50,7 +50,8 @@ public abstract class GameObject implements Serializable {
 	}
 
 	/**
-	 * @param name default is {@value #DEFAULT_NAME}
+	 * @param name 	default is specified in {@link #DEFAULT_NAME}
+	 * 				(currently "{@value #DEFAULT_NAME}")
 	 */
 	public GameObject(final String name) {
 		this(name, INVALID_UID);
@@ -65,14 +66,14 @@ public abstract class GameObject implements Serializable {
 	}
 
 	public GameObject(final GameObject other) {
-		this.uid = UIDGenerator.getNewUID();
-		this.name = other.name;
-		this.silent = other.silent;
-		this.hasChanged = other.hasChanged;
-		this.revision = other.revision;
-		this.properties = copyPropertyMap(inactiveProperties);
+		uid = UIDGenerator.getNewUID();
+		name = other.name;
+		silent = other.silent;
+		hasChanged = other.hasChanged;
+		revision = other.revision;
+		properties = copyPropertyMap(inactiveProperties);
 		deactivateAllProperties();
-		this.properties = copyPropertyMap(properties);
+		properties = copyPropertyMap(properties);
 	}
 
 	private Map<String, IProperty<?>> copyPropertyMap(final Map<String, IProperty<?>> original) {
@@ -89,11 +90,11 @@ public abstract class GameObject implements Serializable {
 	}
 
 	public int getUid() {
-		return this.uid;
+		return uid;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	/**
@@ -105,7 +106,7 @@ public abstract class GameObject implements Serializable {
 	 *         gameObject was made public
 	 */
 	public long getRevision() {
-		return this.revision;
+		return revision;
 	}
 
 	/**
@@ -116,15 +117,16 @@ public abstract class GameObject implements Serializable {
 	 */
 	public void updateRevision(final long newRevision) {
 		// FIXME make protected (at least!)
-		this.revision = newRevision;
-		this.hasChanged = false;
+		revision = newRevision;
+		hasChanged = false;
 	}
 
 	/**
 	 * <code>true</code> if this gameObject has been modified since the last
-	 * change was made public in a {@link #getRevision() revision}.
+	 * {@link #setRevision(long)}.
 	 *
-	 * @return
+	 * @return	<code>true</code> if this gameObject has been modified since the last
+	 * {@link #setRevision(long)}.
 	 */
 	public boolean hasChanged() {
 		return hasChanged;
@@ -134,7 +136,7 @@ public abstract class GameObject implements Serializable {
 	 * sets the {@link #hasChanged changed-flag} to <code>true</code>
 	 */
 	public void setChanged() {
-		this.hasChanged = true;
+		hasChanged = true;
 	}
 
 	/**
@@ -144,7 +146,7 @@ public abstract class GameObject implements Serializable {
 	 * @param silence if set to true, this game object is silent.
 	 */
 	public void setSilent(final boolean silence) {
-		this.silent = silence;
+		silent = silence;
 	}
 
 	/**
@@ -155,7 +157,7 @@ public abstract class GameObject implements Serializable {
 	 * @return <code>true</code> if this gameObject is silent.
 	 */
 	public boolean isSilent() {
-		return this.silent;
+		return silent;
 	}
 
 	/**
@@ -180,7 +182,7 @@ public abstract class GameObject implements Serializable {
 			if (p == null) {
 				throw new NoSuchElementException("cannot instantiate property");
 			}
-			this.addProperty(p);
+			addProperty(p);
 		} else if (!value.getClass().isAssignableFrom(p.value().getClass())) {
 			throw new NoSuchElementException("property ("+properName+") already in use for different type: " + p.value().getClass().getSimpleName()+ " value: "+value.getClass().getSimpleName()+" : "+value.toString());
 		}
@@ -212,15 +214,15 @@ public abstract class GameObject implements Serializable {
 	 *         gameObject
 	 */
 	public Collection<IProperty<?>> getAllProperties() {
-		if (this.properties == null) {
+		if (properties == null) {
 			return Collections.emptyList();
 		}
-		return Collections.unmodifiableCollection(this.properties.values());
+		return Collections.unmodifiableCollection(properties.values());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%s [%s.%s]", this.name, this.uid, this.revision);
+		return String.format("%s [%s.%s]", name, uid, revision);
 	}
 
 	@Override
@@ -251,7 +253,7 @@ public abstract class GameObject implements Serializable {
 
 
 	void setMutable(final boolean value) {
-		this.mutable = value;
+		mutable = value;
 	}
 
 	void setUid(final int uid) {
@@ -319,17 +321,17 @@ public abstract class GameObject implements Serializable {
 		if (p == null) {
 			throw new IllegalArgumentException("'p' must not be null");
 		}
-		if (this.properties == null) {
-			this.properties = new HashMap<String, IProperty<?>>();
+		if (properties == null) {
+			properties = new HashMap<String, IProperty<?>>();
 		}
-		if (this.properties.containsKey(p.getName())) {
+		if (properties.containsKey(p.getName())) {
 			throw new IllegalArgumentException("Property exists already: " + p);
 		}
-		this.properties.put(p.getName(), p);
+		properties.put(p.getName(), p);
 	}
 
 	private void removeProperty(final String name) {
-		this.properties.remove(name);
+		properties.remove(name);
 	}
 
 	private <T> Propertay<T> getProperty(final String name) {
@@ -342,19 +344,19 @@ public abstract class GameObject implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	private <T> Propertay<T> getActiveProperty(final String name) {
-		if (this.properties == null) {
+		if (properties == null) {
 			return null;
 		}
-		final Propertay<?> p = (Propertay<?>) this.properties.get(name);
+		final Propertay<?> p = (Propertay<?>) properties.get(name);
 		return (Propertay<T>) p;
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T> Propertay<T> getInactiveProperty(final String name) {
-		if (this.inactiveProperties == null) {
+		if (inactiveProperties == null) {
 			return null;
 		}
-		final Propertay<?> p = (Propertay<?>) this.inactiveProperties.get(name);
+		final Propertay<?> p = (Propertay<?>) inactiveProperties.get(name);
 		return (Propertay<T>) p;
 	}
 
