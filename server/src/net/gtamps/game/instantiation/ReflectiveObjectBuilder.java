@@ -1,4 +1,4 @@
-package net.gtamps.game.entity;
+package net.gtamps.game.instantiation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

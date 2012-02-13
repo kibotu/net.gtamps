@@ -1,4 +1,4 @@
-package net.gtamps.game.entity;
+package net.gtamps.game.instantiation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+
+import net.gtamps.game.instantiation.ReflectiveObjectBuilder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
