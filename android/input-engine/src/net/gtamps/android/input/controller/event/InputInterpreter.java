@@ -1,6 +1,7 @@
 package net.gtamps.android.input.controller.event;
 
 import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -18,6 +19,6 @@ public interface InputInterpreter {
      *          <p>&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</p>
      *          <p>(0,1)----(1,1)</p>
      */
-    public abstract void interpretTouch(float x, float y, MotionEvent event);
+    public abstract void interpretTouch(float x, float y, View view, MotionEvent event);
 }
 

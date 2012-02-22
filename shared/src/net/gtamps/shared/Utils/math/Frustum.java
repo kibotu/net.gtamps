@@ -449,4 +449,8 @@ public final class Frustum {
     public void enableDepthTest(boolean enableDepthTest) {
         hasDepthTest = enableDepthTest;
     }
+
+    public void move(float x, float y, float z) {
+        move(x,y,z,false);
+    }
 }

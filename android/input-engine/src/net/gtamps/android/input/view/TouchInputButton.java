@@ -15,6 +15,14 @@ public class TouchInputButton {
     protected float width;
     protected float height;
 
+    /**
+     * Values are supposed to be normalized!
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public TouchInputButton(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
