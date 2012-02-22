@@ -92,6 +92,6 @@ public class Mesh {
     }
 
     public void invalidate() {
-        vbo.isAllocated = false;
+        if(vbo != null) vbo.isAllocated = false;
     }
 }

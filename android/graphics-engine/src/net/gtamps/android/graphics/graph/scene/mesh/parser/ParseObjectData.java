@@ -5,6 +5,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Uv;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
 
@@ -41,9 +42,8 @@ public class ParseObjectData {
 //	}
 
     public void parseObject(Object3D object3D, HashMap<String, Material> materialMap, AParser.TextureAtlas textureAtlas) {
-        Mesh mesh = new Mesh(numFaces * 3, numFaces);
+        Mesh mesh = new Mesh(numFaces,numFaces * 3);
 
-        int numFaces = faces.size();
         int faceIndex = 0;
         boolean hasBitmaps = textureAtlas.hasBitmaps();
 

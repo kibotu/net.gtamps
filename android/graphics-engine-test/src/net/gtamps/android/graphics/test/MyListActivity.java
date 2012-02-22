@@ -52,7 +52,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Cylinder", PACKAGE_NAME, "Test05Activity"));
         list.add(new ActivityModel("Planes", PACKAGE_NAME, "Test06Activity"));
         list.add(new ActivityModel("Sprite", PACKAGE_NAME, "Test07Activity"));
-        list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test08Activity"));
+        list.add(new ActivityModel("Parsed Obj File (Camaro)", PACKAGE_NAME, "Test08Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test09Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test10Activity"));
         // Initially select one of the items

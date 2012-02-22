@@ -60,7 +60,6 @@ public class ObjParser extends AParser implements IParser {
         parseObjects.add(co);
 
         Logger.i(this, "Start parsing object " + resourceID);
-        Logger.i(this, "Start time " + startTime);
 
         try {
             while ((line = buffer.readLine()) != null) {
@@ -143,9 +142,7 @@ public class ObjParser extends AParser implements IParser {
 //            object3D.add(o.getParsedObject(materialMap, textureAtlas));
 //        }
 
-        ParseObjectData parseObjectData = parseObjects.get(0);
-        parseObjectData.parseObject(object3D, materialMap, textureAtlas);
-
+        parseObjects.get(0).parseObject(object3D, materialMap, textureAtlas);
 
         if (textureAtlas.hasBitmaps()) {
             if (texture != null) texture.recycle();
