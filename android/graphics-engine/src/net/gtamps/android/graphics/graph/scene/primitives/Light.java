@@ -1,14 +1,10 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.SceneNode;
-import net.gtamps.android.graphics.renderer.Shader;
+import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.utils.Registry;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
-
-import static android.opengl.GLES20.*;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -21,8 +17,8 @@ public class Light extends SceneNode {
     private Vector3 direction = Vector3.createNew();
 
     public Light(float positionX, float positionY, float positionZ, float directionX, float directionY, float directionZ) {
-        setPosition(positionX,positionY,positionZ);
-        direction.set(directionX,directionY,directionZ);
+        setPosition(positionX, positionY, positionZ);
+        direction.set(directionX, directionY, directionZ);
     }
 
     @Override

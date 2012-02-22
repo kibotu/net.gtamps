@@ -1,6 +1,5 @@
-package net.gtamps.android.graphics.graph.scene;
+package net.gtamps.android.graphics.graph;
 
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +38,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
     protected void onTransformation(GL10 gl10) {
 
         // Orientierung neu berechnen
-        if(updateOrientation()) {
+        if (updateOrientation()) {
             combinedTransformationDirty = true;
         }
 

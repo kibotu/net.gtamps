@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Uv;
 import net.gtamps.shared.Utils.math.Color4;

@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene;
+package net.gtamps.android.graphics.graph;
 
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Vector3;

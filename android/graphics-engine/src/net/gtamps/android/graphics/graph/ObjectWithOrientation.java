@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene;
+package net.gtamps.android.graphics.graph;
 
 import net.gtamps.shared.Utils.math.AxisAlignedBox;
 import net.gtamps.shared.Utils.math.Matrix4;
@@ -320,10 +320,10 @@ abstract class ObjectWithOrientation implements ISpatialObject {
 
         // Matrix zusammenfalten
 //        MatrixFactory.setTransformation(orientation, scaling, dimension, rotation, position);
-        
-        Matrix4 rotationM = MatrixFactory.getRotationEulerRPY(rotation.x,rotation.y,rotation.z);
-        Matrix4 translationM = MatrixFactory.getTranslation(position.x,position.y,position.z);
-        Matrix4 scalingM = MatrixFactory.getScaling(dimension.x*scaling.x,dimension.y*scaling.x,dimension.z*scaling.z);
+
+        Matrix4 rotationM = MatrixFactory.getRotationEulerRPY(rotation.x, rotation.y, rotation.z);
+        Matrix4 translationM = MatrixFactory.getTranslation(position.x, position.y, position.z);
+        Matrix4 scalingM = MatrixFactory.getScaling(dimension.x * scaling.x, dimension.y * scaling.x, dimension.z * scaling.z);
 
         orientation.set(scalingM.mulInPlace(rotationM.mulInPlace(translationM)));
 

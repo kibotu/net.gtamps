@@ -1,6 +1,4 @@
-package net.gtamps.android.graphics.graph.scene;
-
-import net.gtamps.shared.Utils.Logger;
+package net.gtamps.android.graphics.graph;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -83,7 +81,7 @@ public class RootNode extends SceneNode {
     @Override
     protected void onTransformationInternal(GL10 gl10, boolean isDirty) {
         for (int i = 0; i < size(); ++i) {
-            if(isDirty)children.get(i).forceCombinedOrientationDirty();
+            if (isDirty) children.get(i).forceCombinedOrientationDirty();
             children.get(i).onTransformation(gl10);
         }
     }

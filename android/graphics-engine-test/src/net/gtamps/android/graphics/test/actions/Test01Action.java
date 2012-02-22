@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.test.actions;
 
-import net.gtamps.android.graphics.graph.scene.RootNode;
+import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.renderer.RenderAction;
 

@@ -3,8 +3,8 @@ package net.gtamps.android.graphics.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
-import net.gtamps.android.graphics.graph.scene.SceneNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
+import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
@@ -213,7 +213,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      *
      * @param texture
      * @param generateMipMap
-     * @return textureId
+     * @return textureID
      */
     public abstract int allocTexture(Bitmap texture, boolean generateMipMap);
 

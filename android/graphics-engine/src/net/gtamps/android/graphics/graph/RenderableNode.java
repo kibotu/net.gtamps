@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene;
+package net.gtamps.android.graphics.graph;
 
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
@@ -105,17 +105,17 @@ public abstract class RenderableNode extends RootNode {
     }
 
     public void animate(State.Type type, float percentage) {
-        if (lastPercentage == percentage)return;
+        if (lastPercentage == percentage) return;
         lastPercentage = percentage;
         percentage *= 100;
         percentage %= 100;
-        TextureSprite [] textureSprites = textureAnimation.getAnimation(type);
+        TextureSprite[] textureSprites = textureAnimation.getAnimation(type);
         final int index = (int) (textureSprites.length / 100f * percentage);
         setImage(textureSprites[index]);
     }
 
     public void setImage(TextureSprite textureSprite) {
         this.textureSprite = textureSprite;
-        setDimension(textureSprite.width,textureSprite.height,0);
+        setDimension(textureSprite.width, textureSprite.height, 0);
     }
 }

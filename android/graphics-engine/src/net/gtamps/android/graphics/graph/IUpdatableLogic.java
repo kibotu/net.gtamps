@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene;
+package net.gtamps.android.graphics.graph;
 
 /**
  * Logikobjekt

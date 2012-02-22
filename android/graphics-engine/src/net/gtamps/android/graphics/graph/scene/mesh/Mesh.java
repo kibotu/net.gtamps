@@ -6,7 +6,6 @@ import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.VertexManager;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureManager;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Config;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
 
@@ -30,8 +29,8 @@ public class Mesh {
 
     public void allocate() {
         positionZero();
-        if(!Config.USEVBO) return;
-        if(vbo != null && vbo.isAllocated) return;
+        if (!Config.USEVBO) return;
+        if (vbo != null && vbo.isAllocated) return;
         vbo = Registry.getRenderer().allocBuffers(
                 vertices.getVertices().getBuffer(),
                 vertices.getNormals().getBuffer(),

@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -44,7 +44,7 @@ public class Sphere extends RenderableNode {
     public void onCreateInternal(GL10 gl10) {
         if (mesh != null) return;
 
-        mesh = new Mesh(stacks * slices * 2,(stacks + 1) * (slices + 1));
+        mesh = new Mesh(stacks * slices * 2, (stacks + 1) * (slices + 1));
 
         Color4 emissive = material.getEmission();
 

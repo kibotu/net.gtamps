@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.SceneNode;
+import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.math.Frustum;

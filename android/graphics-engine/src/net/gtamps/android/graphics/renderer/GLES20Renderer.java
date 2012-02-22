@@ -3,7 +3,7 @@ package net.gtamps.android.graphics.renderer;
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 import fix.android.opengl.GLES20;
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
@@ -17,7 +17,6 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 import net.gtamps.shared.Utils.math.Matrix4;
-import net.gtamps.shared.game.state.State;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -162,7 +161,7 @@ public class GLES20Renderer extends BasicRenderer {
             for (int i = 0; i < node.getTextures().size(); i++) {
                 Texture texture = node.getTextures().get(i);
                 glActiveTexture(GL_TEXTURE0 + i);
-                glBindTexture(GL_TEXTURE_2D, Integer.parseInt(texture.textureId));
+                glBindTexture(GL_TEXTURE_2D, Integer.parseInt(texture.textureID));
                 glUniform1i(glGetUniformLocation(activeShaderProgram, texture.type.name()), i);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture.hasMipMap ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
             }
@@ -225,13 +224,13 @@ public class GLES20Renderer extends BasicRenderer {
             for (int i = 0; i < node.getTextures().size(); i++) {
                 Texture texture = node.getTextures().get(i);
                 glActiveTexture(GL_TEXTURE0 + i);
-                glBindTexture(GL_TEXTURE_2D, Integer.parseInt(texture.textureId));
+                glBindTexture(GL_TEXTURE_2D, Integer.parseInt(texture.textureID));
                 glUniform1i(glGetUniformLocation(activeShaderProgram, texture.type.name()), i);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture.hasMipMap ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
             }
 
             // uvs
-            if(node.hasTextureAnimation()) {
+            if (node.hasTextureAnimation()) {
                 TextureAnimation uvsheet = node.getTextureAnimation();
                 TextureSprite textureSprite = node.getTextureSprite();
                 glBindBuffer(GL_ARRAY_BUFFER, uvsheet.floatBufferId);

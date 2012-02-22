@@ -1,11 +1,10 @@
 package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 
@@ -82,7 +81,7 @@ public class GL10Renderer extends BasicRenderer {
     public int allocate(FloatBuffer floatBuffer) {
 
         GL11 gl11 = (GL11) gl10;
-        
+
         // generate id
         final IntBuffer buffer = IntBuffer.allocate(1);
         gl11.glGenBuffers(1, buffer);

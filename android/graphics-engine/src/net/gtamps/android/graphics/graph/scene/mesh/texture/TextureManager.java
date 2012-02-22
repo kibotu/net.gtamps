@@ -16,7 +16,7 @@ public class TextureManager {
      * Adds item to the list
      */
     public boolean add(Texture texture) {
-        if (!Registry.getTextureLibrary().contains(texture.textureId)) return false;
+        if (!Registry.getTextureLibrary().contains(texture.textureID)) return false;
         return textures.add(texture);
     }
 
@@ -28,11 +28,11 @@ public class TextureManager {
     }
 
     /**
-     * Adds a new Texture with the given textureId to the list, and returns that texture
+     * Adds a new Texture with the given textureID to the list, and returns that texture
      */
     public Texture addById(String textureId) {
         if (!Registry.getTextureLibrary().contains(textureId)) {
-            throw new Error("Could not create TextureVo using textureId \"" + textureId + "\". TextureManager does not contain that id.");
+            throw new Error("Could not create TextureVo using textureID \"" + textureId + "\". TextureManager does not contain that id.");
         }
 
         Texture t = new Texture(textureId);
@@ -56,7 +56,7 @@ public class TextureManager {
     }
 
     /**
-     * Removes item with the given textureId from the list
+     * Removes item with the given textureID from the list
      */
     public boolean removeById(String textureId) {
         Texture t = this.getById(textureId);
@@ -79,11 +79,11 @@ public class TextureManager {
     }
 
     /**
-     * Gets item from the list which has the given textureId
+     * Gets item from the list which has the given textureID
      */
     public Texture getById(String textureId) {
         for (int i = 0; i < textures.size(); i++) {
-            String s = textures.get(i).textureId;
+            String s = textures.get(i).textureID;
             if (textureId == s) {
                 Texture t = textures.get(i);
                 return t;
@@ -121,7 +121,7 @@ public class TextureManager {
 
         String[] a = new String[textures.size()];
         for (int i = 0; i < textures.size(); i++) {
-            a[i] = textures.get(i).textureId;
+            a[i] = textures.get(i).textureID;
         }
         return a;
     }

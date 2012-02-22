@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.shared.Utils.math.Color4;
 
@@ -78,7 +78,6 @@ public class Triangle extends RenderableNode {
 
         mesh.faces.add(0, 1, 2);
     }
-
 
 
     @Override

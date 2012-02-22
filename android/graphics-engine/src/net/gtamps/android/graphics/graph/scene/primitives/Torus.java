@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.scene.RenderableNode;
+import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Uv;
 import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
@@ -43,7 +43,7 @@ public class Torus extends RenderableNode {
     public void onCreateInternal(GL10 gl10) {
         if (mesh != null) return;
 
-        mesh = new Mesh(segmentsW * segmentsH * 2,segmentsW * segmentsH * 2 * 3);
+        mesh = new Mesh(segmentsW * segmentsH * 2, segmentsW * segmentsH * 2 * 3);
 
         Color4 emissive = material.getEmission();
 

@@ -4,8 +4,8 @@ import net.gtamps.android.graphics.utils.Registry;
 
 public class Texture {
 
-    public int textureResourceId;
-    public String textureId;
+    public int textureResourceID;
+    public String textureID;
     public boolean isAllocated;
     public boolean hasMipMap;
     public Type type;
@@ -15,10 +15,10 @@ public class Texture {
     public float offsetU = 0;
     public float offsetV = 0;
 
-    public Texture(String textureId) {
-        this.textureId = textureId;
+    public Texture(String textureID) {
+        this.textureID = textureID;
     }
-    
+
     /**
      * Types supported by shader.
      */
@@ -30,8 +30,13 @@ public class Texture {
         this(resourceId, type, true);
     }
 
-    public Texture(int textureResourceId, Type type, boolean generateMipMaps) {
-        this.textureResourceId = textureResourceId;
+    /**
+     * @param textureResourceID
+     * @param type
+     * @param generateMipMaps
+     */
+    public Texture(int textureResourceID, Type type, boolean generateMipMaps) {
+        this.textureResourceID = textureResourceID;
         isAllocated = false;
         this.hasMipMap = generateMipMaps;
         this.type = type;
@@ -39,7 +44,7 @@ public class Texture {
 
     public void allocate() {
         if (isAllocated) return;
-        textureId = String.valueOf(Registry.getTextureLibrary().loadTexture(textureResourceId, hasMipMap));
+        textureID = String.valueOf(Registry.getTextureLibrary().loadTexture(textureResourceID, hasMipMap));
         isAllocated = true;
     }
 
