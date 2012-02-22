@@ -12,6 +12,7 @@ import net.gtamps.shared.Utils.Logger;
 
 
 public class InputEngineController implements OnTouchListener, OnKeyListener {
+
     private static final String TAG = "InputEngineController";
 	private static InputEngineController instance;
     private AbstractInputLayout layout;
