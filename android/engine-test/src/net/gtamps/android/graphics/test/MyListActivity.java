@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import net.gtamps.android.graphics.test.listview.ActivityModel;
 import net.gtamps.android.graphics.test.listview.ListModel;
 
@@ -24,7 +23,7 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-        startActivity(PACKAGE_NAME, "Test08Activity");
+        startActivity(PACKAGE_NAME, "Test09Activity");
     }
 
     @Override
@@ -53,7 +52,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Planes", PACKAGE_NAME, "Test06Activity"));
         list.add(new ActivityModel("Sprite", PACKAGE_NAME, "Test07Activity"));
         list.add(new ActivityModel("Parsed Obj File (Camaro)", PACKAGE_NAME, "Test08Activity"));
-        list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test09Activity"));
+        list.add(new ActivityModel("InputEngine", PACKAGE_NAME, "Test09Activity"));
         list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test10Activity"));
         // Initially select one of the items
         list.get(1).setSelected(true);

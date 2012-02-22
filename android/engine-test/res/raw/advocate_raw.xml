@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture>
+    <dimension width="512" height="512" normalized="false"/>
+    <img x="9" y="178" w="59" h="108"/>
+    <!-- blink 1 -->
+    <img x="87" y="176" w="60" h="110"/>
+    <!-- blink 2 -->
+    <img x="158" y="175" w="67" h="111"/>
+    <!-- blink 3 -->
+    <animation type="idle" indices="0 1 2"/>
+</texture>
+

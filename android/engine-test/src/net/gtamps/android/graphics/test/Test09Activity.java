@@ -17,11 +17,11 @@ public class Test09Activity extends RenderActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        renderAction = new Test01Action(new Test09Scene());
+        setRenderAction(renderAction);
+
         // add input
         view.setOnTouchListener(InputEngineController.INSTANCE);
         view.setOnKeyListener(InputEngineController.INSTANCE);
-
-        renderAction = new Test01Action(new Test09Scene());
-        setRenderAction(renderAction);
     }
 }

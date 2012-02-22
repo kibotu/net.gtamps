@@ -33,7 +33,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="graphics-engine" />
     <orderEntry type="module" module-name="input-engine" />
-    <orderEntry type="module" module-name="shared" />
   </component>
 </module>
 

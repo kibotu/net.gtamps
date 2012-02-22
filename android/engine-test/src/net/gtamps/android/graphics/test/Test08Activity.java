@@ -2,7 +2,6 @@ package net.gtamps.android.graphics.test;
 
 import android.os.Bundle;
 import net.gtamps.android.graphics.RenderActivity;
-import net.gtamps.android.graphics.test.actions.Test01Action;
 import net.gtamps.android.graphics.test.actions.Test08Action;
 import net.gtamps.android.graphics.test.scenes.Test08Scene;
 
