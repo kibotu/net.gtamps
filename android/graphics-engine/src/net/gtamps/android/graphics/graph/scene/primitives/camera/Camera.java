@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene.primitives;
+package net.gtamps.android.graphics.graph.scene.primitives.camera;
 
 import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
@@ -96,5 +96,9 @@ public class Camera extends SceneNode {
 
     public void setOrthographicView() {
         isPersectiveView = false;
+    }
+
+    public void move(float x, float y, float z) {
+        frustum.move(x,y,z, true);
     }
 }

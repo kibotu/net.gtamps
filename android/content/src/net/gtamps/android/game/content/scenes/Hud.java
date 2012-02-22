@@ -29,7 +29,7 @@ public class Hud extends BasicScene implements InputEventListener {
     public void onCreate() {
         // setup camera
         Camera camera = new Camera(0, 0, 1, 0, 0, 0, 0, 1, 0);
-//        Camera camera = new Camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
+//        camera camera = new camera(0, 0, 100, 0, 0, -1, 0, 1, 0);
         setActiveCamera(camera);
         camera.enableDepthTest(false);
 

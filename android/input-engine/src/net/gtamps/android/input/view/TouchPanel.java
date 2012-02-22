@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import net.gtamps.android.input.controller.event.InputInterpreter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,7 +11,7 @@ import java.util.HashMap;
  * Date: 22/02/12
  * Time: 16:28
  */
-public class TouchPanel extends TouchInputButton implements View.OnTouchListener {
+public class TouchPanel extends TouchInputButton {
 
     private HashMap<TouchInputButton, InputInterpreter> buttons;
 
@@ -29,16 +28,15 @@ public class TouchPanel extends TouchInputButton implements View.OnTouchListener
         return buttons.remove(touchInputButton);
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouch(View view, MotionEvent event) {
 
         float px = event.getX() / width;
         float py = event.getY() / height;
 
-        if (isHit(px, py)) return true;
+        if (!isHit(px, py)) return true;
 
         for (TouchInputButton b : buttons.keySet()) {
-            if(b.isHit(px,py)) buttons.get(b).interpretTouch((px - b.x) / b.width, (py - b.y) / b.height, event);
+            if(b.isHit(px,py)) buttons.get(b).interpretTouch((px - b.x) / b.width, (py - b.y) / b.height, view, event);
         }
 
         //touch event was handled:

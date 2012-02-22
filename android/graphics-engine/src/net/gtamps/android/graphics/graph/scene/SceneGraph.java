@@ -2,7 +2,7 @@ package net.gtamps.android.graphics.graph.scene;
 
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.SceneNode;
-import net.gtamps.android.graphics.graph.scene.primitives.Camera;
+import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.utils.Registry;
 import org.jetbrains.annotations.NotNull;
 

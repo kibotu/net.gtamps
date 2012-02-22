@@ -1,7 +1,7 @@
 package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.primitives.Camera;
+import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 
 import javax.microedition.khronos.opengles.GL10;
