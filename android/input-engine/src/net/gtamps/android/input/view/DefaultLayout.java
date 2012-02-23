@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.test.input;
+package net.gtamps.android.input.view;
 
 import net.gtamps.android.input.view.AbstractInputLayout;
 
