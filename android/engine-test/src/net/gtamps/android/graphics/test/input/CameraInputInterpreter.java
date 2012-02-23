@@ -5,6 +5,7 @@ import android.view.View;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.input.controller.event.InputInterpreter;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.Vector3;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -23,6 +24,7 @@ public class CameraInputInterpreter implements InputInterpreter {
     private float lastY;
     private float friction = 100;   //  pointer movement (in pixel) * value = actual velocity
     private float lastZoomDistance;
+    private Vector3 lastMidPoint = Vector3.createNew();
 
     @Override
     public void interpretTouch(float x, float y, View view, MotionEvent event) {
@@ -59,15 +61,11 @@ public class CameraInputInterpreter implements InputInterpreter {
                     
                 } else {
 
-                    float distance = hypot(event.getX(0), event.getX(0), event.getX(1), event.getY(1));
-                    camera.setZoomFactor((distance - lastZoomDistance)%90);
-//                    lastZoomDistance = distance;
-
-                    updateFriction(view);
-
-//                    Logger.I(this, "distance="+distance + " lastdistance="+lastZoomDistance);
-//                    Logger.I(this, ""+event.getX(0) + " "+ event.getX(0) + " "+  event.getX(1) + " "+ event.getY(1));
-//                    Logger.I(this, "zoom=" + ((distance - lastZoomDistance)%90));
+                    float newDistance = hypot(event.getX(0), event.getX(0), event.getX(1), event.getY(1));
+                    if (newDistance > 5f) {
+                        camera.setZoomFactor(newDistance / lastZoomDistance);
+                        updateFriction(view);
+                    }
                 }
 
                 break;
@@ -85,6 +83,10 @@ public class CameraInputInterpreter implements InputInterpreter {
 
                 // set origin for zoom
                 lastZoomDistance = hypot(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+
+                // set last mid point
+                midPoint(lastMidPoint,event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+
                 break;
 
             // Secondary Pointer Up
@@ -99,13 +101,17 @@ public class CameraInputInterpreter implements InputInterpreter {
         }
     }
 
+    public static void midPoint(Vector3 point, float x0, float y0, float x1, float y1) {
+        point.set((x0 + x1) / 2, (y0+y1) / 2,0);
+    }
+
     private void updateFriction(View view) {
         float distanceToViewField = camera.getDistanceToViewField();
         float viewwidth = computeHorizontalFieldOfView(camera.getHorizontalFieldOfViewEffective(), distanceToViewField);
         friction = view.getWidth() / viewwidth / 2;
     }
 
-    public float hypot(float x1, float y1, float x2, float y2) {
+    public static float hypot(float x1, float y1, float x2, float y2) {
         return (float) Math.hypot((x1 - x2), (y1 - y2));
     }
 

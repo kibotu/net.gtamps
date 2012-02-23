@@ -49,8 +49,27 @@ public class Camera extends SceneNode {
      * @param upZ
      */
     public Camera(float positionX, float positionY, float positionZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
+        this(positionX,positionY,positionZ,targetX,targetY,targetZ,upX,upY,upZ,45);
+    }
+
+    /**
+     * Sets a new Camera.
+     *
+     * @param positionX
+     * @param positionY
+     * @param positionZ
+     * @param targetX
+     * @param targetY
+     * @param targetZ
+     * @param upX
+     * @param upY
+     * @param upZ
+     * @param fovy
+     */
+    public Camera(float positionX, float positionY, float positionZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ, int fovy) {
         setPosition(positionX, positionY, positionZ);
         frustum.setCamera(this.position, Vector3.createNew(targetX, targetY, targetZ), Vector3.createNew(upX, upY, upZ));
+        frustum.setHorizontalFieldOfView(fovy,1);
     }
 
     @Override
@@ -100,5 +119,17 @@ public class Camera extends SceneNode {
 
     public void move(float x, float y, float z) {
         frustum.move(x,y,z, true);
+    }
+
+    public float getDistanceToViewField() {
+        return frustum.getDistanceToVieField();
+    }
+
+    public float getHorizontalFieldOfViewEffective() {
+        return frustum.getHorizontalFieldOfViewEffective();
+    }
+
+    public void setZoomFactor(float distance) {
+        if(distance != 0) frustum.setZoomFactor(distance);
     }
 }

@@ -6,8 +6,8 @@ import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
-import net.gtamps.android.graphics.test.input.layout.CameraInputInterpreter;
-import net.gtamps.android.graphics.test.input.layout.DefaultLayout;
+import net.gtamps.android.graphics.test.input.CameraInputInterpreter;
+import net.gtamps.android.graphics.test.input.DefaultLayout;
 import net.gtamps.android.input.controller.InputEngineController;
 import net.gtamps.android.input.view.TouchInputButton;
 
@@ -32,7 +32,7 @@ public class Test09Scene extends SceneGraph {
     public void onSurfaceCreatedInternal(GL10 gl10) {
 
         // Package where the obj file is located. Needed for context loader.
-        String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
+        final String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 
         add(new Light(0, 0, 10, 0, 0, -1));
 

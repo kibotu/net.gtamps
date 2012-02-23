@@ -22,7 +22,7 @@ public final class Frustum {
     /**
      * Sichtwinkel in Grad
      */
-    private float fieldOfView;
+    private float fovy;
 
     /**
      * Der inverse Zoomfaktor (1/Zoomfaktor)
@@ -78,6 +78,8 @@ public final class Frustum {
     protected Matrix4 projectionMatrix = Matrix4.createNew();
     protected Matrix4 viewMatrix = Matrix4.createNew();
     protected Matrix4 normalMatrix = Matrix4.createNew();
+    public static final float MIN_ZOOM = 5;
+    public static final float MAX_ZOOM = 90;
 
     /**
      * Erzeugt einen neuen Sichtkegel
@@ -135,7 +137,7 @@ public final class Frustum {
         this.aspectRatio = aspectRatio;
         this.nearDistance = nearDistance;
         this.farDistance = farDistance;
-        fieldOfView = fov;
+        fovy = fov;
         setZoomFactorWithoutUpdatingPlanes(zoomFactor);
 
         calculatePlaneSizes();
@@ -165,7 +167,7 @@ public final class Frustum {
         assert fov > 0;
 
         if (resetZoom) setZoomFactorWithoutUpdatingPlanes(1.0f);
-        fieldOfView = fov;
+        fovy = fov;
 
         calculatePlaneSizes();
     }
@@ -180,7 +182,7 @@ public final class Frustum {
         assert fov > 0;
         assert zoomFactor > 0;
 
-        fieldOfView = fov;
+        fovy = fov;
         setZoomFactorWithoutUpdatingPlanes(zoomFactor);
 
         calculatePlaneSizes();
@@ -194,7 +196,7 @@ public final class Frustum {
      * @see #getHorizontalFieldOfViewEffective()
      */
     public float getHorizontalFieldOfView() {
-        return fieldOfView;
+        return fovy;
     }
 
     /**
@@ -240,15 +242,17 @@ public final class Frustum {
      * Berechnet die Größen der nahen und fernen Plane
      */
     private void calculatePlaneSizes() {
-        tangens = (float) Math.tan(fieldOfView * inverseZoomFactor); // TODO: Noch weiter vorberechnen?
+        tangens = (float) Math.tan(fovy * inverseZoomFactor); // TODO: Noch weiter vorberechnen?
         height = nearDistance * tangens;
         width = height * aspectRatio;
 
-        sphereFactorY = 1.0f / (float) Math.cos(fieldOfView);
+        sphereFactorY = 1.0f / (float) Math.cos(fovy);
 
         // compute half of the the horizontal field of view and sphereFactorX
         float anglex = (float) Math.atan(tangens * aspectRatio);
         sphereFactorX = 1.0f / (float) Math.cos(anglex);
+
+        setPerspectiveProjection();
     }
 
     /**
@@ -452,5 +456,15 @@ public final class Frustum {
 
     public void move(float x, float y, float z) {
         move(x,y,z,false);
+    }
+
+    public float getDistanceToVieField() {
+        return position.getDistance(target);
+    }
+
+    public void setZoomFactor(float factor) {
+        if (fovy / factor >= MIN_ZOOM && fovy / factor <= MAX_ZOOM) {
+            setHorizontalFieldOfView(fovy, factor);
+        }
     }
 }
