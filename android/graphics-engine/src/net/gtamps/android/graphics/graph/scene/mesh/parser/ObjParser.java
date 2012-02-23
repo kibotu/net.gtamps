@@ -48,9 +48,11 @@ public class ObjParser extends AParser implements IParser {
         super(resourceID, generateMipMap);
     }
 
+    private long startTime;
+
     @Override
     public void parse() {
-        long startTime = Calendar.getInstance().getTimeInMillis();
+        startTime = Calendar.getInstance().getTimeInMillis();
 
         InputStream fileIn = Registry.getContext().getResources().openRawResource(Registry.getContext().getResources().getIdentifier(resourceID, null, packageID));
 
@@ -59,7 +61,7 @@ public class ObjParser extends AParser implements IParser {
         co = new ParseObjectData(vertices, texCoords, normals);
         parseObjects.add(co);
 
-        Logger.i(this, "Start parsing object " + resourceID);
+//        Logger.i(this, "Start parsing object " + resourceID);
 
         try {
             while ((line = buffer.readLine()) != null) {
@@ -105,11 +107,11 @@ public class ObjParser extends AParser implements IParser {
                 } else if (type.equals(OBJECT)) {
                     String objName = parts.hasMoreTokens() ? parts.nextToken() : "";
                     if (firstObject) {
-                        Logger.i(this, "Create object " + objName);
+//                        Logger.i(this, "Create object " + objName);
                         co.name = objName;
                         firstObject = false;
                     } else {
-                        Logger.i(this, "Create object " + objName);
+//                        Logger.i(this, "Create object " + objName);
                         co = new ParseObjectData(vertices, texCoords, normals);
                         co.name = objName;
                         parseObjects.add(co);
@@ -120,13 +122,13 @@ public class ObjParser extends AParser implements IParser {
             Logger.printException(this, e);
         }
 
-        long endTime = Calendar.getInstance().getTimeInMillis();
-        Logger.i(this, "End time " + (endTime - startTime));
+//        long endTime = Calendar.getInstance().getTimeInMillis();
+//        Logger.i(this, "End time " + (endTime - startTime));
     }
 
     @Override
     public void getParsedObject(Object3D object3D) {
-        Logger.i(this, "Start object creation");
+//        Logger.i(this, "Start object creation");
         Bitmap texture = null;
 
         if (textureAtlas.hasBitmaps()) {
@@ -147,7 +149,10 @@ public class ObjParser extends AParser implements IParser {
         if (textureAtlas.hasBitmaps()) {
             if (texture != null) texture.recycle();
         }
-        Logger.i(this, "Object creation finished");
+//        Logger.i(this, "Object creation finished");
+
+        long endTime = Calendar.getInstance().getTimeInMillis();
+        Logger.i(this, "[" + resourceID + "] Successfully created in " + (endTime - startTime) + "ms.");
 
         cleanup();
     }
