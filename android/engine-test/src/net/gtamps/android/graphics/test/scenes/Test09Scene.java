@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import net.gtamps.android.graphics.R;
+import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;

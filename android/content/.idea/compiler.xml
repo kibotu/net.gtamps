@@ -4,12 +4,11 @@
     <option name="DEFAULT_COMPILER" value="Javac" />
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/../engine-test/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../graphic/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/../graphics-test/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../utils/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/../input-engine/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../engine-test/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../graphics-engine/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../input-engine/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>

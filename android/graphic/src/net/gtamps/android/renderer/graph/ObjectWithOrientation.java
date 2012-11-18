@@ -315,7 +315,7 @@ public abstract class ObjectWithOrientation implements ISpatialObject {
         if (!isDirty || frozen) return false;
 
         // Matrix zusammenfalten
-        MatrixFactory.setTransformation(orientation, scaling, rotation, position);
+        MatrixFactory.setTransformation(orientation, dimension,scaling, rotation, position);
 
         // Bounding Box erzeugen
         updateBoundingBox();
