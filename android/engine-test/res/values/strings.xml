@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MyList!</string>
-    <string name="app_name">graphics-engine-test</string>
+    <string name="app_name">GTAMPS Gaphics Engine Test</string>
     <drawable name="rot">#FF0000</drawable>
 </resources>

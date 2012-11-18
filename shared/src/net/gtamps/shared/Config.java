@@ -9,7 +9,7 @@ final public class Config {
 	/**
 	 * DEBUG
 	 */
-	public final static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
+	public final static Logger.Level LOG_LEVEL = Logger.Level.NO_LOGGING;
 
 	/**
 	 * RENDERER
