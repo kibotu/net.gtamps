@@ -53,7 +53,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Sprite", PACKAGE_NAME, "Test07Activity"));
         list.add(new ActivityModel("Parsed Obj File (Camaro)", PACKAGE_NAME, "Test08Activity"));
         list.add(new ActivityModel("InputEngine", PACKAGE_NAME, "Test09Activity"));
-//        list.add(new ActivityModel("Placeholder", PACKAGE_NAME, "Test10Activity"));
+        list.add(new ActivityModel("Animation", PACKAGE_NAME, "Test10Activity"));
         // Initially select one of the items
         list.get(1).setSelected(true);
         return list;

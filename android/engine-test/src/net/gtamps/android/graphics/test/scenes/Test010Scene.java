@@ -22,5 +22,7 @@ public class Test010Scene extends SceneGraph {
 
         add(new Light(0, 0, 10, 0, 0, -1));
 
+
+
     }
 }
