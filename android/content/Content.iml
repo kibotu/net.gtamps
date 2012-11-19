@@ -40,16 +40,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android 2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/out/production/utils/classes.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="graphics-engine" />
+    <orderEntry type="module" module-name="input-engine" />
+    <orderEntry type="module" module-name="graphic" />
   </component>
 </module>
 

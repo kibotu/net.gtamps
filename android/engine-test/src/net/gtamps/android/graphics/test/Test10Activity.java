@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.test;
 import android.os.Bundle;
 import net.gtamps.android.graphics.RenderActivity;
 import net.gtamps.android.graphics.test.actions.Test01Action;
+import net.gtamps.android.graphics.test.actions.Test10Action;
 import net.gtamps.android.graphics.test.scenes.Test10Scene;
 import net.gtamps.android.input.controller.InputEngineController;
 
@@ -17,7 +18,7 @@ public class Test10Activity extends RenderActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        renderAction = new Test01Action(new Test10Scene());
+        renderAction = new Test10Action(new Test10Scene());
         setRenderAction(renderAction);
 
         // add input

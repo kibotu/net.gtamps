@@ -13,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class Object3D extends RenderableNode {
 
-    private static Mesh mesh;
+    private Mesh mesh;
 
     public Object3D(String objectResourceID) {
         this(objectResourceID, true);

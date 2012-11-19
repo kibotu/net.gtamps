@@ -9,11 +9,15 @@ import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
  */
 public class KeyFrame {
 
-    protected Object3D object3D;
     protected String id;
+    protected Object3D object3D;
 
     public KeyFrame(String id, Object3D object3D) {
         this.id = id;
         this.object3D = object3D;
+    }
+
+    public Object3D getObject3D() {
+        return object3D;
     }
 }

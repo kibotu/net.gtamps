@@ -1,6 +1,8 @@
 package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
+import net.gtamps.android.graphics.graph.scene.animation.AnimationObject3D;
+import net.gtamps.android.graphics.graph.scene.animation.KeyFrame;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
@@ -35,19 +37,17 @@ public class Test10Scene extends SceneGraph {
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 
         add(new Light(0, 0, 10, 0, 0, -1));
+        Texture crate = new Texture(R.drawable.crate, Texture.Type.texture_01, true);
 
-        Object3D cube01 = new Object3D(PACKAGE_NAME + "cube_01_obj");
-        cube01.addTexture(new Texture(R.drawable.crate, Texture.Type.texture_01, true));
+        AnimationObject3D cube01 = new AnimationObject3D(PACKAGE_NAME + "cube_01_obj");
+        cube01.addTexture(crate);
 
         Object3D cube02 = new Object3D(PACKAGE_NAME + "cube_02_obj");
-        cube02.addTexture(new Texture(R.drawable.crate, Texture.Type.texture_01, true));
-
-//        Animation3d anim = new Animation3d();
-//        Animation3d anim = new Animation3d();
+        cube02.addTexture(crate);
 //
-//        KeyFrame frame01 = new KeyFrame("cube01", cube01);
-//        KeyFrame frame02 = new KeyFrame("cube02", cube02);
-//        anim.addFrame(frame01);
-//        anim.addFrame(frame02);
+//        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02));
+
+        cube01.setPosition(-2,0,0);
+        add(cube01);
     }
 }

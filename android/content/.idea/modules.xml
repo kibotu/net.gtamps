@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Content.iml" filepath="$PROJECT_DIR$/Content.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" filepath="$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/../engine-test/engine-test.iml" filepath="$PROJECT_DIR$/../engine-test/engine-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../graphic/graphic.iml" filepath="$PROJECT_DIR$/../graphic/graphic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" filepath="$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/../input-engine/input-engine.iml" filepath="$PROJECT_DIR$/../input-engine/input-engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../shared/shared.iml" filepath="$PROJECT_DIR$/../../shared/shared.iml" />
