@@ -20,4 +20,17 @@ public class KeyFrame {
     public Object3D getObject3D() {
         return object3D;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer();
+        sb.append("KeyFrame");
+        sb.append("{id='").append(id).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String getId() {
+        return id;
+    }
 }

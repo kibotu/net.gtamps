@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph.scene.mesh.buffermanager;
 
+import net.gtamps.android.graphics.utils.Registry;
+
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
  * Date: 01/02/12

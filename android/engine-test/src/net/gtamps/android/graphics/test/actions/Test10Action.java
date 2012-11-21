@@ -23,6 +23,9 @@ public class Test10Action extends RenderAction {
 
     float rot = 0;
 
+    private long endTime;
+    private long startTime;
+
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
 
@@ -32,6 +35,7 @@ public class Test10Action extends RenderAction {
             rootNode.getChild(i).setRotation(rot, rot, rot);
 //            rootNode.setRotation(rot,rot,rot);
         }
+
         ((AnimationObject3D) rootNode.getChild(1)).playFrame("shapeshift", "shapeshift01");
     }
 }

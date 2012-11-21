@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import net.gtamps.android.graphics.graph.RenderableNode;
+import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
@@ -92,5 +93,9 @@ public class GL10Renderer extends BasicRenderer {
         gl11.glBufferData(GL11.GL_ARRAY_BUFFER, floatBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, floatBuffer, GL11.GL_STATIC_DRAW);
 
         return id;
+    }
+
+    @Override
+    public void update(Mesh mesh) {
     }
 }

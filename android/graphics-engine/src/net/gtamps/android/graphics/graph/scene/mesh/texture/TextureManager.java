@@ -125,4 +125,10 @@ public class TextureManager {
         }
         return a;
     }
+
+    public TextureManager clone() {
+        TextureManager textureManager = new TextureManager();
+        textureManager.textures.addAll(textures);
+        return textureManager;
+    }
 }

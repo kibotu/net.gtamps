@@ -27,6 +27,12 @@ public class Mesh {
         textures = new TextureManager();
     }
 
+    public Mesh(Mesh mesh) {
+        faces = mesh.faces.clone();
+        vertices = mesh.vertices.clone();
+        textures = mesh.textures.clone();
+    }
+
     public void allocate() {
         positionZero();
         if (!Config.USEVBO) return;
@@ -93,5 +99,13 @@ public class Mesh {
 
     public void invalidate() {
         if(vbo != null) vbo.isAllocated = false;
+    }
+
+    public void update() {
+        if(vbo != null) Registry.getRenderer().update(this);
+    }
+
+    public Mesh clone() {
+        return new Mesh(this);
     }
 }

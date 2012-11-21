@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
+import com.badlogic.gdx.backends.android.AndroidGL20;
 import fix.android.opengl.GLES20;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
@@ -34,6 +35,11 @@ import static android.opengl.GLES20.*;
  */
 public class GLES20Renderer extends BasicRenderer {
 
+    /**
+     * gdx additional gl functions (ndk)
+     */
+    private AndroidGL20 mGlEs20;
+
     public GLES20Renderer(IRenderAction renderAction) {
         super(renderAction);
     }
@@ -53,6 +59,9 @@ public class GLES20Renderer extends BasicRenderer {
         // cull backface
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+        // getting additional gl functions
+        mGlEs20 = new AndroidGL20();
     }
 
     @Override
@@ -271,7 +280,7 @@ public class GLES20Renderer extends BasicRenderer {
         // bind vertex buffer
         if (vertexBuffer != null) {
             glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferID);
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind index buffer
@@ -326,5 +335,24 @@ public class GLES20Renderer extends BasicRenderer {
         glBufferData(GL11.GL_ARRAY_BUFFER, floatBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, floatBuffer, GL11.GL_STATIC_DRAW);
 
         return id;
+    }
+
+    @Override
+    public void update(Mesh mesh) {
+
+//        Logger.v(this, "starting to update vertex buffer");
+
+        // bind vertex buffer
+        if (mesh.vertices.getVertices().getBuffer() != null) {
+            mesh.vertices.getVertices().getBuffer().flip();
+//            Logger.d(this, mesh.vertices.getVertices().getBuffer().capacity() + " | " + mesh.vertices.getVertices().getBuffer().remaining() );
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
+        }
+
+        // deselect buffers
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+//        Logger.v(this, "update vertex buffer successful");
     }
 }

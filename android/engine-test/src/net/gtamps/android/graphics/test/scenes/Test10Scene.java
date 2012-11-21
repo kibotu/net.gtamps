@@ -44,10 +44,8 @@ public class Test10Scene extends SceneGraph {
 
         Object3D cube02 = new Object3D(PACKAGE_NAME + "cube_02_obj");
         cube02.addTexture(crate);
-//
-//        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02));
+        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02));
 
-        cube01.setPosition(-2,0,0);
         add(cube01);
     }
 }

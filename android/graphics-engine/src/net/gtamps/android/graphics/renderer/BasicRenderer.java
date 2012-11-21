@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.SceneNode;
+import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
@@ -220,15 +221,12 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     /**
      * Returns a new generated valid Texture id.
      *
-     * @param gl
      * @return generatedId
      */
     public abstract int newTextureID();
 
     /**
      * Deletes textures by id.
-     *
-     * @param gl
      */
     public abstract void deleteTexture(int... textureIds);
 
@@ -284,9 +282,15 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     /**
      * Allocates a float buffer and returns the generated id to which it has been bound.
      *
-     * @param gl
      * @param floatBuffer
      * @return generated id
      */
     public abstract int allocate(FloatBuffer floatBuffer);
+
+    /**
+     * Updates VBO of a mesh
+     *
+     * @param mesh
+     */
+    public abstract void update(Mesh mesh);
 }
