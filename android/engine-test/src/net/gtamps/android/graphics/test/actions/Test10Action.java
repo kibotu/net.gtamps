@@ -1,12 +1,13 @@
 package net.gtamps.android.graphics.test.actions;
 
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.AnimationObject3D;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
-import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -46,9 +47,8 @@ public class Test10Action extends RenderAction {
         switch (item.getItemId()) {
             case R.id.click:
                 AnimationObject3D cube = (AnimationObject3D) getScenes().get(0).getRootNode().getChild(1);
-                if(cube != null) {
+                if (cube != null) {
                     cube.play("shapeshift");
-                    Logger.v(this, "cube playing shapeshift");
                 }
                 return true;
             default:

@@ -1,15 +1,12 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.AnimationObject3D;
 import net.gtamps.android.graphics.graph.scene.animation.KeyFrame;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
+import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
-import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.test.input.CameraInputInterpreter;
 import net.gtamps.android.input.controller.InputEngineController;
@@ -47,11 +44,11 @@ public class Test10Scene extends SceneGraph {
 
         Object3D cube02 = new Object3D(PACKAGE_NAME + "cube_02_obj");
         cube02.addTexture(crate);
-        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02,50));
+        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02, 50));
 
         Object3D cube03 = new Object3D(PACKAGE_NAME + "cube_03_obj");
         cube03.addTexture(crate);
-        cube01.addFrame("shapeshift", new KeyFrame("shapeshift02", cube03,50));
+        cube01.addFrame("shapeshift", new KeyFrame("shapeshift02", cube03, 50));
 
         add(cube01);
     }

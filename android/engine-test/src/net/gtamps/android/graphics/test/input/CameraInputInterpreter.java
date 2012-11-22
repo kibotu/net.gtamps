@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.input.controller.event.InputInterpreter;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
 
 /**
@@ -55,10 +54,11 @@ public class CameraInputInterpreter implements InputInterpreter {
                 if (event.getPointerCount() == 1) {
 
                     // move camera only if difference between frames is higher than touch screen precision
-                    if (Math.abs(dx) > event.getXPrecision() || Math.abs(dy) > event.getYPrecision()) camera.move(dx / friction, dy / friction, 0);
+                    if (Math.abs(dx) > event.getXPrecision() || Math.abs(dy) > event.getYPrecision())
+                        camera.move(dx / friction, dy / friction, 0);
                     lastX = px;
                     lastY = py;
-                    
+
                 } else {
 
                     float newDistance = hypot(event.getX(0), event.getX(0), event.getX(1), event.getY(1));
@@ -85,7 +85,7 @@ public class CameraInputInterpreter implements InputInterpreter {
                 lastZoomDistance = hypot(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
 
                 // set last mid point
-                midPoint(lastMidPoint,event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+                midPoint(lastMidPoint, event.getX(0), event.getY(0), event.getX(1), event.getY(1));
 
                 break;
 
@@ -102,7 +102,7 @@ public class CameraInputInterpreter implements InputInterpreter {
     }
 
     public static void midPoint(Vector3 point, float x0, float y0, float x1, float y1) {
-        point.set((x0 + x1) / 2, (y0+y1) / 2,0);
+        point.set((x0 + x1) / 2, (y0 + y1) / 2, 0);
     }
 
     private void updateFriction(View view) {
@@ -115,27 +115,27 @@ public class CameraInputInterpreter implements InputInterpreter {
         return (float) Math.hypot((x1 - x2), (y1 - y2));
     }
 
-     /*
-     *
-     *          	           B
-     *                        /|
-     *                      /  |
-     *                    /    |
-     *                  /      | a
-     *                /        |
-     *              /          |
-     *           A/alpha-------| C
-     *                   b
-     *
-     * a = tan(alpha) * b
-     *
-     *
-     * @param zoom angel horizontal
-     * @param distance to target
-     * @return view horizontal
-     */
-    public float computeHorizontalFieldOfView(float zoomAngel, float distance){
-        return (float) Math.tan(Math.toRadians(zoomAngel*0.5))*distance*2;
+    /*
+    *
+    *          	           B
+    *                        /|
+    *                      /  |
+    *                    /    |
+    *                  /      | a
+    *                /        |
+    *              /          |
+    *           A/alpha-------| C
+    *                   b
+    *
+    * a = tan(alpha) * b
+    *
+    *
+    * @param zoom angel horizontal
+    * @param distance to target
+    * @return view horizontal
+    */
+    public float computeHorizontalFieldOfView(float zoomAngel, float distance) {
+        return (float) Math.tan(Math.toRadians(zoomAngel * 0.5)) * distance * 2;
     }
 
 }

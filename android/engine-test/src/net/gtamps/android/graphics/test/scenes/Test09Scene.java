@@ -1,14 +1,14 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
+import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
-import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.test.input.CameraInputInterpreter;
-import net.gtamps.android.input.view.DefaultLayout;
 import net.gtamps.android.input.controller.InputEngineController;
+import net.gtamps.android.input.view.DefaultLayout;
 import net.gtamps.android.input.view.TouchInputButton;
 
 import javax.microedition.khronos.opengles.GL10;

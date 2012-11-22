@@ -19,13 +19,14 @@ import java.util.List;
  */
 public class AnimationObject3D extends Object3D {
 
-    private HashMap<String, ArrayList<KeyFrame>> animations;
-    private ArrayList<KeyFrame> currentAnimation;
-    private int currentInterpolationStep;
-    private KeyFrame currentFrame;
-    private AnimationState animationState;
-
     private Mesh original;
+    private HashMap<String, ArrayList<KeyFrame>> animations;
+    private AnimationState animationState;
+    private ArrayList<KeyFrame> currentAnimation;
+    private KeyFrame currentFrame;
+    private int currentFrameIndex;
+    private Mesh previousMesh;
+    private int currentInterpolationStep;
 
     public AnimationObject3D(String objectResourceID) {
         super(objectResourceID);
@@ -42,45 +43,45 @@ public class AnimationObject3D extends Object3D {
         if (animations == null) return;
         currentAnimation = animations.get(animationId);
         animationState = AnimationState.PLAY;
+        currentFrameIndex = 0;
     }
 
-    private int currentFrameIndex;
-    private Mesh previousMesh;
-
     private void playFrames(@NotNull ArrayList<KeyFrame> keyFrames) {
-        int index = currentFrameIndex % keyFrames.size();
-        if(index == 0) previousMesh = original;
-        playFrame(keyFrames.get(index));
+        // start morphing from original mesh
+        if (currentFrameIndex == 0) previousMesh = original;
+        // play all frames
+        if (currentFrameIndex < keyFrames.size()) {
+            playFrame(keyFrames.get(currentFrameIndex));
+        }
+        // reset to original
+        else if (currentFrameIndex == keyFrames.size()) {
+            playFrame(original, 25);
+        }
+        // stop when done
+        else {
+            animationState = AnimationState.STOP;
+        }
     }
 
     public void playFrame(KeyFrame frame) {
+        playFrame(frame.getObject3D().getMesh(), frame.getInterpolation());
+    }
 
+    public void playFrame(Mesh mesh, int interpolation) {
         // update
-        if (currentInterpolationStep < frame.getInterpolation()) {
-            updateFrame(frame.getObject3D().getMesh(), previousMesh, (float) currentInterpolationStep / (float) frame.getInterpolation());
+        if (currentInterpolationStep < interpolation) {
+            updateFrame(mesh, previousMesh, (float) currentInterpolationStep / (float) interpolation);
         } else {
             currentInterpolationStep = 0;
-            previousMesh = frame.getObject3D().getMesh();
+            previousMesh = mesh;
             ++currentFrameIndex;
         }
     }
 
-    public void playFrame(String animationId, String frameId) {
-        if (animations == null) return;
-
-        // check if animation and frame exist
-        if (currentFrame == null || !currentFrame.getId().equals(frameId)) {
-            currentInterpolationStep = 0;
-            currentFrame = getKeyFrame(animationId, frameId);
-        }
-    }
-
     private void updateFrame(Mesh newM, Mesh prevM, float percent) {
-
         Vector3BufferManager curV = getMesh().vertices.getVertices();
         Vector3BufferManager newV = newM.vertices.getVertices();
         Vector3BufferManager prevV = prevM.vertices.getVertices();
-
         for (int i = 0; i < curV.size(); ++i) {
             final float temp[] = Interpolation.getLinearInterpolatedPoint(prevV.getPropertyX(i), prevV.getPropertyY(i), prevV.getPropertyZ(i), newV.getPropertyX(i), newV.getPropertyY(i), newV.getPropertyZ(i), percent);
             curV.overwrite(i, temp[0], temp[1], temp[2]);
