@@ -1,6 +1,9 @@
 package net.gtamps.android.graphics.test;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.RenderActivity;
 import net.gtamps.android.graphics.test.actions.Test01Action;
 import net.gtamps.android.graphics.test.actions.Test10Action;

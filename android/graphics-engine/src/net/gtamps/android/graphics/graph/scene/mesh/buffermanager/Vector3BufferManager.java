@@ -125,4 +125,8 @@ public class Vector3BufferManager {
         buffer.position(0);
         return new Vector3BufferManager(buffer, numElements);
     }
+
+    public void overwrite(int index, float x, float y, float z) {
+        set(index, x,y,z);
+    }
 }

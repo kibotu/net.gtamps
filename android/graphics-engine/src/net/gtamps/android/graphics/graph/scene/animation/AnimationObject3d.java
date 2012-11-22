@@ -5,7 +5,9 @@ import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferM
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.FloatMath;
+import org.jetbrains.annotations.NotNull;
 
+import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,34 +19,50 @@ import java.util.List;
  */
 public class AnimationObject3D extends Object3D {
 
-    private HashMap<String, List<KeyFrame>> animations;
-    private long startTime;
-    private boolean isPlaying;
-    private String currentFrameName;
-    private int currentFrameIndex;
-    private boolean loop;
-    private long currentTime;
-    private int interpolation;
+    private HashMap<String, ArrayList<KeyFrame>> animations;
+    private ArrayList<KeyFrame> currentAnimation;
     private int currentInterpolationStep;
-    private int loopStartIndex;
-    private long fps;
     private KeyFrame currentFrame;
+    private AnimationState animationState;
 
     private Mesh original;
 
     public AnimationObject3D(String objectResourceID) {
         super(objectResourceID);
         original = getMesh().clone();
-        currentFrameName = "";
-        interpolation = 30;
+        previousMesh = original;
+        animationState = AnimationState.STOP;
+    }
+
+    public AnimationState getAnimationState() {
+        return animationState;
     }
 
     public void play(String animationId) {
         if (animations == null) return;
+        currentAnimation = animations.get(animationId);
+        animationState = AnimationState.PLAY;
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
+    private int currentFrameIndex;
+    private Mesh previousMesh;
+
+    private void playFrames(@NotNull ArrayList<KeyFrame> keyFrames) {
+        int index = currentFrameIndex % keyFrames.size();
+        if(index == 0) previousMesh = original;
+        playFrame(keyFrames.get(index));
+    }
+
+    public void playFrame(KeyFrame frame) {
+
+        // update
+        if (currentInterpolationStep < frame.getInterpolation()) {
+            updateFrame(frame.getObject3D().getMesh(), previousMesh, (float) currentInterpolationStep / (float) frame.getInterpolation());
+        } else {
+            currentInterpolationStep = 0;
+            previousMesh = frame.getObject3D().getMesh();
+            ++currentFrameIndex;
+        }
     }
 
     public void playFrame(String animationId, String frameId) {
@@ -55,12 +73,6 @@ public class AnimationObject3D extends Object3D {
             currentInterpolationStep = 0;
             currentFrame = getKeyFrame(animationId, frameId);
         }
-
-        // update
-        if (currentInterpolationStep < interpolation) {
-            startTime = System.currentTimeMillis();
-            updateFrame(currentFrame.getObject3D().getMesh(), original, (float) currentInterpolationStep / (float) interpolation);
-        }
     }
 
     private void updateFrame(Mesh newM, Mesh prevM, float percent) {
@@ -70,26 +82,13 @@ public class AnimationObject3D extends Object3D {
         Vector3BufferManager prevV = prevM.vertices.getVertices();
 
         for (int i = 0; i < curV.size(); ++i) {
-            getLinearInterpolatedPoint(prevV.getPropertyX(i), prevV.getPropertyY(i), prevV.getPropertyZ(i), newV.getPropertyX(i), newV.getPropertyY(i), newV.getPropertyZ(i), percent);
-            curV.set(i, temp[0], temp[1], temp[2]);
+            final float temp[] = Interpolation.getLinearInterpolatedPoint(prevV.getPropertyX(i), prevV.getPropertyY(i), prevV.getPropertyZ(i), newV.getPropertyX(i), newV.getPropertyY(i), newV.getPropertyZ(i), percent);
+            curV.overwrite(i, temp[0], temp[1], temp[2]);
             //Logger.d(this, i + ": ("+currentVertices.getPropertyX(i)+"|"+currentVertices.getPropertyY(i)+"|"+currentVertices.getPropertyZ(i)+") \t=> ("+newVertices.getPropertyX(i)+"|"+newVertices.getPropertyY(i)+"|"+newVertices.getPropertyZ(i)+")");
         }
-
         getMesh().update();
-
         ++currentInterpolationStep;
-
-        Logger.i(this, currentInterpolationStep + ". "+percent+"% \t["+temp[0]+"\t|"+temp[0]+"\t|"+temp[0]+"]");
-    }
-
-
-    private final static float[] temp = new float[3];
-
-    private float[] getLinearInterpolatedPoint(float x0, float y0, float z0, float x1, float y1, float z1, float percent) {
-        temp[0] = x0 + ( x1 - x0 ) * percent;
-        temp[1] = y0 + ( y1 - y0 ) * percent;
-        temp[2] = z0 + ( z1 - z0 ) * percent;
-        return temp;
+//        Logger.i(this, currentInterpolationStep + ". "+percent+"% \t["+temp[0]+"\t|"+temp[0]+"\t|"+temp[0]+"]");
     }
 
     public static float getEuclideanDistance(float x0, float y0, float z0, float x1, float y1, float z1) {
@@ -98,10 +97,10 @@ public class AnimationObject3D extends Object3D {
 
     public void addFrame(String animationId, KeyFrame frame) {
         Logger.v(this, "Add [Animation=" + animationId + "|Frame=" + frame.getId() + "]");
-        if (animations == null) animations = new HashMap<String, List<KeyFrame>>(10);
+        if (animations == null) animations = new HashMap<String, ArrayList<KeyFrame>>(10);
         if (animations.containsKey(animationId)) animations.get(animationId).add(frame);
         else {
-            List<KeyFrame> list = new ArrayList<KeyFrame>(10);
+            ArrayList<KeyFrame> list = new ArrayList<KeyFrame>(10);
             list.add(frame);
             animations.put(animationId, list);
         }
@@ -119,4 +118,22 @@ public class AnimationObject3D extends Object3D {
         return frame;
     }
 
+    @Override
+    protected void onDrawFrameInternal(GL10 gl10) {
+        super.onDrawFrameInternal(gl10);
+
+        switch (animationState) {
+            case PLAY:
+                playFrames(currentAnimation);
+                break;
+            case STOP:
+                break;
+            case PAUSE:
+                break;
+            case RESUME:
+                break;
+            default:
+                break;
+        }
+    }
 }

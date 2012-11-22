@@ -104,7 +104,7 @@ public abstract class RenderableNode extends RootNode {
         return textureSprite;
     }
 
-    public void animate(State.Type type, float percentage) {
+    public void animateTexture(State.Type type, float percentage) {
         if (lastPercentage == percentage) return;
         lastPercentage = percentage;
         percentage *= 100;

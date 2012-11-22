@@ -1,10 +1,11 @@
 package net.gtamps.android.graphics.test.actions;
 
+import android.view.*;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.AnimationObject3D;
 import net.gtamps.android.graphics.renderer.RenderAction;
-import net.gtamps.shared.Config;
+import net.gtamps.android.graphics.test.R;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -21,21 +22,37 @@ public class Test10Action extends RenderAction {
     public void onSurfaceCreated(GL10 gl10) {
     }
 
-    float rot = 0;
-
-    private long endTime;
-    private long startTime;
+    private float rot = 0;
+    private AnimationObject3D cube;
 
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
 
         rot += 0.01;
         RootNode rootNode = getScenes().get(0).getRootNode();
-        for (int i = 0; i < rootNode.size(); i++) {
+        for (int i = 1; i < rootNode.size(); i++) {
             rootNode.getChild(i).setRotation(rot, rot, rot);
-//            rootNode.setRotation(rot,rot,rot);
         }
+    }
 
-        ((AnimationObject3D) rootNode.getChild(1)).playFrame("shapeshift", "shapeshift01");
+    @Override
+    public boolean onCreateOptionsMenuHook(MenuInflater menuInflater, Menu menu) {
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelectedHook(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.click:
+                AnimationObject3D cube = (AnimationObject3D) getScenes().get(0).getRootNode().getChild(1);
+                if(cube != null) {
+                    cube.play("shapeshift");
+                    Logger.v(this, "cube playing shapeshift");
+                }
+                return true;
+            default:
+                return false;
+        }
     }
 }

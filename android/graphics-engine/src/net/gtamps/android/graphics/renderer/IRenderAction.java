@@ -1,5 +1,8 @@
 package net.gtamps.android.graphics.renderer;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -64,4 +67,15 @@ public interface IRenderAction {
      * Starts the action.
      */
     public void start();
+
+    /**
+     *
+     *
+     * @param menuInflater
+     * @param menu
+     * @return
+     */
+    public abstract boolean onCreateOptionsMenuHook(MenuInflater menuInflater, Menu menu);
+
+    public abstract boolean onOptionsItemSelectedHook(MenuItem item);
 }

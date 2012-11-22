@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.renderer.*;
 import net.gtamps.android.graphics.renderer.RenderCapabilities;
 import net.gtamps.android.graphics.utils.EGLConfigChooser;
@@ -118,5 +121,16 @@ public abstract class RenderActivity extends Activity {
 
     public void setRenderContinuously(boolean isContinuously) {
         view.setRenderMode((Config.renderContinuously = isContinuously) ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return renderAction.onCreateOptionsMenuHook(getMenuInflater(),menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final boolean option = renderAction.onOptionsItemSelectedHook(item);
+        return option ? option : super.onOptionsItemSelected(item);
     }
 }

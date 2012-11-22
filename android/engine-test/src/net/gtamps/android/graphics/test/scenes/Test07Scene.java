@@ -3,7 +3,6 @@ package net.gtamps.android.graphics.test.scenes;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureAnimation;
-import net.gtamps.android.graphics.graph.scene.primitives.Cylinder;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Plane;
@@ -43,7 +42,7 @@ public class Test07Scene extends SceneGraph {
                     obj.setScaling(scale, scale, scale);
                     obj.addTexture(spritesheet);
                     obj.addTextureAnimation(uvsheet);
-                    obj.animate(State.Type.IDLE, 0.1f);
+                    obj.animateTexture(State.Type.IDLE, 0.1f);
                     add(obj);
                     counter++;
                 }

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">GTAMPS Gaphics Engine Test</string>
     <drawable name="rot">#FF0000</drawable>
+    <string name="click">Click</string>
 </resources>

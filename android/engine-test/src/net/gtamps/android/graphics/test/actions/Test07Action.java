@@ -1,5 +1,8 @@
 package net.gtamps.android.graphics.test.actions;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
@@ -27,8 +30,18 @@ public class Test07Action extends RenderAction {
 
         RootNode rootNode = getScenes().get(0).getRootNode();
         for (int i = 1; i < rootNode.size(); i++) {
-            ((RenderableNode) rootNode.getChild(i)).animate(State.Type.IDLE, increment += 0.1f % 1);
+            ((RenderableNode) rootNode.getChild(i)).animateTexture(State.Type.IDLE, increment += 0.1f % 1);
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenuHook(MenuInflater menuInflater, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelectedHook(MenuItem item) {
+        return false;
     }
 }

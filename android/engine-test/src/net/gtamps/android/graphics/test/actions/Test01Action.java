@@ -1,5 +1,8 @@
 package net.gtamps.android.graphics.test.actions;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.renderer.RenderAction;
@@ -29,4 +32,15 @@ public class Test01Action extends RenderAction {
 //            rootNode.setRotation(rot,rot,rot);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenuHook(MenuInflater menuInflater, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelectedHook(MenuItem item) {
+        return false;
+    }
+
 }
