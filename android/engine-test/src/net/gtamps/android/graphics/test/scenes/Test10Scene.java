@@ -44,11 +44,11 @@ public class Test10Scene extends SceneGraph {
 
         Object3D cube02 = new Object3D(PACKAGE_NAME + "cube_02_obj");
         cube02.addTexture(crate);
-        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02, 50));
+        cube01.addFrame("shapeshift", new KeyFrame("shapeshift01", cube02, 1000));
 
         Object3D cube03 = new Object3D(PACKAGE_NAME + "cube_03_obj");
         cube03.addTexture(crate);
-        cube01.addFrame("shapeshift", new KeyFrame("shapeshift02", cube03, 50));
+        cube01.addFrame("shapeshift", new KeyFrame("shapeshift02", cube03, 1000));
 
         add(cube01);
     }
