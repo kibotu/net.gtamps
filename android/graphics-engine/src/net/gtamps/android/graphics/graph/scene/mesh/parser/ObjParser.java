@@ -52,6 +52,10 @@ public class ObjParser extends AParser implements IParser {
 
     @Override
     public void parse() {
+        parse(true, false);
+    }
+
+    public void parse(boolean flipU, boolean flipV) {
         startTime = Calendar.getInstance().getTimeInMillis();
 
         InputStream fileIn = Registry.getContext().getResources().openRawResource(Registry.getContext().getResources().getIdentifier(resourceID, null, packageID));
@@ -91,8 +95,8 @@ public class ObjParser extends AParser implements IParser {
                     }
                 } else if (type.equals(TEXCOORD)) {
                     Uv texCoord = new Uv();
-                    texCoord.u = Float.parseFloat(parts.nextToken());
-                    texCoord.v = Float.parseFloat(parts.nextToken()) * -1f;
+                    texCoord.u = Float.parseFloat(parts.nextToken()) * (flipU ? 1f : -1f);
+                    texCoord.v = Float.parseFloat(parts.nextToken()) * (flipV ? 1f : -1f);
                     texCoords.add(texCoord);
                 } else if (type.equals(NORMAL)) {
                     Vector3 normal = Vector3.createNew();
