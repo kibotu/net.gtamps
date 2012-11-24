@@ -10,6 +10,7 @@
     <orderEntry type="library" exported="" name="annotations" level="application" />
     <orderEntry type="library" exported="" name="junit-4.8" level="application" />
     <orderEntry type="library" exported="" name="jdom-1.1.1-android-fork" level="application" />
+    <orderEntry type="library" exported="" name="javastruct-0.1" level="application" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

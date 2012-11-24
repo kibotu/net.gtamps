@@ -17,19 +17,19 @@ import java.util.List;
  * Date: 18/11/12
  * Time: 17:30
  */
-public class AnimationObject3D extends Object3D {
+public class AnimatedObject3D extends Object3D {
 
-    private Mesh original;
-    private HashMap<String, ArrayList<KeyFrame>> animations;
-    private AnimationState animationState;
+    protected Mesh original;
+    protected HashMap<String, ArrayList<KeyFrame>> animations;
+    protected AnimationState animationState;
     private ArrayList<KeyFrame> currentAnimation;
-    private int currentFrameIndex;
+    protected int currentFrameIndex;
     private Mesh previousMesh;
     private int dtInterpolation;
     private long startTime;
     private int resetInterpolationTime;
 
-    public AnimationObject3D(String objectResourceID) {
+    public AnimatedObject3D(String objectResourceID) {
         super(objectResourceID);
         original = getMesh().clone();
         previousMesh = original;

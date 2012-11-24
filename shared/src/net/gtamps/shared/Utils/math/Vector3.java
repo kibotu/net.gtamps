@@ -90,6 +90,58 @@ public final class Vector3 implements Serializable {
     }
 
     /**
+     * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
+     */
+    public static Vector3 eulerAngles(@NotNull final Quaternion q) {
+        return Vector3.createNew().setEulerAnglesFromQuaterion(q);
+    }
+
+    /**
+     * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
+     */
+    public Vector3 setEulerAnglesFromQuaterion(@NotNull final Quaternion q) {
+        return setEulerAnglesFromQuaterion(q.x,q.y,q.z,q.w);
+    }
+
+    /**
+     * Converts this Quaternion to Euler rotation angles {@code roll}, {@code
+     * pitch} and {@code yaw} in radians.
+     * operation. The code was adapted from:
+     * http://www.euclideanspace.com/maths/geometry
+     * /rotations/conversions/quaternionToEuler/index.htm.
+     * <p/>
+     * <b>Attention:</b> This method assumes that this Quaternion is normalized.
+     *
+     * @return the PVector holding the roll (x coordinate of the vector), pitch (y
+     *         coordinate of the vector) and yaw angles (z coordinate of the
+     *         vector). <b>Note:</b> The order of the rotations that would produce
+     *         this Quaternion (i.e., as with {@code fromEulerAngles(roll, pitch,
+     *yaw)}) is: y->z->x.
+     */
+    public Vector3 setEulerAnglesFromQuaterion(float x, float y, float z, float w) {
+        float test = x * y + z * w;
+        if (test > 0.499) { // singularity at north pole
+            this.x = (float) (2 * Math.atan2(x, w));
+            this.y = (float) (Math.PI / 2);
+            this.z = 0;
+            return this;
+        }
+        if (test < -0.499) { // singularity at south pole
+            this.x = (float) (-2 * Math.atan2(x,w));
+            this.y = (float) (-Math.PI / 2);
+            this.z = 0;
+            return this;
+        }
+        float sqx = x * x;
+        float sqy = y * y;
+        float sqz = z * z;
+        this.x = (float) Math.atan2(2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz);
+        this.y = (float) Math.asin(2 * test);
+        this.z = (float) Math.atan2(2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz);
+        return this;
+    }
+
+    /**
      * Registriert diesen Vektor für das spätere Cache
      *
      * @see #Cache

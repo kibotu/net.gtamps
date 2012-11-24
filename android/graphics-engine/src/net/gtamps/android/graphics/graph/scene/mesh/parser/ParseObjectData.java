@@ -30,9 +30,9 @@ public class ParseObjectData {
         faces = new ArrayList<ParseObjectFace>();
     }
 
-//	public AnimationObject3D getParsedObject(TextureAtlas textureAtlas, HashMap<String, Material> materialMap, KeyFrame[] frames)
+//	public AnimatedObject3D getParsedObject(TextureAtlas textureAtlas, HashMap<String, Material> materialMap, KeyFrame[] frames)
 //	{
-//		AnimationObject3D obj = new AnimationObject3D(numFaces * 3, numFaces, frames.length);
+//		AnimatedObject3D obj = new AnimatedObject3D(numFaces * 3, numFaces, frames.length);
 //		obj.name(name);
 //		obj.setFrames(frames);
 //

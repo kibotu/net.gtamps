@@ -36,8 +36,8 @@ public class Test09Scene extends SceneGraph {
 
         add(new Light(0, 0, 10, 0, 0, -1));
 
-        Object3D object3D = new Object3D(PACKAGE_NAME + "katarina_obj");
-        object3D.addTexture(new Texture(R.drawable.katarina, Texture.Type.texture_01, true));
+        Object3D object3D = new Object3D(PACKAGE_NAME + "katarina_cat_obj");
+        object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.texture_01, true));
 //        object3D.getRenderState().setDoubleSided(true);
         add(object3D);
     }

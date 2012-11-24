@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  *
  * @see <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Wavefront_.obj_file">Obj Wiki</a>
  */
-public class ObjParser extends AParser implements IParser {
+public class ObjParser extends AParser {
 
     public static final String TAG = ObjParser.class.getSimpleName();
 
