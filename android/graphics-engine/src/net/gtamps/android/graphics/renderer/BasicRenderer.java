@@ -102,7 +102,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         int delta = getDelta();
 
         // limits frame rate
-        limitFrameRate(delta);
+//        limitFrameRate(delta);
 
         // render draw loop
         onDrawFrameHook(gl10);

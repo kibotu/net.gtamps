@@ -2,7 +2,6 @@ package net.gtamps.android.graphics.graph.scene.mesh.parser;
 
 import android.content.res.Resources;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
-import net.gtamps.android.graphics.graph.scene.animation.skeleton.Bone;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.BoneKeyFrame;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.RiotAnimation;
 import net.gtamps.android.graphics.utils.Registry;
@@ -15,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 /**
  * User: Jan Rabe
@@ -33,7 +33,7 @@ public class SkeletonAnimationParser {
     private SkeletonAnimationParser() {
     }
 
-    public static void loadAnimation(String resourceID, AnimatedSkeletonObject3D object3D) {
+    public static void loadAnimation(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
         String packageID = "";
         if (resourceID.indexOf(":") > -1) packageID = resourceID.split(":")[0];
         Logger.v(TAG, "Reading in binary file named : " + packageID + ":" + resourceID);
@@ -45,37 +45,34 @@ public class SkeletonAnimationParser {
             DataInputStream input = null;
             try {
                 input = new DataInputStream(new BufferedInputStream(resources.openRawResource(resources.getIdentifier(resourceID, null, packageID))));
-                riotAnimation = new RiotAnimation();
 
                 // check length
                 int minLength = 28;
                 int length = input.available();
-//                Logger.v(this, "length=" + length);
+                Logger.v(TAG, "length=" + length);
                 if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
 
                 // magic
                 String magic = readString(input, 8);
-//                Logger.v(this, "magic=" + magic);
-                riotAnimation.setMagic(magic);
+                Logger.v(TAG, "magic=" + magic);
 
                 // version
                 int version = readInt(input);
-//                Logger.v(this, "version=" + version);
-                riotAnimation.setVersion(version);
+                Logger.v(TAG, "version=" + version);
 
                 if (version == 3) {
 
                     // get designer ID
                     int designerId = readInt(input);
-//                    Logger.v(this, "designerId=" + designerId);
+                    Logger.v(TAG, "designerId=" + designerId);
 
                     // get numBones
                     int numBones = readInt(input);
-//                    Logger.v(this, "numBones=" + numBones);
+                    Logger.v(TAG, "numBones=" + numBones);
 
                     // get numFrames
                     int numFrames = readInt(input);
-//                    Logger.v(this, "numFrames=" + numFrames);
+                    Logger.v(TAG, "numFrames=" + numFrames);
 
                     // get fps (algorithm seen during the reversing)
                     float fps;
@@ -84,33 +81,30 @@ public class SkeletonAnimationParser {
                         fps = ffps + 4294967296.0f;
                     else
                         fps = ffps;
-//                    Logger.v(this, "ffps=" + ffps + "|fps="+fps);
-                    riotAnimation.setFps(30); // TODO check the result against multiple animations
+                    Logger.v(TAG, "ffps=" + ffps + "|fps="+fps);
 
                     // check minimum length
                     minLength += numBones * numFrames * kSizeInFile + numBones * kHeaderSize;
                     if (length < minLength) Logger.e(TAG, "Unexpected end of file: " + length + " < " + minLength);
-                    riotAnimation.setNumBones(numBones);
-                    riotAnimation.setNumFrames(numFrames);
+
+                    riotAnimation = new RiotAnimation(numBones,numFrames, 30, version);
 
                     // get bones with frames
                     for (int i = 0; i < numBones; ++i) {
-                        Bone bone = new Bone();
-
+                        String boneName = readString(input, kNameLen);
+                        int rootBone = readInt(input); // 2 = root
 //                        Logger.i(this, readString(input, kNameLen) + " flag: " +readInt(input));
-
                         for (int j = 0; j < numFrames; ++j) {
-
-                            BoneKeyFrame keyFrame = new BoneKeyFrame();
-                            keyFrame.rot[0] = readFloat(input);
-                            keyFrame.rot[1] = readFloat(input);
-                            keyFrame.rot[2] = readFloat(input);
-                            keyFrame.rot[3] = readFloat(input);
-                            keyFrame.x = readFloat(input);
-                            keyFrame.y = readFloat(input);
-                            keyFrame.z = readFloat(input);
+                            final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
+                            boneKeyFrame.rot[0] = readFloat(input);
+                            boneKeyFrame.rot[1] = readFloat(input);
+                            boneKeyFrame.rot[2] = readFloat(input);
+                            boneKeyFrame.rot[3] = readFloat(input);
+                            boneKeyFrame.x = readFloat(input);
+                            boneKeyFrame.y = readFloat(input);
+                            boneKeyFrame.z = readFloat(input);
 //                            Logger.i(this, j + " " + keyFrame);
-
+                            riotAnimation.addFrame(boneName, boneKeyFrame);
                         }
 //                        data_.bones.push_back(bone);
                     }
@@ -119,31 +113,121 @@ public class SkeletonAnimationParser {
 
                 } else if (version == 4) {
 
-//                    // get data size
-//                    int dataSize = readInt(input);
-//                    Logger.v(this, "dataSize=" + dataSize);
-//
-//                    // check length
-//                    minLength = 12 + dataSize;
-//                    if (length < minLength)if (length < minLength) Logger.e(this, "Unexpected end of file: " + length + " < " + minLength);
-//
-//                    // get magic
-//                    int magic2 = readInt(input);
-//                    Logger.v(this, "magic=" + magic2);
-////                    if(magic2 != 0xBE0794D3) Logger.e(this, "v4, magic is wrong!");
-//
-//                    // 2 bytes unused
-//                    input.skip(8);
-//
-//                    // get bones count
-//                    int numBones = readInt(input);
-//                    Logger.v(this, "numBones=" + numBones);
+                    Logger.v(TAG, "anm is of version 4, this support is in beta test.");
 
+                    // get data size
+                    int dataSize = readInt(input);
+                    Logger.v(TAG, "dataSize=" + dataSize);
 
-                    // TODO
+                    // check against length
+                    minLength = 12 + dataSize;
+                    if (length < minLength) Logger.e(TAG, "Unexpected end of file: " + length + " < " + minLength);
 
+                    // magic
+                    int magic2 = readInt(input);
+                    Logger.v(TAG, "magic2=" + magic2);
+                    if (magic2 != 0xBE0794D3)  Logger.e(TAG, "v4, magic is wrong! " + magic2);
+
+                    // 2 bytes unused
+                    input.skip(8);
+
+                    // get numBones
+                    int numBones = readInt(input);
+                    Logger.v(TAG, "numBones=" + numBones);
+
+                    // get numFrames
+                    int numFrames = readInt(input);
+                    Logger.v(TAG, "numFrames=" + numFrames);
+
+                    // get fps (algorithm seen during the reversing)
+                    float fps;
+                    float ffps = readFloat(input);
+                    if (ffps < 1.0f)
+                        fps = 1.0f / ffps;
+                    else
+                        fps = ffps;
+                    Logger.v(TAG, "ffps=" + ffps + "|fps="+fps);
+
+                    // 3 bytes unused
+                    input.skip(12);
+
+                    // get positionsOffset
+                    int positionsOffset = readInt(input);
+                    Logger.v(TAG, "positionsOffset=" + positionsOffset);
+
+                    // get quaternionsOffset
+                    int quaternionsOffset = readInt(input);
+                    Logger.v(TAG, "quaternionsOffset=" + quaternionsOffset);
+
+                    // get framesOffset
+                    int framesOffset = readInt(input);
+                    Logger.v(TAG, "framesOffset=" + framesOffset);
+
+                    int numPos = (quaternionsOffset - positionsOffset) / 12;
+                    int numQuat = (framesOffset - quaternionsOffset) / 16;
+                    Logger.v(TAG, "numPos=" + numPos + "|numQuat=" + numQuat);
+
+                    // 3 bytes unused
+                    input.skip(12);
+
+                    // get positions TODO read more efficiently
+                    float [][] pos = new float[numPos][3];
+                    for(int i = 0; i < numPos; ++i) {
+                        pos[i][0] = readFloat(input);
+                        pos[i][1] = readFloat(input);
+                        pos[i][2] = readFloat(input);
+                    }
+
+                    // get quaternions TODO read more efficiently
+                    float [][] quat = new float[numQuat][4];
+                    for(int i = 0; i < numQuat; ++i) {
+                        quat[i][0] = readFloat(input);
+                        quat[i][1] = readFloat(input);
+                        quat[i][2] = readFloat(input);
+                        quat[i][3] = readFloat(input);
+                    }
+
+                    // get bones with frames
+                    for (int i = 0; i < numFrames; ++i) {
+                        for (int j = 0; j < numBones; ++j) {
+
+                            // get name hash
+                            int nameHash = readInt(input);
+//                            Logger.v(TAG, "nameHash=" + nameHash);
+
+                            // get posId
+                            short posId = readShort(input);
+//                            Logger.v(TAG, "posId=" + posId);
+
+                            // pos id from unit pos, useless for us
+                            input.skip(2);
+
+                            // get quatId
+                            short quatId = readShort(input);
+//                            Logger.v(TAG, "quatId=" + quatId);
+
+                            // 0
+                            input.skip(2);
+
+//                            if (i == 0) data_.bones.at(j).name_hash = name_hash;
+
+                            BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
+                            boneKeyFrame.nameHash = nameHash;
+                            boneKeyFrame.rot[0] = quat[quatId][0];
+                            boneKeyFrame.rot[1] = quat[quatId][1];
+                            boneKeyFrame.rot[2] = quat[quatId][2];
+                            boneKeyFrame.rot[3] = quat[quatId][3];
+                            boneKeyFrame.x = pos[posId][0];
+                            boneKeyFrame.y = pos[posId][1];
+                            boneKeyFrame.z = pos[posId][2];
+                        }
+                    }
+//                    data_.switchHand();
 
                 }
+
+                object3D.addSkeletonAnimation(resourceID, riotAnimation);
+
             } finally {
                 Logger.v(TAG, "Closing input stream.");
                 input.close();
@@ -191,6 +275,10 @@ public class SkeletonAnimationParser {
 
     public static int readInt(final DataInputStream input) throws IOException {
         return getByteBuffer(input, true, 4).getInt();
+    }
+
+    public static short readShort(DataInputStream input) throws IOException {
+        return getByteBuffer(input,true,2).getShort();
     }
 
     public static ByteBuffer getByteBuffer(@NotNull final DataInputStream input, final boolean useLittleEndian, final int length) throws IOException {

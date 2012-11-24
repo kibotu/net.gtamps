@@ -1,6 +1,7 @@
 package net.gtamps.android.graphics.graph.scene.animation.skeleton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * User: Jan Rabe
@@ -8,22 +9,40 @@ import java.util.ArrayList;
  * Time: 15:58
  */
 public class BoneKeyFrame {
-    public float rot[] = new float[4];
+
+    public int nameHash;
+    public float rot[];
     public float x;
     public float y;
     public float z;
 
+    public BoneKeyFrame() {
+        this.rot = new float[4];
+    }
+
     @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer();
-        sb.append("BoneKeyFrame");
-        sb.append("{rot=").append(rot == null ? "null" : "");
-        for (int i = 0; rot != null && i < rot.length; ++i)
-            sb.append(i == 0 ? "" : ", ").append(rot[i]);
-        sb.append(", x=").append(x);
-        sb.append(", y=").append(y);
-        sb.append(", z=").append(z);
-        sb.append('}');
-        return sb.toString();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BoneKeyFrame)) return false;
+
+        BoneKeyFrame that = (BoneKeyFrame) o;
+
+        if (nameHash != that.nameHash) return false;
+        if (Float.compare(that.x, x) != 0) return false;
+        if (Float.compare(that.y, y) != 0) return false;
+        if (Float.compare(that.z, z) != 0) return false;
+        if (!Arrays.equals(rot, that.rot)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rot != null ? Arrays.hashCode(rot) : 0;
+        result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+        result = 31 * result + nameHash;
+        return result;
     }
 }

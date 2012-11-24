@@ -5,6 +5,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
+import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
 
@@ -30,7 +31,7 @@ public class Test11Action extends RenderAction {
         rot += 0.01;
         RootNode rootNode = getScenes().get(0).getRootNode();
         for (int i = 1; i < rootNode.size(); i++) {
-            rootNode.getChild(i).setRotation(rot, rot, rot);
+            rootNode.getChild(i).setRotation(0, rot, 0);
         }
     }
 

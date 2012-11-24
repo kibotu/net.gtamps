@@ -22,7 +22,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Test11Scene extends SceneGraph {
 
     public Test11Scene() {
-        super(new Camera(0, 0, 15, 0, 0, -1, 0, 1, 0));
+        super(new Camera(0, 0, 5, 0, 0, -1, 1, 0, 0));
 
         DefaultLayout layout = new DefaultLayout();
         layout.addButton(new TouchInputButton(0, 0, 1, 1), new CameraInputInterpreter(getActiveCamera()));
@@ -38,13 +38,14 @@ public class Test11Scene extends SceneGraph {
         add(new Light(0, 0, 10, 0, 0, -1));
 
         // add obj + mtl
-        AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "katarina_cat_obj");
+//        AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "katarina_cat_obj");
+        AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "cube_01_obj");
 
         // add texture
-        object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.texture_01, true));
+        object3D.addTexture(new Texture(R.drawable.crate, Texture.Type.texture_01, true));
 
         // add bones
-        SkeletonAnimationParser.loadBones(PACKAGE_NAME + "katarina_cat_skl", object3D);
+//        SkeletonAnimationParser.loadBones(PACKAGE_NAME + "katarina_cat_skl", object3D);
 
         // add idle animation
         SkeletonAnimationParser.loadAnimation(PACKAGE_NAME + "katarina_idle1_anm", object3D);
