@@ -16,6 +16,7 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -293,4 +294,13 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      * @param mesh
      */
     public abstract void update(Mesh mesh);
+
+    /**
+     * Get instance of GL
+     *
+     * @return instance of gl
+     */
+    public @Nullable GL10 getGl10() {
+        return gl10;
+    }
 }

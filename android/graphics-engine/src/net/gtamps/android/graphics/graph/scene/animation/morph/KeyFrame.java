@@ -1,4 +1,4 @@
-package net.gtamps.android.graphics.graph.scene.animation;
+package net.gtamps.android.graphics.graph.scene.animation.morph;
 
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 

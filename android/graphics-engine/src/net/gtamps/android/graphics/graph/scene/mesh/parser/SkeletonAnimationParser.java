@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.graph.scene.mesh.parser;
 import android.content.res.Resources;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.BoneKeyFrame;
+import net.gtamps.android.graphics.graph.scene.animation.skeleton.RawBoneHeader;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.RiotAnimation;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.CharBuffer;
 import java.nio.FloatBuffer;
 
 /**
@@ -251,6 +253,35 @@ public class SkeletonAnimationParser {
             try {
                 input = new DataInputStream(new BufferedInputStream(resources.openRawResource(resources.getIdentifier(resourceID, null, packageID))));
 
+                // check length
+                int minLength = 20;
+                int length = input.available();
+                if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
+                Logger.v(TAG, "length=" + length);
+
+                // length: align 4
+                int alignedLength = (length + 3) & 0xFFFFFFFC;
+                Logger.v(TAG, "" + alignedLength);
+
+//                char* pcopy = reinterpret_cast<char*>(malloc((length + 3) & 0xFF FF FF FC)); // align 4
+//                file.read(pcopy, length);
+
+                // default version
+                int version = 3;
+
+//                struct RawHeader* phead = reinterpret_cast<struct RawHeader*>(pcopy);
+                RawBoneHeader rawBoneHeader = readRawBoneHeader(input);
+                Logger.v(TAG, rawBoneHeader);
+//
+//                int num_bones = phead->nbSklBones;
+//                data_.num_bones = num_bones;
+//
+//                struct RawSklBone* raw_bone = reinterpret_cast<struct RawSklBone*>(pcopy + phead->header_size);
+//                char* pname = pcopy + phead->size_after_array4;
+//
+//                data_.bones.resize(num_bones);
+
+
             } finally {
                 Logger.v(TAG, "Closing input stream.");
                 input.close();
@@ -263,13 +294,30 @@ public class SkeletonAnimationParser {
         }
     }
 
-    public static String readString(@NotNull final DataInputStream input, final int length) throws IOException {
+    private static RawBoneHeader readRawBoneHeader(final DataInputStream input) throws IOException {
+        RawBoneHeader rawH = new RawBoneHeader();
+        rawH.size = readInt(input);
+        rawH.magic = readInt(input);
+        rawH.uk = readInt(input);
+        rawH.uk2 = readShort(input);
+        rawH.nbSklBones = readShort(input);
+        rawH.num_bones_foranim = readInt(input);
+        rawH.header_size = readInt(input); // 0x40
+        rawH.size_after_array1 = readInt(input);
+        rawH.size_after_array2 = readInt(input);
+        rawH.size_after_array3 = readInt(input);
+        rawH.size_after_array3_ = readInt(input); // duped ..
+        rawH.size_after_array4 = readInt(input);
+        return rawH;
+    }
+
+    public static String readString(final DataInputStream input, final int length) throws IOException {
         final byte[] bytes = new byte[length];
         input.read(bytes, 0, length);
         return new String(bytes).trim();
     }
 
-    private static float readFloat(DataInputStream input) throws IOException {
+    private static float readFloat(final DataInputStream input) throws IOException {
         return getByteBuffer(input, true, 4).getFloat();
     }
 
@@ -277,8 +325,12 @@ public class SkeletonAnimationParser {
         return getByteBuffer(input, true, 4).getInt();
     }
 
-    public static short readShort(DataInputStream input) throws IOException {
+    public static short readShort(final DataInputStream input) throws IOException {
         return getByteBuffer(input,true,2).getShort();
+    }
+
+    public static char readChar(final DataInputStream input) throws IOException {
+        return getByteBuffer(input,true,4).getChar();
     }
 
     public static ByteBuffer getByteBuffer(@NotNull final DataInputStream input, final boolean useLittleEndian, final int length) throws IOException {

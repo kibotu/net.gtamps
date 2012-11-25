@@ -1,6 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.animation.skeleton;
 
-import net.gtamps.android.graphics.graph.scene.animation.AnimatedObject3D;
+import net.gtamps.android.graphics.graph.scene.animation.morph.AnimatedObject3D;
 import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
 

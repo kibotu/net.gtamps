@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph;
 
+import net.gtamps.android.graphics.utils.Utils;
+import net.gtamps.shared.Utils.UIDGenerator;
 import net.gtamps.shared.Utils.math.AxisAlignedBox;
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.MatrixFactory;
@@ -16,6 +18,11 @@ import org.jetbrains.annotations.NotNull;
  * @author sunside
  */
 abstract class ObjectWithOrientation implements ISpatialObject {
+
+    /**
+     * UID
+     */
+    final public int uID = UIDGenerator.getNewUID();
 
 
     /**
@@ -367,6 +374,23 @@ abstract class ObjectWithOrientation implements ISpatialObject {
 
     public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ObjectWithOrientation)) return false;
+
+        ObjectWithOrientation that = (ObjectWithOrientation) o;
+
+        if (uID != that.uID) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return uID;
     }
 }
 

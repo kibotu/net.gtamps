@@ -267,6 +267,8 @@ public class GLES20Renderer extends BasicRenderer {
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
+
+//        Logger.v(this, "drawing "+node.uID + " at " +  node.getCombinedTransformation());
     }
 
     @Override

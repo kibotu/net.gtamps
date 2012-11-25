@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph;
 
+import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
 
     public void setParent(SceneNode parent) {
         this.parent = parent;
+        forceCombinedOrientationDirty();
     }
 
     public SceneNode getParent() {
@@ -52,7 +55,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
         combinedTransformationDirty = false;
     }
 
-    private boolean hasParent() {
+    protected boolean hasParent() {
         return parent != null;
     }
 
@@ -85,4 +88,6 @@ public abstract class SceneNode extends ObjectWithOrientation {
     public void forceCombinedOrientationDirty() {
         combinedTransformationDirty = true;
     }
+
+
 }

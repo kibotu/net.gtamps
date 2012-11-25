@@ -5,7 +5,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.animation.AnimatedObject3D;
+import net.gtamps.android.graphics.graph.scene.animation.morph.AnimatedObject3D;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
 

@@ -1,8 +1,8 @@
 package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.animation.AnimatedObject3D;
-import net.gtamps.android.graphics.graph.scene.animation.KeyFrame;
+import net.gtamps.android.graphics.graph.scene.animation.morph.AnimatedObject3D;
+import net.gtamps.android.graphics.graph.scene.animation.morph.KeyFrame;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;

@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph;
 
+import net.gtamps.shared.Utils.Logger;
+
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
 
@@ -18,12 +20,18 @@ public class RootNode extends SceneNode {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
+//        Logger.i(this, "drawing uID=" + uID + (hasParent() ? "|parent= " +parent.uID : ""));
+
         // transform
         onTransformation(gl10);
 
         // render
         for (int i = 0; i < size(); ++i) {
-            children.get(i).onDrawFrame(gl10);
+            final SceneNode node = children.get(i);
+            // reset parent relationship if child has multiple parents
+            node.setParent(this);
+            // draw child
+            node.onDrawFrame(gl10);
         }
         onDrawFrameInternal(gl10);
     }

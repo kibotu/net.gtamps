@@ -1,8 +1,10 @@
 package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.R;
+import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
+import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Sphere;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
@@ -29,21 +31,25 @@ public class Test03Scene extends SceneGraph {
         Texture crateTexture = new Texture(R.drawable.earth, Texture.Type.texture_01);
 
         float scale = 0.3f;
-
         int counter = 0;
+        Sphere obj = new Sphere(1,10,10);
+        obj.addTexture(crateTexture);
 
         for (int x = -3; x < 3; x++) {
             for (int y = -3; y < 3; y++) {
                 for (int z = -3; z < 3; z++) {
-                    Sphere obj = new Sphere(1, 10, 10);
-                    obj.setPosition(x, y, z);
-                    obj.setScaling(scale, scale, scale);
-                    obj.addTexture(crateTexture);
-                    add(obj);
+                    RootNode node = new RootNode();
+                    node.setPosition(x, y, z);
+                    node.add(obj);
+                    node.setScaling(scale, scale, scale);
+                    add(node);
                     counter++;
                 }
             }
         }
+
+        counter++;
+
 
         Logger.V(this, counter + " Spheres created.");
     }

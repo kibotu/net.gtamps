@@ -1427,17 +1427,14 @@ public final class Matrix4 {
 
     @Override
     public String toString() {
-
-        String result = "Matrix4{";
-        for (int i = 0; i < 16; i++) {
-            if (i % 4 == 0) result += "\n";
-            result += " " + values[i];
-        }
-        result += '}';
-
-        return result;
+        final StringBuffer sb = new StringBuffer();
+        sb.append("Matrix4\n");
+        sb.append("[").append(values == null ? "null" : "");
+        for (int i = 0; values != null && i < values.length; ++i)
+            sb.append(i % 4 == 0 ? "\n" : "\t").append(values[i]);
+        sb.append("\n]");
+        return sb.toString();
     }
-
 
     public void matrixTranslate(Matrix4 matrix, float x, float y, float z) {
 

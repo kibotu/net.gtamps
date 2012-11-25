@@ -1,5 +1,7 @@
-package net.gtamps.android.graphics.graph.scene.animation;
+package net.gtamps.android.graphics.graph.scene.animation.morph;
 
+import net.gtamps.android.graphics.graph.scene.animation.AnimationState;
+import net.gtamps.android.graphics.graph.scene.animation.Interpolation;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
@@ -21,8 +23,8 @@ public class AnimatedObject3D extends Object3D {
 
     protected Mesh original;
     protected HashMap<String, ArrayList<KeyFrame>> animations;
-    protected AnimationState animationState;
     private ArrayList<KeyFrame> currentAnimation;
+    protected AnimationState animationState;
     protected int currentFrameIndex;
     private Mesh previousMesh;
     private int dtInterpolation;
@@ -51,7 +53,7 @@ public class AnimatedObject3D extends Object3D {
     }
 
     private void playFrames(@NotNull ArrayList<KeyFrame> keyFrames) {
-        // start morphing from original mesh
+        // start morph from original mesh
         if (currentFrameIndex == 0) previousMesh = original;
         // play all frames
         if (currentFrameIndex < keyFrames.size()) {

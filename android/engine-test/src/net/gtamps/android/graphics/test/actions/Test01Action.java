@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.renderer.RenderAction;
+import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -25,11 +26,12 @@ public class Test01Action extends RenderAction {
 
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
+
         rot += 0.01;
         RootNode rootNode = getScenes().get(0).getRootNode();
-        for (int i = 0; i < rootNode.size(); i++) {
+        for (int i = 1; i < rootNode.size(); i++) {
             rootNode.getChild(i).setRotation(rot, rot, rot);
-//            rootNode.setRotation(rot,rot,rot);
+            rootNode.setRotation(rot,rot,rot);
         }
     }
 
