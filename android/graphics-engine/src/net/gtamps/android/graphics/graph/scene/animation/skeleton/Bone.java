@@ -12,26 +12,28 @@ import java.util.ArrayList;
  */
 public class Bone {
 
-    private Bone parent;
+    public short parentId;
     public String name;
+    public short id;
     public int flag; // 2 if it is a root, 0 else.
     public int nameHash;
-    private Vector3 position;
-    private Vector3 rotation;
-    private Vector3 scaling;
-    private Vector3 pivot;
+    public final Vector3 position;
+    public final Vector3 rotation;
+    public final Vector3 scaling;
+    public final Vector3 pivot;
 
     public Bone() {
-        parent = null;
         position = Vector3.createNew();
         rotation = Vector3.createNew();
+        scaling = Vector3.createNew();
+        pivot = Vector3.createNew();
     }
 
-    public void setRotation(Quaternion q) {
-        setRotationFromQuaternion(q.x,q.y,q.z,q.w);
+    public void setEulerRotation(Quaternion q) {
+        setRotationEulerRotation(q.x,q.y,q.z,q.w);
     }
 
-    public void setRotationFromQuaternion(float x, float y, float z, float w) {
+    public void setRotationEulerRotation(float x, float y, float z, float w) {
         rotation.setEulerAnglesFromQuaterion(x,y,z,w);
     }
 }

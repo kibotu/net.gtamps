@@ -33,7 +33,5 @@ public class RiotAnimation {
             list.add(boneKeyFrame);
             boneKeyFrames.put(boneName, list);
         }
-
-        Logger.i(this, "Add " + boneName);
     }
 }

@@ -20,7 +20,7 @@ public class RootNode extends SceneNode {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
-//        Logger.i(this, "drawing uID=" + uID + (hasParent() ? "|parent= " +parent.uID : ""));
+//        Logger.i(this, "drawing uID=" + uID + (hasParent() ? "|parentId= " +parentId.uID : ""));
 
         // transform
         onTransformation(gl10);
@@ -28,7 +28,7 @@ public class RootNode extends SceneNode {
         // render
         for (int i = 0; i < size(); ++i) {
             final SceneNode node = children.get(i);
-            // reset parent relationship if child has multiple parents
+            // reset parentId relationship if child has multiple parents
             node.setParent(this);
             // draw child
             node.onDrawFrame(gl10);

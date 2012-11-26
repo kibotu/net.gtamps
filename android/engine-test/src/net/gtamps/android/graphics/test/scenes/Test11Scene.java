@@ -48,7 +48,7 @@ public class Test11Scene extends SceneGraph {
         SkeletonAnimationParser.loadBones(PACKAGE_NAME + "katarina_cat_skl", object3D);
 
         // add idle animation
-//        SkeletonAnimationParser.loadAnimation(PACKAGE_NAME + "katarina_idle1_anm", object3D);
+        SkeletonAnimationParser.loadAnimation(PACKAGE_NAME + "katarina_idle1_anm", object3D);
 
         // add obj to scene
         add(object3D);

@@ -16,6 +16,7 @@ public class AnimatedSkeletonObject3D extends AnimatedObject3D {
 
     private ArrayList<Bone> bones;
     private HashMap<String, ArrayList<RiotAnimation>> animations;
+    private short[] indicesForAnim;
 
     public AnimatedSkeletonObject3D(String objectResourceID) {
         super(objectResourceID);
@@ -35,5 +36,9 @@ public class AnimatedSkeletonObject3D extends AnimatedObject3D {
             list.add(animation);
             animations.put(animationID, list);
         }
+    }
+
+    public void setBoneAnimationIndices(short[] indices) {
+        this.indicesForAnim = indices;
     }
 }
