@@ -1,6 +1,8 @@
 package net.gtamps.android.graphics.graph.scene.animation.skeleton;
 
 import net.gtamps.android.graphics.graph.scene.animation.morph.AnimatedObject3D;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.SkeletonAnimationParser;
 import net.gtamps.shared.Utils.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +20,8 @@ public class AnimatedSkeletonObject3D extends AnimatedObject3D {
     private HashMap<String, ArrayList<RiotAnimation>> animations;
     private short[] indicesForAnim;
 
-    public AnimatedSkeletonObject3D(String objectResourceID) {
-        super(objectResourceID);
+    public AnimatedSkeletonObject3D(String objectResourceID, boolean generateMipMaps, Parser.Type type) {
+        super(objectResourceID, generateMipMaps, type);
     }
 
     public void addBone(@NotNull Bone bone) {

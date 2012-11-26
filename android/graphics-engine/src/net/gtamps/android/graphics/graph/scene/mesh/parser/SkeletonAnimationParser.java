@@ -14,6 +14,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Calendar;
 
+import static net.gtamps.android.graphics.graph.scene.mesh.parser.AParser.*;
+
 /**
  * User: Jan Rabe
  * Date: 24/11/12
@@ -32,7 +34,7 @@ public class SkeletonAnimationParser {
     private SkeletonAnimationParser() {
     }
 
-    public static void loadAnimation(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
+    public static void loadAmn(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
         final long startTime = Calendar.getInstance().getTimeInMillis();
         String packageID = "";
         if (resourceID.contains(":")) packageID = resourceID.split(":")[0];
@@ -50,7 +52,7 @@ public class SkeletonAnimationParser {
                 // check length
                 int minLength = 28;
                 int length = input.available();
-                Logger.v(TAG, "length=" + length);
+//                Logger.v(TAG, "length=" + length);
                 if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
 
                 // magic
@@ -272,7 +274,7 @@ public class SkeletonAnimationParser {
 
     private static final boolean SHOW_READ_BYTES = false;
 
-    public static void loadBones(String resourceID, AnimatedSkeletonObject3D object3D) {
+    public static void loadSkl(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
         final long startTime = Calendar.getInstance().getTimeInMillis();
         String packageID = "";
         if (resourceID.contains(":")) packageID = resourceID.split(":")[0];
@@ -378,6 +380,43 @@ public class SkeletonAnimationParser {
         }
     }
 
+    public static void loadSkn(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
+        final long startTime = Calendar.getInstance().getTimeInMillis();
+        String packageID = "";
+        if (resourceID.contains(":")) packageID = resourceID.split(":")[0];
+        final Resources resources = Registry.getContext().getResources();
+
+        try {
+            DataInputStream input = null;
+            try {
+                input = new DataInputStream(new BufferedInputStream(resources.openRawResource(resources.getIdentifier(resourceID, null, packageID))));
+
+                int readBytes = 0;
+
+                // check length
+                int minLength = 28;
+                int length = input.available();
+                Logger.v(TAG, "length=" + length);
+                if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
+
+
+
+
+                long endTime = Calendar.getInstance().getTimeInMillis();
+                Logger.i(TAG, "[" + resourceID + "|fLength="+length+"bytes|read=" + readBytes + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
+
+            } finally {
+//                Logger.v(TAG, "Closing input stream.");
+                input.close();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.e(TAG, "File not found.");
+            Logger.printException(TAG, ex);
+        } catch (IOException ex) {
+            Logger.printException(TAG, ex);
+        }
+    }
+
     private static String [] readSklBoneNames(final DataInputStream input, int length, int bones) throws IOException {
         String [] temp = readString(input, length).split(DELIMETER);
         String [] boneNames = new String[bones];
@@ -443,35 +482,5 @@ public class SkeletonAnimationParser {
         rawH.size_after_array3_ = readInt(input);       // read 4 bytes     | 40
         rawH.size_after_array4 = readInt(input);        // read 4 bytes     | 44
         return rawH;                                    // totally read bytes 44
-    }
-
-    public static String readString(final DataInputStream input, final int length) throws IOException {
-        final byte[] bytes = new byte[length];
-        input.read(bytes, 0, length);
-        return new String(bytes).trim();
-    }
-
-    private static float readFloat(final DataInputStream input) throws IOException {
-        return getByteBuffer(input, true, 4).getFloat();
-    }
-
-    public static int readInt(final DataInputStream input) throws IOException {
-        return getByteBuffer(input, true, 4).getInt();
-    }
-
-    public static short readShort(final DataInputStream input) throws IOException {
-        return getByteBuffer(input,true,2).getShort();
-    }
-
-    public static char readChar(final DataInputStream input) throws IOException {
-        return getByteBuffer(input,true,4).getChar();
-    }
-
-    public static ByteBuffer getByteBuffer(@NotNull final DataInputStream input, final boolean useLittleEndian, final int length) throws IOException {
-        byte[] result = new byte[length];
-        input.read(result, 0, length);
-        ByteBuffer bb = ByteBuffer.wrap(result);
-        if (useLittleEndian) bb.order(ByteOrder.LITTLE_ENDIAN);
-        return bb;
     }
 }

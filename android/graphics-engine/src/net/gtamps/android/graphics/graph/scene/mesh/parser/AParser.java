@@ -8,11 +8,11 @@ import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Vector3;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,7 +48,7 @@ public abstract class AParser implements IParser {
     public AParser(String resourceID, Boolean generateMipMap) {
         this();
         this.resourceID = resourceID;
-        if (resourceID.indexOf(":") > -1) this.packageID = resourceID.split(":")[0];
+        if (resourceID.contains(":")) this.packageID = resourceID.split(":")[0];
         this.generateMipMap = generateMipMap;
     }
 
@@ -61,7 +61,7 @@ public abstract class AParser implements IParser {
     }
 
     protected String readString(InputStream stream) throws IOException {
-        String result = new String();
+        String result = "";
         byte inByte;
         while ((inByte = (byte) stream.read()) != 0)
             result += (char) inByte;
@@ -78,6 +78,36 @@ public abstract class AParser implements IParser {
 
     protected float readFloat(InputStream stream) throws IOException {
         return Float.intBitsToFloat(readInt(stream));
+    }
+
+    public static String readString(final DataInputStream input, final int length) throws IOException {
+        final byte[] bytes = new byte[length];
+        input.read(bytes, 0, length);
+        return new String(bytes).trim();
+    }
+
+    public static float readFloat(final DataInputStream input) throws IOException {
+        return getByteBuffer(input, true, 4).getFloat();
+    }
+
+    public static int readInt(final DataInputStream input) throws IOException {
+        return getByteBuffer(input, true, 4).getInt();
+    }
+
+    public static short readShort(final DataInputStream input) throws IOException {
+        return getByteBuffer(input,true,2).getShort();
+    }
+
+    public static char readChar(final DataInputStream input) throws IOException {
+        return getByteBuffer(input,true,4).getChar();
+    }
+
+    public static ByteBuffer getByteBuffer(@NotNull final DataInputStream input, final boolean useLittleEndian, final int length) throws IOException {
+        byte[] result = new byte[length];
+        input.read(result, 0, length);
+        ByteBuffer bb = ByteBuffer.wrap(result);
+        if (useLittleEndian) bb.order(ByteOrder.LITTLE_ENDIAN);
+        return bb;
     }
 
     /**

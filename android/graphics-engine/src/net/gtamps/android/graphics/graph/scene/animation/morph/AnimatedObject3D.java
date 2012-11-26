@@ -4,6 +4,7 @@ import net.gtamps.android.graphics.graph.scene.animation.AnimationState;
 import net.gtamps.android.graphics.graph.scene.animation.Interpolation;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.FloatMath;
@@ -32,7 +33,11 @@ public class AnimatedObject3D extends Object3D {
     private int resetInterpolationTime;
 
     public AnimatedObject3D(String objectResourceID) {
-        super(objectResourceID);
+        this(objectResourceID,true,Parser.Type.OBJ);
+    }
+
+    public AnimatedObject3D(String objectResourceID, boolean generateMipMaps, Parser.Type type) {
+        super(objectResourceID,generateMipMaps,type);
         original = getMesh().clone();
         previousMesh = original;
         animationState = AnimationState.STOP;

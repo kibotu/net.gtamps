@@ -10,10 +10,8 @@ public class Parser {
      * Parser types enum
      */
     public static enum Type {
-        OBJ
+        OBJ, SKN
     }
-
-    ;
 
     /**
      * Create a parser of the specified type.
@@ -26,6 +24,8 @@ public class Parser {
         switch (type) {
             case OBJ:
                 return new ObjParser(resourceID, generateMipMap);
+            case SKN:
+                return new SknParser(resourceID,generateMipMap);
         }
         return null;
     }

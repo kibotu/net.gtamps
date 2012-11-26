@@ -2,7 +2,9 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.IParser;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.ObjParser;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -16,11 +18,11 @@ public class Object3D extends RenderableNode {
     private Mesh mesh;
 
     public Object3D(String objectResourceID) {
-        this(objectResourceID, true);
+        this(objectResourceID, true, Parser.Type.OBJ);
     }
 
-    public Object3D(String objectResourceID, boolean generateMipMaps) {
-        ObjParser parser = new ObjParser(objectResourceID, generateMipMaps);
+    public Object3D(String objectResourceID, boolean generateMipMaps, Parser.Type type) {
+        IParser parser = Parser.createParser(type,objectResourceID,generateMipMaps);
         parser.parse();
         parser.getParsedObject(this);
     }
