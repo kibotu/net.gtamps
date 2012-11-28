@@ -11,6 +11,8 @@ import net.gtamps.android.graphics.test.listview.ActivityModel;
 import net.gtamps.android.graphics.test.listview.ListModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MyListActivity extends ListActivity {
@@ -52,9 +54,10 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Planes", PACKAGE_NAME, "Test06Activity"));
         list.add(new ActivityModel("Sprite", PACKAGE_NAME, "Test07Activity"));
         list.add(new ActivityModel("Parsed Obj File (Camaro)", PACKAGE_NAME, "Test08Activity"));
-        list.add(new ActivityModel("InputEngine (Katarina)", PACKAGE_NAME, "Test09Activity"));
+        list.add(new ActivityModel("InputEngine (Ichigo)", PACKAGE_NAME, "Test09Activity"));
         list.add(new ActivityModel("Key frame based animation (Cube)", PACKAGE_NAME, "Test10Activity"));
         list.add(new ActivityModel("Skeleton based animation", PACKAGE_NAME, "Test11Activity"));
+        Collections.reverse(list);
         // Initially select one of the items
         list.get(1).setSelected(true);
         return list;

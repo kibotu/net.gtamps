@@ -12,8 +12,8 @@ public class RawBoneHeader {
     public int size;
     public int magic;
     public int uk;
-    public short uk2;
-    public short nbSklBones;
+    public int uk2;
+    public int nbSklBones;
     public int num_bones_foranim;
     public int header_size; // 0x40
     public int size_after_array1;

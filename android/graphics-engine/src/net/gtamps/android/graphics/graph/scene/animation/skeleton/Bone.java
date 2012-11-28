@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public class Bone {
 
-    public short parentId;
+    public int parentId;
     public String name;
-    public short id;
+    public int id;
     public int flag; // 2 if it is a root, 0 else.
     public int nameHash;
     public final Vector3 position;

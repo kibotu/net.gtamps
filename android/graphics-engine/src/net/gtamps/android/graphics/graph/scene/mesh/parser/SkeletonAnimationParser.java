@@ -10,8 +10,6 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Calendar;
 
 import static net.gtamps.android.graphics.graph.scene.mesh.parser.AParser.*;
@@ -56,7 +54,7 @@ public class SkeletonAnimationParser {
                 if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
 
                 // magic
-                String magic = readString(input, 8);
+                String magic = readString(input,8);
                 readBytes += 8;
 //                Logger.v(TAG, "magic=" + magic);
 
@@ -96,15 +94,15 @@ public class SkeletonAnimationParser {
                     minLength += numBones * numFrames * kSizeInFile + numBones * kHeaderSize;
                     if (length < minLength) Logger.e(TAG, "Unexpected end of file: " + length + " < " + minLength);
 
-                    riotAnimation = new RiotAnimation(numBones,numFrames, 30, version);
+                    riotAnimation = new RiotAnimation(numBones, numFrames, 30, version);
 
                     // get bones with frames
                     for (int i = 0; i < numBones; ++i) {
-                        String boneName = readString(input, kNameLen);
+                        String boneName = readString(input,kNameLen);
                         readBytes += kNameLen;
                         int rootBone = readInt(input); // 2 = root
                         readBytes += 4;
-//                        Logger.i(this, readString(input, kNameLen) + " flag: " +readInt(input));
+//                        Logger.i(TAG, boneName + " flag: " +rootBone);
                         for (int j = 0; j < numFrames; ++j) {
                             final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
                             boneKeyFrame.rot[0] = readFloat(input);
@@ -140,7 +138,7 @@ public class SkeletonAnimationParser {
                     int magic2 = readInt(input);
                     readBytes += 4;
 //                    Logger.v(TAG, "magic2=" + magic2);
-                    if (magic2 != 0xBE0794D3)  Logger.e(TAG, "v4, magic is wrong! " + magic2);
+                    if (magic2 != 0xBE0794D3) Logger.e(TAG, "v4, magic is wrong! " + magic2);
 
                     // 2 bytes unused
                     input.skip(8);
@@ -194,8 +192,8 @@ public class SkeletonAnimationParser {
                     readBytes += 12;
 
                     // get positions TODO read more efficiently
-                    float [][] pos = new float[numPos][3];
-                    for(int i = 0; i < numPos; ++i) {
+                    float[][] pos = new float[numPos][3];
+                    for (int i = 0; i < numPos; ++i) {
                         pos[i][0] = readFloat(input);
                         pos[i][1] = readFloat(input);
                         pos[i][2] = readFloat(input);
@@ -203,8 +201,8 @@ public class SkeletonAnimationParser {
                     }
 
                     // get quaternions TODO read more efficiently
-                    float [][] quat = new float[numQuat][4];
-                    for(int i = 0; i < numQuat; ++i) {
+                    float[][] quat = new float[numQuat][4];
+                    for (int i = 0; i < numQuat; ++i) {
                         quat[i][0] = readFloat(input);
                         quat[i][1] = readFloat(input);
                         quat[i][2] = readFloat(input);
@@ -222,7 +220,7 @@ public class SkeletonAnimationParser {
 //                            Logger.v(TAG, "nameHash=" + nameHash);
 
                             // get posId
-                            short posId = readShort(input);
+                            int posId = readShort(input);
                             readBytes += 2;
 //                            Logger.v(TAG, "posId=" + posId);
 
@@ -231,7 +229,7 @@ public class SkeletonAnimationParser {
                             readBytes += 2;
 
                             // get quatId
-                            short quatId = readShort(input);
+                            int quatId = readShort(input);
                             readBytes += 2;
 //                            Logger.v(TAG, "quatId=" + quatId);
 
@@ -258,7 +256,7 @@ public class SkeletonAnimationParser {
 
                 object3D.addSkeletonAnimation(resourceID, riotAnimation);
                 long endTime = Calendar.getInstance().getTimeInMillis();
-                Logger.i(TAG, "[" + resourceID + "|"+readBytes + "/" + length+"bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
+                Logger.i(TAG, "[" + resourceID + "|" + readBytes + "/" + length + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
 
             } finally {
 //                Logger.v(TAG, "Closing input stream.");
@@ -307,48 +305,50 @@ public class SkeletonAnimationParser {
                 // get raw bone header
                 RawBoneHeader rawBoneHeader = readRawBoneHeader(input);
                 readBytes += RawBoneHeader.BYTELENGTH;
-                Logger.v(TAG, rawBoneHeader);
+//                Logger.v(TAG, rawBoneHeader);
 
                 // skip
-                input.skip(rawBoneHeader.header_size-readBytes);
-                if(SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.header_size-readBytes) + " bytes");
-                readBytes += rawBoneHeader.header_size-readBytes;
-                if(SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
+                input.skip(rawBoneHeader.header_size - readBytes);
+                if (SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.header_size - readBytes) + " bytes");
+                readBytes += rawBoneHeader.header_size - readBytes;
+                if (SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
 
                 // get raw skl bone
-                RawSklBone rawSklBone [] = new RawSklBone[rawBoneHeader.nbSklBones];
-                for(int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
+                RawSklBone rawSklBone[] = new RawSklBone[rawBoneHeader.nbSklBones];
+                for (int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
                     rawSklBone[i] = readRawSklBone(input);
                     readBytes += RawSklBone.BYTELENGTH;
 //                    Logger.v(TAG, rawSklBone[i]);
                 }
 
                 // skip
-                input.skip(rawBoneHeader.size_after_array2-readBytes);
-                if(SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.size_after_array2-readBytes) + " bytes");
-                readBytes += rawBoneHeader.size_after_array2-readBytes;
-                if(SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
+                input.skip(rawBoneHeader.size_after_array2 - readBytes);
+                if (SHOW_READ_BYTES)
+                    Logger.v(TAG, "skipping " + (rawBoneHeader.size_after_array2 - readBytes) + " bytes");
+                readBytes += rawBoneHeader.size_after_array2 - readBytes;
+                if (SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
 
                 // get animated indices
                 int numIndices = rawBoneHeader.num_bones_foranim;
-                short [] indices = new short[numIndices];
-                for(int i = 0; i < numIndices; ++i) {
+                int[] indices = new int[numIndices];
+                for (int i = 0; i < numIndices; ++i) {
                     indices[i] = readShort(input);
 //                    Logger.v(TAG, i + " " +indices[i]);
                 }
                 readBytes += numIndices * 2;
-                if(SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
+                if (SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
                 object3D.setBoneAnimationIndices(indices);
 
                 // skip
-                input.skip(rawBoneHeader.size_after_array4-readBytes);
-                if(SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.size_after_array4-readBytes) + " bytes");
-                readBytes += rawBoneHeader.size_after_array4-readBytes;
-                if(SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
+                input.skip(rawBoneHeader.size_after_array4 - readBytes);
+                if (SHOW_READ_BYTES)
+                    Logger.v(TAG, "skipping " + (rawBoneHeader.size_after_array4 - readBytes) + " bytes");
+                readBytes += rawBoneHeader.size_after_array4 - readBytes;
+                if (SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
 
                 // names
-                String [] boneNames = readSklBoneNames(input, ((rawBoneHeader.size-rawBoneHeader.size_after_array4) & 0xFFFFFFFC), rawBoneHeader.nbSklBones);
-                readBytes += ((rawBoneHeader.size-rawBoneHeader.size_after_array4) & 0xFFFFFFFC);
+                String[] boneNames = readSklBoneNames(input, ((rawBoneHeader.size - rawBoneHeader.size_after_array4) & 0xFFFFFFFC), rawBoneHeader.nbSklBones);
+                readBytes += ((rawBoneHeader.size - rawBoneHeader.size_after_array4) & 0xFFFFFFFC);
 //                for(int i = 0; i < boneNames.length; ++i) {
 //                    Logger.i(TAG, i + " " +boneNames[i] +"\n");
 //                }
@@ -357,8 +357,8 @@ public class SkeletonAnimationParser {
                 for (int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
                     Bone bone = new Bone();
                     bone.position.set(rawSklBone[i].tx, rawSklBone[i].ty, rawSklBone[i].tz);
-                    bone.setRotationEulerRotation(rawSklBone[i].q1,rawSklBone[i].q2,rawSklBone[i].q3,rawSklBone[i].q4);
-                    bone.pivot.set(rawSklBone[i].ctx,rawSklBone[i].cty,rawSklBone[i].ctz);
+                    bone.setRotationEulerRotation(rawSklBone[i].q1, rawSklBone[i].q2, rawSklBone[i].q3, rawSklBone[i].q4);
+                    bone.pivot.set(rawSklBone[i].ctx, rawSklBone[i].cty, rawSklBone[i].ctz);
                     bone.name = boneNames[i];
                     bone.parentId = rawSklBone[i].parent_id;
                     bone.nameHash = rawSklBone[i].namehash;
@@ -366,7 +366,7 @@ public class SkeletonAnimationParser {
                 }
 
                 long endTime = Calendar.getInstance().getTimeInMillis();
-                Logger.i(TAG, "[" + resourceID + "|fLength="+length+"bytes|read=" + readBytes + "/" + rawBoneHeader.size + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
+                Logger.i(TAG, "[" + resourceID + "|fLength=" + length + "bytes|read=" + readBytes + "/" + rawBoneHeader.size + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
 
             } finally {
 //                Logger.v(TAG, "Closing input stream.");
@@ -396,14 +396,12 @@ public class SkeletonAnimationParser {
                 // check length
                 int minLength = 28;
                 int length = input.available();
-                Logger.v(TAG, "length=" + length);
+//                Logger.v(TAG, "length=" + length);
                 if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
 
 
-
-
                 long endTime = Calendar.getInstance().getTimeInMillis();
-                Logger.i(TAG, "[" + resourceID + "|fLength="+length+"bytes|read=" + readBytes + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
+                Logger.i(TAG, "[" + resourceID + "|fLength=" + length + "bytes|read=" + readBytes + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
 
             } finally {
 //                Logger.v(TAG, "Closing input stream.");
@@ -417,13 +415,13 @@ public class SkeletonAnimationParser {
         }
     }
 
-    private static String [] readSklBoneNames(final DataInputStream input, int length, int bones) throws IOException {
-        String [] temp = readString(input, length).split(DELIMETER);
-        String [] boneNames = new String[bones];
+    private static String[] readSklBoneNames(final DataInputStream input, int length, int bones) throws IOException {
+        String[] temp = readString(input,length).split(DELIMETER);
+        String[] boneNames = new String[bones];
         int counter = 0;
-        for(int i = 0; i < temp.length; ++i) {
+        for (int i = 0; i < temp.length; ++i) {
             // remove single letters
-            if(temp[i].length() > 1) {
+            if (temp[i].length() > 1) {
                 // remove weird signs in front of bone name
                 boneNames[counter] = normalizeSklBoneName(temp[i]);
                 ++counter;
@@ -434,9 +432,9 @@ public class SkeletonAnimationParser {
 
     private static String normalizeSklBoneName(String s) {
         int i;
-        for(i = 0; i < s.length(); ++i) {
+        for (i = 0; i < s.length(); ++i) {
             // bone names start with upper case letter, but can have underscore sign as 2nd letter
-            if(Character.isUpperCase(s.charAt(i)) && (Character.isLetter(s.charAt(i+1)) || s.charAt(i+1) == '_')) {
+            if (Character.isUpperCase(s.charAt(i)) && (Character.isLetter(s.charAt(i + 1)) || s.charAt(i + 1) == '_')) {
                 break;
             }
         }

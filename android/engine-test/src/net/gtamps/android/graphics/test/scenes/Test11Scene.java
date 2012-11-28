@@ -1,7 +1,9 @@
 package net.gtamps.android.graphics.test.scenes;
 
+import android.graphics.Color;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
+import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.SkeletonAnimationParser;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
@@ -26,6 +28,7 @@ public class Test11Scene extends SceneGraph {
 
     public Test11Scene() {
         super(new Camera(0, 0, 5, 0, 0, -1, 1, 0, 0));
+        getActiveCamera().setBackgroundColor(Color4.DARK_GRAY);
 
         DefaultLayout layout = new DefaultLayout();
         layout.addButton(new TouchInputButton(0, 0, 1, 1), new CameraInputInterpreter(getActiveCamera()));
@@ -52,13 +55,14 @@ public class Test11Scene extends SceneGraph {
         AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "katarina_cat_skn", true, Parser.Type.SKN);
 
         // add texture
-        object3D.addTexture(new Texture(R.drawable.crate, Texture.Type.texture_01, true));
-//
-//        // add bones
-//        SkeletonAnimationParser.loadSkl(PACKAGE_NAME + "katarina_cat_skl", object3D);
-//
-//        // add idle animation
-//        SkeletonAnimationParser.loadAmn(PACKAGE_NAME + "katarina_idle1_anm", object3D);
+        object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.texture_01, true));
+        object3D.setScaling(0.01f,0.01f,0.01f);
+
+        //add bones
+        SkeletonAnimationParser.loadSkl(PACKAGE_NAME + "katarina_cat_skl", object3D);
+
+        //add idle animation
+        SkeletonAnimationParser.loadAmn(PACKAGE_NAME + "katarina_idle1_anm", object3D);
 
         // add obj to scene
         add(object3D);

@@ -18,7 +18,7 @@ public class AnimatedSkeletonObject3D extends AnimatedObject3D {
 
     private ArrayList<Bone> bones;
     private HashMap<String, ArrayList<RiotAnimation>> animations;
-    private short[] indicesForAnim;
+    private int[] indicesForAnim;
 
     public AnimatedSkeletonObject3D(String objectResourceID, boolean generateMipMaps, Parser.Type type) {
         super(objectResourceID, generateMipMaps, type);
@@ -40,7 +40,7 @@ public class AnimatedSkeletonObject3D extends AnimatedObject3D {
         }
     }
 
-    public void setBoneAnimationIndices(short[] indices) {
+    public void setBoneAnimationIndices(int[] indices) {
         this.indicesForAnim = indices;
     }
 }

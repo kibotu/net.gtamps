@@ -61,7 +61,7 @@ public class GLES20Renderer extends BasicRenderer {
         glCullFace(GL_BACK);
 
         // getting additional gl functions
-        mGlEs20 = new AndroidGL20();
+//        mGlEs20 = new AndroidGL20();
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.graph.scene.primitives.camera;
 import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
 import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,7 @@ public class Camera extends SceneNode {
      * <code>false</code> for orthographic
      */
     private boolean isPersectiveView = true;
+    private Color4 backgroundColor = Color4.BLACK;
 
     /**
      * Constructs a new camera object.
@@ -74,6 +76,7 @@ public class Camera extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        Registry.getRenderer().clearScreen(backgroundColor);
         Registry.getRenderer().applyCamera(frustum);
     }
 
@@ -131,5 +134,9 @@ public class Camera extends SceneNode {
 
     public void setZoomFactor(float distance) {
         if(distance != 0) frustum.setZoomFactor(distance);
+    }
+
+    public void setBackgroundColor(Color4 color) {
+        this.backgroundColor = color;
     }
 }

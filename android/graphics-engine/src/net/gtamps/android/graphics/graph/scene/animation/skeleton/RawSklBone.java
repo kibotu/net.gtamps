@@ -9,10 +9,10 @@ public class RawSklBone {
 
     public static final int BYTELENGTH = 0x44;
 
-    public short uk;
-    public short id;
-    public short parent_id;
-    public short uk2;
+    public int uk;
+    public int id;
+    public int parent_id;
+    public int uk2;
     public int namehash;
     public float unused;
     public float tx;

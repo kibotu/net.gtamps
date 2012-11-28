@@ -60,7 +60,7 @@ public abstract class AParser implements IParser {
         normals.clear();
     }
 
-    protected String readString(InputStream stream) throws IOException {
+    public static String readString(DataInputStream stream) throws IOException {
         String result = "";
         byte inByte;
         while ((inByte = (byte) stream.read()) != 0)
@@ -68,15 +68,15 @@ public abstract class AParser implements IParser {
         return result;
     }
 
-    protected int readInt(InputStream stream) throws IOException {
+    public static int readInt(DataInputStream stream) throws IOException {
         return stream.read() | (stream.read() << 8) | (stream.read() << 16) | (stream.read() << 24);
     }
 
-    protected int readShort(InputStream stream) throws IOException {
+    public static int readShort(DataInputStream stream) throws IOException {
         return (stream.read() | (stream.read() << 8));
     }
 
-    protected float readFloat(InputStream stream) throws IOException {
+    public static float readFloat(DataInputStream stream) throws IOException {
         return Float.intBitsToFloat(readInt(stream));
     }
 
@@ -84,22 +84,6 @@ public abstract class AParser implements IParser {
         final byte[] bytes = new byte[length];
         input.read(bytes, 0, length);
         return new String(bytes).trim();
-    }
-
-    public static float readFloat(final DataInputStream input) throws IOException {
-        return getByteBuffer(input, true, 4).getFloat();
-    }
-
-    public static int readInt(final DataInputStream input) throws IOException {
-        return getByteBuffer(input, true, 4).getInt();
-    }
-
-    public static short readShort(final DataInputStream input) throws IOException {
-        return getByteBuffer(input,true,2).getShort();
-    }
-
-    public static char readChar(final DataInputStream input) throws IOException {
-        return getByteBuffer(input,true,4).getChar();
     }
 
     public static ByteBuffer getByteBuffer(@NotNull final DataInputStream input, final boolean useLittleEndian, final int length) throws IOException {

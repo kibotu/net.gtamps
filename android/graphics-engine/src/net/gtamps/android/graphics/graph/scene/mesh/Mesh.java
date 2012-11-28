@@ -18,7 +18,7 @@ public class Mesh {
 
     public final VertexManager vertices;
     public final TextureManager textures;
-    public final FaceManager faces;
+    public FaceManager faces;
     public Vbo vbo;
 
     public Mesh(int maxFaces, int maxVertices) {
