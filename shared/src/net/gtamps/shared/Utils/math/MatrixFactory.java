@@ -547,4 +547,7 @@ public class MatrixFactory {
                 0.0f, 0.0f, 0.0f, 1.0f);
     }
 
+    public static Matrix4 getRotationAxisAngle(float [] xyzw) {
+        return getRotationAxisAngle(Vector3.createNew(xyzw[0],xyzw[1],xyzw[2]),xyzw[3]);
+    }
 }

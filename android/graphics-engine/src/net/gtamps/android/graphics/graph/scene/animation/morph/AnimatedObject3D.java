@@ -110,10 +110,6 @@ public class AnimatedObject3D extends Object3D {
 //        Logger.i(this, dtInterpolation + ". "+percent+"% \t["+temp[0]+"\t|"+temp[0]+"\t|"+temp[0]+"]");
     }
 
-    public static float getEuclideanDistance(float x0, float y0, float z0, float x1, float y1, float z1) {
-        return FloatMath.sqrt(Math.abs(x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1) + (z0 - z1) * (z0 - z1));
-    }
-
     public void addFrame(String animationId, KeyFrame frame) {
         Logger.v(this, "Add [Animation=" + animationId + "|Frame=" + frame.getId() + "|Duration="+frame.getInterpolation()+"ms]");
         if (animations == null) animations = new HashMap<String, ArrayList<KeyFrame>>(10);

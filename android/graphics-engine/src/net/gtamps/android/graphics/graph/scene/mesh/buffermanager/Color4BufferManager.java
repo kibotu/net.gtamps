@@ -109,7 +109,7 @@ public class Color4BufferManager {
 
     public void setPropertyB(int index, float b) {
         buffer.position(index * PROPERTIES_PER_ELEMENT + 2);
-        buffer.put((byte) b);
+        buffer.put(b);
     }
 
     public void setPropertyA(int index, float a) {

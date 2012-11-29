@@ -14,6 +14,7 @@ public class Vertex {
     public Uv uv;
     public Vector3 normal;
     public Color4 color;
+    public Weight weights;
 
     public Vertex() {
     }

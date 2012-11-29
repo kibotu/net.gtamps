@@ -473,6 +473,10 @@ public final class Vector3 implements Serializable {
         return x * b.x + y * b.y + z * b.z;
     }
 
+    public float dot(@NotNull final Vector3 a, @NotNull final Vector3 b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
     /**
      * Berechnet das Punktprodukt zweier Vektoren ohne Hilfsvektor derart, dass einer der beiden
      * Vektoren bei der Berechnung invertiert wird.

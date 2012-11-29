@@ -1,0 +1,49 @@
+#version 150
+
+//
+// Implements the phong lighting model. - James Lammlein
+//
+
+precision highp float;
+
+uniform vec4		u_LightDiffuse;
+uniform float		u_KA;
+uniform float		u_KD;
+uniform float		u_KS;
+uniform float		u_SExponent;
+uniform sampler2D 	u_Texture;
+
+in vec3 v_ViewSpacePosition;
+in vec3 v_VertexToLight;
+in vec3 v_Normal;
+in vec2 v_TexCoords;
+out vec4 gl_FragColor;
+
+void main(void)
+{
+    vec3 L = v_VertexToLight;
+
+    // we are in camera space, so camera position is (0,0,0).
+    // Therefore, camera position - v_ViewSpacePosition
+    // = -v_ViewSpacePosition
+    vec3 E = normalize(-v_ViewSpacePosition);
+
+    vec3 R = normalize(reflect(L,v_Normal));
+
+    // Ambient - Sample texture for ambient lighting.
+    vec4 ambient = texture2D( u_Texture, v_TexCoords );
+
+    // Diffuse
+    vec4 diffuse = u_LightDiffuse * max(dot(v_Normal,L), 0.0);
+    diffuse = clamp(diffuse, 0.0, 1.0);
+
+    // Specular
+    vec4 specular = vec4(1.0f, 1.0f, 1.0f, 1.0f) *
+        pow( max(-dot(R,E), 0.0f ), u_SExponent );
+    specular = clamp(specular, 0.0, 1.0);
+
+    // Finalize
+    gl_FragColor = u_KA * ambient;
+    gl_FragColor += u_KD * diffuse;
+    gl_FragColor += u_KS * specular;
+}

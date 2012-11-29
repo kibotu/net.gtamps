@@ -72,6 +72,10 @@ public abstract class AParser implements IParser {
         return stream.read() | (stream.read() << 8) | (stream.read() << 16) | (stream.read() << 24);
     }
 
+    public static int readChar(DataInputStream stream) throws IOException {
+        return stream.read();
+    }
+
     public static int readShort(DataInputStream stream) throws IOException {
         return (stream.read() | (stream.read() << 8));
     }

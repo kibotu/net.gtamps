@@ -32,7 +32,13 @@ public class SkeletonAnimationParser {
     private SkeletonAnimationParser() {
     }
 
-    public static void loadAmn(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
+    public static void loadAnm(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
+
+        if(object3D.getBones() == null) {
+            Logger.e(TAG, "Skeleton missing! Please load skl before animations.");
+            return;
+        }
+
         final long startTime = Calendar.getInstance().getTimeInMillis();
         String packageID = "";
         if (resourceID.contains(":")) packageID = resourceID.split(":")[0];
@@ -114,7 +120,7 @@ public class SkeletonAnimationParser {
                             boneKeyFrame.z = readFloat(input);
                             readBytes += 7 * 4;
 //                            Logger.i(this, j + " " + keyFrame);
-                            riotAnimation.addFrame(boneName, boneKeyFrame);
+                            riotAnimation.addFrame(object3D.getBone(boneName), boneKeyFrame);
                         }
 //                        data_.bones.push_back(bone);
                     }

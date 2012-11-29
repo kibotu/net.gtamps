@@ -49,10 +49,12 @@ public class Mesh {
      * Sets buffer position to 0.
      */
     private void positionZero() {
-        if (vertices.getVertices().getBuffer() != null) vertices.getVertices().getBuffer().position(0);
-        if (vertices.getNormals().getBuffer() != null) vertices.getNormals().getBuffer().position(0);
-        if (vertices.getColors().getBuffer() != null) vertices.getColors().getBuffer().position(0);
-        if (vertices.getUvs().getBuffer() != null) vertices.getUvs().getBuffer().position(0);
+        if (vertices.getVertices() != null && vertices.getVertices().getBuffer() != null) vertices.getVertices().getBuffer().position(0);
+        if (vertices.getNormals() != null && vertices.getNormals().getBuffer() != null) vertices.getNormals().getBuffer().position(0);
+        if (vertices.getColors() != null && vertices.getColors().getBuffer() != null) vertices.getColors().getBuffer().position(0);
+        if (vertices.getUvs() != null && vertices.getUvs().getBuffer() != null) vertices.getUvs().getBuffer().position(0);
+        if (vertices.getWeights() != null && vertices.getWeights().getBufferWeights() != null) vertices.getWeights().getBufferWeights().position(0);
+        if (vertices.getWeights() != null && vertices.getWeights().getBufferInfluences() != null) vertices.getWeights().getBufferInfluences().position(0);
         if (faces.getBuffer() != null) faces.getBuffer().position(0);
     }
 
@@ -72,8 +74,12 @@ public class Mesh {
      * @param u  texture coordinate x
      * @param v  texture coordinate y
      */
+    public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz, float cr, float cg, float cb, float ca, float u, float v, float wx, float wy, float wz, float ww, int i1, int i2, int i3, int i4) {
+        vertices.addVertex(Vector3.createNew(vx, vy, vz), Vector3.createNew(nx, ny, nz), new Color4(cr, cg, cb, ca), new Uv(u, v), new Weight(wx,wy,wz,ww,i1,i2,i3,i4));
+    }
+
     public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz, float cr, float cg, float cb, float ca, float u, float v) {
-        vertices.addVertex(Vector3.createNew(vx, vy, vz), Vector3.createNew(nx, ny, nz), new Color4(cr, cg, cb, ca), new Uv(u, v));
+        addVertex(vx, vy, vz,nx, ny, nz,cr, cg, cb, ca,u, v,0,0,0,0,0,0,0,0);
     }
 
     /**
@@ -84,8 +90,12 @@ public class Mesh {
      * @param color
      * @param uv
      */
+    public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv, Weight weight) {
+        vertices.addVertex(point, normal, color, uv,weight);
+    }
+
     public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv) {
-        vertices.addVertex(point, normal, color, uv);
+        vertices.addVertex(point, normal, color, uv, new Weight());
     }
 
     /**

@@ -7,6 +7,8 @@ import net.gtamps.shared.Utils.cache.annotations.ReturnsCachedValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.lang.Math.sqrt;
+
 /**
  * 4D-Matrix.
  * <p>
@@ -1546,7 +1548,7 @@ public final class Matrix4 {
     private static void setLookAt(Matrix4 matrix, float posX, float posY, float posZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
         float x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
 
-        if (posX == targetX && posY == posY && posZ == targetZ) {
+        if (posX == targetX && posY == targetY && posZ == targetZ) {
             matrix = Matrix4.UNIT;
         }
 
@@ -1555,7 +1557,7 @@ public final class Matrix4 {
         z2 = posZ - targetZ;
 
         // normalize (no check needed for 0 because of early return)
-        len = (float) (1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2));
+        len = (float) (1 / sqrt(z0 * z0 + z1 * z1 + z2 * z2));
         z0 *= len;
         z1 *= len;
         z2 *= len;
@@ -1564,7 +1566,7 @@ public final class Matrix4 {
         x0 = upY * z2 - upZ * z1;
         x1 = upZ * z0 - upX * z2;
         x2 = upX * z1 - upY * z0;
-        len = (float) Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+        len = (float) sqrt(x0 * x0 + x1 * x1 + x2 * x2);
         if (len == Float.NaN) {
             x0 = 0;
             x1 = 0;
@@ -1581,7 +1583,7 @@ public final class Matrix4 {
         y1 = z2 * x0 - z0 * x2;
         y2 = z0 * x1 - z1 * x0;
 
-        len = (float) Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+        len = (float) sqrt(y0 * y0 + y1 * y1 + y2 * y2);
         if (len == Float.NaN) {
             y0 = 0;
             y1 = 0;
@@ -1609,5 +1611,48 @@ public final class Matrix4 {
         matrix.values[13] = -(y0 * posX + y1 * posY + y2 * posZ);
         matrix.values[14] = -(z0 * posX + z1 * posY + z2 * posZ);
         matrix.values[15] = 1;
+    }
+
+    public static Quaternion CreateQuatFromMatrix(Matrix4 m) {
+        float trace = 1 + m.values[0] + m.values[5] + m.values[10];
+        float S = 0;
+        float X = 0;
+        float Y = 0;
+        float Z = 0;
+        float W = 0;
+
+        if (trace > 0.0000001) {
+            S = (float) sqrt(trace) * 2;
+            X = (m.values[6] - m.values[9]) / S;
+            Y = (m.values[8] - m.values[2]) / S;
+            Z = (m.values[1] - m.values[4]) / S;
+            W = 0.25f * S;
+        } else {
+            if (m.values[0] > m.values[5] && m.values[0] > m.values[10]) {
+                // Column 0:
+                S = (float) sqrt(1.0 + m.values[0] - m.values[5] - m.values[10]) * 2;
+                X = 0.25f * S;
+                Y = (m.values[1] + m.values[4]) / S;
+                Z = (m.values[8] + m.values[2]) / S;
+                W = (m.values[6] - m.values[9]) / S;
+            }
+            else if (m.values[5] > m.values[10]) {
+                // Column 1:
+                S = (float) sqrt(1.0 + m.values[5] - m.values[5] - m.values[10]) * 2;
+                X = (m.values[1] + m.values[4]) / S;
+                Y = 0.25f * S;
+                Z = (m.values[6] + m.values[9]) / S;
+                W = (m.values[8] - m.values[2]) / S;
+            } else {
+                // Column 2:
+                S = (float) sqrt(1.0 + m.values[10] - m.values[0] - m.values[5]) * 2;
+                X = (m.values[8] + m.values[2]) / S;
+                Y = (m.values[6] + m.values[9]) / S;
+                Z = 0.25f * S;
+                W = (m.values[1] - m.values[4]) / S;
+            }
+        }
+
+        return new Quaternion(X, Y, Z, W);
     }
 }

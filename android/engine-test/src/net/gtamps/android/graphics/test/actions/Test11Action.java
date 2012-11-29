@@ -41,14 +41,17 @@ public class Test11Action extends RenderAction {
         return true;
     }
 
+    private String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
+
     @Override
     public boolean onOptionsItemSelectedHook(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.click:
-//                AnimatedObject3D cube = (AnimatedObject3D) getScenes().get(0).getRootNode().getChild(1);
-//                if (cube != null) {
-//                    cube.play("shapeshift");
-//                }
+                AnimatedSkeletonObject3D obj = (AnimatedSkeletonObject3D) getScenes().get(0).getRootNode().getChild(1);
+                if (obj != null) {
+                    obj.play(PACKAGE_NAME + "katarina_idle1_anm");
+                }
                 return true;
             default:
                 return false;
