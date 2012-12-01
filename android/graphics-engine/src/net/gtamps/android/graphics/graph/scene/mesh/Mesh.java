@@ -22,8 +22,12 @@ public class Mesh {
     public Vbo vbo;
 
     public Mesh(int maxFaces, int maxVertices) {
+        this(maxFaces, maxVertices,true,true,false);
+    }
+
+    public Mesh(int maxFaces, int maxVertices, boolean useNormals, boolean useUvs, boolean useBones) {
         faces = new FaceManager(maxFaces);
-        vertices = new VertexManager(maxVertices);
+        vertices = new VertexManager(maxVertices,useNormals,useUvs,useBones);
         textures = new TextureManager();
     }
 
@@ -37,12 +41,23 @@ public class Mesh {
         positionZero();
         if (!Config.USEVBO) return;
         if (vbo != null && vbo.isAllocated) return;
-        vbo = Registry.getRenderer().allocBuffers(
-                vertices.getVertices().getBuffer(),
-                vertices.getNormals().getBuffer(),
-                vertices.getColors().getBuffer(),
-                vertices.getUvs().getBuffer(),
-                faces.getBuffer());
+//        if(hasBones()) {
+//            vbo = Registry.getRenderer().allocBuffers(
+//                    vertices.getVertices().getBuffer(),
+//                    vertices.getNormals().getBuffer(),
+//                    vertices.getUvs().getBuffer(),
+//                    faces.getBuffer(),
+//                    vertices.getWeights().getBufferWeights(),
+//                    vertices.getWeights().getBufferInfluences());
+//        } else {
+            vbo = Registry.getRenderer().allocBuffers(
+                    vertices.getVertices().getBuffer(),
+                    vertices.getNormals().getBuffer(),
+                    vertices.getUvs().getBuffer(),
+                    faces.getBuffer());
+//                    null,
+//                    null);
+//        }
     }
 
     /**
@@ -51,7 +66,6 @@ public class Mesh {
     private void positionZero() {
         if (vertices.getVertices() != null && vertices.getVertices().getBuffer() != null) vertices.getVertices().getBuffer().position(0);
         if (vertices.getNormals() != null && vertices.getNormals().getBuffer() != null) vertices.getNormals().getBuffer().position(0);
-        if (vertices.getColors() != null && vertices.getColors().getBuffer() != null) vertices.getColors().getBuffer().position(0);
         if (vertices.getUvs() != null && vertices.getUvs().getBuffer() != null) vertices.getUvs().getBuffer().position(0);
         if (vertices.getWeights() != null && vertices.getWeights().getBufferWeights() != null) vertices.getWeights().getBufferWeights().position(0);
         if (vertices.getWeights() != null && vertices.getWeights().getBufferInfluences() != null) vertices.getWeights().getBufferInfluences().position(0);
@@ -67,19 +81,15 @@ public class Mesh {
      * @param nx x-normal
      * @param ny y-normal
      * @param nz z-normal
-     * @param cr color red
-     * @param cg color green
-     * @param cb color blue
-     * @param ca color alpha
      * @param u  texture coordinate x
      * @param v  texture coordinate y
      */
-    public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz, float cr, float cg, float cb, float ca, float u, float v, float wx, float wy, float wz, float ww, int i1, int i2, int i3, int i4) {
-        vertices.addVertex(Vector3.createNew(vx, vy, vz), Vector3.createNew(nx, ny, nz), new Color4(cr, cg, cb, ca), new Uv(u, v), new Weight(wx,wy,wz,ww,i1,i2,i3,i4));
+    public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz,float u, float v, float wx, float wy, float wz, float ww, int i1, int i2, int i3, int i4) {
+        vertices.addVertex(Vector3.createNew(vx, vy, vz), Vector3.createNew(nx, ny, nz), new Uv(u, v), new Weight(wx,wy,wz,ww,i1,i2,i3,i4));
     }
 
-    public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz, float cr, float cg, float cb, float ca, float u, float v) {
-        addVertex(vx, vy, vz,nx, ny, nz,cr, cg, cb, ca,u, v,0,0,0,0,0,0,0,0);
+    public void addVertex(float vx, float vy, float vz, float nx, float ny, float nz, float u, float v) {
+        addVertex(vx, vy, vz,nx, ny, nz,u, v,0,0,0,0,0,0,0,0);
     }
 
     /**
@@ -87,15 +97,14 @@ public class Mesh {
      *
      * @param point
      * @param normal
-     * @param color
      * @param uv
      */
-    public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv, Weight weight) {
-        vertices.addVertex(point, normal, color, uv,weight);
+    public void addVertex(Vector3 point, Vector3 normal, Uv uv, Weight weight) {
+        vertices.addVertex(point, normal,uv,weight);
     }
 
-    public void addVertex(Vector3 point, Vector3 normal, Color4 color, Uv uv) {
-        vertices.addVertex(point, normal, color, uv, new Weight());
+    public void addVertex(Vector3 point, Vector3 normal, Uv uv) {
+        vertices.addVertex(point, normal, uv, new Weight());
     }
 
     /**
@@ -117,5 +126,9 @@ public class Mesh {
 
     public Mesh clone() {
         return new Mesh(this);
+    }
+
+    public boolean hasBones() {
+        return vertices.hasBones();
     }
 }

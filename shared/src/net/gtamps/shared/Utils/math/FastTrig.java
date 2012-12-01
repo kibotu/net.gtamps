@@ -34,7 +34,7 @@ public class FastTrig {
     public static double invSqrt(double x) {
         double xhalf = 0.5 * x;
         long i = Double.doubleToRawLongBits(x);
-        i = 0x5FE6EB50C7B537AAL - (i >> 1);
+        i = 0x5FE6EB50C7B537AAL - (i >> 1);   // original: 0x5f3759df; might be even faster: 0x5f375a86  || 0x5fe6ec85e7de30da
         x = Double.longBitsToDouble(i);
         x = x * (1.5 - xhalf * x * x);
         return x;

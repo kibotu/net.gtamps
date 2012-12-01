@@ -13,12 +13,19 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class Light extends SceneNode {
 
-    private float[] color = {0.5f, 0.5f, 0.5f, 1f};
     private Vector3 direction = Vector3.createNew();
 
     public Light(float positionX, float positionY, float positionZ, float directionX, float directionY, float directionZ) {
         setPosition(positionX, positionY, positionZ);
         direction.set(directionX, directionY, directionZ);
+    }
+
+    public Vector3 getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector3 direction) {
+        this.direction = direction;
     }
 
     @Override
@@ -48,9 +55,5 @@ public class Light extends SceneNode {
 
     @Override
     protected void onResumeInternal(GL10 gl10) {
-    }
-
-    public float[] getColor() {
-        return color;
     }
 }

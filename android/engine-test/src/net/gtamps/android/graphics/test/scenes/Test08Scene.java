@@ -29,7 +29,7 @@ public class Test08Scene extends SceneGraph {
         add(new Light(0, 0, 10, 0, 0, -1));
 
         Object3D camaro = new Object3D(PACKAGE_NAME + "camaro_obj");
-        camaro.addTexture(new Texture(R.drawable.camaro, Texture.Type.texture_01, true));
+        camaro.addTexture(new Texture(R.drawable.camaro, Texture.Type.u_Texture01, true));
 
         add(camaro);
     }

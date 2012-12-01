@@ -31,6 +31,8 @@ public final class Matrix4 {
         }
     });
 
+    public static final int SIZE = 16;
+
     /**
      * Erzeugt eine neue Matrix-Instanz und initialisiert sie auf die Einheitsmatrix
      *
@@ -1654,5 +1656,37 @@ public final class Matrix4 {
         }
 
         return new Quaternion(X, Y, Z, W);
+    }
+
+    // matrix-vector multiplication (y = A * x)
+    public double[] multiply(double[][] A, double[] x) {
+        int m = A.length;
+        int n = A[0].length;
+        if (x.length != n) throw new RuntimeException("Illegal matrix dimensions.");
+        double[] y = new double[m];
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                y[i] += (A[i][j] * x[j]);
+        return y;
+
+//        float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
+//        float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];
+//        float z = vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22] + mat[M23];
+//        vec[0] = x;
+//        vec[1] = y;
+//        vec[2] = z;
+    }
+
+
+    // vector-matrix multiplication (y = x^T A)
+    public static double[] multiply(double[] x, double[][] A) {
+        int m = A.length;
+        int n = A[0].length;
+        if (x.length != m) throw new RuntimeException("Illegal matrix dimensions.");
+        double[] y = new double[n];
+        for (int j = 0; j < n; j++)
+            for (int i = 0; i < m; i++)
+                y[j] += (A[i][j] * x[i]);
+        return y;
     }
 }

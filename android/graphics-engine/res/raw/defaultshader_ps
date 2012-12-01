@@ -1,16 +1,4 @@
 precision mediump float;
-
-// Vertex attributes form the mesh. Transformed by the vertex shader.
-varying vec3 fcolor;
-varying vec3 normalV;
-varying vec3 eyedirV;
-varying vec3 lightdirV;
-varying vec2 uvV;
-
-uniform sampler2D texture_01;
-
-uniform int hasLighting;
-
 struct PhongMaterial
 {
    vec4 emission;    // Ecm
@@ -19,9 +7,20 @@ struct PhongMaterial
    vec4 specular;    // Scm
    float shininess;  // Srm
 };
-uniform PhongMaterial material;
 
-vec3 lightintensity = vec3(0.9, 0.9, 0.9);
+// uniforms
+uniform PhongMaterial u_PhongMaterial;
+uniform sampler2D u_Texture01;
+uniform int hasLighting;
+
+// Vertex attributes form the mesh. Transformed by the vertex shader.
+varying vec3 v_ViewSpacePosition;
+varying vec3 v_VertexToLight;
+varying vec3 v_Normal;
+varying vec2 v_TexCoords;
+
+// constants
+vec3 c_lightIntensity = vec3(0.9, 0.9, 0.9);
 
 // Simple implementation of the phong illumination model.
 vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) {
@@ -54,7 +53,6 @@ vec4 phong(vec3 n, vec3 v, vec3 s, vec3 l, vec3 ka, vec3 kd, vec3 ks, float ke) 
 }
 
 void main() {
-
-  vec4 texColor = texture2D(texture_01, uvV);
-  gl_FragColor =  hasLighting == 1 ? texColor * phong(normalV, eyedirV, lightdirV, lightintensity, material.ambient.rgb, material.diffuse.rgb, material.specular.rgb, material.shininess) : texColor;
+  vec4 texColor = texture2D(u_Texture01, v_TexCoords);
+  gl_FragColor =  hasLighting == 1 ? texColor * phong(v_Normal, v_ViewSpacePosition, v_VertexToLight, c_lightIntensity, u_PhongMaterial.ambient.rgb, u_PhongMaterial.diffuse.rgb, u_PhongMaterial.specular.rgb, u_PhongMaterial.shininess) : texColor;
 }

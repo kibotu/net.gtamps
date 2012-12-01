@@ -812,7 +812,7 @@ public final class Vector3 implements Serializable {
         temp.recycle();
     }
 
-    float[] array;
+    private float[] array;
 
     public float[] asArray() {
         if (array == null) array = new float[]{x, y, z};

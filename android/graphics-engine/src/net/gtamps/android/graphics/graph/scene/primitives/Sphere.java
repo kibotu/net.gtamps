@@ -46,8 +46,6 @@ public class Sphere extends RenderableNode {
 
         mesh = new Mesh(stacks * slices * 2, (stacks + 1) * (slices + 1));
 
-        Color4 emissive = material.getEmission();
-
         int r, c;
 
         Vector3 n = Vector3.createNew();
@@ -71,7 +69,7 @@ public class Sphere extends RenderableNode {
                 posFull.set(pos);
                 posFull.mulInPlace(dimension.x);
 
-                mesh.vertices.addVertex(posFull.x, posFull.y, posFull.z, pos.x, pos.y, pos.z, emissive.r, emissive.g, emissive.b, emissive.a, u, v);
+                mesh.vertices.addVertex(posFull.x, posFull.y, posFull.z, pos.x, pos.y, pos.z, u, v);
             }
         }
 

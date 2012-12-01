@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -267,12 +268,15 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      *
      * @param vertexBuffer
      * @param normalBuffer
-     * @param colorBuffer
      * @param uvBuffer
      * @param indexBuffer
+     * @param weightBuffer
+     * @param influenceBuffer
      * @return allocated vbo
      */
-    public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer);
+    public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer, FloatBuffer weightBuffer, IntBuffer influenceBuffer);
+
+    public abstract Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer);
 
     public int geActiveShaderProgram() {
         return activeShaderProgram;

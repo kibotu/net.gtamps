@@ -5,6 +5,7 @@ import android.opengl.GLUtils;
 import com.badlogic.gdx.backends.android.AndroidGL20;
 import fix.android.opengl.GLES20;
 import net.gtamps.android.graphics.graph.RenderableNode;
+import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
@@ -18,6 +19,7 @@ import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
 import net.gtamps.shared.Utils.math.Matrix4;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -58,7 +60,6 @@ public class GLES20Renderer extends BasicRenderer {
 
         // cull backface
         glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
 
         // getting additional gl functions
 //        mGlEs20 = new AndroidGL20();
@@ -117,9 +118,8 @@ public class GLES20Renderer extends BasicRenderer {
 
         Matrix4 viewMatrix = frustum.getViewMatrix();
         Matrix4.setLookAt(viewMatrix, frustum.getPosition(), frustum.getTarget(), frustum.getUp());
-        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "projectionMatrix"), 1, false, frustum.getProjectionMatrix().values, 0);
-        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "normalMatrix"), 1, false, frustum.getNormalMatrix().values, 0);
-        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "viewMatrix"), 1, false, viewMatrix.values, 0);
+        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "u_WorldViewProjection"), 1, false, frustum.getProjectionMatrix().values, 0);
+        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "u_WorldView"), 1, false, viewMatrix.values, 0);
     }
 
     @Override
@@ -128,6 +128,7 @@ public class GLES20Renderer extends BasicRenderer {
         else drawArray(node);
     }
 
+    @Deprecated
     private void drawArray(RenderableNode node) {
         Mesh mesh = node.getMesh();
         if (mesh == null) return;
@@ -150,17 +151,13 @@ public class GLES20Renderer extends BasicRenderer {
         glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexNormal"), 3, GL_FLOAT, false, 0, mesh.vertices.getNormals().getBuffer());
         glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexNormal"));
 
-        // colors
-        glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexColor"), 4, GL_FLOAT, false, 0, mesh.vertices.getColors().getBuffer());
-        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexColor"));
-
         // material
         Material material = node.getMaterial();
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.emission"), 1, material.getEmission().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.ambient"), 1, material.getAmbient().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.diffuse"), 1, material.getDiffuse().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.specular"), 1, material.getSpecular().asArray(), 0);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "material.shininess"), material.getShininess());
+        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1, material.getEmission().asArray(), 0);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),material.getAmbient().asArray()[1]);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),material.getDiffuse().asArray()[1]);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[1]);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
 
         // multiple textures
         if (!node.getTextures().isEmpty()) {
@@ -204,26 +201,26 @@ public class GLES20Renderer extends BasicRenderer {
 
         // vertices
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
-        GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexPosition"), 3, GL_FLOAT, false, 0, 0);
-        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexPosition"));
+        GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_Position"), 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "in_Position"));
 
         // normals
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
-        GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexNormal"), 3, GL_FLOAT, false, 0, 0);
-        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexNormal"));
-
-        // colors
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.colorBufferID);
-        GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexColor"), 4, GL_FLOAT, false, 0, 0);
-        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexColor"));
+        GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_Normal"), 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "in_Normal"));
 
         // material
         Material material = node.getMaterial();
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.emission"), 1, material.getEmission().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.ambient"), 1, material.getAmbient().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.diffuse"), 1, material.getDiffuse().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "material.specular"), 1, material.getSpecular().asArray(), 0);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "material.shininess"), material.getShininess());
+//        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1, material.getEmission().asArray(), 0);
+//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),material.getAmbient().asArray()[0]);
+//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),material.getDiffuse().asArray()[0]);
+//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[0]);
+//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
+        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,new float [] {1.0f, 1.0f, 1.0f, 1.0f}, 0);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.45f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.1f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),0.15f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), 8.0f);
 
         // multiple textures
         if (!node.getTextures().isEmpty()) {
@@ -243,23 +240,37 @@ public class GLES20Renderer extends BasicRenderer {
                 TextureAnimation uvsheet = node.getTextureAnimation();
                 TextureSprite textureSprite = node.getTextureSprite();
                 glBindBuffer(GL_ARRAY_BUFFER, uvsheet.floatBufferId);
-                GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexUv"), 2, GL_FLOAT, false, 0, textureSprite.offsetId);
-                glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexUv"));
+                GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_TexCoords"), 2, GL_FLOAT, false, 0, textureSprite.offsetId);
             } else {
-
                 glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.uvBufferID);
-                GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "vertexUv"), 2, GL_FLOAT, false, 0, 0);
-                glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "vertexUv"));
+                GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_TexCoords"), 2, GL_FLOAT, false, 0, 0);
+
             }
+            glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "in_TexCoords"));
         } else {
             glUniform1i(glGetUniformLocation(activeShaderProgram, "hasTextures"), 0);
         }
 
         // uses lightning
-        glUniform1i(glGetUniformLocation(activeShaderProgram, "hasLighting"), renderState.hasLighting() ? 1 : 0);
+//        glUniform1i(glGetUniformLocation(activeShaderProgram, "hasLighting"), renderState.hasLighting() ? 1 : 0);
 
         // send to the shader
-        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "modelMatrix"), 1, false, node.getCombinedTransformation().values, 0);
+        glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "u_ModelViewMatrix"), 1, false, node.getCombinedTransformation().values, 0);
+
+//        if(mesh.hasBones()) {
+//            // draw weights
+//            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.weightBufferID);
+//            GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_Weights"), 4, GL_FLOAT, false, 0, 0);
+//            glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "in_Weights"));
+//
+//            // draw influences
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.influenceBufferID);
+//            GLES20.glVertexAttribPointer(glGetAttribLocation(activeShaderProgram, "in_Influences"), 4, GL_INT, false, 0, 0);
+//            glEnableVertexAttribArray(glGetAttribLocation(activeShaderProgram, "in_Influences"));
+//
+//            // bone transformations
+//            glUniformMatrix4fv(glGetUniformLocation(activeShaderProgram, "u_BoneTransform"), AnimatedSkeletonObject3D.MAX_BONE_TRANSFORMS, false, ((AnimatedSkeletonObject3D)node).getBoneTransformations(), 0);
+//        }
 
         // Draw with indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.vbo.indexBufferID);
@@ -271,18 +282,25 @@ public class GLES20Renderer extends BasicRenderer {
 //        Logger.v(this, "drawing "+node.uID + " at " +  node.getCombinedTransformation());
     }
 
-    @Override
-    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
+    public int [] genBuffer(int size) {
+        int[] buffer = new int[size];
+        glGenBuffers(1, buffer, 0);
+        return buffer;
+    }
 
-        // get buffer ids
-        final int[] buffer = new int[5];
-        glGenBuffers(5, buffer, 0);
-        Vbo vbo = new Vbo(buffer, true);
+    private final int[] vboIDBuffer = new int[6];
+
+    @Override
+    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer, FloatBuffer weightBuffer, IntBuffer influenceBuffer) {
+
+        glGenBuffers(6, vboIDBuffer, 0);
+
+        Vbo vbo = new Vbo(vboIDBuffer, true);
 
         // bind vertex buffer
         if (vertexBuffer != null) {
             glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferID);
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_STATIC_DRAW);
         }
 
         // bind index buffer
@@ -297,10 +315,55 @@ public class GLES20Renderer extends BasicRenderer {
             glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_STATIC_DRAW);
         }
 
-        // bind color buffer
-        if (colorBuffer != null) {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo.colorBufferID);
-            glBufferData(GL_ARRAY_BUFFER, colorBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, colorBuffer, GL_STATIC_DRAW);
+        // bind uv buffer
+        if (uvBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.uvBufferID);
+            glBufferData(GL_ARRAY_BUFFER, uvBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, uvBuffer, GL_STATIC_DRAW);
+        }
+
+        // bind weight buffer
+        if (weightBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.weightBufferID);
+            glBufferData(GL_ARRAY_BUFFER, weightBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, weightBuffer, GL_STATIC_DRAW);
+        }
+
+        // bind influence buffer
+        if (influenceBuffer != null) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.influenceBufferID);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, influenceBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, influenceBuffer, GL_STATIC_DRAW);
+        }
+
+        // deselect buffers
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        Logger.i(this, vbo + " Vbo successfully allocated.");
+
+        return vbo;
+    }
+
+    @Override
+    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
+        glGenBuffers(6, vboIDBuffer, 0);
+
+        Vbo vbo = new Vbo(vboIDBuffer, true);
+
+        // bind vertex buffer
+        if (vertexBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferID);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_STATIC_DRAW);
+        }
+
+        // bind index buffer
+        if (indexBuffer != null) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.indexBufferID);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity() * OpenGLUtils.BYTES_PER_SHORT, indexBuffer, GL_STATIC_DRAW);
+        }
+
+        // bind normal buffer
+        if (normalBuffer != null) {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo.normalBufferID);
+            glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_STATIC_DRAW);
         }
 
         // bind uv buffer
@@ -320,8 +383,9 @@ public class GLES20Renderer extends BasicRenderer {
 
     @Override
     public void applyLight(Light light) {
-        glUniform3fv(glGetUniformLocation(activeShaderProgram, "lightPosition"), 1, light.getPosition().asArray(), 0);
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "lightColor"), 1, light.getColor(), 0);
+        glUniform3fv(glGetUniformLocation(activeShaderProgram, "u_LightDirection"), 1, light.getDirection().asArray(), 0);
+        glUniform3fv(glGetUniformLocation(activeShaderProgram, "u_LightPosition"), 1, light.getPosition().asArray(), 0);
+//        glUniform4fv(glGetUniformLocation(activeShaderProgram, "lightColor"), 1, light.getColor(), 0);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class Test10Scene extends SceneGraph {
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 
         add(new Light(0, 0, 10, 0, 0, -1));
-        Texture crate = new Texture(R.drawable.crate, Texture.Type.texture_01, true);
+        Texture crate = new Texture(R.drawable.crate, Texture.Type.u_Texture01, true);
 
         AnimatedObject3D cube01 = new AnimatedObject3D(PACKAGE_NAME + "cube_01_obj");
         cube01.addTexture(crate);

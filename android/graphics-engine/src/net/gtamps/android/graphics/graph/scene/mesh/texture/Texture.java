@@ -23,7 +23,7 @@ public class Texture {
      * Types supported by shader.
      */
     public enum Type {
-        texture_01, texture_02, texture_03, texture_04, texture_05, texture_06, texture_07, texture_08;
+        u_Texture01, u_Texture02, u_Texture03, u_Texture04, u_Texture05, u_Texture06, u_Texture07, u_Texture08;
     }
 
     public Texture(int resourceId, Type type) {

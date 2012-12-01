@@ -46,16 +46,18 @@ public class Test11Scene extends SceneGraph {
         AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "katarina_cat_skn", true, Parser.Type.SKN);
 
         // add texture
-        object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.texture_01, true));
+        object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.u_Texture01, true));
 
         // default scaling to 0.01f
         object3D.setScaling(0.01f,0.01f,0.01f);
+//        object3D.getMaterial().setShininess(8);
 
         // add bones
         object3D.addSkl(PACKAGE_NAME + "katarina_cat_skl");
 
         // add idle animation
-        object3D.addAnm(PACKAGE_NAME + "katarina_idle1_anm");
+//        object3D.addAnm(PACKAGE_NAME + "katarina_idle1_anm");
+        object3D.addAnm(PACKAGE_NAME + "katarina_dance_anm");
 
         //add obj to scene
         add(object3D);

@@ -11,6 +11,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferM
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.VertexManager;
 import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
+import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -212,9 +213,10 @@ public class SknParser extends AParser {
 
         final long startTime = Calendar.getInstance().getTimeInMillis();
 
-        Mesh mesh = new Mesh(faceManager.size(), sknVertices.length);
+        Mesh mesh = new Mesh(faceManager.size(), sknVertices.length,true,true,true);
+//        object3D.getRenderState().setShader(Shader.Type.PHONG_RIGGED); not working :( only 304 supported shader vars on galaxy s2
+        object3D.getRenderState().setShader(Shader.Type.PHONG);
 
-        Color4 c = Material.DEFAULT.getEmission();
         // set vertices data
         for (int i = 0; i < sknVertices.length; ++i) {
             SknVertex vtx = sknVertices[i];
@@ -226,7 +228,6 @@ public class SknParser extends AParser {
             if (v < 0) Logger.e(TAG, "v out of bound (<0): " + v + " "+ i);
             mesh.addVertex(vtx.x, vtx.y, vtx.z,
                     vtx.normalX, vtx.normalY, vtx.normalZ,
-                    c.r,c.g,c.b,c.a ,
                     u * (flipU ? 1f : -1f), v  * (flipV ? 1f : -1f),
                     vtx.weightsX,vtx.weightsY,vtx.weightsZ,vtx.weightsW,
                     vtx.sknIndices1,vtx.sknIndices2,vtx.sknIndices3,vtx.sknIndices4);

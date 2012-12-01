@@ -7,7 +7,7 @@ package net.gtamps.android.graphics.renderer;
  */
 public class RenderState {
 
-    private Shader.Type shader = Shader.Type.PHONG;
+    private Shader.Type shader = Shader.Type.DEFAULT;
     private boolean hasLighting = true;
     private boolean isDoubleSided = false;
 

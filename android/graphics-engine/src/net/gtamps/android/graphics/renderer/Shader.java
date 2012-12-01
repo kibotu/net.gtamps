@@ -14,7 +14,9 @@ public class Shader {
 
     public enum Type {
 
-        PHONG(R.raw.defaultshader_vs, R.raw.defaultshader_ps);
+        PHONG(R.raw.phong_vs, R.raw.phong_ps),
+//        PHONG_RIGGED(R.raw.phong_rigged_vs, R.raw.phong_ps),
+        DEFAULT(R.raw.defaultshader_vs, R.raw.defaultshader_ps);
 
         public final int vs;
         public final int ps;

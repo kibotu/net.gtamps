@@ -28,7 +28,7 @@ public class Test07Scene extends SceneGraph {
 
         add(new Light(0, 0, 10, 0, 0, -1));
 
-        Texture spritesheet = new Texture(R.drawable.spritesheet, Texture.Type.texture_01);
+        Texture spritesheet = new Texture(R.drawable.spritesheet, Texture.Type.u_Texture01);
         TextureAnimation uvsheet = TextureAnimation.load(R.raw.advocate);
 
         float scale = 2f;

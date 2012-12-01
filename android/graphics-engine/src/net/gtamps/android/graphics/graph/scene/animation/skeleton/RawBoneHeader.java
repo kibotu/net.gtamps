@@ -34,8 +34,8 @@ public class RawBoneHeader {
         sb.append("\nnum_bones_foranim=").append(num_bones_foranim);
         sb.append("\nheader_size=").append(header_size);
         sb.append("\nsize_after_array1=").append(size_after_array1);
-        sb.append("\nsize_after_array2=").append(size_after_array2);
-        sb.append("\nsize_after_array3=").append(size_after_array3);
+        sb.append("\noffsetToAnimationIndices=").append(size_after_array2);
+        sb.append("\nsize_after_array2=").append(size_after_array3);
         sb.append("\nsize_after_array3_=").append(size_after_array3_);
         sb.append("\nsize_after_array4=").append(size_after_array4);
         sb.append('}');

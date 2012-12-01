@@ -104,7 +104,7 @@ public class AnimatedObject3D extends Object3D {
         for (int i = 0; i < curV.size(); ++i) {
             final float temp[] = Interpolation.getLinearInterpolatedPoint(prevV.getPropertyX(i), prevV.getPropertyY(i), prevV.getPropertyZ(i), newV.getPropertyX(i), newV.getPropertyY(i), newV.getPropertyZ(i), percent);
             curV.overwrite(i, temp[0], temp[1], temp[2]);
-            //Logger.d(this, i + ": ("+currentVertices.getPropertyX(i)+"|"+currentVertices.getPropertyY(i)+"|"+currentVertices.getPropertyZ(i)+") \t=> ("+newVertices.getPropertyX(i)+"|"+newVertices.getPropertyY(i)+"|"+newVertices.getPropertyZ(i)+")");
+            //Logger.d(this, i + ": ("+currentVertices.getPropertyWeightX(i)+"|"+currentVertices.getPropertyWeightY(i)+"|"+currentVertices.getPropertyWeightZ(i)+") \t=> ("+newVertices.getPropertyWeightX(i)+"|"+newVertices.getPropertyWeightY(i)+"|"+newVertices.getPropertyWeightZ(i)+")");
         }
         getMesh().update();
 //        Logger.i(this, dtInterpolation + ". "+percent+"% \t["+temp[0]+"\t|"+temp[0]+"\t|"+temp[0]+"]");

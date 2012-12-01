@@ -70,7 +70,12 @@ public class GL10Renderer extends BasicRenderer {
     }
 
     @Override
-    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer colorBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
+    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer, FloatBuffer weightBuffer, IntBuffer influenceBuffer) {
+        return null;
+    }
+
+    @Override
+    public Vbo allocBuffers(FloatBuffer vertexBuffer, FloatBuffer normalBuffer, FloatBuffer uvBuffer, ShortBuffer indexBuffer) {
         return null;
     }
 

@@ -7,27 +7,27 @@ package net.gtamps.android.graphics.graph.scene.animation.skeleton;
  */
 public class RawSklBone {
 
-    public static final int BYTELENGTH = 0x44;
+    public static final int BYTELENGTH = 0x44; // 68
 
     public int uk;
-    public int id;
-    public int parent_id;
+    public int id;          // 2
+    public int parent_id;   // 2
     public int uk2;
-    public int namehash;
+    public int namehash;    // 4
     public float unused;
-    public float tx;
-    public float ty;
-    public float tz;
+    public float tx;        // 4
+    public float ty;        // 4
+    public float tz;        // 4
     public float unused1;
     public float unused2;
     public float unused3;
-    public float q1;
-    public float q2;
-    public float q3;
-    public float q4;
-    public float ctx;
-    public float cty;
-    public float ctz;
+    public float q1;        // 4
+    public float q2;        // 4
+    public float q3;        // 4
+    public float q4;        // 4
+    public float ctx;       // 4
+    public float cty;       // 4
+    public float ctz;       // 4
 
     @Override
     public String toString() {

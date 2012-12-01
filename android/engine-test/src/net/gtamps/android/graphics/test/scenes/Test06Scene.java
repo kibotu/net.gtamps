@@ -27,7 +27,7 @@ public class Test06Scene extends SceneGraph {
     public void onSurfaceCreatedInternal(GL10 gl10) {
 
         add(new Light(0, 0, 10, 0, 0, -1));
-        Texture crateTexture = new Texture(R.drawable.crate, Texture.Type.texture_01);
+        Texture crateTexture = new Texture(R.drawable.crate, Texture.Type.u_Texture01);
 
         float scale = 0.3f;
         int counter = 0;

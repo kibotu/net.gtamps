@@ -32,6 +32,15 @@ public class SkeletonAnimationParser {
     private SkeletonAnimationParser() {
     }
 
+    /**
+     * This function converts the handedness of the DirectX style input data
+     * into the handedness OpenGL expects.
+     * So, vector inputs have their Z value negated and quaternion inputs have their
+     * Z and W values negated.
+     *
+     * @param resourceID
+     * @param object3D
+     */
     public static void loadAnm(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
 
         if(object3D.getBones() == null) {
@@ -111,18 +120,14 @@ public class SkeletonAnimationParser {
 //                        Logger.i(TAG, boneName + " flag: " +rootBone);
                         for (int j = 0; j < numFrames; ++j) {
                             final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
-                            boneKeyFrame.rot[0] = readFloat(input);
-                            boneKeyFrame.rot[1] = readFloat(input);
-                            boneKeyFrame.rot[2] = readFloat(input);
-                            boneKeyFrame.rot[3] = readFloat(input);
+                            boneKeyFrame.rotation.set(readFloat(input),readFloat(input),-readFloat(input),-readFloat(input));
                             boneKeyFrame.x = readFloat(input);
                             boneKeyFrame.y = readFloat(input);
-                            boneKeyFrame.z = readFloat(input);
+                            boneKeyFrame.z = -readFloat(input);
                             readBytes += 7 * 4;
 //                            Logger.i(this, j + " " + keyFrame);
                             riotAnimation.addFrame(object3D.getBone(boneName), boneKeyFrame);
                         }
-//                        data_.bones.push_back(bone);
                     }
 
 //                    data_.switchHand();
@@ -216,6 +221,8 @@ public class SkeletonAnimationParser {
                         readBytes += 4 * 4;
                     }
 
+                    riotAnimation = new RiotAnimation(numBones, numFrames, 30, version);
+
                     // get bones with frames
                     for (int i = 0; i < numFrames; ++i) {
                         for (int j = 0; j < numBones; ++j) {
@@ -247,13 +254,12 @@ public class SkeletonAnimationParser {
 
                             final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
                             boneKeyFrame.nameHash = nameHash;
-                            boneKeyFrame.rot[0] = quat[quatId][0];
-                            boneKeyFrame.rot[1] = quat[quatId][1];
-                            boneKeyFrame.rot[2] = quat[quatId][2];
-                            boneKeyFrame.rot[3] = quat[quatId][3];
+                            boneKeyFrame.rotation.set(quat[quatId][0],quat[quatId][1],-quat[quatId][2],-quat[quatId][3]);
                             boneKeyFrame.x = pos[posId][0];
                             boneKeyFrame.y = pos[posId][1];
-                            boneKeyFrame.z = pos[posId][2];
+                            boneKeyFrame.z = -pos[posId][2];
+
+                            riotAnimation.addFrame(object3D.getBone(nameHash), boneKeyFrame);
                         }
                     }
 //                    data_.switchHand();
@@ -296,17 +302,6 @@ public class SkeletonAnimationParser {
                 int length = input.available();
                 if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
 
-                // magic TODO check against versions
-//                String magic = readString(input, 8);
-//                readBytes += 8;
-//                Logger.v(TAG, "magic=" + magic);
-
-                // length: align 4
-//                int alignedLength = (length + 3) & 0xFFFFFFFC;
-//                Logger.v(TAG, "" + alignedLength);
-
-                // default version
-//                int version = 3;
 
                 // get raw bone header
                 RawBoneHeader rawBoneHeader = readRawBoneHeader(input);
@@ -315,7 +310,7 @@ public class SkeletonAnimationParser {
 
                 // skip
                 input.skip(rawBoneHeader.header_size - readBytes);
-                if (SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.header_size - readBytes) + " bytes");
+                if (SHOW_READ_BYTES) Logger.v(TAG, "skipping " + (rawBoneHeader.header_size - readBytes) + " bytes for more future header information.");
                 readBytes += rawBoneHeader.header_size - readBytes;
                 if (SHOW_READ_BYTES) Logger.v(TAG, readBytes + " bytes read");
 
@@ -323,9 +318,11 @@ public class SkeletonAnimationParser {
                 RawSklBone rawSklBone[] = new RawSklBone[rawBoneHeader.nbSklBones];
                 for (int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
                     rawSklBone[i] = readRawSklBone(input);
-                    readBytes += RawSklBone.BYTELENGTH;
-//                    Logger.v(TAG, rawSklBone[i]);
+                    readBytes += RawSklBone.BYTELENGTH + 32;
                 }
+
+//                Logger.v(TAG, rawSklBone[0]);
+//                Logger.v(TAG, rawSklBone[rawBoneHeader.nbSklBones-1]);
 
                 // skip
                 input.skip(rawBoneHeader.size_after_array2 - readBytes);
@@ -362,52 +359,20 @@ public class SkeletonAnimationParser {
                 // get bones
                 for (int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
                     Bone bone = new Bone();
-                    bone.position.set(rawSklBone[i].tx, rawSklBone[i].ty, rawSklBone[i].tz);
-                    bone.setRotationEulerRotation(rawSklBone[i].q1, rawSklBone[i].q2, rawSklBone[i].q3, rawSklBone[i].q4);
+                    bone.position.set(rawSklBone[i].tx, rawSklBone[i].ty, -rawSklBone[i].tz);
+                    bone.rotation.set(rawSklBone[i].q1, rawSklBone[i].q2, -rawSklBone[i].q3, -rawSklBone[i].q4);
                     bone.pivot.set(rawSklBone[i].ctx, rawSklBone[i].cty, rawSklBone[i].ctz);
                     bone.name = boneNames[i];
-                    bone.parentId = rawSklBone[i].parent_id;
+                    bone.id = rawSklBone[i].id;
+                    bone.parentID = rawSklBone[i].parent_id;
                     bone.nameHash = rawSklBone[i].namehash;
                     object3D.addBone(bone);
                 }
 
+                object3D.transformChildBonesAlongParents(0);
+
                 long endTime = Calendar.getInstance().getTimeInMillis();
                 Logger.i(TAG, "[" + resourceID + "|fLength=" + length + "bytes|read=" + readBytes + "/" + rawBoneHeader.size + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
-
-            } finally {
-//                Logger.v(TAG, "Closing input stream.");
-                input.close();
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.e(TAG, "File not found.");
-            Logger.printException(TAG, ex);
-        } catch (IOException ex) {
-            Logger.printException(TAG, ex);
-        }
-    }
-
-    public static void loadSkn(String resourceID, @NotNull AnimatedSkeletonObject3D object3D) {
-        final long startTime = Calendar.getInstance().getTimeInMillis();
-        String packageID = "";
-        if (resourceID.contains(":")) packageID = resourceID.split(":")[0];
-        final Resources resources = Registry.getContext().getResources();
-
-        try {
-            DataInputStream input = null;
-            try {
-                input = new DataInputStream(new BufferedInputStream(resources.openRawResource(resources.getIdentifier(resourceID, null, packageID))));
-
-                int readBytes = 0;
-
-                // check length
-                int minLength = 28;
-                int length = input.available();
-//                Logger.v(TAG, "length=" + length);
-                if (length < minLength) Logger.e(TAG, "File is empty: " + length + " < " + minLength);
-
-
-                long endTime = Calendar.getInstance().getTimeInMillis();
-                Logger.i(TAG, "[" + resourceID + "|fLength=" + length + "bytes|read=" + readBytes + "bytes] Successfully loaded in " + (endTime - startTime) + "ms.");
 
             } finally {
 //                Logger.v(TAG, "Closing input stream.");
@@ -468,6 +433,7 @@ public class SkeletonAnimationParser {
         rawSklBone.ctx = readFloat(input);          // read 4 bytes     | 60
         rawSklBone.cty = readFloat(input);          // read 4 bytes     | 64
         rawSklBone.ctz = readFloat(input);          // read 4 bytes     | 68
+        input.skip(32);
         return rawSklBone;                          // totally read bytes 68
     }
 

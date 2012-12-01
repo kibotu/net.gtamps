@@ -61,9 +61,6 @@ public class Cylinder extends RenderableNode {
         float step = MathUtils.deg2Rad(360f / segments);
 
         // vertices
-
-        Color4 col = isTopSide ? new Color4(255, 0, 0, 255) : new Color4(0, 255, 0, 255);
-
         for (int i = 0; i < segments; i++) {
             float angle = (float) i * step;
 
@@ -73,7 +70,7 @@ public class Cylinder extends RenderableNode {
             float z1 = zOffset;
             Uv uv1 = new Uv(x1, y1);
             Vector3 n1 = Vector3.createNew(0, 0, isTopSide ? -1 : +1);
-            mesh.vertices.addVertex(Vector3.createNew(x1, y1, z1), n1, col, uv1);
+            mesh.vertices.addVertex(Vector3.createNew(x1, y1, z1), n1, uv1);
 
             // inner
             float x2 = (float) Math.sin(angle) * innerRadius;
@@ -81,7 +78,7 @@ public class Cylinder extends RenderableNode {
             float z2 = zOffset;
             Uv uv2 = new Uv(x2, y2);
             Vector3 n2 = Vector3.createNew(0, 0, isTopSide ? -1 : +1);
-            mesh.vertices.addVertex(Vector3.createNew(x2, y2, z2), n2, col, uv2);
+            mesh.vertices.addVertex(Vector3.createNew(x2, y2, z2), n2, uv2);
         }
 
         // indices

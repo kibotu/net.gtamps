@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.graph.scene.animation.skeleton;
 
+import net.gtamps.shared.Utils.math.Quaternion;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,13 +13,13 @@ import java.util.Arrays;
 public class BoneKeyFrame {
 
     public int nameHash;
-    public float rot[];
+    public Quaternion rotation;
     public float x;
     public float y;
     public float z;
 
     public BoneKeyFrame() {
-        this.rot = new float[4];
+        this.rotation = new Quaternion();
     }
 
     @Override
@@ -28,21 +30,25 @@ public class BoneKeyFrame {
         BoneKeyFrame that = (BoneKeyFrame) o;
 
         if (nameHash != that.nameHash) return false;
-        if (Float.compare(that.x, x) != 0) return false;
-        if (Float.compare(that.y, y) != 0) return false;
-        if (Float.compare(that.z, z) != 0) return false;
-        if (!Arrays.equals(rot, that.rot)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = rot != null ? Arrays.hashCode(rot) : 0;
-        result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
-        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
-        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
-        result = 31 * result + nameHash;
-        return result;
+        return nameHash;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer();
+        sb.append("BoneKeyFrame");
+        sb.append("{nameHash=").append(nameHash);
+        sb.append(", rotation=").append(rotation);
+        sb.append(", x=").append(x);
+        sb.append(", y=").append(y);
+        sb.append(", z=").append(z);
+        sb.append('}');
+        return sb.toString();
     }
 }

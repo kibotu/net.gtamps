@@ -1,5 +1,7 @@
 package net.gtamps.android.graphics.utils;
 
+import android.opengl.GLES20;
+
 import java.nio.*;
 import java.util.List;
 

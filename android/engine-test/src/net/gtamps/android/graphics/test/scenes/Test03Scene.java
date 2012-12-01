@@ -28,7 +28,7 @@ public class Test03Scene extends SceneGraph {
 
         add(new Light(0, 0, 10, 0, 0, -1));
 
-        Texture crateTexture = new Texture(R.drawable.earth, Texture.Type.texture_01);
+        Texture crateTexture = new Texture(R.drawable.earth, Texture.Type.u_Texture01);
 
         float scale = 0.3f;
         int counter = 0;

@@ -10,22 +10,25 @@ import net.gtamps.android.graphics.utils.Registry;
 public class Vbo {
 
     public int vertexBufferID;
-    public int normalBufferID;
-    public int colorBufferID;
-    public int uvBufferID;
     public int indexBufferID;
+    public int normalBufferID;
+    public int uvBufferID;
+    public int weightBufferID;
+    public int influenceBufferID;
     public boolean isAllocated;
 
     public Vbo(int[] buffer, boolean isAllocated) {
-        this(buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], isAllocated);
+        this(buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], isAllocated);
+        assert buffer.length == 6;
     }
 
-    public Vbo(int vertexBufferID, int normalBufferID, int colorBufferID, int uvBufferID, int indexBufferID, boolean isAllocated) {
+    public Vbo(int vertexBufferID, int normalBufferID, int uvBufferID, int indexBufferID, int weightBufferID, int influenceBufferID, boolean isAllocated) {
         this.vertexBufferID = vertexBufferID;
         this.normalBufferID = normalBufferID;
-        this.colorBufferID = colorBufferID;
         this.uvBufferID = uvBufferID;
         this.indexBufferID = indexBufferID;
+        this.weightBufferID = weightBufferID;
+        this.influenceBufferID = influenceBufferID;
         this.isAllocated = isAllocated;
     }
 
@@ -34,9 +37,10 @@ public class Vbo {
         final StringBuffer sb = new StringBuffer();
         sb.append("[vertexID=").append(vertexBufferID);
         sb.append("|normalID=").append(normalBufferID);
-        sb.append("|colorID=").append(colorBufferID);
         sb.append("|uvID=").append(uvBufferID);
         sb.append("|indexID=").append(indexBufferID);
+        sb.append("|weightBufferID=").append(weightBufferID);
+        sb.append("|influenceBufferID=").append(influenceBufferID);
         sb.append("|allocated=").append(isAllocated);
         sb.append(']');
         return sb.toString();

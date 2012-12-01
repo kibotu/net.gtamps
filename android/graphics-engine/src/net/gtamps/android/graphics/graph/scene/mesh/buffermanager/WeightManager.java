@@ -72,22 +72,22 @@ public class WeightManager {
                 influences.get(),influences.get(),influences.get(),influences.get());
     }
 
-    public float getPropertyX(int index) {
+    public float getPropertyWeightX(int index) {
         weights.position(index * PROPERTIES_PER_ELEMENT);
         return weights.get();
     }
 
-    public float getPropertyY(int index) {
+    public float getPropertyWeightY(int index) {
         weights.position(index * PROPERTIES_PER_ELEMENT + 1);
         return weights.get();
     }
 
-    public float getPropertyZ(int index) {
+    public float getPropertyWeightZ(int index) {
         weights.position(index * PROPERTIES_PER_ELEMENT + 2);
         return weights.get();
     }
 
-    public float getPropertyW(int index) {
+    public float getPropertyWeightW(int index) {
         weights.position(index * PROPERTIES_PER_ELEMENT + 3);
         return weights.get();
     }

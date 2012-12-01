@@ -33,7 +33,6 @@ public class Plane extends RenderableNode {
         if (mesh != null) return;
 
         mesh = new Mesh(2, 4);
-        Color4 emissive = material.getEmission();
 
         /**
          * 1----0
@@ -43,13 +42,13 @@ public class Plane extends RenderableNode {
          */
 
         // oben rechts
-        mesh.addVertex(0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 0);
+        mesh.addVertex(0.5f, 0.5f, 0, 0, 0, 1, 1, 0);
         // oben links
-        mesh.addVertex(-0.5f, 0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 0);
+        mesh.addVertex(-0.5f, 0.5f, 0, 0, 0, 1, 0, 0);
         // unten links
-        mesh.addVertex(-0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 0, 1);
+        mesh.addVertex(-0.5f, -0.5f, 0, 0, 0, 1, 0, 1);
         // unten rechts
-        mesh.addVertex(0.5f, -0.5f, 0, 0, 0, 1, emissive.r, emissive.g, emissive.b, emissive.a, 1, 1);
+        mesh.addVertex(0.5f, -0.5f, 0, 0, 0, 1, 1, 1);
 
         mesh.faces.add(0, 1, 2);
         mesh.faces.add(2, 3, 0);

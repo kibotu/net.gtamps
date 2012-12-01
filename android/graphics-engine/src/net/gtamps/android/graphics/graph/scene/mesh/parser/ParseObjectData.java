@@ -68,7 +68,7 @@ public class ParseObjectData {
                     newUv.u = ba.uOffset + newUv.u * ba.uScale;
                     newUv.v = ba.vOffset + ((newUv.v + 1) * ba.vScale) - 1;
                 }
-                mesh.addVertex(newVertex, newNormal, newColor, newUv);
+                mesh.addVertex(newVertex, newNormal, newUv);
             }
 
             if (face.faceLength == 3) {
