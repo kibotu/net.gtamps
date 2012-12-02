@@ -1658,35 +1658,21 @@ public final class Matrix4 {
         return new Quaternion(X, Y, Z, W);
     }
 
-    // matrix-vector multiplication (y = A * x)
-    public double[] multiply(double[][] A, double[] x) {
-        int m = A.length;
-        int n = A[0].length;
-        if (x.length != n) throw new RuntimeException("Illegal matrix dimensions.");
-        double[] y = new double[m];
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
-                y[i] += (A[i][j] * x[j]);
-        return y;
+    /**
+     * Emulates a mat4 * vec4 multiplication.
+     *
+     * @param target in place target vector
+     * @param flag (1 positionial or 0 directional vector)
+     * @return returns target vector for chaining purposes
+     */
+    public Vector3 mul(Vector3 target, float flag) {
 
-//        float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
-//        float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];
-//        float z = vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22] + mat[M23];
-//        vec[0] = x;
-//        vec[1] = y;
-//        vec[2] = z;
-    }
+        assert flag == 0 || flag == 1;
 
+        target.x = values[0] * target.x + values[1] * target.y + values[2]  * target.z + values[3]  * flag;
+        target.y = values[4] * target.x + values[5] * target.y + values[6]  * target.z + values[7]  * flag;
+        target.z = values[8] * target.x + values[9] * target.y + values[10] * target.z + values[11] * flag;
 
-    // vector-matrix multiplication (y = x^T A)
-    public static double[] multiply(double[] x, double[][] A) {
-        int m = A.length;
-        int n = A[0].length;
-        if (x.length != m) throw new RuntimeException("Illegal matrix dimensions.");
-        double[] y = new double[n];
-        for (int j = 0; j < n; j++)
-            for (int i = 0; i < m; i++)
-                y[j] += (A[i][j] * x[i]);
-        return y;
+        return target;
     }
 }

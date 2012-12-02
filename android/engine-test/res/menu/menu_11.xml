@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/animate"
+          android:icon="@drawable/engine_icon"
+          android:title="@string/animate"/>
+    <item android:id="@+id/show_bones"
+          android:icon="@drawable/engine_icon"
+          android:title="@string/show_bones"/>
+    <item android:id="@+id/capture_screen"
+          android:icon="@drawable/engine_icon"
+          android:title="@string/capture_screen"/>
+    <item android:id="@+id/capture_video"
+          android:icon="@drawable/engine_icon"
+          android:title="@string/capture_video"/>
+</menu>

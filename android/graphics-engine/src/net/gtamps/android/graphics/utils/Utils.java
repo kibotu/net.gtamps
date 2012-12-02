@@ -3,12 +3,15 @@ package net.gtamps.android.graphics.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import net.gtamps.shared.Utils.Logger;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class Utils {
 
+    private static final String TAG = Utils.class.getSimpleName();
+
+    // utility
     private Utils() {
     }
 
@@ -54,6 +57,31 @@ public class Utils {
         }
 
         return bitmap;
+    }
+
+    /**
+     * Saves a bitmap into a folder.
+     *
+     * @param screenshot
+     * @param filePath
+     * @param fileName
+     */
+    public static void saveBitmap(@NotNull Bitmap screenshot, @NotNull String filePath, @NotNull String fileName) {
+        OutputStream outStream = null;
+        File dir = new File(filePath);
+        dir.mkdirs();
+        File output = new File(filePath,fileName);
+        try {
+            outStream = new FileOutputStream(output);
+            screenshot.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+            Logger.v(TAG, "Saving Screenshot [" + filePath+fileName +"]");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

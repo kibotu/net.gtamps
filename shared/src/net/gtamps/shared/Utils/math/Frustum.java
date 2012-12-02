@@ -283,6 +283,13 @@ public final class Frustum {
         yAxis = xAxis.cross(zAxis);
     }
 
+    public void setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
+        this.position.set(posX,posY,posZ);
+        this.target.set(targetX, targetY,targetZ);
+        this.up.set(upX,upY,upZ);
+        setCamera(position,target,up);
+    }
+
     /**
      * Ermittelt, ob ein Punkt im Sichtfeld liegt
      *

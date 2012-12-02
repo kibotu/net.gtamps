@@ -88,6 +88,4 @@ public abstract class SceneNode extends ObjectWithOrientation {
     public void forceCombinedOrientationDirty() {
         combinedTransformationDirty = true;
     }
-
-
 }

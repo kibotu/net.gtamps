@@ -1,12 +1,16 @@
 package net.gtamps.android.graphics.graph.scene.primitives.camera;
 
+import android.graphics.Bitmap;
 import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
 import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
+import net.gtamps.shared.Utils.math.MathUtils;
 import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -51,7 +55,7 @@ public class Camera extends SceneNode {
      * @param upZ
      */
     public Camera(float positionX, float positionY, float positionZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {
-        this(positionX,positionY,positionZ,targetX,targetY,targetZ,upX,upY,upZ,45);
+        this(positionX, positionY, positionZ, targetX, targetY, targetZ, upX, upY, upZ, 45);
     }
 
     /**
@@ -71,7 +75,7 @@ public class Camera extends SceneNode {
     public Camera(float positionX, float positionY, float positionZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ, int fovy) {
         setPosition(positionX, positionY, positionZ);
         frustum.setCamera(this.position, Vector3.createNew(targetX, targetY, targetZ), Vector3.createNew(upX, upY, upZ));
-        frustum.setHorizontalFieldOfView(fovy,1);
+        frustum.setHorizontalFieldOfView(fovy, 1);
     }
 
     @Override
@@ -104,8 +108,8 @@ public class Camera extends SceneNode {
     protected void onResumeInternal(GL10 gl10) {
     }
 
-    public void onSurfaceChanged(GL10 gl10, int x, int y, int width, int height) {
-        viewport.setViewPort(x, y, width, height);
+    public void onSurfaceChanged(GL10 gl10, ViewPort viewPort) {
+        viewport.setViewPort(viewPort);
         frustum.setAspectRatio(viewport.getAspectRatio());
         if (isPersectiveView) frustum.setPerspectiveProjection();
         else frustum.setOrthographicProjection();
@@ -138,5 +142,21 @@ public class Camera extends SceneNode {
 
     public void setBackgroundColor(Color4 color) {
         this.backgroundColor = color;
+    }
+
+    public void rotateAroundVector(Vector3 target, Vector3 angle, float distance) {
+
+        // Calculate the camera position using the distance and angles
+        float camX = (float) (distance * -Math.sin(angle.x* MathUtils.DEG_TO_RAD) * Math.cos((angle.y)*MathUtils.DEG_TO_RAD));
+        float camY = (float) (distance * -Math.sin((angle.y) * MathUtils.DEG_TO_RAD));
+        float camZ = (float) (-distance * Math.cos((angle.x) * MathUtils.DEG_TO_RAD) * Math.cos((angle.y) * MathUtils.DEG_TO_RAD));
+
+        // Set the camera position and lookat point
+        frustum.setCamera( camX,camY+0.5f,camZ, target.x, target.y+0.5f, target.z, 0, 1, 0);
+    }
+
+    @NotNull
+    public ViewPort getViewport() {
+        return viewport;
     }
 }

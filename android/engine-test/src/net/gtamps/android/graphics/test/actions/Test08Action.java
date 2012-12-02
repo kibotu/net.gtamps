@@ -6,18 +6,15 @@ import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.renderer.RenderAction;
-import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Quaternion;
-import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class Test01Action extends RenderAction {
+public class Test08Action extends RenderAction {
 
     protected SceneGraph world;
 
-    public Test01Action(SceneGraph scene) {
+    public Test08Action(SceneGraph scene) {
         scenes.add(world = scene);
     }
 
@@ -33,9 +30,8 @@ public class Test01Action extends RenderAction {
 
         rot += 1;
         RootNode rootNode = getScenes().get(0).getRootNode();
-        for (int i = 1; i < rootNode.size(); i++) {
-            rootNode.getChild(i).getRotation(true).setEulerAnglesFromQuaterion(quat.setEulerAngles(rot,rot,rot));
-        }
+        rootNode.getChild(1).setRotation(rot*0.02f,rot*0.02f,rot*0.02f);
+        rootNode.getChild(2).getRotation(true).setEulerAnglesFromQuaterion(quat.setEulerAngles(rot,rot,rot));
     }
 
     @Override

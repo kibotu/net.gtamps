@@ -8,6 +8,7 @@ import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -102,5 +103,11 @@ public class GL10Renderer extends BasicRenderer {
 
     @Override
     public void update(Mesh mesh) {
+    }
+
+    @NotNull
+    @Override
+    protected Bitmap captureScreenShot(@NotNull GL10 gl) {
+        return null;
     }
 }

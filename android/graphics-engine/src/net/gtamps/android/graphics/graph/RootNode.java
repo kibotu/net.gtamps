@@ -19,6 +19,7 @@ public class RootNode extends SceneNode {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        if(!isVisible()) return;
 
 //        Logger.i(this, "drawing uID=" + uID + (hasParent() ? "|parentID= " +parentID.uID : ""));
 

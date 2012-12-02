@@ -27,11 +27,11 @@ void main(void)
     gl_Position = u_WorldViewProjection * m_ModelWorldView * vec4(in_Position, 1.0);
 
     // Required for phong lighting
-    vec3 viewLightDirection = ( u_WorldView * vec4(u_LightDirection, 0.0) ).xyz;
-    v_VertexToLight = normalize( viewLightDirection );
+    //vec3 viewLightDirection = ( u_WorldView * vec4(u_LightDirection, 0.0) ).xyz;
+    //v_VertexToLight = normalize( viewLightDirection );
 
-    //v_ViewSpacePosition = -in_Position.xyz;
-    //v_VertexToLight = u_LightPosition - in_Position.xyz;
+    v_ViewSpacePosition = -in_Position.xyz;
+    v_VertexToLight = u_LightPosition - in_Position.xyz;
 
 
 

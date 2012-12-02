@@ -28,6 +28,10 @@ public class ViewPort {
         this.aspectRatio = (float) width / height;
     }
 
+    public void setViewPort(ViewPort viewPort) {
+        setViewPort(viewPort.x,viewPort.y,viewPort.width,viewPort.height);
+    }
+
     public void applyViewPort() {
         Registry.getRenderer().setViewPort(x, y, width, height);
         Logger.i(this, this.toString());
@@ -35,6 +39,22 @@ public class ViewPort {
 
     public float getAspectRatio() {
         return aspectRatio;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override

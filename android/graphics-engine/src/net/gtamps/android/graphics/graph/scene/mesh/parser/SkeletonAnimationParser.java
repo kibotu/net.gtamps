@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.*;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.MathUtils;
+import net.gtamps.shared.Utils.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
@@ -120,10 +122,10 @@ public class SkeletonAnimationParser {
 //                        Logger.i(TAG, boneName + " flag: " +rootBone);
                         for (int j = 0; j < numFrames; ++j) {
                             final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
-                            boneKeyFrame.rotation.set(readFloat(input),readFloat(input),-readFloat(input),-readFloat(input));
+                            boneKeyFrame.rotation.set(readFloat(input),readFloat(input),readFloat(input),readFloat(input));
                             boneKeyFrame.x = readFloat(input);
                             boneKeyFrame.y = readFloat(input);
-                            boneKeyFrame.z = -readFloat(input);
+                            boneKeyFrame.z = readFloat(input);
                             readBytes += 7 * 4;
 //                            Logger.i(this, j + " " + keyFrame);
                             riotAnimation.addFrame(object3D.getBone(boneName), boneKeyFrame);
@@ -254,10 +256,10 @@ public class SkeletonAnimationParser {
 
                             final BoneKeyFrame boneKeyFrame = new BoneKeyFrame();
                             boneKeyFrame.nameHash = nameHash;
-                            boneKeyFrame.rotation.set(quat[quatId][0],quat[quatId][1],-quat[quatId][2],-quat[quatId][3]);
+                            boneKeyFrame.rotation.set(quat[quatId][0],quat[quatId][1],quat[quatId][2],quat[quatId][3]);
                             boneKeyFrame.x = pos[posId][0];
                             boneKeyFrame.y = pos[posId][1];
-                            boneKeyFrame.z = -pos[posId][2];
+                            boneKeyFrame.z = pos[posId][2];
 
                             riotAnimation.addFrame(object3D.getBone(nameHash), boneKeyFrame);
                         }
@@ -359,14 +361,18 @@ public class SkeletonAnimationParser {
                 // get bones
                 for (int i = 0; i < rawBoneHeader.nbSklBones; ++i) {
                     Bone bone = new Bone();
-                    bone.position.set(rawSklBone[i].tx, rawSklBone[i].ty, -rawSklBone[i].tz);
-                    bone.rotation.set(rawSklBone[i].q1, rawSklBone[i].q2, -rawSklBone[i].q3, -rawSklBone[i].q4);
-                    bone.pivot.set(rawSklBone[i].ctx, rawSklBone[i].cty, rawSklBone[i].ctz);
+                    bone.position.set(rawSklBone[i].tx, rawSklBone[i].ty, rawSklBone[i].tz);
+                    bone.rotation.set(rawSklBone[i].q1, rawSklBone[i].q2, rawSklBone[i].q3, rawSklBone[i].q4);
+                    bone.ct.set(rawSklBone[i].ctx, rawSklBone[i].cty, rawSklBone[i].ctz);
                     bone.name = boneNames[i];
                     bone.id = rawSklBone[i].id;
                     bone.parentID = rawSklBone[i].parent_id;
                     bone.nameHash = rawSklBone[i].namehash;
                     object3D.addBone(bone);
+//                    if(bone.name.equalsIgnoreCase("L_Hand")) {
+//                        Vector3 r = Vector3.createNew().setEulerAnglesFromQuaterion(bone.rotation);
+//                        Logger.i(TAG, "bName=" + bone.name + "|rot={" + MathUtils.rad2Deg(r.x) + "; " + MathUtils.rad2Deg(r.y) + "; " + MathUtils.rad2Deg(r.z) +"|pos="+bone.position);
+//                    }
                 }
 
                 object3D.transformChildBonesAlongParents(0);

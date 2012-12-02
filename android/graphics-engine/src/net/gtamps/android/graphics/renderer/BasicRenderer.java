@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.SceneNode;
+import net.gtamps.android.graphics.graph.scene.ViewPort;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
@@ -36,11 +38,18 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     private final ConcurrentLinkedQueue<SceneNode> runtimeSetupQueue;
     protected int activeShaderProgram;
     protected GL10 gl10;
+    protected ViewPort viewPort;
+    protected Bitmap currentScreenshot;
+    protected ConcurrentLinkedQueue<String[]> screenshotRequestedQueue;
+    protected String screenshotFilePath;
+    private String screenshotFileName;
 
     public BasicRenderer(IRenderAction renderAction) {
         Logger.I(this, "Using " + this.getClass().getSimpleName() + ".");
         this.renderAction = renderAction;
         runtimeSetupQueue = new ConcurrentLinkedQueue<SceneNode>();
+        screenshotRequestedQueue = new ConcurrentLinkedQueue<String[]>();
+        this.viewPort = new ViewPort(0,0,800,480);
     }
 
     @Override
@@ -81,9 +90,11 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
 
         onSurfaceChangedHook(gl10, width, height);
 
+        viewPort.setViewPort(0,0,width,height);
+
         // inform camera that surface has changed
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
-            renderAction.getScenes().get(i).getActiveCamera().onSurfaceChanged(gl10, 0, 0, width, height);
+            renderAction.getScenes().get(i).getActiveCamera().onSurfaceChanged(gl10,viewPort);
 
             // re-allocate and re-validate hardware buffers
             renderAction.getScenes().get(i).onResume(gl10);
@@ -104,7 +115,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         int delta = getDelta();
 
         // limits frame rate
-//        limitFrameRate(delta);
+        limitFrameRate(delta);
 
         // render draw loop
         onDrawFrameHook(gl10);
@@ -113,6 +124,14 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         renderAction.onDrawFrame(gl10);
         for (int i = 0; i < renderAction.getScenes().size(); i++) {
             renderAction.getScenes().get(i).onDrawFrame(gl10);
+        }
+
+        // capture screen on request
+        if(!screenshotRequestedQueue.isEmpty()) {
+            currentScreenshot = captureScreenShot(gl10);
+            String [] requestPath = screenshotRequestedQueue.poll();
+            Utils.saveBitmap(currentScreenshot,requestPath[0],requestPath[1]);
+            currentScreenshot.recycle();
         }
 
         // update real fps
@@ -306,5 +325,23 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      */
     public @Nullable GL10 getGl10() {
         return gl10;
+    }
+
+    /**
+     * Capture Screenshot.
+     *
+     * @param gl OpenGL context
+     * @return Bitmap Actual captured Screenshot
+     */
+    protected abstract @NotNull Bitmap captureScreenShot(@NotNull GL10 gl);
+
+    /**
+     * Requests a screen capture.
+     *
+     * @param path
+     * @param filename
+     */
+    public void captureScreenshot(@NotNull String path, @NotNull String filename) {
+        screenshotRequestedQueue.add(new String[] {path, filename});
     }
 }

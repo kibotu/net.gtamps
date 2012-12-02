@@ -24,9 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
 import static android.opengl.GLES20.*;
 
@@ -189,6 +187,36 @@ public class GLES20Renderer extends BasicRenderer {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    @NotNull
+    @Override
+    public Bitmap captureScreenShot(@NotNull GL10 gl) {
+            int width = viewPort.getWidth();
+            int height = viewPort.getHeight();
+            int screenshotSize = width * height;
+            ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
+            bb.order(ByteOrder.nativeOrder());
+            gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
+            int pixelsBuffer[] = new int[screenshotSize];
+            bb.asIntBuffer().get(pixelsBuffer);
+            bb = null;
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            bitmap.setPixels(pixelsBuffer, screenshotSize-width, -width, 0, 0, width, height);
+            pixelsBuffer = null;
+
+            short sBuffer[] = new short[screenshotSize];
+            ShortBuffer sb = ShortBuffer.wrap(sBuffer);
+            bitmap.copyPixelsToBuffer(sb);
+
+            //Making created bitmap (from OpenGL points) compatible with Android bitmap
+            for (int i = 0; i < screenshotSize; ++i) {
+                short v = sBuffer[i];
+                sBuffer[i] = (short) (((v&0x1f) << 11) | (v&0x7e0) | ((v&0xf800) >> 11));
+            }
+            sb.rewind();
+            bitmap.copyPixelsFromBuffer(sb);
+            return bitmap;
+    }
+
     private void drawVbo(RenderableNode node) {
         Mesh mesh = node.getMesh();
         if (mesh == null) return;
@@ -300,7 +328,7 @@ public class GLES20Renderer extends BasicRenderer {
         // bind vertex buffer
         if (vertexBuffer != null) {
             glBindBuffer(GL_ARRAY_BUFFER, vbo.vertexBufferID);
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, vertexBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind index buffer
@@ -312,7 +340,7 @@ public class GLES20Renderer extends BasicRenderer {
         // bind normal buffer
         if (normalBuffer != null) {
             glBindBuffer(GL_ARRAY_BUFFER, vbo.normalBufferID);
-            glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, normalBuffer.capacity() * OpenGLUtils.BYTES_PER_FLOAT, normalBuffer, GL_DYNAMIC_DRAW);
         }
 
         // bind uv buffer
