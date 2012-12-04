@@ -40,7 +40,11 @@ public class Test11Scene extends SceneGraph {
         getActiveCamera().setBackgroundColor(Color4.BLACK);
 
         // add lights
-        add(new Light(0, 0, 10, 0, 0, -1));
+        Light light = new Light(0, 0, 10, 0, 0, -1);
+        add(light);
+
+        // hang light on camera
+        light.setParent(getActiveCamera());
 
         // Package where the obj file is located. Needed for context loader.
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
@@ -65,9 +69,8 @@ public class Test11Scene extends SceneGraph {
 //        skeleton.setScaling(0.5f,0.5f,0.5f);
 
         // add idle animation
-//        object3D.addAnm(PACKAGE_NAME + "katarina_idle1_anm");
-        object3D.addAnm(PACKAGE_NAME + "katarina_dance_anm");
-
+        object3D.addAnm(PACKAGE_NAME + "katarina_idle1_anm");
+//        object3D.addAnm(PACKAGE_NAME + "katarina_dance_anm");
         //add obj to scene
         add(object3D);
         add(skeleton);

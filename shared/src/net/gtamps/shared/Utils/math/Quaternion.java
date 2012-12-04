@@ -91,7 +91,7 @@ public class Quaternion implements Serializable {
         float l_ang = (float)Math.toRadians(angle);
         float l_sin = (float)Math.sin(l_ang / 2);
         float l_cos = (float)Math.cos(l_ang / 2);
-        return this.set(axis.x * l_sin, axis.y * l_sin, axis.z * l_sin, l_cos).nor();
+        return this.set(axis.x * l_sin, axis.y * l_sin, axis.z * l_sin, l_cos).normalize();
     }
 
     /** @return a copy of this quaternion */
@@ -141,7 +141,7 @@ public class Quaternion implements Serializable {
 
     /** Normalizes this quaternion to unit length
      * @return the quaternion for chaining */
-    public Quaternion nor () {
+    public Quaternion normalize() {
         float len = len2();
         if (len != 0.f && (Math.abs(len - 1.0f) > NORMALIZATION_TOLERANCE)) {
             len = (float)Math.sqrt(len);
@@ -264,7 +264,7 @@ public class Quaternion implements Serializable {
         float l_ang = angle * MathUtils.DEG_TO_RAD;
         float l_sin = (float) Math.sin(l_ang / 2);
         float l_cos = MathHelper.cos(l_ang / 2);
-        return this.set(x * l_sin, y * l_sin, z * l_sin, l_cos).nor();
+        return this.set(x * l_sin, y * l_sin, z * l_sin, l_cos).normalize();
     }
 
 // fromRotationMatrix(xAxis.x, yAxis.x, zAxis.x, xAxis.y, yAxis.y, zAxis.y,

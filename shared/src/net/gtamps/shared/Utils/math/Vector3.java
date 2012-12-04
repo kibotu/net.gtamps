@@ -93,13 +93,13 @@ public final class Vector3 implements Serializable {
      * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
      */
     public static Vector3 eulerAngles(@NotNull final Quaternion q) {
-        return Vector3.createNew().setEulerAnglesFromQuaterion(q);
+        return Vector3.createNew().setEulerAnglesFromQuaternion(q);
     }
 
     /**
      * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
      */
-    public Vector3 setEulerAnglesFromQuaterion(@NotNull final Quaternion q) {
+    public Vector3 setEulerAnglesFromQuaternion(@NotNull final Quaternion q) {
         return setEulerAnglesFromQuaterion(q.x,q.y,q.z,q.w);
     }
 

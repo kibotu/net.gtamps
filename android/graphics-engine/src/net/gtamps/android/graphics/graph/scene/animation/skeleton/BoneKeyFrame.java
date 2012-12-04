@@ -1,9 +1,11 @@
 package net.gtamps.android.graphics.graph.scene.animation.skeleton;
 
 import net.gtamps.shared.Utils.math.Quaternion;
+import net.gtamps.shared.Utils.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Vector;
 
 /**
  * User: Jan Rabe
@@ -14,12 +16,11 @@ public class BoneKeyFrame {
 
     public int nameHash;
     public Quaternion rotation;
-    public float x;
-    public float y;
-    public float z;
+    public Vector3 position;
 
     public BoneKeyFrame() {
         this.rotation = new Quaternion();
+        this.position = Vector3.createNew();
     }
 
     @Override
@@ -45,9 +46,7 @@ public class BoneKeyFrame {
         sb.append("BoneKeyFrame");
         sb.append("{nameHash=").append(nameHash);
         sb.append(", rotation=").append(rotation);
-        sb.append(", x=").append(x);
-        sb.append(", y=").append(y);
-        sb.append(", z=").append(z);
+        sb.append(", position=").append(position);
         sb.append('}');
         return sb.toString();
     }

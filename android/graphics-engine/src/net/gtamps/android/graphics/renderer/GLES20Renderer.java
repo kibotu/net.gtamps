@@ -413,7 +413,6 @@ public class GLES20Renderer extends BasicRenderer {
     public void applyLight(Light light) {
         glUniform3fv(glGetUniformLocation(activeShaderProgram, "u_LightDirection"), 1, light.getDirection().asArray(), 0);
         glUniform3fv(glGetUniformLocation(activeShaderProgram, "u_LightPosition"), 1, light.getPosition().asArray(), 0);
-//        glUniform4fv(glGetUniformLocation(activeShaderProgram, "lightColor"), 1, light.getColor(), 0);
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.UIDGenerator;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -43,23 +44,24 @@ public class Test11Action extends RenderAction {
 
         cameraRotAngle.set(rot, 0, 0);
         world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 5);
+//        captureVideo(360, 0);
     }
 
-    private int counter = 0;
-    long startTime = Calendar.getInstance().getTimeInMillis();
+    private int counter = 360;
+    private long captureStartTime = Calendar.getInstance().getTimeInMillis();
     private void captureVideo(int amountScreens, int interval) {
 
         if(amountScreens < counter) return;
 
         // find out if enough time has passed
-        int dtInterpolation = (int) (interval - (System.currentTimeMillis() - startTime));
+        int dtInterpolation = (int) (interval - (System.currentTimeMillis() - captureStartTime));
 
         // update
-        if (dtInterpolation >= 0) {
+        if (dtInterpolation <= 0) {
             Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/","   screenshot_"+counter+".png");
             ++counter;
         } else {
-            startTime = Calendar.getInstance().getTimeInMillis();
+            captureStartTime = Calendar.getInstance().getTimeInMillis();
         }
     }
 
@@ -78,7 +80,8 @@ public class Test11Action extends RenderAction {
             case R.id.animate:
                 AnimatedSkeletonObject3D obj = (AnimatedSkeletonObject3D) getScenes().get(0).getRootNode().getChild(1);
                 if (obj != null) {
-                    obj.play(PACKAGE_NAME + "katarina_dance_anm");
+//                    obj.play(PACKAGE_NAME + "katarina_dance_anm");
+                    obj.play(PACKAGE_NAME + "katarina_idle1_anm");
                 }
                 return true;
             case R.id.show_bones:
@@ -87,10 +90,10 @@ public class Test11Action extends RenderAction {
                 getScenes().get(0).getRootNode().getChild(2).setVisible(!showSkn); // skl
                 return true;
             case R.id.capture_screen:
-                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/","   screenshot.png");
+                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/", "screenshot_"+UIDGenerator.getNewUID()+".png");
                 return true;
             case R.id.capture_video:
-                captureVideo(90, 33);
+                counter = 0;
                 return true;
             default:
                 return false;

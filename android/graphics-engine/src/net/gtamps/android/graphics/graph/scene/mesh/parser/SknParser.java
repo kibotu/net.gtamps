@@ -215,7 +215,7 @@ public class SknParser extends AParser {
 
         Mesh mesh = new Mesh(faceManager.size(), sknVertices.length,true,true,true);
 //        object3D.getRenderState().setShader(Shader.Type.PHONG_RIGGED); not working :( only 304 supported shader vars on galaxy s2
-        object3D.getRenderState().setShader(Shader.Type.PHONG_HIGH_SPECULAR);
+        object3D.getRenderState().setShader(Shader.Type.PHONG);
 
         // set vertices data
         for (int i = 0; i < sknVertices.length; ++i) {

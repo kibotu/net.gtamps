@@ -8,6 +8,7 @@ import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Triangle;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
+import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;
