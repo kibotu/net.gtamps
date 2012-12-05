@@ -4,6 +4,7 @@ import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.SKNFile;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
@@ -52,7 +53,7 @@ public class Test11Scene extends SceneGraph {
         // add skn
         AnimatedSkeletonObject3D object3D = new AnimatedSkeletonObject3D(PACKAGE_NAME + "katarina_cat_skn", true, Parser.Type.SKN);
 
-        boolean showBonesFirst = false;
+        boolean showBonesFirst = true;
 
         // add texture
         object3D.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.u_Texture01, true));
@@ -64,13 +65,16 @@ public class Test11Scene extends SceneGraph {
 
         // add bones
         object3D.addSkl(PACKAGE_NAME + "katarina_cat_skl");
-        RootNode skeleton = object3D.getSkeleton();
-        skeleton.setVisible(showBonesFirst);
 //        skeleton.setScaling(0.5f,0.5f,0.5f);
 
         // add idle animation
         object3D.addAnm(PACKAGE_NAME + "katarina_idle1_anm");
-//        object3D.addAnm(PACKAGE_NAME + "katarina_dance_anm");
+        object3D.addAnm(PACKAGE_NAME + "katarina_dance_anm");
+
+        // skeleton
+        RootNode skeleton = object3D.getSkeleton();
+        skeleton.setVisible(showBonesFirst);
+
         //add obj to scene
         add(object3D);
         add(skeleton);

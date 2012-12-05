@@ -12,10 +12,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.Sphere;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.Utils.math.Matrix4;
-import net.gtamps.shared.Utils.math.MatrixFactory;
-import net.gtamps.shared.Utils.math.Quaternion;
-import net.gtamps.shared.Utils.math.Vector3;
+import net.gtamps.shared.Utils.math.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -201,10 +198,10 @@ public class AnimatedSkeletonObject3D extends Object3D {
     private void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
 
         // glriggedmodel line: 242++  ??
-        Vector3 influence1 = getSingleBoneInfluence(m[indicesForAnim[i[0]]],t,f).mulInPlace(w[0]);
-        Vector3 influence2 = getSingleBoneInfluence(m[indicesForAnim[i[1]]],t,f).mulInPlace(w[1]);
-        Vector3 influence3 = getSingleBoneInfluence(m[indicesForAnim[i[2]]],t,f).mulInPlace(w[2]);
-        Vector3 influence4 = getSingleBoneInfluence(m[indicesForAnim[i[3]]],t,f).mulInPlace(w[3]);
+        Vector3 influence1 = getSingleBoneInfluence(m[i[0]],t,f).mulInPlace(w[0]);
+        Vector3 influence2 = getSingleBoneInfluence(m[i[1]],t,f).mulInPlace(w[1]);
+        Vector3 influence3 = getSingleBoneInfluence(m[i[2]],t,f).mulInPlace(w[2]);
+        Vector3 influence4 = getSingleBoneInfluence(m[i[3]],t,f).mulInPlace(w[3]);
 
         t.addInPlace(influence1).addInPlace(influence2).addInPlace(influence3).addInPlace(influence4);
 
@@ -214,6 +211,14 @@ public class AnimatedSkeletonObject3D extends Object3D {
         influence4.recycle();
     }
 
+    /**
+     * computes single bone influence
+     *
+     * @param m current bone transformation Matrix
+     * @param t position vector
+     * @param f flag: 1 position, 0 direction
+     * @return Vector3 single bone influence
+     */
     private Vector3 getSingleBoneInfluence(Matrix4 m, Vector3 t, float f) {
         float [] pI = new float[4];
         pI[0] = m.values[0]  * t.x + m.values[1]  * t.y + m.values[2]  * t.z + m.values[3]  * f;
@@ -226,43 +231,41 @@ public class AnimatedSkeletonObject3D extends Object3D {
     private void setBoneTransformation(Bone parent, ArrayList<BoneKeyFrame> frames, int frame) {
         if (parent.id >= bones.size()) return;
 
-        // first try
-//        BoneKeyFrame boneKeyFrame = frames.get(frame);
-//        Quaternion childRotation =  new Quaternion(boneKeyFrame.rotation);
-//        Vector3 childTranslation = Vector3.createNew(boneKeyFrame.x, boneKeyFrame.y,boneKeyFrame.z);
-//
-//        Matrix4 transform = boneTransformations[parent.id];
-//        childRotation.mulLeft(parent.getRotation()).toMatrix(transform);
-//        transform.mulInPlace(MatrixFactory.getTranslation(childTranslation.transform(parent.getRotation()).addInPlace(parent.getPosition())));
+        Matrix4 transform = boneTransformations[parent.id];
+        parent.rotation.normalize().toMatrix(transform);
+        transform.values[12] = parent.position.x;
+        transform.values[13] = parent.position.y;
+        transform.values[14] = parent.position.z;
 
-        // 2nd try
-//        Matrix4 transform = boneTransformations[parent.id];
-//        parent.rotation.toMatrix(transform);
-//        transform.mulInPlace(MatrixFactory.getTranslation(parent.position));
+//        setBoneTransformation2(parent,frames,frame);
+    }
 
-        // 3rd
-//        BoneKeyFrame boneKeyFrame = frames.get(frame);
-//        Matrix4 transform = boneTransformations[parent.id];
-//        boneKeyFrame.rotation.toMatrix(transform);
-//        transform.mulInPlace(MatrixFactory.getTranslation(boneKeyFrame.position));
+    private void setBoneTransformation2(Bone parent, ArrayList<BoneKeyFrame> frames, int frame) {
+        // new frame
+        BoneKeyFrame boneKeyFrame = frames.get(frame);
+        Quaternion childRotation =  new Quaternion(boneKeyFrame.rotation);
+        Vector3 childTranslation = Vector3.createNew(boneKeyFrame.position);
 
-        // 4th try
+        // old frame
+        Quaternion parentRotation =  new Quaternion(parent.rotation);
+        Vector3 parentTranslation = Vector3.createNew(parent.position);
+
+        // B*A
+//        Vector3 rot = Vector3.createNew().setEulerAnglesFromQuaternion(childRotation.mulLeft(parent.rotation));
+//        Vector3 pos = Vector3.createNew(childTranslation.transform(parent.rotation).addInPlace(parent.position));
+
+        // A*B
+        Vector3 rot = Vector3.createNew().setEulerAnglesFromQuaternion(parent.rotation.mulLeft(childRotation));
+        Vector3 pos = Vector3.createNew(parentTranslation.transform(childRotation).addInPlace(childTranslation));
+
+
+        // get id specific bone transformation
         Matrix4 transform = boneTransformations[parent.id];
 
-        BoneKeyFrame boneKeyFrame = frames.get(frame);
-        Quaternion quat = new Quaternion(boneKeyFrame.rotation.x, boneKeyFrame.rotation.y, -boneKeyFrame.rotation.z, -boneKeyFrame.rotation.w);
-        quat.toMatrix(transform);
-        Vector3 v = Vector3.createNew(boneKeyFrame.position);
-        v.z *= -1;
-        transform.mulInPlace(MatrixFactory.getTranslation(v));
-        transform.set(transform.getInverted());
-//        transform.values[13] = boneKeyFrame.position.x;
-//        transform.values[14] = boneKeyFrame.position.y;
-//        transform.values[15] = -boneKeyFrame.position.z;
-
-
-
-//        Logger.i(this, "set bone matrix for: " + bone.id);
+        // update
+        Matrix4 rotationM = MatrixFactory.getRotationEulerRPY(rot.x, rot.y, rot.z);
+        Matrix4 translationM = MatrixFactory.getTranslation(pos.x, pos.y, pos.z);
+        transform.set(rotationM.mulInPlace(translationM));
     }
 
     @Override
@@ -327,10 +330,12 @@ public class AnimatedSkeletonObject3D extends Object3D {
                     Bone parent = bones.get(parentBoneID);
                     // Update orientation.
                     // Append quaternions for rotation transform B * A.
-                    child.rotation.mulLeft(parent.rotation);
+                    Quaternion pRot = new Quaternion(parent.rotation);
+                    child.rotation.mulLeft(pRot);
 
                     // Update position.
-                    child.position.transform(parent.rotation).addInPlace(parent.position);
+
+                    child.position.transform(pRot).addInPlace(parent.position);
                 }
             }
 
@@ -350,13 +355,39 @@ public class AnimatedSkeletonObject3D extends Object3D {
         joint.setScaling(0.01f, 0.01f, 0.01f);
         RootNode root = new RootNode();
 
+//        RiotAnimation anim = animations.get(PACKAGE_NAME + "katarina_idle1_anm");
+        RiotAnimation anim = animations.get(PACKAGE_NAME + "katarina_dance_anm");
+        HashMap<Bone, ArrayList<BoneKeyFrame>> animbones =  anim.getBoneKeyFrames();
+
         for (int i = 0; i < bones.size(); ++i) {
 
-//        maya: xform -q -ws -rp "Pelvis";
+//        maya: xform -q -ws -rp -a "Pelvis";  position
+//        maya: xform -q -ws -ro -a "Pelvis";  rotation
 //            Bone bone = getBone("Pelvis");
             final Bone bone = bones.get(i);
             final RootNode node = new RootNode();
             node.add(joint);
+
+            // get frame
+            ArrayList<BoneKeyFrame> frames =  animbones.get(bone);
+            if(frames == null) {Logger.i(this, i);continue;}
+            BoneKeyFrame frame = frames.get(150);
+
+            // get rotation and translation from bone
+            Quaternion boneRot = new Quaternion(bone.rotation);
+            Vector3 bonePos = Vector3.createNew(bone.position);
+
+            // get rotation and translation from frame
+            Quaternion frameRot = new Quaternion(frame.rotation);
+            Vector3 framePos = Vector3.createNew(frame.position);
+
+            // transform node by bone A * B
+//            node.getRotation(true).setEulerAnglesFromQuaternion(boneRot.mulLeft(frameRot));
+//            node.setPosition(bonePos.transform(frameRot).addInPlace(framePos));
+
+            // transform node by bone B * A
+//            node.getRotation(true).setEulerAnglesFromQuaternion(frameRot.mulLeft(boneRot).normalize());
+//            node.setPosition(framePos.transform(boneRot.normalize()).addInPlace(bonePos));
 
             // transform node by bone
             node.getRotation(true).setEulerAnglesFromQuaternion(bone.rotation);

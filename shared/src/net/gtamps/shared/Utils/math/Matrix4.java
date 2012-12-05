@@ -1615,7 +1615,7 @@ public final class Matrix4 {
         matrix.values[15] = 1;
     }
 
-    public static Quaternion CreateQuatFromMatrix(Matrix4 m) {
+    public static Quaternion createQuatFromMatrix(Matrix4 m) {
         float trace = 1 + m.values[0] + m.values[5] + m.values[10];
         float S = 0;
         float X = 0;
@@ -1637,8 +1637,7 @@ public final class Matrix4 {
                 Y = (m.values[1] + m.values[4]) / S;
                 Z = (m.values[8] + m.values[2]) / S;
                 W = (m.values[6] - m.values[9]) / S;
-            }
-            else if (m.values[5] > m.values[10]) {
+            } else if (m.values[5] > m.values[10]) {
                 // Column 1:
                 S = (float) sqrt(1.0 + m.values[5] - m.values[5] - m.values[10]) * 2;
                 X = (m.values[1] + m.values[4]) / S;
@@ -1662,17 +1661,42 @@ public final class Matrix4 {
      * Emulates a mat4 * vec4 multiplication.
      *
      * @param target in place target vector
-     * @param flag (1 positionial or 0 directional vector)
+     * @param flag   (1 positionial or 0 directional vector)
      * @return returns target vector for chaining purposes
      */
     public Vector3 mul(Vector3 target, float flag) {
 
         assert flag == 0 || flag == 1;
 
-        target.x = values[0] * target.x + values[1] * target.y + values[2]  * target.z + values[3]  * flag;
-        target.y = values[4] * target.x + values[5] * target.y + values[6]  * target.z + values[7]  * flag;
+        target.x = values[0] * target.x + values[1] * target.y + values[2] * target.z + values[3] * flag;
+        target.y = values[4] * target.x + values[5] * target.y + values[6] * target.z + values[7] * flag;
         target.z = values[8] * target.x + values[9] * target.y + values[10] * target.z + values[11] * flag;
 
         return target;
+    }
+
+    public static Matrix4 rotate(Quaternion q) {
+        float[] quat = q.toAxisAngle();
+        return createFromAxisAngle(quat[0],quat[1],quat[2],quat[3]);
+    }
+
+    public static Matrix4 createFromAxisAngle(float x, float y, float z, float angle) {
+        Vector3 axis = Vector3.createNew(x,y,z);
+        Matrix4 m = createFromAxisAngle(axis,angle);
+        axis.recycle();
+        return m;
+    }
+
+    public static Matrix4 createFromAxisAngle(Vector3 axis, float angle) {
+        float cos = (float) Math.cos(-angle);
+        float sin = (float) Math.sin(-angle);
+        float t = 1.0f - cos;
+
+        axis.normalize();
+
+        return Matrix4.createNew(t * axis.x * axis.x + cos, t * axis.x * axis.y - sin * axis.z, t * axis.x * axis.z + sin * axis.y, 0.0f,
+                t * axis.x * axis.y + sin * axis.z, t * axis.y * axis.y + cos, t * axis.y * axis.z - sin * axis.x, 0.0f,
+                t * axis.x * axis.z - sin * axis.y, t * axis.y * axis.z + sin * axis.x, t * axis.z * axis.z + cos, 0.0f,
+                0, 0, 0, 1);
     }
 }

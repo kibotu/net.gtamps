@@ -90,17 +90,17 @@ public final class Vector3 implements Serializable {
     }
 
     /**
-     * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
+     * @see Vector3#setEulerAnglesFromQuaternion(float x, float y, float z, float w)
      */
     public static Vector3 eulerAngles(@NotNull final Quaternion q) {
         return Vector3.createNew().setEulerAnglesFromQuaternion(q);
     }
 
     /**
-     * @see Vector3#setEulerAnglesFromQuaterion(float x, float y, float z, float w)
+     * @see Vector3#setEulerAnglesFromQuaternion(float x, float y, float z, float w)
      */
     public Vector3 setEulerAnglesFromQuaternion(@NotNull final Quaternion q) {
-        return setEulerAnglesFromQuaterion(q.x,q.y,q.z,q.w);
+        return setEulerAnglesFromQuaternion(q.x,q.y,q.z,q.w);
     }
 
     /**
@@ -118,7 +118,7 @@ public final class Vector3 implements Serializable {
      *         this Quaternion (i.e., as with {@code fromEulerAngles(roll, pitch,
      *yaw)}) is: y->z->x.
      */
-    public Vector3 setEulerAnglesFromQuaterion(float x, float y, float z, float w) {
+    public Vector3 setEulerAnglesFromQuaternion(float x, float y, float z, float w) {
         float test = x * y + z * w;
         if (test > 0.499) { // singularity at north pole
             this.x = (float) (2 * Math.atan2(x, w));
@@ -829,21 +829,37 @@ public final class Vector3 implements Serializable {
         q.transform(this);
         return this;
     }
-//    public Vector3 transform(Quaternion q) {
-//
-//        // Since vec.W == 0, we can optimize quat * vec * quat^-1 as follows:
-//        // vec + 2.0 * cross(quat.xyz, cross(quat.xyz, vec) + quat.w * vec)
-//
-//
-//
-//        Vector3 xyz = quat.Xyz, temp, temp2;
-//        Vector3.Cross(ref xyz, ref vec, out temp);
-//        Vector3.Multiply(ref vec, quat.W, out temp2);
-//        Vector3.Add(ref temp, ref temp2, out temp);
-//        Vector3.Cross(ref xyz, ref temp, out temp);
-//        Vector3.Multiply(ref temp, 2, out temp);
-//        Vector3.Add(ref vec, ref temp, out result);
-//
-//        return this;
-//    }
+
+    public Quaternion asQuaternion() {
+        Quaternion q = new Quaternion();
+        // Assuming the angles are in radians.
+        double c1 = Math.cos(x/2);
+        double s1 = Math.sin(x/2);
+        double c2 = Math.cos(y/2);
+        double s2 = Math.sin(y/2);
+        double c3 = Math.cos(z/2);
+        double s3 = Math.sin(z/2);
+        double c1c2 = c1*c2;
+        double s1s2 = s1*s2;
+        q.x = (float) (c1c2*c3 - s1s2*s3);
+        q.y = (float) (c1c2*s3 + s1s2*c3);
+        q.z = (float) (s1*c2*c3 + c1*s2*s3);
+        q.w = (float) (c1*s2*c3 - s1*c2*s3);
+        return q;
+    }
+
+    public static Vector3 lerp(Vector3 a, Vector3 b, float blend) {
+        Vector3 ab = createNew();
+        ab.x = blend * (b.x - a.x) + a.x;
+        ab.y = blend * (b.y - a.y) + a.y;
+        ab.z = blend * (b.z - a.z) + a.z;
+        return ab;
+    }
+
+    public Vector3 lerpInPlace(Vector3 b, float blend) {
+        x = blend * (b.x - x) + x;
+        y = blend * (b.y - y) + y;
+        z = blend * (b.z - z) + z;
+        return this;
+    }
 }

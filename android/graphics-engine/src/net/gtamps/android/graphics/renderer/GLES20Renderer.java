@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
+import android.text.Html;
 import com.badlogic.gdx.backends.android.AndroidGL20;
 import fix.android.opengl.GLES20;
 import net.gtamps.android.graphics.graph.RenderableNode;
@@ -438,9 +439,10 @@ public class GLES20Renderer extends BasicRenderer {
         // bind vertex buffer
         if (mesh.vertices.getVertices().getBuffer() != null) {
             mesh.vertices.getVertices().getBuffer().flip();
-//            Logger.d(this, mesh.vertices.getVertices().getBuffer().capacity() + " | " + mesh.vertices.getVertices().getBuffer().remaining() );
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
             glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
+//            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
+//            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer(), GL_STATIC_DRAW);
         }
 
         // deselect buffers

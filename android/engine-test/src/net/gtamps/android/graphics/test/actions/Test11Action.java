@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.ViewPort;
+import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.renderer.RenderAction;
@@ -43,7 +44,7 @@ public class Test11Action extends RenderAction {
         RootNode rootNode = getScenes().get(0).getRootNode();
 
         cameraRotAngle.set(rot, 0, 0);
-        world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 5);
+        world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 20);
 //        captureVideo(360, 0);
     }
 
@@ -78,10 +79,10 @@ public class Test11Action extends RenderAction {
     public boolean onOptionsItemSelectedHook(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.animate:
-                AnimatedSkeletonObject3D obj = (AnimatedSkeletonObject3D) getScenes().get(0).getRootNode().getChild(1);
+                RiggedObject3D obj = (RiggedObject3D) getScenes().get(0).getRootNode().getChild(1);
                 if (obj != null) {
-//                    obj.play(PACKAGE_NAME + "katarina_dance_anm");
-                    obj.play(PACKAGE_NAME + "katarina_idle1_anm");
+                    obj.play(PACKAGE_NAME + "katarina_dance_anm");
+//                    obj.play(PACKAGE_NAME + "katarina_idle1_anm");
                 }
                 return true;
             case R.id.show_bones:

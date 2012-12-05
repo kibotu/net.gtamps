@@ -10,12 +10,22 @@ import net.gtamps.shared.Utils.math.Vector3;
  */
 public class Vertex {
 
-    public Vector3 position = Vector3.createNew();
+    public Vector3 position;
     public Uv uv;
     public Vector3 normal;
-    public Color4 color;
     public Weight weights;
 
+    public Vertex(Vector3 position, Uv uv, Vector3 normal, Weight weights) {
+        this.position = position;
+        this.uv = uv;
+        this.normal = normal;
+        this.weights = weights;
+    }
+
     public Vertex() {
+        this.position = Vector3.createNew();
+        this.uv = new Uv();
+        this.normal = Vector3.createNew();
+        this.weights = new Weight();
     }
 }

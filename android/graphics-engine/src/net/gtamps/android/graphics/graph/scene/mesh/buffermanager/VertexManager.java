@@ -87,8 +87,8 @@ public class VertexManager {
     public short addVertex(Vector3 point, Vector3 normal, Uv uv, Weight weight) {
         vertices.add(point);
 
-        if (hasUvs) uvs.add(uv);
         if (hasNormals) normals.add(normal);
+        if (hasUvs) uvs.add(uv);
         if (hasBones) weights.add(weight);
 
         return (short) (vertices.size() - 1);

@@ -29,8 +29,8 @@ public class SkeletonAnimationParser {
     public final static int kHeaderSize = 0x24; // 36
     public final static int kNameLen = 0x20;    // 32
     public final static String DELIMETER = "\0";
-//    private static final int DIRECTX_TO_OPENGL = -1;
-    private static final int DIRECTX_TO_OPENGL = 1;
+    private static final int DIRECTX_TO_OPENGL = -1;
+//    private static final int DIRECTX_TO_OPENGL = 1;
 
     // utility class
     private SkeletonAnimationParser() {

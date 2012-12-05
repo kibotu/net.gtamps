@@ -45,8 +45,6 @@ public class Torus extends RenderableNode {
 
         mesh = new Mesh(segmentsW * segmentsH * 2, segmentsW * segmentsH * 2 * 3);
 
-        Color4 emissive = material.getEmission();
-
         float r1 = largeRadius;
         float r2 = smallRadius;
         int steps1 = segmentsW;
@@ -68,10 +66,10 @@ public class Torus extends RenderableNode {
                 float uy0 = s2 / steps2;
                 float uy1 = (s2 + 1) / steps2;
 
-                mesh.addVertex(getVertex(a1a, r1, a2a, r2, emissive, 1 - ux1, uy0),
-                        getVertex(a1b, r1, a2a, r2, emissive, 1 - ux0, uy0),
-                        getVertex(a1b, r1, a2b, r2, emissive, 1 - ux0, uy1),
-                        getVertex(a1a, r1, a2b, r2, emissive, 1 - ux1, uy1));
+                mesh.addVertex(getVertex(a1a, r1, a2a, r2, 1 - ux1, uy0),
+                        getVertex(a1b, r1, a2a, r2, 1 - ux0, uy0),
+                        getVertex(a1b, r1, a2b, r2, 1 - ux0, uy1),
+                        getVertex(a1a, r1, a2b, r2,1 - ux1, uy1));
 
                 mesh.faces.add(vcount, vcount + 1, vcount + 2);
                 mesh.faces.add(vcount, vcount + 2, vcount + 3);
@@ -83,7 +81,7 @@ public class Torus extends RenderableNode {
         mesh.allocate();
     }
 
-    private Vertex getVertex(float a1, float r1, float a2, float r2, Color4 color, float u, float v) {
+    private Vertex getVertex(float a1, float r1, float a2, float r2, float u, float v) {
         Vertex vertex = new Vertex();
         vertex.normal = Vector3.createNew();
 
@@ -104,7 +102,6 @@ public class Torus extends RenderableNode {
         vertex.position.z = centerZ + r2 * vertex.normal.z;
 
         vertex.uv = new Uv(u, v);
-        vertex.color = color;
 
         return vertex;
     }
