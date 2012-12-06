@@ -5,6 +5,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
+import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.android.graphics.test.R;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -33,10 +34,12 @@ public class Test08Scene extends SceneGraph {
         Object3D camaro = new Object3D(PACKAGE_NAME + "camaro_obj");
         camaro.addTexture(texture);
         camaro.setPosition(-2.5f,0,0);
+        camaro.getRenderState().setShader(Shader.Type.PHONG);
 
         Object3D camaro2 = new Object3D(PACKAGE_NAME + "camaro_obj");
         camaro2.addTexture(texture);
         camaro2.setPosition(2.5f,0,0);
+        camaro2.getRenderState().setShader(Shader.Type.PHONG_HIGH_SPECULAR);
 
         add(camaro);
         add(camaro2);

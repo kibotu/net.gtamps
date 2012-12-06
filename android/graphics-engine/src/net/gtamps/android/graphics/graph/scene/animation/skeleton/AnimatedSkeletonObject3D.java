@@ -8,6 +8,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferM
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.WeightManager;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.SkeletonAnimationParser;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.Utils;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.Sphere;
@@ -92,6 +93,7 @@ public class AnimatedSkeletonObject3D extends Object3D {
         startTime = System.currentTimeMillis();
         currentFrameIndex = 0;
         Logger.I(this, "Play.");
+        playFrame(currentAnimation);
     }
 
     public float[] getBoneTransformations() {
@@ -143,7 +145,8 @@ public class AnimatedSkeletonObject3D extends Object3D {
             setBoneTransformation(pairs.getKey(), pairs.getValue(), 0);
         }
 
-        updateMesh();
+        Utils.updateMesh(getMesh(),original,boneTransformations);
+        meshDirty = true;
 
         animationState = AnimationState.STOP;
     }
@@ -152,39 +155,6 @@ public class AnimatedSkeletonObject3D extends Object3D {
     private static final Vector3 tempNormal = Vector3.createNew();
     private static final float[] tempWeight = new float[4];
     private static final int[] tempInfluences = new int[4];
-
-    private void updateMesh() {
-
-        Vector3BufferManager curV = getMesh().vertices.getVertices();
-        Vector3BufferManager curN = getMesh().vertices.getNormals();
-        WeightManager curW = getMesh().vertices.getWeights();
-
-        for (int i = 0; i < curV.size(); ++i) {
-
-            // current position
-            tempPosition.set(curV.getPropertyX(i), curV.getPropertyY(i), curV.getPropertyZ(i));
-            tempNormal.set(curN.getPropertyX(i), curN.getPropertyY(i), curN.getPropertyZ(i));
-
-            // current weight
-            tempWeight[0] = curW.getPropertyWeightX(i);
-            tempWeight[1] = curW.getPropertyWeightY(i);
-            tempWeight[2] = curW.getPropertyWeightZ(i);
-            tempWeight[3] = curW.getPropertyWeightW(i);
-
-            // current weight
-            tempInfluences[0] = curW.getPropertyInfluence1(i);
-            tempInfluences[1] = curW.getPropertyInfluence2(i);
-            tempInfluences[2] = curW.getPropertyInfluence3(i);
-            tempInfluences[3] = curW.getPropertyInfluence4(i);
-
-            marryBonesWithVector(tempWeight, tempInfluences, boneTransformations, tempPosition, 1);
-//            marryBonesWithVector(tempWeight, tempInfluences, boneTransformations, tempNormal, 0);
-
-            curV.overwrite(i, tempPosition.x, tempPosition.y, tempPosition.z);
-            curN.overwrite(i, tempNormal.x, tempNormal.y, tempNormal.z);
-        }
-        getMesh().update();
-    }
 
     /**
      * Marry Bones with Vector
@@ -272,20 +242,27 @@ public class AnimatedSkeletonObject3D extends Object3D {
     protected void onDrawFrameInternal(GL10 gl10) {
         super.onDrawFrameInternal(gl10);
 
-        switch (animationState) {
-            case PLAY:
-                playFrame(currentAnimation);
-                break;
-            case STOP:
-                break;
-            case PAUSE:
-                break;
-            case RESUME:
-                break;
-            default:
-                break;
+//        switch (animationState) {
+//            case PLAY:
+//                playFrame(currentAnimation);
+//                break;
+//            case STOP:
+//                break;
+//            case PAUSE:
+//                break;
+//            case RESUME:
+//                break;
+//            default:
+//                break;
+//        }
+
+        if(meshDirty) {
+            getMesh().update();
+            meshDirty = false;
         }
     }
+
+    boolean meshDirty = false;
 
     public Bone getBone(String boneName) {
         for (int i = 0; i < bones.size(); ++i) {

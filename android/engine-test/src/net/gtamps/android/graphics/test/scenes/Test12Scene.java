@@ -1,5 +1,6 @@
 package net.gtamps.android.graphics.test.scenes;
 
+import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.*;
@@ -52,21 +53,29 @@ public class Test12Scene extends SceneGraph {
 //        cube.addTexture(new Texture(R.drawable.crate, Texture.Type.u_Texture01, true));
 //        add(cube);
 
-        SKNFile katarina_cat_skn = SKNReader.readBinary(PACKAGE_NAME + "katarina_cat_skn");
-        SKLFile katarina_cat_skl = SKLReader.readBinary(PACKAGE_NAME + "katarina_cat_skl");
-        ANMFile katarina_idle1_anm = ANMReader.readBinary(PACKAGE_NAME + "katarina_idle1_anm");
-        ANMFile katarina_dance_anm = ANMReader.readBinary(PACKAGE_NAME + "katarina_dance_anm");
+        SKNFile skn = SKNReader.readBinary(PACKAGE_NAME + "ahri_skn");
+        SKLFile skl = SKLReader.readBinary(PACKAGE_NAME + "ahri_skl");
+        ANMFile anm = ANMReader.readBinary(PACKAGE_NAME + "ahri_dance_anm");
 
         HashMap<String, ANMFile> animations = new HashMap<String, ANMFile>();
-        animations.put(PACKAGE_NAME + "katarina_idle1_anm", katarina_idle1_anm);
-        animations.put(PACKAGE_NAME + "katarina_dance_anm", katarina_dance_anm);
+        animations.put(PACKAGE_NAME + "ahri_dance_anm", anm);
 
-        RiggedObject3D katarina = new RiggedObject3D();
-        katarina.create(katarina_cat_skn,katarina_cat_skl,animations);
-        katarina.setScaling(0.01f,0.01f,0.01f);
-        katarina.addTexture(new Texture(R.drawable.katarina_cat, Texture.Type.u_Texture01, true));
-        katarina.getRenderState().setShader(Shader.Type.PHONG);
+        RiggedObject3D ahri = new RiggedObject3D();
+        ahri.create(skn,skl,animations);
+        ahri.setScaling(0.01f,0.01f,0.01f);
+        ahri.addTexture(new Texture(R.drawable.ahri, Texture.Type.u_Texture01, true));
+        ahri.getRenderState().setShader(Shader.Type.PHONG);
 
-        add(katarina);
+        // skeleton
+        RootNode skeleton = ahri.getSkeleton();
+
+        // show skeleton first
+        boolean showSkeletonFirst = false;
+        ahri.setVisible(!showSkeletonFirst);
+        skeleton.setVisible(showSkeletonFirst);
+
+        //add obj to scene
+        add(ahri);
+        add(skeleton);
     }
 }

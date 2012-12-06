@@ -62,10 +62,10 @@ public class GLBone implements Comparable<GLBone> {
 
     @Override
     public int compareTo(GLBone o) {
-        if (this == o) return 0;
-        if (this.id > o.id)
-            return 1;
-        else
-            return -1;
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+        if (this == o) return EQUAL;
+        return this.id < o.id ? BEFORE : AFTER;
     }
 }

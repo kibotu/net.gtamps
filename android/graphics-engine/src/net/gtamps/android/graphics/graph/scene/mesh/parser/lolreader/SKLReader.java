@@ -19,7 +19,8 @@ public class SKLReader {
     private static final String TAG = SKLReader.class.getSimpleName();
 
     // utility
-    private SKLReader() {}
+    private SKLReader() {
+    }
 
     public static SKLFile readBinary(String resourceID) {
         SKLFile result = new SKLFile();
@@ -57,7 +58,7 @@ public class SKLReader {
                     SKLBone bone = new SKLBone();
 
                     bone.name = file.readString(SKLBone.BONE_NAME_SIZE);
-                    bone.name = LolReaderUtils.removeBoneNamePadding(bone.name);
+                    bone.name = Utils.removeBoneNamePadding(bone.name);
 //                    bone.name = bone.name.toLowerCase();
 
                     bone.ID = i;
@@ -168,7 +169,7 @@ public class SKLReader {
                 }
 
                 file.skipTo(offsetToStrings);
-                LolReaderUtils.readSklBoneNames(file, size - offsetToStrings, data.bones);
+                Utils.readSklBoneNames(file, size - offsetToStrings, data.bones);
             }
             // Unknown Version
             else {

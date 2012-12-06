@@ -2,9 +2,7 @@ package net.gtamps.android.graphics.test;
 
 import android.os.Bundle;
 import net.gtamps.android.graphics.RenderActivity;
-import net.gtamps.android.graphics.test.actions.Test10Action;
 import net.gtamps.android.graphics.test.actions.Test11Action;
-import net.gtamps.android.graphics.test.scenes.Test10Scene;
 import net.gtamps.android.graphics.test.scenes.Test11Scene;
 import net.gtamps.android.input.controller.InputEngineController;
 

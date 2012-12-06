@@ -22,11 +22,11 @@ public class Utils {
     /**
      * <p>Clamps a value to within a range. <br />
      * <br />
-     * 0 = LolReaderUtils.clamp(-1,0,128) <br />
-     * 0 = LolReaderUtils.clamp(0,0,128)<br />
-     * 1 = LolReaderUtils.clamp(1,0,128) <br />
-     * 128 = LolReaderUtils.clamp(128,0,128) <br />
-     * 128 = LolReaderUtils.clamp(129,0,128) <br />
+     * 0 = Utils.clamp(-1,0,128) <br />
+     * 0 = Utils.clamp(0,0,128)<br />
+     * 1 = Utils.clamp(1,0,128) <br />
+     * 128 = Utils.clamp(128,0,128) <br />
+     * 128 = Utils.clamp(129,0,128) <br />
      * </p>
      *
      * @param value
@@ -88,12 +88,12 @@ public class Utils {
      * Converts 2 bytes to an integer.
      * <p/>
      * <p/>
-     * LolReaderUtils.log("-1 0", "0 = "+LolReaderUtils.convertLength(-1,0));
-     * LolReaderUtils.log("0 -1", "0 = "+LolReaderUtils.convertLength(0,-1));
-     * LolReaderUtils.log("0 0", "0 = "+LolReaderUtils.convertLength(0,0));
-     * LolReaderUtils.log("127 127", "32639 = "+LolReaderUtils.convertLength(127,127));
-     * LolReaderUtils.log("255 255", "65536 = "+LolReaderUtils.convertLength(255,255));
-     * LolReaderUtils.log("256 256", "65536 = "+LolReaderUtils.convertLength(256,256));
+     * Utils.log("-1 0", "0 = "+Utils.convertLength(-1,0));
+     * Utils.log("0 -1", "0 = "+Utils.convertLength(0,-1));
+     * Utils.log("0 0", "0 = "+Utils.convertLength(0,0));
+     * Utils.log("127 127", "32639 = "+Utils.convertLength(127,127));
+     * Utils.log("255 255", "65536 = "+Utils.convertLength(255,255));
+     * Utils.log("256 256", "65536 = "+Utils.convertLength(256,256));
      *
      * @param high byte 0...255
      * @param low  byte 0...255

@@ -63,7 +63,7 @@ public class ANMReader {
                 for (int i = 0; i < data.numberOfBones; ++i) {
                     ANMBone bone = new ANMBone();
                     bone.name = file.readString(ANMBone.BONE_NAME_LENGTH);
-                    bone.name = LolReaderUtils.removeBoneNamePadding(bone.name);
+                    bone.name = Utils.removeBoneNamePadding(bone.name);
 //                    bone.name = bone.name.toLowerCase();
 
                     // Unknown
@@ -143,7 +143,7 @@ public class ANMReader {
                 //
 
                 List<Float> positions = new ArrayList<Float>();
-                int numberOfPositions = (orientationOffset - positionOffset) / LolReaderUtils.BYTESIZE_OF_FLOAT;
+                int numberOfPositions = (orientationOffset - positionOffset) / Utils.BYTESIZE_OF_FLOAT;
                 for (int i = 0; i < numberOfPositions; ++i) {
                     positions.add(file.readFloat());
                 }
@@ -153,7 +153,7 @@ public class ANMReader {
                 //
 
                 List<Float> orientations = new ArrayList<Float>();
-                int numberOfOrientations = (indexOffset - orientationOffset) / LolReaderUtils.BYTESIZE_OF_FLOAT;
+                int numberOfOrientations = (indexOffset - orientationOffset) / Utils.BYTESIZE_OF_FLOAT;
                 for (int i = 0; i < numberOfOrientations; ++i) {
                     orientations.add(file.readFloat());
                 }
@@ -196,8 +196,8 @@ public class ANMReader {
 
                     // Retrieve the data for the first frame.
                     ANMFrame frame = bone.frames.get(0);
-                    frame.position = LolReaderUtils.lookUpVector(positionID, positions);
-                    frame.orientation = LolReaderUtils.lookUpQuaternion(orientationID, orientations);
+                    frame.position = Utils.lookUpVector(positionID, positions);
+                    frame.orientation = Utils.lookUpQuaternion(orientationID, orientations);
 
                     // Store the bone in the dictionary by bone ID.
                     boneMap.put(boneID, bone); // TODO check against possibly overwriting bone at index
@@ -226,8 +226,8 @@ public class ANMReader {
                     // feels safer just in case something ends up being out of order.
                     ANMBone bone = boneMap.get(boneID);
                     ANMFrame frame = bone.frames.get(currentFrame);
-                    frame.position = LolReaderUtils.lookUpVector(positionID, positions);
-                    frame.orientation = LolReaderUtils.lookUpQuaternion(orientationID, orientations);
+                    frame.position = Utils.lookUpVector(positionID, positions);
+                    frame.orientation = Utils.lookUpQuaternion(orientationID, orientations);
 
                     // This loop is slightly ambiguous.
                     //

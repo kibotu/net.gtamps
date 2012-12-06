@@ -434,7 +434,7 @@ public class GLES20Renderer extends BasicRenderer {
     @Override
     public void update(Mesh mesh) {
 
-//        Logger.v(this, "starting to update vertex buffer");
+        Logger.v(this, "starting to update vertex buffer");
 
         // bind vertex buffer
         if (mesh.vertices.getVertices().getBuffer() != null) {
@@ -448,6 +448,6 @@ public class GLES20Renderer extends BasicRenderer {
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-//        Logger.v(this, "update vertex buffer successful");
+        Logger.v(this, "update vertex buffer successful");
     }
 }
