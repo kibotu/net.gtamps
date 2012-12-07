@@ -245,7 +245,7 @@ public class GLES20Renderer extends BasicRenderer {
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),material.getDiffuse().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,new float [] {1.0f, 1.0f, 1.0f, 1.0f}, 0);
+        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,material.getDiffuse().asArray(), 0);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.45f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.1f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),0.15f);
@@ -433,21 +433,16 @@ public class GLES20Renderer extends BasicRenderer {
 
     @Override
     public void update(Mesh mesh) {
-
-        Logger.v(this, "starting to update vertex buffer");
-
         // bind vertex buffer
         if (mesh.vertices.getVertices().getBuffer() != null) {
             mesh.vertices.getVertices().getBuffer().flip();
+            mesh.vertices.getNormals().getBuffer().flip();
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
             glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
-//            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
-//            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer(), GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer(), GL_STATIC_DRAW);
         }
-
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        Logger.v(this, "update vertex buffer successful");
     }
 }

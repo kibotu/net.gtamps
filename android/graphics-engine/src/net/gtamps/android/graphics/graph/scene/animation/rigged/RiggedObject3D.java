@@ -77,13 +77,8 @@ public class RiggedObject3D extends RenderableNode {
 //            default:
 //                break;
 //        }
-        if (meshDirty) {
-            mesh.update();
-            meshDirty = false;
-        }
+        mesh.update();
     }
-
-    boolean meshDirty = false;
 
     /**
      * Creates a Skeleton animated render object.
@@ -103,6 +98,8 @@ public class RiggedObject3D extends RenderableNode {
         animations = Utils.createAnimations(skl,anms,mesh);
         // backup used as transformation basis
         original = mesh.clone();
+        // initial binding pose
+        Utils.updateMesh(mesh, original, boneTransformations);
     }
 
     public void play(String animationID) {
@@ -116,7 +113,7 @@ public class RiggedObject3D extends RenderableNode {
         if (glAnimation == null) return;
         Utils.computeBoneTransformation(boneTransformations, glAnimation, 0, index);
         Utils.updateMesh(mesh, original, boneTransformations);
-        meshDirty = true;
+        mesh.isDirty(true);
         animationState = AnimationState.STOP;
     }
 

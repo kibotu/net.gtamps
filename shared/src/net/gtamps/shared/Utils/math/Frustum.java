@@ -68,7 +68,11 @@ public final class Frustum {
      * Kamerareferenzvektoren
      */
     @NotNull
-    private Vector3 xAxis, yAxis, zAxis;
+    private Vector3 xAxis = Vector3.createNew();
+    @NotNull
+    private Vector3 yAxis = Vector3.createNew();
+    @NotNull
+    private Vector3 zAxis = Vector3.createNew();
 
     /**
      * Kugel-Faktoren
@@ -272,15 +276,15 @@ public final class Frustum {
         // compute the Z axis of the camera referential
         // this axis points in the same direction from
         // the looking direction
-        zAxis = target.sub(position);
+        zAxis.set(position).subInPlace(target);
         zAxis.normalize();
 
         // X axis of camera with given "up" vector and Z axis
-        xAxis = zAxis.cross(up);
+        xAxis.set(zAxis).crossInPlace(up);
         xAxis.normalize();
 
         // the real "up" vector is the dot product of X and Z
-        yAxis = xAxis.cross(zAxis);
+        yAxis.set(xAxis).crossInPlace(zAxis);
     }
 
     public void setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ) {

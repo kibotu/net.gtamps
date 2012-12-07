@@ -120,12 +120,29 @@ public class Utils {
      * @return Vector3 single bone influence
      */
     private static Vector3 getSingleBoneInfluence(Matrix4 m, Vector3 t, float f) {
-        float[] pI = new float[4];
         // use transposed matrix
-        pI[0] = m.values[0]  * t.x + m.values[4]  * t.y + m.values[8]  * t.z + m.values[12]  * f;
-        pI[1] = m.values[1]  * t.x + m.values[5]  * t.y + m.values[9]  * t.z + m.values[13]  * f;
-        pI[2] = m.values[2]  * t.x + m.values[6]  * t.y + m.values[10] * t.z + m.values[14]  * f;
-        return Vector3.createNew(pI[0], pI[1], pI[2]);
+        return Vector3.createNew(
+                m.values[0]  * t.x + m.values[4]  * t.y + m.values[8]  * t.z + m.values[12]  * f,
+                m.values[1]  * t.x + m.values[5]  * t.y + m.values[9]  * t.z + m.values[13]  * f,
+                m.values[2]  * t.x + m.values[6]  * t.y + m.values[10] * t.z + m.values[14]  * f);
+    }
+
+
+    /**
+     * Computes bone transformation matrices
+     *
+     * @param transforms
+     * @param animation
+     * @param percent
+     */
+    public static void computeBoneTransformation(Matrix4[] transforms, GLAnimation animation, int nextFrame, float percent) {
+
+        // TODO interpolate percent
+
+        for (int i = 0; i < animation.bones.size(); ++i) {
+            Matrix4 next = animation.bones.get(i).frames.get(nextFrame);
+            transforms[i] = next;
+        }
     }
 
     /**
@@ -136,7 +153,7 @@ public class Utils {
      * @param currentFrameTime
      * @param currentFrame
      */
-    public static void computeBoneTransformation(Matrix4[] transforms, GLAnimation animation, float currentFrameTime, int currentFrame) {
+    public static void computeBoneTransformation2(Matrix4[] transforms, GLAnimation animation, float currentFrameTime, int currentFrame) {
 
         //
         // Normal Case
@@ -152,12 +169,6 @@ public class Utils {
             // Get the current frame's transform.
             Matrix4 current = animation.bones.get(i).frames.get(currentFrame);
 
-            //
-            // The interpolation code is unstable.  It creates a lot of animation anomalies.
-            //
-            // TODO: Fix it.
-            //
-
             // Break it down into a vector and quaternion.
             Vector3 currentPosition = Vector3.createNew();
             currentPosition.x = current.values[M41];
@@ -167,7 +178,7 @@ public class Utils {
             Quaternion currentOrientation = Matrix4.createQuatFromMatrix(current);
 
             // Get the next frame's transform.
-            Matrix4 next = animation.bones.get(i).frames.get(currentFrame);
+            Matrix4 next = animation.bones.get(i).frames.get(nextFrame);
 
             // Break it down into a vector and quaternion.
             Vector3 nextPosition = Vector3.createNew();
@@ -181,18 +192,12 @@ public class Utils {
             currentPosition.lerpInPlace(nextPosition, blend);
             currentOrientation.slerpInPlace(nextOrientation, blend);
 
-            // Rebuild a transform.
-//            Matrix4 finalTransform = Matrix4.rotate(currentOrientation);
-//            finalTransform.values[M41] = currentPosition.x;
-//            finalTransform.values[M42] = currentPosition.y;
-//            finalTransform.values[M43] = currentPosition.z;
+            Matrix4 finalTransform = Matrix4.rotate(currentOrientation);
+            finalTransform.values[M41] = currentPosition.x;
+            finalTransform.values[M42] = currentPosition.y;
+            finalTransform.values[M43] = currentPosition.z;
 
-            Matrix4 finalTransform = Matrix4.rotate(nextOrientation);
-            finalTransform.values[M41] = nextPosition.x;
-            finalTransform.values[M42] = nextPosition.y;
-            finalTransform.values[M43] = nextPosition.z;
-
-            transforms[i] = next;
+            transforms[i] = finalTransform;
         }
     }
 
@@ -209,7 +214,6 @@ public class Utils {
 
         Vector3BufferManager nextV = nextM.vertices.getVertices();
         Vector3BufferManager nextN = nextM.vertices.getNormals();
-        WeightManager nextW = nextM.vertices.getWeights();
 
         for (int i = 0; i < curV.size(); ++i) {
 
@@ -547,5 +551,9 @@ public class Utils {
             bindingBones.bones.add(bone);
         }
         return bindingBones;
+    }
+
+    public static float getPercentAnimated(int currentFrame, float currentFrameTime, float timePerFrame, int numberOfFrames) {
+        return ((float)currentFrame + (currentFrameTime / timePerFrame)) / (float)numberOfFrames;
     }
 }

@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class Test12Scene extends SceneGraph {
 
     public Test12Scene() {
-        super(new Camera(0, 1, 7, 0, 1, -1, 0, 1, 0));
+        super(new Camera(0, 1, -7, 0, 1, 0, 0, 1, 0));
 
         DefaultLayout layout = new DefaultLayout();
         layout.addButton(new TouchInputButton(0, 0, 1, 1), new CameraInputInterpreter(getActiveCamera()));
@@ -55,27 +55,20 @@ public class Test12Scene extends SceneGraph {
 
         SKNFile skn = SKNReader.readBinary(PACKAGE_NAME + "ahri_skn");
         SKLFile skl = SKLReader.readBinary(PACKAGE_NAME + "ahri_skl");
-        ANMFile anm = ANMReader.readBinary(PACKAGE_NAME + "ahri_dance_anm");
+        ANMFile anm_idle = ANMReader.readBinary(PACKAGE_NAME + "ahri_idle1_anm");
+        ANMFile anm_dance = ANMReader.readBinary(PACKAGE_NAME + "ahri_dance_anm");
 
         HashMap<String, ANMFile> animations = new HashMap<String, ANMFile>();
-        animations.put(PACKAGE_NAME + "ahri_dance_anm", anm);
+        animations.put(PACKAGE_NAME + "ahri_idle1_anm", anm_idle);
+        animations.put(PACKAGE_NAME + "ahri_dance_anm", anm_dance);
 
         RiggedObject3D ahri = new RiggedObject3D();
         ahri.create(skn,skl,animations);
         ahri.setScaling(0.01f,0.01f,0.01f);
         ahri.addTexture(new Texture(R.drawable.ahri, Texture.Type.u_Texture01, true));
-        ahri.getRenderState().setShader(Shader.Type.PHONG);
-
-        // skeleton
-        RootNode skeleton = ahri.getSkeleton();
-
-        // show skeleton first
-        boolean showSkeletonFirst = false;
-        ahri.setVisible(!showSkeletonFirst);
-        skeleton.setVisible(showSkeletonFirst);
+        ahri.getRenderState().setShader(Shader.Type.DEFAULT);
 
         //add obj to scene
         add(ahri);
-        add(skeleton);
     }
 }

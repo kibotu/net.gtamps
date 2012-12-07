@@ -106,7 +106,7 @@ public class AnimatedObject3D extends Object3D {
             curV.overwrite(i, temp[0], temp[1], temp[2]);
             //Logger.d(this, i + ": ("+currentVertices.getPropertyWeightX(i)+"|"+currentVertices.getPropertyWeightY(i)+"|"+currentVertices.getPropertyWeightZ(i)+") \t=> ("+newVertices.getPropertyWeightX(i)+"|"+newVertices.getPropertyWeightY(i)+"|"+newVertices.getPropertyWeightZ(i)+")");
         }
-        getMesh().update();
+        getMesh().isDirty(true);
 //        Logger.i(this, dtInterpolation + ". "+percent+"% \t["+temp[0]+"\t|"+temp[0]+"\t|"+temp[0]+"]");
     }
 
@@ -140,6 +140,7 @@ public class AnimatedObject3D extends Object3D {
         switch (animationState) {
             case PLAY:
                 playFrames(currentAnimation);
+                getMesh().update();
                 break;
             case STOP:
                 break;
@@ -150,5 +151,6 @@ public class AnimatedObject3D extends Object3D {
             default:
                 break;
         }
+
     }
 }
