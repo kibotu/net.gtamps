@@ -1,5 +1,6 @@
 package net.gtamps.android.graphics.graph.scene.animation.rigged;
 
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.Utils;
 import net.gtamps.shared.Utils.math.Matrix4;
 
 import java.util.ArrayList;

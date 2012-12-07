@@ -97,12 +97,8 @@ public class RiggedObject3D extends RenderableNode {
      * @param anms list of ANMFiles: Keyframe based bone translation and rotation
      */
     public void create(SKNFile skn, SKLFile skl, HashMap<String, ANMFile> anms) {
-        // vertex Data
-        mesh = Utils.createMesh(skn);
-
-        // Depending on the version of the model, the vertex bone indices look ups change.
-        if (skl.version == 2 || skl.version == 0) Utils.remapBoneIndices(skl, mesh);
-
+        // vertex Data, needs skl if skl version 0 or 2
+        mesh = Utils.createMesh(skn,skl);
         // animation data
         animations = Utils.createAnimations(skl,anms,mesh);
         // backup used as transformation basis
@@ -113,17 +109,18 @@ public class RiggedObject3D extends RenderableNode {
         animationState = AnimationState.PLAY;
         GLAnimation glAnimation = animations.get(animationID);
         Logger.i(this, animationID);
-        playFrame(currentAnimation = glAnimation, currentFrame = 150);
+        playFrame(currentAnimation = glAnimation, currentFrame = 2);
     }
 
     private void playFrame(GLAnimation glAnimation, int index) {
         if (glAnimation == null) return;
-        Utils.computeBoneTransformation(boneTransformations, glAnimation, index, index);
+        Utils.computeBoneTransformation(boneTransformations, glAnimation, 0, index);
         Utils.updateMesh(mesh, original, boneTransformations);
         meshDirty = true;
         animationState = AnimationState.STOP;
     }
 
+    @Deprecated
     public RootNode getSkeleton() {
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 

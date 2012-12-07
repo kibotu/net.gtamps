@@ -121,14 +121,10 @@ public class Utils {
      */
     private static Vector3 getSingleBoneInfluence(Matrix4 m, Vector3 t, float f) {
         float[] pI = new float[4];
-        pI[0] = m.values[0] * t.x + m.values[1] * t.y + m.values[2] * t.z + m.values[3] * f;
-        pI[1] = m.values[4] * t.x + m.values[5] * t.y + m.values[6] * t.z + m.values[7] * f;
-        pI[2] = m.values[8] * t.x + m.values[9] * t.y + m.values[10] * t.z + m.values[11] * f;
-
-//        pI[0] = m.values[0]  * t.x + m.values[4]  * t.y + m.values[8]  * t.z + m.values[12]  * f;
-//        pI[1] = m.values[1]  * t.x + m.values[5]  * t.y + m.values[9]  * t.z + m.values[13]  * f;
-//        pI[2] = m.values[2]  * t.x + m.values[6]  * t.y + m.values[10] * t.z + m.values[14]  * f;
-
+        // use transposed matrix
+        pI[0] = m.values[0]  * t.x + m.values[4]  * t.y + m.values[8]  * t.z + m.values[12]  * f;
+        pI[1] = m.values[1]  * t.x + m.values[5]  * t.y + m.values[9]  * t.z + m.values[13]  * f;
+        pI[2] = m.values[2]  * t.x + m.values[6]  * t.y + m.values[10] * t.z + m.values[14]  * f;
         return Vector3.createNew(pI[0], pI[1], pI[2]);
     }
 
@@ -171,7 +167,7 @@ public class Utils {
             Quaternion currentOrientation = Matrix4.createQuatFromMatrix(current);
 
             // Get the next frame's transform.
-            Matrix4 next = animation.bones.get(i).frames.get(150);
+            Matrix4 next = animation.bones.get(i).frames.get(currentFrame);
 
             // Break it down into a vector and quaternion.
             Vector3 nextPosition = Vector3.createNew();
@@ -196,7 +192,7 @@ public class Utils {
             finalTransform.values[M42] = nextPosition.y;
             finalTransform.values[M43] = nextPosition.z;
 
-            transforms[i] = finalTransform;
+            transforms[i] = next;
         }
     }
 
@@ -219,7 +215,7 @@ public class Utils {
 
             // current position
             tempPosition.set(nextV.getPropertyX(i), nextV.getPropertyY(i), nextV.getPropertyZ(i));
-//            tempNormal.set(curN.getPropertyX(i), curN.getPropertyY(i), curN.getPropertyZ(i));
+            tempNormal.set(nextN.getPropertyX(i), nextN.getPropertyY(i), nextN.getPropertyZ(i));
 
             // current weight
             tempWeight[0] = curW.getPropertyWeightX(i);
@@ -234,10 +230,10 @@ public class Utils {
             tempInfluences[3] = curW.getPropertyInfluence4(i);
 
             Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempPosition, 1);
-//            Utils.marryBonesWithVector(tempWeight, tempInfluences, boneTransformations, tempNormal, 0);
+            Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempNormal, 0);
 
             curV.overwrite(i, tempPosition.x, tempPosition.y, tempPosition.z);
-//            curN.overwrite(i, tempNormal.x, tempNormal.y, tempNormal.z);
+            curN.overwrite(i, tempNormal.x, tempNormal.y, tempNormal.z);
         }
     }
 
@@ -263,7 +259,7 @@ public class Utils {
         if (skl.version == 0) computeAbsoluteBoneLocation(skl, boneOrientations, bonePositions);
 
         // Get the animations
-        HashMap<String, GLAnimation> animations = getAnimations(skl, anms, boneIDToName);
+        HashMap<String, GLAnimation> animations = getAnimations(skl, anms, boneIDToName,boneNameToID);
 
         //
         // Compute the final animation transforms.
@@ -274,7 +270,7 @@ public class Utils {
         // However, ANM files do not always do this.  So, we sort the bones
         // in the ANM to match the ordering in the SKL file.
         for (GLAnimation animation : animations.values()) {
-            Collections.sort(animation.bones);
+            Collections.sort(animation.bones); // should be working now, well it is sorted all right, however can't test parent relationship
         }
 
         // Create the binding transform.  (The SKL initial transform.)
@@ -331,7 +327,7 @@ public class Utils {
         }
     }
 
-    private static HashMap<String, GLAnimation> getAnimations(SKLFile skl, HashMap<String, ANMFile> anms, HashMap<Integer, String> boneIDToName) {
+    private static HashMap<String, GLAnimation> getAnimations(SKLFile skl, HashMap<String, ANMFile> anms, HashMap<Integer, String> boneIDToName, HashMap<String,Integer> boneNameToID) {
         HashMap<String, GLAnimation> newAnims = new HashMap<String, GLAnimation>();
         for (Map.Entry<String, ANMFile> pairs : anms.entrySet()) {
             String animationKey = pairs.getKey();
@@ -361,8 +357,6 @@ public class Utils {
                     glBone.name = bone.name;
                 }
 
-                glBone.id = bone.id;
-
                 // Convert ANMFrame to Matrix4.
                 for (ANMFrame frame : bone.frames) {
                     Matrix4 transform;
@@ -377,6 +371,8 @@ public class Utils {
                     glBone.frames.add(transform);
                 }
 
+//                glBone.id = bone.id;
+                glBone.id = boneNameToID.get(glBone.name);
                 glAnimation.bones.add(glBone);
             }
 
@@ -386,37 +382,6 @@ public class Utils {
             newAnims.put(animationKey, glAnimation);
         }
         return newAnims;
-    }
-
-    public static void remapBoneIndices(SKLFile skl, Mesh mesh) {
-        for (int i = 0; i < mesh.vertices.getWeights().size(); ++i) {
-            // I don't know why things need to be remapped, but they do apparently.
-
-            // Sanity
-            int id = mesh.vertices.getWeights().getPropertyInfluence1(i);
-            if (id < skl.boneIDs.size()) {
-                mesh.vertices.getWeights().setPropertyInfluence1(i, skl.boneIDs.get(id));
-                Logger.i(TAG, "exchanging " + id + " with " + skl.boneIDs.get(id));
-            }
-            // Sanity
-            id = mesh.vertices.getWeights().getPropertyInfluence2(i);
-            if (id < skl.boneIDs.size()) {
-                mesh.vertices.getWeights().setPropertyInfluence2(i, skl.boneIDs.get(id));
-                Logger.i(TAG, "exchanging " + id + " with " + skl.boneIDs.get(id));
-            }
-            // Sanity
-            id = mesh.vertices.getWeights().getPropertyInfluence3(i);
-            if (id < skl.boneIDs.size()) {
-                mesh.vertices.getWeights().setPropertyInfluence3(i, skl.boneIDs.get(id));
-                Logger.i(TAG, "exchanging " + id + " with " + skl.boneIDs.get(id));
-            }
-            // Sanity
-            id = mesh.vertices.getWeights().getPropertyInfluence4(i);
-            if (id < skl.boneIDs.size()) {
-                mesh.vertices.getWeights().setPropertyInfluence4(i, skl.boneIDs.get(id));
-                Logger.i(TAG, "exchanging " + id + " with " + skl.boneIDs.get(id));
-            }
-        }
     }
 
     private static void computeAbsoluteBoneLocation(SKLFile skl, List<Quaternion> boneOrientations, List<Vector3> bonePositions) {
@@ -511,7 +476,7 @@ public class Utils {
      * @param skn SKNFile filled with mesh data
      * @return newMesh new Mesh and ready to be allocated
      */
-    public static Mesh createMesh(SKNFile skn) {
+    public static Mesh createMesh(SKNFile skn, SKLFile skl) {
         Mesh newMesh = new Mesh(skn.numIndices, skn.numVertices, true, true, true);
 
         for (int i = 0; i < skn.numVertices; ++i) {
@@ -534,10 +499,18 @@ public class Utils {
             vertex.uv.v = sknVertex.uv[1];
 
             // Bone Index Information
-            vertex.weights.influence1 = sknVertex.boneIndex[0];
-            vertex.weights.influence2 = sknVertex.boneIndex[1];
-            vertex.weights.influence3 = sknVertex.boneIndex[2];
-            vertex.weights.influence4 = sknVertex.boneIndex[3];
+            // Depending on the version of the model, the look ups change.
+            if (skl.version == 2 || skl.version == 0) {
+                vertex.weights.influence1 = skl.boneIDs.get(sknVertex.boneIndex[0]);
+                vertex.weights.influence2 = skl.boneIDs.get(sknVertex.boneIndex[1]);
+                vertex.weights.influence3 = skl.boneIDs.get(sknVertex.boneIndex[2]);
+                vertex.weights.influence4 = skl.boneIDs.get(sknVertex.boneIndex[3]);
+            } else {
+                vertex.weights.influence1 = sknVertex.boneIndex[0];
+                vertex.weights.influence2 = sknVertex.boneIndex[1];
+                vertex.weights.influence3 = sknVertex.boneIndex[2];
+                vertex.weights.influence4 = sknVertex.boneIndex[3];
+            }
 
             // Bone Weight Information
             vertex.weights.x = sknVertex.weights[0];
