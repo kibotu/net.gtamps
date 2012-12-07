@@ -40,12 +40,12 @@ public class Test12Action extends RenderAction {
     @Override
     protected void onDrawFrameHook(GL10 gl10) {
 
-//        rot += 1;
-//        RootNode rootNode = getScenes().get(0).getRootNode();
+        rot += 1;
+        RootNode rootNode = getScenes().get(0).getRootNode();
 
-//        cameraRotAngle.set(rot, 0, 0);
-//        world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 15);
-//        captureVideo(360, 0);
+        cameraRotAngle.set(rot, 0, 0);
+        world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 15);
+        captureVideo(360, 0);
     }
 
     private int counter = 360;
@@ -81,8 +81,8 @@ public class Test12Action extends RenderAction {
             case R.id.animate:
                 RiggedObject3D obj = (RiggedObject3D) getScenes().get(0).getRootNode().getChild(1);
                 if (obj != null) {
-//                    obj.play(PACKAGE_NAME + "ahri_idle1_anm");
-                    obj.play(PACKAGE_NAME + "ahri_dance_anm");
+                    obj.play(PACKAGE_NAME + "ahri_dance_fixed_anm");
+//                    obj.play(PACKAGE_NAME + "masteryi_dance_anm");
                 }
                 return true;
             case R.id.show_bones:

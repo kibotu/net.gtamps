@@ -64,20 +64,24 @@ public class RiggedObject3D extends RenderableNode {
     @Override
     protected void onDrawFrameInternal(GL10 gl10) {
 
-//        switch (animationState) {
-//            case PLAY:
-//                playFrame(currentAnimation,currentFrame);
-//                break;
-//            case STOP:
-//                break;
-//            case PAUSE:
-//                break;
-//            case RESUME:
-//                break;
-//            default:
-//                break;
-//        }
-        mesh.update();
+        switch (animationState) {
+            case PLAY:
+                if(currentFrame < currentAnimation.numberOfFrames) {
+                    playFrame(currentAnimation,currentFrame++);
+//                    mesh.update();
+                } else {
+                    animationState = AnimationState.STOP;
+                }
+                break;
+            case STOP:
+                break;
+            case PAUSE:
+                break;
+            case RESUME:
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -106,15 +110,15 @@ public class RiggedObject3D extends RenderableNode {
         animationState = AnimationState.PLAY;
         GLAnimation glAnimation = animations.get(animationID);
         Logger.i(this, animationID);
-        playFrame(currentAnimation = glAnimation, currentFrame = 2);
+        playFrame(currentAnimation = glAnimation, currentFrame = 0);
     }
 
     private void playFrame(GLAnimation glAnimation, int index) {
         if (glAnimation == null) return;
-        Utils.computeBoneTransformation(boneTransformations, glAnimation, 0, index);
+        Utils.computeBoneTransformation(boneTransformations, glAnimation, index,0);
         Utils.updateMesh(mesh, original, boneTransformations);
         mesh.isDirty(true);
-        animationState = AnimationState.STOP;
+//        animationState = AnimationState.STOP;
     }
 
     @Deprecated

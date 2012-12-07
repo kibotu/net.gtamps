@@ -6,7 +6,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.WeightManager;
-import net.gtamps.shared.Utils.Logger;
+import com.badlogic.gdx.utils.BufferUtils;
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Quaternion;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -122,9 +122,9 @@ public class Utils {
     private static Vector3 getSingleBoneInfluence(Matrix4 m, Vector3 t, float f) {
         // use transposed matrix
         return Vector3.createNew(
-                m.values[0]  * t.x + m.values[4]  * t.y + m.values[8]  * t.z + m.values[12]  * f,
-                m.values[1]  * t.x + m.values[5]  * t.y + m.values[9]  * t.z + m.values[13]  * f,
-                m.values[2]  * t.x + m.values[6]  * t.y + m.values[10] * t.z + m.values[14]  * f);
+                m.values[0] * t.x + m.values[4] * t.y + m.values[8] * t.z + m.values[12] * f,
+                m.values[1] * t.x + m.values[5] * t.y + m.values[9] * t.z + m.values[13] * f,
+                m.values[2] * t.x + m.values[6] * t.y + m.values[10] * t.z + m.values[14] * f);
     }
 
 
@@ -215,6 +215,55 @@ public class Utils {
         Vector3BufferManager nextV = nextM.vertices.getVertices();
         Vector3BufferManager nextN = nextM.vertices.getNormals();
 
+        float[] vertices = new float[curV.size()*3];
+        float[] normals = new float[curN.size()*3];
+        int numElements = 3;
+
+        for (int i = 0; i < curV.size(); ++i) {
+
+            // current position
+            tempPosition.set(nextV.getPropertyX(i), nextV.getPropertyY(i), nextV.getPropertyZ(i));
+            tempNormal.set(nextN.getPropertyX(i), nextN.getPropertyY(i), nextN.getPropertyZ(i));
+
+            // current weight
+            tempWeight[0] = curW.getPropertyWeightX(i);
+            tempWeight[1] = curW.getPropertyWeightY(i);
+            tempWeight[2] = curW.getPropertyWeightZ(i);
+            tempWeight[3] = curW.getPropertyWeightW(i);
+
+            // current weight
+            tempInfluences[0] = curW.getPropertyInfluence1(i);
+            tempInfluences[1] = curW.getPropertyInfluence2(i);
+            tempInfluences[2] = curW.getPropertyInfluence3(i);
+            tempInfluences[3] = curW.getPropertyInfluence4(i);
+
+            Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempPosition, 1);
+            Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempNormal, 0);
+
+//            curV.overwrite(i, tempPosition.x, tempPosition.y, tempPosition.z);
+//            curN.overwrite(i, tempNormal.x, tempNormal.y, tempNormal.z);
+            vertices[numElements * i] = tempPosition.x;
+            vertices[numElements * i + 1] = tempPosition.y;
+            vertices[numElements * i + 2] = tempPosition.z;
+
+            normals[numElements * i] = tempNormal.x;
+            normals[numElements * i + 1] = tempNormal.y;
+            normals[numElements * i + 2] = tempNormal.z;
+        }
+
+        BufferUtils.copy(vertices,curV.getBuffer(),curV.size()*3,0);
+        BufferUtils.copy(normals,curN.getBuffer(),curV.size()*3,0);
+    }
+
+    public static void updateMesh(Mesh curM, Mesh nextM, Mesh buffer, Matrix4[] transM) {
+
+        Vector3BufferManager curV = curM.vertices.getVertices();
+        Vector3BufferManager curN = curM.vertices.getNormals();
+        WeightManager curW = curM.vertices.getWeights();
+
+        Vector3BufferManager nextV = nextM.vertices.getVertices();
+        Vector3BufferManager nextN = nextM.vertices.getNormals();
+
         for (int i = 0; i < curV.size(); ++i) {
 
             // current position
@@ -263,7 +312,7 @@ public class Utils {
         if (skl.version == 0) computeAbsoluteBoneLocation(skl, boneOrientations, bonePositions);
 
         // Get the animations
-        HashMap<String, GLAnimation> animations = getAnimations(skl, anms, boneIDToName,boneNameToID);
+        HashMap<String, GLAnimation> animations = getAnimations(skl, anms, boneIDToName, boneNameToID);
 
         //
         // Compute the final animation transforms.
@@ -331,7 +380,7 @@ public class Utils {
         }
     }
 
-    private static HashMap<String, GLAnimation> getAnimations(SKLFile skl, HashMap<String, ANMFile> anms, HashMap<Integer, String> boneIDToName, HashMap<String,Integer> boneNameToID) {
+    private static HashMap<String, GLAnimation> getAnimations(SKLFile skl, HashMap<String, ANMFile> anms, HashMap<Integer, String> boneIDToName, HashMap<String, Integer> boneNameToID) {
         HashMap<String, GLAnimation> newAnims = new HashMap<String, GLAnimation>();
         for (Map.Entry<String, ANMFile> pairs : anms.entrySet()) {
             String animationKey = pairs.getKey();
@@ -375,8 +424,8 @@ public class Utils {
                     glBone.frames.add(transform);
                 }
 
-//                glBone.id = bone.id;
-                glBone.id = boneNameToID.get(glBone.name);
+                glBone.id = bone.id;
+//                glBone.id = boneNameToID.get(glBone.name);
                 glAnimation.bones.add(glBone);
             }
 
@@ -554,6 +603,6 @@ public class Utils {
     }
 
     public static float getPercentAnimated(int currentFrame, float currentFrameTime, float timePerFrame, int numberOfFrames) {
-        return ((float)currentFrame + (currentFrameTime / timePerFrame)) / (float)numberOfFrames;
+        return ((float) currentFrame + (currentFrameTime / timePerFrame)) / (float) numberOfFrames;
     }
 }

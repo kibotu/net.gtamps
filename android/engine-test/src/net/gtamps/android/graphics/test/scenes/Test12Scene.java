@@ -53,20 +53,24 @@ public class Test12Scene extends SceneGraph {
 //        cube.addTexture(new Texture(R.drawable.crate, Texture.Type.u_Texture01, true));
 //        add(cube);
 
-        SKNFile skn = SKNReader.readBinary(PACKAGE_NAME + "ahri_skn");
-        SKLFile skl = SKLReader.readBinary(PACKAGE_NAME + "ahri_skl");
-        ANMFile anm_idle = ANMReader.readBinary(PACKAGE_NAME + "ahri_idle1_anm");
-        ANMFile anm_dance = ANMReader.readBinary(PACKAGE_NAME + "ahri_dance_anm");
+        SKNFile skn = SKNReader.readBinary(PACKAGE_NAME + "ahri_fixed_skn");
+        SKLFile skl = SKLReader.readBinary(PACKAGE_NAME + "ahri_fixed_skl");
+//        ANMFile anm_idle = ANMReader.readBinary(PACKAGE_NAME + "ahri_idle1_anm");
+        ANMFile anm_dance = ANMReader.readBinary(PACKAGE_NAME + "ahri_dance_fixed_anm");
+//        ANMFile anm_attack1 = ANMReader.readBinary(PACKAGE_NAME + "ahri_attack1_anm");
+//        ANMFile anm_attack2 = ANMReader.readBinary(PACKAGE_NAME + "ahri_attack2_anm");
 
         HashMap<String, ANMFile> animations = new HashMap<String, ANMFile>();
-        animations.put(PACKAGE_NAME + "ahri_idle1_anm", anm_idle);
-        animations.put(PACKAGE_NAME + "ahri_dance_anm", anm_dance);
+//        animations.put(PACKAGE_NAME + "ahri_idle1_anm", anm_idle);
+        animations.put(PACKAGE_NAME + "ahri_dance_fixed_anm", anm_dance);
+//        animations.put(PACKAGE_NAME + "ahri_attack1_anm", anm_attack1);
+//        animations.put(PACKAGE_NAME + "ahri_attack2_anm", anm_attack2);
 
         RiggedObject3D ahri = new RiggedObject3D();
         ahri.create(skn,skl,animations);
         ahri.setScaling(0.01f,0.01f,0.01f);
         ahri.addTexture(new Texture(R.drawable.ahri, Texture.Type.u_Texture01, true));
-        ahri.getRenderState().setShader(Shader.Type.DEFAULT);
+        ahri.getRenderState().setShader(Shader.Type.PHONG);
 
         //add obj to scene
         add(ahri);
