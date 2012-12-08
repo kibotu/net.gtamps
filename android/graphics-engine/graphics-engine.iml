@@ -39,6 +39,10 @@
     <orderEntry type="jdk" jdkName="Android 2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="utils" exported="" />
+    <orderEntry type="library" exported="" name="gdx-backend-android" level="project" />
+    <orderEntry type="library" exported="" name="gdx-backend-android-sources" level="project" />
+    <orderEntry type="library" exported="" name="gdx-sources" level="project" />
+    <orderEntry type="library" exported="" name="gdx" level="project" />
   </component>
 </module>
 

@@ -1,12 +1,12 @@
 package net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader;
 
+import com.badlogic.gdx.utils.BufferUtils;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.GLAnimation;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.GLBone;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.WeightManager;
-import com.badlogic.gdx.utils.BufferUtils;
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Quaternion;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -215,8 +215,8 @@ public class Utils {
         Vector3BufferManager nextV = nextM.vertices.getVertices();
         Vector3BufferManager nextN = nextM.vertices.getNormals();
 
-        float[] vertices = new float[curV.size()*3];
-        float[] normals = new float[curN.size()*3];
+        float[] vertices = new float[curV.size() * 3];
+        float[] normals = new float[curN.size() * 3];
         int numElements = 3;
 
         for (int i = 0; i < curV.size(); ++i) {
@@ -251,8 +251,8 @@ public class Utils {
             normals[numElements * i + 2] = tempNormal.z;
         }
 
-        BufferUtils.copy(vertices,curV.getBuffer(),curV.size()*3,0);
-        BufferUtils.copy(normals,curN.getBuffer(),curV.size()*3,0);
+        BufferUtils.copy(vertices, curV.getBuffer(), curV.size() * 3, 0);
+        BufferUtils.copy(normals, curN.getBuffer(), curV.size() * 3, 0);
     }
 
     public static void updateMesh(Mesh curM, Mesh nextM, Mesh buffer, Matrix4[] transM) {

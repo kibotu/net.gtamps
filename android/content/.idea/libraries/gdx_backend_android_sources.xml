@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdx-backend-android-sources">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../graphics-engine/libs/gdx-backend-android-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
