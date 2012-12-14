@@ -28,6 +28,7 @@ import javax.microedition.khronos.opengles.GL11;
 import java.nio.*;
 
 import static android.opengl.GLES20.*;
+import static android.opengl.GLES20.glBufferData;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -445,10 +446,16 @@ public class GLES20Renderer extends BasicRenderer {
         if (mesh.vertices.getVertices().getBuffer() != null) {
             mesh.vertices.getVertices().getBuffer().position(0);
             mesh.vertices.getNormals().getBuffer().position(0);
+
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
-            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
+            // tell hardware that we don't care about old data
+            // src: http://www.opengl.org/wiki/Vertex_Specification_Best_Practices
+            glBufferData(GL_ARRAY_BUFFER,0,null, GL_DYNAMIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer());
+
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
-            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER,0,null, GL_DYNAMIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer());
         }
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
