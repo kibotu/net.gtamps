@@ -152,7 +152,7 @@ public class Camera extends SceneNode {
         float camZ = (float) (-distance * Math.cos((angle.x) * MathUtils.DEG_TO_RAD) * Math.cos((angle.y) * MathUtils.DEG_TO_RAD));
 
         // Set the camera position and lookat point
-        frustum.setCamera( camX,camY+0.5f,camZ, target.x, target.y+0.5f, target.z, 0, 1, 0);
+        frustum.setCamera( camX,camY+2f,camZ, target.x, target.y+2f, target.z, 0, 1, 0);
     }
 
     @NotNull

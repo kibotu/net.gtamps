@@ -25,7 +25,7 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-//        startActivity(PACKAGE_NAME, "Test12Activity");
+        startActivity(PACKAGE_NAME, "Test13Activity");
     }
 
     @Override
@@ -58,6 +58,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Key frame based animation (Cube)", PACKAGE_NAME, "Test10Activity"));
         list.add(new ActivityModel("Skeleton (Katarina)", PACKAGE_NAME, "Test11Activity"));
         list.add(new ActivityModel("Skeleton based animation - (Ahri)", PACKAGE_NAME, "Test12Activity"));
+        list.add(new ActivityModel("Car Demo", PACKAGE_NAME, "Test13Activity"));
         Collections.reverse(list);
         // Initially select one of the items
         list.get(1).setSelected(true);

@@ -2,6 +2,7 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 
 import net.gtamps.android.graphics.graph.SceneNode;
 import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.shared.Utils.math.MathUtils;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;

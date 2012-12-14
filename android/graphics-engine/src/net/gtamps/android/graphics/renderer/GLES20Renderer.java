@@ -250,13 +250,13 @@ public class GLES20Renderer extends BasicRenderer {
         // material
         Material material = node.getMaterial();
 //        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1, material.getEmission().asArray(), 0);
-//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),material.getAmbient().asArray()[0]);
+//        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),material.getAmbient().asArray()[0]/);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),material.getDiffuse().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
         glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,material.getDiffuse().asArray(), 0);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.45f);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.1f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.55f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.3f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),0.15f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), 8.0f);
 
