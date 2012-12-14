@@ -68,7 +68,7 @@ public class RiggedObject3D extends RenderableNode {
             case PLAY:
                 if(currentFrame < currentAnimation.numberOfFrames) {
                     playFrame(currentAnimation,currentFrame++);
-//                    mesh.update();
+                    mesh.update();
                 } else {
                     animationState = AnimationState.STOP;
                 }

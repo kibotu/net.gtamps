@@ -1,12 +1,14 @@
 package net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader;
 
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.GLAnimation;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.GLBone;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.WeightManager;
+import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Quaternion;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -206,6 +208,9 @@ public class Utils {
     private static final float[] tempWeight = new float[4];
     private static final int[] tempInfluences = new int[4];
 
+    private static float[] vertices = new float[19704];
+    private static float[] normals = new float[19704];
+
     public static void updateMesh(Mesh curM, Mesh nextM, Matrix4[] transM) {
 
         Vector3BufferManager curV = curM.vertices.getVertices();
@@ -215,8 +220,6 @@ public class Utils {
         Vector3BufferManager nextV = nextM.vertices.getVertices();
         Vector3BufferManager nextN = nextM.vertices.getNormals();
 
-        float[] vertices = new float[curV.size() * 3];
-        float[] normals = new float[curN.size() * 3];
         int numElements = 3;
 
         for (int i = 0; i < curV.size(); ++i) {
@@ -242,6 +245,7 @@ public class Utils {
 
 //            curV.overwrite(i, tempPosition.x, tempPosition.y, tempPosition.z);
 //            curN.overwrite(i, tempNormal.x, tempNormal.y, tempNormal.z);
+
             vertices[numElements * i] = tempPosition.x;
             vertices[numElements * i + 1] = tempPosition.y;
             vertices[numElements * i + 2] = tempPosition.z;
@@ -251,11 +255,15 @@ public class Utils {
             normals[numElements * i + 2] = tempNormal.z;
         }
 
-        BufferUtils.copy(vertices, curV.getBuffer(), curV.size() * 3, 0);
-        BufferUtils.copy(normals, curN.getBuffer(), curV.size() * 3, 0);
+        BufferUtils.copy(vertices, curV.getBuffer(), vertices.length, 0);
+        BufferUtils.copy(normals, curN.getBuffer(),  normals.length, 0);
     }
 
-    public static void updateMesh(Mesh curM, Mesh nextM, Mesh buffer, Matrix4[] transM) {
+    static {
+        GdxNativesLoader.load();
+    }
+
+    public static void updateMesh2(Mesh curM, Mesh nextM, Matrix4[] transM) {
 
         Vector3BufferManager curV = curM.vertices.getVertices();
         Vector3BufferManager curN = curM.vertices.getNormals();
