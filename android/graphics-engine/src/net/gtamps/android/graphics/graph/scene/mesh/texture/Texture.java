@@ -42,6 +42,10 @@ public class Texture {
         this.type = type;
     }
 
+    public Texture(int textureResourceID) {
+        this(textureResourceID,Type.u_Texture01,true);
+    }
+
     public void allocate() {
         if (isAllocated) return;
         textureID = String.valueOf(Registry.getTextureLibrary().loadTexture(textureResourceID, hasMipMap));

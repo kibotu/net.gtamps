@@ -51,7 +51,6 @@ public abstract class SceneNode extends ObjectWithOrientation {
         }
 
         onTransformationInternal(gl10, combinedTransformationDirty);
-
         combinedTransformationDirty = false;
     }
 
@@ -67,7 +66,7 @@ public abstract class SceneNode extends ObjectWithOrientation {
     protected final void updateCombinedTransformation() {
         // Elternknoten existiert, also "obere" Orientierung mit dieser verheiraten
         if (hasParent()) {
-            Matrix4 comb = parent.getCombinedTransformation().mul(orientation);
+            Matrix4 comb = orientation.mul(parent.getCombinedTransformation());
             combinedTransformation.set(comb);
             comb.recycle();
         }

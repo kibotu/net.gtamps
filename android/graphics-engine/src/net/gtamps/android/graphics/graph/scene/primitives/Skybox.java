@@ -1,9 +1,11 @@
 package net.gtamps.android.graphics.graph.scene.primitives;
 
-import net.gtamps.android.graphics.graph.RenderableNode;
-import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
-import net.gtamps.android.graphics.graph.scene.mesh.Uv;
-import net.gtamps.shared.Utils.math.Vector3;
+import net.gtamps.android.graphics.graph.RootNode;
+import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
+import net.gtamps.android.graphics.renderer.Shader;
+import net.gtamps.shared.Utils.Logger;
+import net.gtamps.shared.Utils.math.MathUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -12,98 +14,92 @@ import javax.microedition.khronos.opengles.GL10;
  * Date: 14/12/12
  * Time: 15:42
  */
-public class Skybox extends RenderableNode {
+public class Skybox extends RootNode {
 
-    private Mesh mesh;
+    Plane near;
+    Plane far;
+    Plane top;
+    Plane bottom;
+    Plane left;
+    Plane right;
+
+    public enum Face {
+        NEAR_POSITIVE_Z,
+        FAR_NEGATIVE_Z,
+        TOP_POSITIVE_Y,
+        BOTTOM_NEGATIVE_Y,
+        LEFT_NEGATIVE_X,
+        RIGHT_POSITIVE_X;
+    }
 
     public Skybox() {
+        build();
     }
 
-    @Override
-    public Mesh getMesh() {
-        return mesh;
+    private void build() {
+        near = new Plane();
+        far = new Plane();
+        top = new Plane();
+        bottom = new Plane();
+        left = new Plane();
+        right = new Plane();
+
+        float halfSize = 0.5f;
+
+        near.getPosition(true).z = halfSize;
+        near.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        left.getRotation(true).y = MathUtils.deg2Rad(-90);
+        left.getPosition(true).x = halfSize;
+        left.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        far.getRotation(true).y = MathUtils.deg2Rad(180);
+        far.getPosition(true).z = -halfSize;
+        far.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        right.getRotation(true).y = MathUtils.deg2Rad(90);
+        right.getPosition(true).x = -halfSize;
+        right.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        top.getRotation(true).x = MathUtils.deg2Rad(90);
+        top.getPosition(true).y = halfSize;
+        top.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        bottom.getRotation(true).x = MathUtils.deg2Rad(-90);
+        bottom.getPosition(true).y = -halfSize;
+        bottom.getRenderState().setShader(Shader.Type.SKYBOX);
+
+        add(near);
+        add(far);
+        add(top);
+        add(bottom);
+        add(left);
+        add(right);
     }
 
-
-    public void onCreateInternal(GL10 gl10) {
-        if (mesh != null) return;
-        mesh = new Mesh(12, 36);
-        final float c = 1f;
-
-        /** far **/
-        // efg
-        mesh.addVertex(Vector3.createNew(-c, -c, -c), Vector3.createNew(0, 0, c), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(c, -c, -c), Vector3.createNew(0, 0, c), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(0, 0, c), new Uv(c, 0));
-        mesh.faces.add(0,1,2);
-        // egh
-        mesh.addVertex(Vector3.createNew(-c, -c, -c), Vector3.createNew(0, 0, c), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(0, 0, c), new Uv(c, 0));
-        mesh.addVertex(Vector3.createNew(-c, c, -c), Vector3.createNew(0, 0, c), new Uv(0, 0));
-        mesh.faces.add(3,4,5);
-
-        /** near **/
-        // abc
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(0, 0, -c), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, -c, c), Vector3.createNew(0, 0, -c), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(c, c, c), Vector3.createNew(0, 0, -c), new Uv(0, 0));
-        mesh.faces.add(6,7,8);
-        // acd
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(0, 0, -c), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, c, c), Vector3.createNew(0, 0, -c), new Uv(0, 0));
-        mesh.addVertex(Vector3.createNew(-c, c, c), Vector3.createNew(0, 0, -c), new Uv(c, 0));
-        mesh.faces.add(9,10,11);
-
-        /** bottom **/
-        // abf
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(0, c, 0), new Uv(c, 0));
-        mesh.addVertex(Vector3.createNew(c, -c, c), Vector3.createNew(0, c, 0), new Uv(0, 0));
-        mesh.addVertex(Vector3.createNew(c, -c, -c), Vector3.createNew(0, c, 0), new Uv(0, c));
-        mesh.faces.add(12,13,14);
-        // afe
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(0, c, 0), new Uv(c, 0));
-        mesh.addVertex(Vector3.createNew(c, -c, -c), Vector3.createNew(0, c, 0), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(-c, -c, -c), Vector3.createNew(0, c, 0), new Uv(c, c));
-        mesh.faces.add(15,16,17);
-
-        /** top **/
-        // dcg
-        mesh.addVertex(Vector3.createNew(-c, c, c), Vector3.createNew(0, -c, 0), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, c, c), Vector3.createNew(0, -c, 0), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(0, -c, 0), new Uv(0, 0));
-        mesh.faces.add(18,19,20);
-        // dgh
-        mesh.addVertex(Vector3.createNew(-c, c, c), Vector3.createNew(0, -c, 0), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(0, -c, 0), new Uv(0, 0));
-        mesh.addVertex(Vector3.createNew(-c, c, -c), Vector3.createNew(0, -c, 0), new Uv(c, 0));
-        mesh.faces.add(21,22,23);
-
-        /** left **/
-        // bfg
-        mesh.addVertex(Vector3.createNew(c, -c, c), Vector3.createNew(-c, 0, 0), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, -c, -c), Vector3.createNew(-c, 0, 0), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(-c, 0, 0), new Uv(0, 0));
-        mesh.faces.add(24,25,26);
-        // bgc
-        mesh.addVertex(Vector3.createNew(c, -c, c), Vector3.createNew(-c, 0, 0), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(c, c, -c), Vector3.createNew(-c, 0, 0), new Uv(0, 0));
-        mesh.addVertex(Vector3.createNew(c, c, c), Vector3.createNew(-c, 0, 0), new Uv(c, 0));
-        mesh.faces.add(27,28,29);
-
-        /** right **/
-        // aeh
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(c, 0, 0), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(-c, -c, -c), Vector3.createNew(c, 0, 0), new Uv(c, c));
-        mesh.addVertex(Vector3.createNew(-c, c, -c), Vector3.createNew(c, 0, 0), new Uv(c, 0));
-        mesh.faces.add(30,31,32);
-
-        // ahd
-        mesh.addVertex(Vector3.createNew(-c, -c, c), Vector3.createNew(c, 0, 0), new Uv(0, c));
-        mesh.addVertex(Vector3.createNew(-c, c, -c), Vector3.createNew(c, 0, 0), new Uv(c, 0));
-        mesh.addVertex(Vector3.createNew(-c, c, c), Vector3.createNew(c, 0, 0), new Uv(0, 0));
-        mesh.faces.add(33,34,35);
-
-        mesh.allocate();
+    public void addTexture(@NotNull Texture texture, @NotNull Face face) {
+        switch (face) {
+            case NEAR_POSITIVE_Z:
+                near.addTexture(texture);
+                break;
+            case FAR_NEGATIVE_Z:
+                far.addTexture(texture);
+                break;
+            case TOP_POSITIVE_Y:
+                top.addTexture(texture);
+                break;
+            case BOTTOM_NEGATIVE_Y:
+                bottom.addTexture(texture);
+                break;
+            case LEFT_NEGATIVE_X:
+                left.addTexture(texture);
+                break;
+            case RIGHT_POSITIVE_X:
+                right.addTexture(texture);
+                break;
+            default:
+                Logger.e(this, "this error can't ever happen.");
+        }
     }
 
     @Override

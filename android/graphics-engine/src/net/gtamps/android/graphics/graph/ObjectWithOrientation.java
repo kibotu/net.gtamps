@@ -242,6 +242,12 @@ abstract class ObjectWithOrientation implements ISpatialObject {
      */
     @NotNull
     public Vector3 getPosition() {
+        return getPosition(false);
+    }
+
+    @NotNull
+    public Vector3 getPosition(boolean isModified) {
+        isDirty = true;
         return position;
     }
 

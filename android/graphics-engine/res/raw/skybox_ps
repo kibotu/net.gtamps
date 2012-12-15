@@ -1,0 +1,13 @@
+precision mediump float;
+
+// uniforms
+uniform sampler2D u_Texture01;
+
+// in
+varying vec2 v_TexCoords;
+varying vec3 v_Normal;
+
+void main() {
+ // TODO back-face-culling
+  gl_FragColor =  texture2D(u_Texture01, v_TexCoords);
+}

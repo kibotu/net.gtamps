@@ -1,24 +1,18 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import com.badlogic.gdx.math.MathUtils;
-import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
-import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.*;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
-import net.gtamps.android.graphics.graph.scene.primitives.*;
+import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.Skybox;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
-import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.test.input.CameraInputInterpreter;
-import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.android.input.controller.InputEngineController;
 import net.gtamps.android.input.view.DefaultLayout;
 import net.gtamps.android.input.view.TouchInputButton;
 import net.gtamps.shared.Utils.math.Color4;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.util.HashMap;
 
 /**
  * User: Jan Rabe
@@ -76,8 +70,13 @@ public class Test13Scene extends SceneGraph {
 //        add(ground);
 
         Skybox skybox = new Skybox();
-        skybox.addTexture(new Texture(R.drawable.orientation_convention, Texture.Type.u_Texture01,true));
-        skybox.setDimension(1,1,1);
+        skybox.addTexture(new Texture(R.drawable.landscape_positive_z), Skybox.Face.NEAR_POSITIVE_Z);
+        skybox.addTexture(new Texture(R.drawable.landscape_negative_z), Skybox.Face.FAR_NEGATIVE_Z);
+        skybox.addTexture(new Texture(R.drawable.landscape_negative_y), Skybox.Face.BOTTOM_NEGATIVE_Y);
+        skybox.addTexture(new Texture(R.drawable.landscape_positive_y), Skybox.Face.TOP_POSITIVE_Y);
+        skybox.addTexture(new Texture(R.drawable.landscape_negative_x), Skybox.Face.LEFT_NEGATIVE_X);
+        skybox.addTexture(new Texture(R.drawable.landscape_positive_x), Skybox.Face.RIGHT_POSITIVE_X);
+        skybox.setDimension(2, 2, 2);
         add(skybox);
     }
 }
