@@ -54,7 +54,6 @@ public class Test13Scene extends SceneGraph {
         camaro.setRotation(MathUtils.degreesToRadians*-90,0,0);
         camaro.getRenderState().setShader(Shader.Type.PHONG);
 
-
         Plane ground = new Plane();
         ground.setRotation(MathUtils.degreesToRadians*90,0,0);
         ground.setDimension(10,10,10);

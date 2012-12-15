@@ -97,7 +97,7 @@ public class Utils {
      * @param t target vector (like position or normal)
      * @param f flag for position or directional vector
      */
-    public static void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
+    public static void marryBonesWithVector2(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
 
 
         Vector3 influence1 = getSingleBoneInfluence(m[i[0]], t, f).mulInPlace(w[0]);
@@ -129,6 +129,37 @@ public class Utils {
                 m.values[2] * t.x + m.values[6] * t.y + m.values[10] * t.z + m.values[14] * f);
     }
 
+    public static void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
+        t.set(
+                // x influence for bone 1
+                w[0] * (m[i[0]].values[0] * t.x + m[i[0]].values[4] * t.y + m[i[0]].values[8] * t.z + m[i[0]].values[12] * f) +
+                // x influence for bone 2
+                w[1] * (m[i[1]].values[0] * t.x + m[i[1]].values[4] * t.y + m[i[1]].values[8] * t.z + m[i[1]].values[12] * f) +
+                // x influence for bone 3
+                w[2] * (m[i[2]].values[0] * t.x + m[i[2]].values[4] * t.y + m[i[2]].values[8] * t.z + m[i[2]].values[12] * f) +
+                // x influence for bone 4
+                w[3] * (m[i[3]].values[0] * t.x + m[i[3]].values[4] * t.y + m[i[3]].values[8] * t.z + m[i[3]].values[12] * f),
+
+
+                // y influence for bone 1
+                w[0] * (m[i[0]].values[1] * t.x + m[i[0]].values[5] * t.y + m[i[0]].values[9] * t.z + m[i[0]].values[13] * f) +
+                // y influence for bone 2
+                w[1] * (m[i[1]].values[1] * t.x + m[i[1]].values[5] * t.y + m[i[1]].values[9] * t.z + m[i[1]].values[13] * f) +
+                // y influence for bone 3
+                w[2] * (m[i[2]].values[1] * t.x + m[i[2]].values[5] * t.y + m[i[2]].values[9] * t.z + m[i[2]].values[13] * f) +
+                // y influence for bone 4
+                w[3] * (m[i[3]].values[1] * t.x + m[i[3]].values[5] * t.y + m[i[3]].values[9] * t.z + m[i[3]].values[13] * f),
+
+                // z influence for bone 1
+                w[0] * (m[i[0]].values[2] * t.x + m[i[0]].values[6] * t.y + m[i[0]].values[10] * t.z + m[i[0]].values[14] * f) +
+                // z influence for bone 1
+                w[1] * (m[i[1]].values[2] * t.x + m[i[1]].values[6] * t.y + m[i[1]].values[10] * t.z + m[i[1]].values[14] * f) +
+                // z influence for bone 1
+                w[2] * (m[i[2]].values[2] * t.x + m[i[2]].values[6] * t.y + m[i[2]].values[10] * t.z + m[i[2]].values[14] * f) +
+                // z influence for bone 1
+                w[3] * (m[i[3]].values[2] * t.x + m[i[3]].values[6] * t.y + m[i[3]].values[10] * t.z + m[i[3]].values[14] * f)
+        );
+    }
 
     /**
      * Computes bone transformation matrices
@@ -612,5 +643,52 @@ public class Utils {
 
     public static float getPercentAnimated(int currentFrame, float currentFrameTime, float timePerFrame, int numberOfFrames) {
         return ((float) currentFrame + (currentFrameTime / timePerFrame)) / (float) numberOfFrames;
+    }
+
+    public static void updateMesh(Mesh curM, SKNFile skn, SKLFile skl, Matrix4[] transM) {
+
+        int numElements = 3;
+
+        for (int i = 0; i < skn.numVertices; ++i) {
+            SKNVertex vertex = skn.vertices.get(i);
+
+            // current position
+            tempPosition.set(vertex.position[0], vertex.position[1], -vertex.position[2]);
+            tempNormal.set(vertex.normal[0], vertex.normal[1], -vertex.normal[2]);
+
+            // current weight
+            tempWeight[0] = vertex.weights[0];
+            tempWeight[1] = vertex.weights[1];
+            tempWeight[2] = vertex.weights[2];
+            tempWeight[3] = vertex.weights[3];
+
+            // Bone Index Information
+            // Depending on the version of the model, the look ups change.
+            if (skl.version == 2 || skl.version == 0) {
+                tempInfluences[0] = skl.boneIDs.get(vertex.boneIndex[0]);
+                tempInfluences[1] = skl.boneIDs.get(vertex.boneIndex[1]);
+                tempInfluences[2] = skl.boneIDs.get(vertex.boneIndex[2]);
+                tempInfluences[3] = skl.boneIDs.get(vertex.boneIndex[3]);
+            } else {
+                tempInfluences[0] = vertex.boneIndex[0];
+                tempInfluences[1] = vertex.boneIndex[0];
+                tempInfluences[2] = vertex.boneIndex[0];
+                tempInfluences[3] = vertex.boneIndex[0];
+            }
+
+            Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempPosition, 1);
+            Utils.marryBonesWithVector(tempWeight, tempInfluences, transM, tempNormal, 0);
+
+            vertices[numElements * i] = tempPosition.x;
+            vertices[numElements * i + 1] = tempPosition.y;
+            vertices[numElements * i + 2] = tempPosition.z;
+
+            normals[numElements * i] = tempNormal.x;
+            normals[numElements * i + 1] = tempNormal.y;
+            normals[numElements * i + 2] = tempNormal.z;
+        }
+
+        BufferUtils.copy(vertices, curM.vertices.getVertices().getBuffer(), vertices.length, 0);
+        BufferUtils.copy(normals, curM.vertices.getNormals().getBuffer(),  normals.length, 0);
     }
 }

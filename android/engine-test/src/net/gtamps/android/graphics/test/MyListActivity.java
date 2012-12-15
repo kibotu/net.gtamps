@@ -25,7 +25,7 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-        startActivity(PACKAGE_NAME, "Test13Activity");
+        startActivity(PACKAGE_NAME, "Test12Activity");
     }
 
     @Override

@@ -79,7 +79,8 @@ public class Test12Action extends RenderAction {
     public boolean onOptionsItemSelectedHook(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.animate:
-                RiggedObject3D obj = (RiggedObject3D) getScenes().get(0).getRootNode().getChild(1);
+                RootNode root = (RootNode) getScenes().get(0).getRootNode().getChild(1);
+                RiggedObject3D obj = (RiggedObject3D) root.getChild(0);
                 if (obj != null) {
                     obj.play(PACKAGE_NAME + "ahri_dance_fixed_anm");
 //                    obj.play(PACKAGE_NAME + "masteryi_dance_anm");

@@ -1,14 +1,16 @@
 package net.gtamps.android.graphics.graph.scene.animation.rigged;
 
+import android.os.Debug;
 import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.animation.AnimationState;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
-import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
-import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.*;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.ANMFile;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.SKLFile;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.SKNFile;
+import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.Utils;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
-import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.Sphere;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
@@ -16,7 +18,8 @@ import net.gtamps.shared.Utils.math.Quaternion;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static net.gtamps.shared.Utils.math.Matrix4.*;
 
@@ -60,14 +63,13 @@ public class RiggedObject3D extends RenderableNode {
     public void onCreateInternal(GL10 gl10) {
     }
 
-
     @Override
     protected void onDrawFrameInternal(GL10 gl10) {
 
         switch (animationState) {
             case PLAY:
-                if(currentFrame < currentAnimation.numberOfFrames) {
-                    playFrame(currentAnimation,currentFrame++);
+                if (currentFrame < currentAnimation.numberOfFrames) {
+                    playFrame(currentAnimation, currentFrame++);
                     mesh.update();
                 } else {
                     animationState = AnimationState.STOP;
@@ -91,20 +93,26 @@ public class RiggedObject3D extends RenderableNode {
      * into the handedness OpenGL expects. So, vector inputs have their Z value
      * negated and quaternion inputs have their Z and W values negated.
      * </p>
-     * @param skn SKNFile: Vertex position, normal, uv, indices, bone Weights and Influences
-     * @param skl SKNFile: Bone position and rotation
+     *
+     * @param skn  SKNFile: Vertex position, normal, uv, indices, bone Weights and Influences
+     * @param skl  SKNFile: Bone position and rotation
      * @param anms list of ANMFiles: Keyframe based bone translation and rotation
      */
     public void create(SKNFile skn, SKLFile skl, HashMap<String, ANMFile> anms) {
         // vertex Data, needs skl if skl version 0 or 2
-        mesh = Utils.createMesh(skn,skl);
+        mesh = Utils.createMesh(skn, skl);
+        this.skn = skn;
+        this.skl = skl;
         // animation data
-        animations = Utils.createAnimations(skl,anms,mesh);
+        animations = Utils.createAnimations(skl, anms, mesh);
         // backup used as transformation basis
         original = mesh.clone();
         // initial binding pose
         Utils.updateMesh(mesh, original, boneTransformations);
     }
+
+    private SKNFile skn;
+    private SKLFile skl;
 
     public void play(String animationID) {
         animationState = AnimationState.PLAY;
@@ -115,8 +123,9 @@ public class RiggedObject3D extends RenderableNode {
 
     private void playFrame(GLAnimation glAnimation, int index) {
         if (glAnimation == null) return;
-        Utils.computeBoneTransformation(boneTransformations, glAnimation, index,0);
-        Utils.updateMesh(mesh, original, boneTransformations);
+        Utils.computeBoneTransformation(boneTransformations, glAnimation, index, 0);
+
+        Utils.updateMesh(mesh, skn, skl, boneTransformations);
         mesh.isDirty(true);
 //        animationState = AnimationState.STOP;
     }
@@ -125,7 +134,7 @@ public class RiggedObject3D extends RenderableNode {
     public RootNode getSkeleton() {
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 
-        Sphere joint = new Sphere(0.7f,20,20);
+        Sphere joint = new Sphere(0.7f, 20, 20);
 //        Object3D joint = new Object3D(PACKAGE_NAME + "bone_01_obj");
 
         Texture texture = new Texture(R.drawable.vintagebg, Texture.Type.u_Texture01, true);
@@ -133,7 +142,7 @@ public class RiggedObject3D extends RenderableNode {
         joint.setScaling(0.01f, 0.01f, 0.01f);
         RootNode root = new RootNode();
 
-        ArrayList<GLBone> bones = animations.get(PACKAGE_NAME+"ahri_dance_anm").bones;
+        ArrayList<GLBone> bones = animations.get(PACKAGE_NAME + "ahri_dance_anm").bones;
 
         for (int i = 0; i < bones.size(); ++i) {
 

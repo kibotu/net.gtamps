@@ -2,11 +2,10 @@ package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
-import android.text.Html;
+import android.os.Debug;
 import com.badlogic.gdx.backends.android.AndroidGL20;
 import fix.android.opengl.GLES20;
 import net.gtamps.android.graphics.graph.RenderableNode;
-import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.Material;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
@@ -29,7 +28,6 @@ import javax.microedition.khronos.opengles.GL11;
 import java.nio.*;
 
 import static android.opengl.GLES20.*;
-import static android.opengl.GLES20.glBufferData;
 
 /**
  * User: Jan Rabe, Tom Walroth, Til Börner
@@ -46,6 +44,7 @@ public class GLES20Renderer extends BasicRenderer {
 
     public GLES20Renderer(IRenderAction renderAction) {
         super(renderAction);
+        mGlEs20 = new AndroidGL20();
     }
 
     @Override
@@ -167,10 +166,10 @@ public class GLES20Renderer extends BasicRenderer {
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[1]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
 
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,material.getDiffuse().asArray(), 0);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.45f);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.1f);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),0.15f);
+        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1, material.getDiffuse().asArray(), 0);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"), 0.45f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"), 0.1f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"), 0.15f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), 8.0f);
 
         // multiple textures
@@ -206,31 +205,31 @@ public class GLES20Renderer extends BasicRenderer {
     @NotNull
     @Override
     public Bitmap captureScreenShot(@NotNull GL10 gl) {
-            int width = viewPort.getWidth();
-            int height = viewPort.getHeight();
-            int screenshotSize = width * height;
-            ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
-            bb.order(ByteOrder.nativeOrder());
-            gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
-            int pixelsBuffer[] = new int[screenshotSize];
-            bb.asIntBuffer().get(pixelsBuffer);
-            bb = null;
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            bitmap.setPixels(pixelsBuffer, screenshotSize-width, -width, 0, 0, width, height);
-            pixelsBuffer = null;
+        int width = viewPort.getWidth();
+        int height = viewPort.getHeight();
+        int screenshotSize = width * height;
+        ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
+        bb.order(ByteOrder.nativeOrder());
+        gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
+        int pixelsBuffer[] = new int[screenshotSize];
+        bb.asIntBuffer().get(pixelsBuffer);
+        bb = null;
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        bitmap.setPixels(pixelsBuffer, screenshotSize - width, -width, 0, 0, width, height);
+        pixelsBuffer = null;
 
-            short sBuffer[] = new short[screenshotSize];
-            ShortBuffer sb = ShortBuffer.wrap(sBuffer);
-            bitmap.copyPixelsToBuffer(sb);
+        short sBuffer[] = new short[screenshotSize];
+        ShortBuffer sb = ShortBuffer.wrap(sBuffer);
+        bitmap.copyPixelsToBuffer(sb);
 
-            //Making created bitmap (from OpenGL points) compatible with Android bitmap
-            for (int i = 0; i < screenshotSize; ++i) {
-                short v = sBuffer[i];
-                sBuffer[i] = (short) (((v&0x1f) << 11) | (v&0x7e0) | ((v&0xf800) >> 11));
-            }
-            sb.rewind();
-            bitmap.copyPixelsFromBuffer(sb);
-            return bitmap;
+        //Making created bitmap (from OpenGL points) compatible with Android bitmap
+        for (int i = 0; i < screenshotSize; ++i) {
+            short v = sBuffer[i];
+            sBuffer[i] = (short) (((v & 0x1f) << 11) | (v & 0x7e0) | ((v & 0xf800) >> 11));
+        }
+        sb.rewind();
+        bitmap.copyPixelsFromBuffer(sb);
+        return bitmap;
     }
 
     private void drawVbo(RenderableNode node) {
@@ -240,9 +239,9 @@ public class GLES20Renderer extends BasicRenderer {
         // bind new shader if it has changed
         RenderState renderState = node.getRenderState();
         int newProgram = renderState.getShader().getProgram();
-        if(newProgram != activeShaderProgram) {
+        if (newProgram != activeShaderProgram) {
             glUseProgram(activeShaderProgram = newProgram);
-            Logger.i(this, "useshader="+activeShaderProgram);
+            Logger.i(this, "useshader=" + activeShaderProgram);
         }
         applyCamera(activeCamera.getFrustum());
 
@@ -266,10 +265,10 @@ public class GLES20Renderer extends BasicRenderer {
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),material.getDiffuse().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),material.getSpecular().asArray()[0]);
 //        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), material.getShininess());
-        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1,material.getDiffuse().asArray(), 0);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"),0.55f);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"),0.3f);
-        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"),0.15f);
+        glUniform4fv(glGetUniformLocation(activeShaderProgram, "u_LightDiffuse"), 1, material.getDiffuse().asArray(), 0);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KA"), 0.55f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KD"), 0.3f);
+        glUniform1f(glGetUniformLocation(activeShaderProgram, "u_KS"), 0.15f);
         glUniform1f(glGetUniformLocation(activeShaderProgram, "u_SExponent"), 8.0f);
 
         // multiple textures
@@ -331,7 +330,7 @@ public class GLES20Renderer extends BasicRenderer {
 //        Logger.v(this, "drawing "+node.uID + " at " +  node.getCombinedTransformation());
     }
 
-    public int [] genBuffer(int size) {
+    public int[] genBuffer(int size) {
         int[] buffer = new int[size];
         glGenBuffers(1, buffer, 0);
         return buffer;
@@ -453,6 +452,7 @@ public class GLES20Renderer extends BasicRenderer {
 
     @Override
     public void update(Mesh mesh) {
+
         // bind vertex buffer
         if (mesh.vertices.getVertices().getBuffer() != null) {
             mesh.vertices.getVertices().getBuffer().position(0);
@@ -461,12 +461,14 @@ public class GLES20Renderer extends BasicRenderer {
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
             // tell hardware that we don't care about old data
             // src: http://www.opengl.org/wiki/Vertex_Specification_Best_Practices
-            glBufferData(GL_ARRAY_BUFFER,0,null, GL_DYNAMIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer());
+//            glBufferData(GL_ARRAY_BUFFER, 0, null, GL_DYNAMIC_DRAW);
+//            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer());
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(),GL_DYNAMIC_DRAW );
 
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
-            glBufferData(GL_ARRAY_BUFFER,0,null, GL_DYNAMIC_DRAW);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer());
+//            glBufferData(GL_ARRAY_BUFFER, 0, null, GL_DYNAMIC_DRAW);
+//            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer());
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(),GL_DYNAMIC_DRAW );
         }
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
