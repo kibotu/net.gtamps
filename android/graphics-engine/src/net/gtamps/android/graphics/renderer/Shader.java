@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.shared.Utils.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -100,7 +101,7 @@ public class Shader {
 
             fs.deleteCharAt(fs.length() - 1);
         } catch (Exception e) {
-            Log.d("ERROR-readingShader", "Could not read shader: " + e.getLocalizedMessage());
+            Logger.e(this, "Could not read shader: " + e.getLocalizedMessage());
         }
 
 
@@ -151,14 +152,14 @@ public class Shader {
             int[] linkStatus = new int[1];
             GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
             if (linkStatus[0] != GLES20.GL_TRUE) {
-                Log.e("Shader", "Could not link program: ");
-                Log.e("Shader", GLES20.glGetProgramInfoLog(program));
+                Logger.e(this, "Could not link program: ");
+                Logger.e(this, GLES20.glGetProgramInfoLog(program));
                 GLES20.glDeleteProgram(program);
                 program = 0;
                 return 0;
             }
         } else
-            Log.d("CreateProgram", "Could not create program");
+            Logger.e(this,"Could not create program");
 
         return 1;
     }
@@ -178,8 +179,8 @@ public class Shader {
             int[] compiled = new int[1];
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
             if (compiled[0] == 0) {
-                Log.e("Shader", "Could not compile shader " + shaderType + ":");
-                Log.e("Shader", GLES20.glGetShaderInfoLog(shader));
+                Logger.e(this, "Could not compile shader " + shaderType + ":");
+                Logger.e(this, GLES20.glGetShaderInfoLog(shader));
                 GLES20.glDeleteShader(shader);
                 shader = 0;
             }
@@ -195,7 +196,7 @@ public class Shader {
     private void checkGlError(String op) {
         int error;
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e("Shader", op + ": glError " + error);
+            Logger.e(this,  op + ": glError " + error);
             throw new RuntimeException(op + ": glError " + error);
         }
     }

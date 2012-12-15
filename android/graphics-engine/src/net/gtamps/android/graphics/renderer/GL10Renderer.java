@@ -5,6 +5,7 @@ import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.math.Color4;
 import net.gtamps.shared.Utils.math.Frustum;
@@ -109,5 +110,9 @@ public class GL10Renderer extends BasicRenderer {
     @Override
     protected Bitmap captureScreenShot(@NotNull GL10 gl) {
         return null;
+    }
+
+    @Override
+    public void setActiveCamera(Camera camera) {
     }
 }

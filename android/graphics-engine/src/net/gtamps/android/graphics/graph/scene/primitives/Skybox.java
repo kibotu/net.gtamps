@@ -44,30 +44,39 @@ public class Skybox extends RootNode {
         left = new Plane();
         right = new Plane();
 
-        float halfSize = 0.5f;
+        final float halfSize = 0.5f;
+        final float e = 1.01f;
 
         near.getPosition(true).z = halfSize;
+        near.getRotation(true).y = MathUtils.deg2Rad(180);
         near.getRenderState().setShader(Shader.Type.SKYBOX);
+        near.setScaling(e,e,e);
 
         left.getRotation(true).y = MathUtils.deg2Rad(-90);
         left.getPosition(true).x = halfSize;
         left.getRenderState().setShader(Shader.Type.SKYBOX);
+        left.setScaling(e,e,e);
 
-        far.getRotation(true).y = MathUtils.deg2Rad(180);
         far.getPosition(true).z = -halfSize;
         far.getRenderState().setShader(Shader.Type.SKYBOX);
+        far.setScaling(e,e,e);
 
         right.getRotation(true).y = MathUtils.deg2Rad(90);
         right.getPosition(true).x = -halfSize;
         right.getRenderState().setShader(Shader.Type.SKYBOX);
+        right.setScaling(e,e,e);
 
         top.getRotation(true).x = MathUtils.deg2Rad(90);
+        top.getRotation(true).y = MathUtils.deg2Rad(180);
         top.getPosition(true).y = halfSize;
         top.getRenderState().setShader(Shader.Type.SKYBOX);
+        top.setScaling(e,e,e);
 
         bottom.getRotation(true).x = MathUtils.deg2Rad(-90);
+        bottom.getRotation(true).y = MathUtils.deg2Rad(180);
         bottom.getPosition(true).y = -halfSize;
         bottom.getRenderState().setShader(Shader.Type.SKYBOX);
+        bottom.setScaling(e,e,e);
 
         add(near);
         add(far);

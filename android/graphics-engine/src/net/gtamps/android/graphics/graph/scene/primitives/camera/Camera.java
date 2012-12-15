@@ -81,7 +81,7 @@ public class Camera extends SceneNode {
     @Override
     public void onDrawFrame(GL10 gl10) {
         Registry.getRenderer().clearScreen(backgroundColor);
-        Registry.getRenderer().applyCamera(frustum);
+        Registry.getRenderer().setActiveCamera(this);
     }
 
     @Override
@@ -158,5 +158,10 @@ public class Camera extends SceneNode {
     @NotNull
     public ViewPort getViewport() {
         return viewport;
+    }
+
+    @NotNull
+    public Frustum getFrustum() {
+        return frustum;
     }
 }

@@ -14,6 +14,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureAnimation;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureSprite;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
@@ -41,6 +42,7 @@ public class GLES20Renderer extends BasicRenderer {
      * gdx additional gl functions (ndk)
      */
     private AndroidGL20 mGlEs20;
+    private Camera activeCamera;
 
     public GLES20Renderer(IRenderAction renderAction) {
         super(renderAction);
@@ -48,7 +50,6 @@ public class GLES20Renderer extends BasicRenderer {
 
     @Override
     public void onDrawFrameHook(GL10 unusedGL) {
-        glUseProgram(activeShaderProgram);
     }
 
     @Override
@@ -110,8 +111,12 @@ public class GLES20Renderer extends BasicRenderer {
         Logger.checkGlError(this, "glViewPort");
     }
 
+    public void setActiveCamera(Camera camera) {
+        this.activeCamera = camera;
+    }
+
     @Override
-    public void applyCamera(Frustum frustum) {
+    protected void applyCamera(Frustum frustum) {
 
         if (frustum.hasDepthTest()) glEnable(GL_DEPTH_TEST);
         else glDisable(GL_DEPTH_TEST);
@@ -134,6 +139,7 @@ public class GLES20Renderer extends BasicRenderer {
         if (mesh == null) return;
 
         activeShaderProgram = node.getRenderState().getShader().getProgram();
+        glUseProgram(activeShaderProgram);
         RenderState renderState = node.getRenderState();
 
         // back face culling
@@ -231,8 +237,14 @@ public class GLES20Renderer extends BasicRenderer {
         Mesh mesh = node.getMesh();
         if (mesh == null) return;
 
-        activeShaderProgram = node.getRenderState().getShader().getProgram();
+        // bind new shader if it has changed
         RenderState renderState = node.getRenderState();
+        int newProgram = renderState.getShader().getProgram();
+        if(newProgram != activeShaderProgram) {
+            glUseProgram(activeShaderProgram = newProgram);
+            Logger.i(this, "useshader="+activeShaderProgram);
+        }
+        applyCamera(activeCamera.getFrustum());
 
         if (renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
         else glDisable(GL_CULL_FACE);
@@ -316,7 +328,6 @@ public class GLES20Renderer extends BasicRenderer {
 
         // unbind to avoid accidental manipulation
         glBindTexture(GL_TEXTURE_2D, 0);
-
 //        Logger.v(this, "drawing "+node.uID + " at " +  node.getCombinedTransformation());
     }
 

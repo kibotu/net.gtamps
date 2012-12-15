@@ -10,6 +10,7 @@ import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vbo;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.TextureLibrary;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
+import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.android.graphics.utils.Utils;
 import net.gtamps.shared.Config;
@@ -115,7 +116,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
         int delta = getDelta();
 
         // limits frame rate
-        limitFrameRate(delta);
+//        limitFrameRate(delta);
 
         // render draw loop
         onDrawFrameHook(gl10);
@@ -273,7 +274,7 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
      *
      * @param frustum
      */
-    public abstract void applyCamera(Frustum frustum);
+    protected abstract void applyCamera(Frustum frustum);
 
     /**
      * Actually draws a node.
@@ -344,4 +345,6 @@ public abstract class BasicRenderer implements GLSurfaceView.Renderer {
     public void captureScreenshot(@NotNull String path, @NotNull String filename) {
         screenshotRequestedQueue.add(new String[] {path, filename});
     }
+
+    public abstract void setActiveCamera(Camera camera);
 }
