@@ -3,7 +3,6 @@ package net.gtamps.android.graphics.graph.scene.primitives;
 import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Uv;
-import net.gtamps.android.graphics.utils.OpenGLUtils;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;

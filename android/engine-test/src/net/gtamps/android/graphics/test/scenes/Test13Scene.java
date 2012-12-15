@@ -50,34 +50,34 @@ public class Test13Scene extends SceneGraph {
         // Package where the obj file is located. Needed for context loader.
         String PACKAGE_NAME = "net.gtamps.android.graphics.test:raw/";
 
-        Object3D camaro = new Object3D(PACKAGE_NAME + "camaro_obj");
-        camaro.addTexture(new Texture(R.drawable.camaro, Texture.Type.u_Texture01, true));
-        camaro.setRotation(MathUtils.degreesToRadians*-90,0,0);
-        camaro.getRenderState().setShader(Shader.Type.PHONG);
+//        Object3D camaro = new Object3D(PACKAGE_NAME + "camaro_obj");
+//        camaro.addTexture(new Texture(R.drawable.camaro, Texture.Type.u_Texture01, true));
+//        camaro.setRotation(MathUtils.degreesToRadians*-90,0,0);
+//        camaro.getRenderState().setShader(Shader.Type.PHONG);
+//
+//        RootNode camaro1 = new RootNode();
+//        camaro1.add(camaro);
+//        camaro1.setPosition(-2.5f,0,0);
+//        RootNode camaro2 = new RootNode();
+//        camaro2.add(camaro);
+//        RootNode camaro3 = new RootNode();
+//        camaro3.add(camaro);
+//        camaro3.setPosition(2.5f,0,0);
+//
+//        add(camaro1);
+//        add(camaro2);
+//        add(camaro3);
+//
+//        Plane ground = new Plane();
+//        ground.setRotation(MathUtils.degreesToRadians*90,0,0);
+//        ground.setDimension(10,10,10);
+//        ground.getRenderState().setShader(Shader.Type.PHONG);
+//        ground.addTexture(new Texture(R.drawable.stonebg, Texture.Type.u_Texture01, true));
+//        add(ground);
 
-        RootNode camaro1 = new RootNode();
-        camaro1.add(camaro);
-        camaro1.setPosition(-2.5f,0,0);
-        RootNode camaro2 = new RootNode();
-        camaro2.add(camaro);
-        RootNode camaro3 = new RootNode();
-        camaro3.add(camaro);
-        camaro3.setPosition(2.5f,0,0);
-
-        add(camaro1);
-        add(camaro2);
-        add(camaro3);
-
-        Plane ground = new Plane();
-        ground.setRotation(MathUtils.degreesToRadians*90,0,0);
-        ground.setDimension(10,10,10);
-        ground.getRenderState().setShader(Shader.Type.PHONG);
-        ground.addTexture(new Texture(R.drawable.stonebg, Texture.Type.u_Texture01, true));
-        add(ground);
-
-//        Skybox skybox = new Skybox();
-//        skybox.addTexture(new Texture(R.drawable.orientation_convention, Texture.Type.u_Texture01,true));
-//        skybox.setDimension(10,10,10);
-//        add(skybox);
+        Skybox skybox = new Skybox();
+        skybox.addTexture(new Texture(R.drawable.orientation_convention, Texture.Type.u_Texture01,true));
+        skybox.setDimension(1,1,1);
+        add(skybox);
     }
 }
