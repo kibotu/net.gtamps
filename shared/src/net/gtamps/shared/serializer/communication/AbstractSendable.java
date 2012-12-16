@@ -3,13 +3,14 @@ package net.gtamps.shared.serializer.communication;
 import java.io.Serializable;
 
 import net.gtamps.shared.Utils.cache.IObjectCache;
+import net.gtamps.shared.serializer.communication.data.ListNode;
 
 public abstract class AbstractSendable<Type extends AbstractSendable<Type>> implements Serializable {
 
 	private static final String ERROR_CACHE_UNDEFINED_MSG = "'cache' must not be 'null': call setCache(IObjectCache) first";
 	private static final long serialVersionUID = 7512510685123238578L;
 
-	transient IObjectCache<Type> cache = null;
+	protected transient IObjectCache<Type> cache = null;
 
 	protected AbstractSendable() {
 	}
@@ -28,12 +29,14 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 		initHook();
 	}
 
-	public final void recycle() throws IllegalStateException {
+	public void recycle() throws IllegalStateException {
 		recycleHook();
 		try {
-			cache.registerElement((Type)this);
+			if (this != ListNode.EmptyListNode.INSTANCE) {
+				cache.registerElement((Type)this);
+			}
 		} catch (final NullPointerException e) {
-			throw new IllegalStateException(ERROR_CACHE_UNDEFINED_MSG, e);
+				throw new IllegalStateException(this.toString() +" "+ ERROR_CACHE_UNDEFINED_MSG, e);
 		}
 	}
 

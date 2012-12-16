@@ -7,6 +7,7 @@ import java.util.Set;
 import net.gtamps.android.R;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.core.input.event.InputEventListener;
+import net.gtamps.android.core.input.inputlistener.PlayerMovementListener;
 import net.gtamps.android.core.input.layout.AbstractInputLayout;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
@@ -18,7 +19,6 @@ import net.gtamps.android.renderer.graph.scene.primitives.Light;
 import net.gtamps.android.renderer.graph.scene.primitives.ParsedObject;
 import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.android.game.content.scenes.inputlistener.PlayerMovementListener;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Color4;
@@ -212,6 +212,18 @@ public class World extends EntityScene implements InputEventListener, IWorld {
 	public int getPlayerFragScore() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void deactivate(int targetUid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void invokeExplosion(AbstractEntityView viewById) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

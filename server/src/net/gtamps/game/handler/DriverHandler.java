@@ -43,18 +43,17 @@ public class DriverHandler extends ServersideHandler<Entity> {
 	private static final Vec2 exitOffset = new Vec2(30f, 0);
 	private static final int exitRotation = 90;
 
+	private static final EventType[] receivesDown = {
+		EventType.ENTITY_DESTROYED,
+		EventType.ACTION_ENTEREXIT
+	};
+
 	private Player driver = null;
 	private Entity driversHumanBody = null;
 	private long lastActivationMillis = 0;
-	private final EventType[] sendsUp = {EventType.PLAYER_ENTERSCAR,
-			EventType.PLAYER_EXITSCAR};
-	private final EventType[] receivesDown = {EventType.ENTITY_DESTROYED,
-			EventType.ACTION_ENTEREXIT};
 
 	public DriverHandler(final Universe universe, final Entity parent) {
-		super(universe, Handler.Type.DRIVER, parent);
-		setReceives(receivesDown);
-		connectUpwardsActor(parent);
+		super(universe, Handler.Type.DRIVER, parent, receivesDown);
 	}
 
 	public boolean isAvailable() {
@@ -75,10 +74,11 @@ public class DriverHandler extends ServersideHandler<Entity> {
 			chuckOutCurrentDriver();
 		}
 		driversHumanBody = player.getEntity();
-		driversHumanBody.disable();
+		getUniverse().dispatchEvent(new GameEvent(EventType.ENTITY_DEACTIVATE, driversHumanBody));
 
 		setDriver(player);
 		eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, parent, player));
+		getUniverse().dispatchEvent(new GameEvent(EventType.PLAYER_ENTERSCAR, player, parent));
 		GUILogger.i().log(TAG, player + " enters car " + getParent());
 	}
 
@@ -99,9 +99,10 @@ public class DriverHandler extends ServersideHandler<Entity> {
 			driversHumanBody.x.set((int) newPos.x);
 			driversHumanBody.y.set((int) newPos.y);
 			driversHumanBody.rota.set(carRota + exitRotation);
-			driversHumanBody.enable();
 			exDriver.setEntity(driversHumanBody);
+			getUniverse().dispatchEvent(new GameEvent(EventType.ENTITY_ACTIVATE, driversHumanBody));
 			eventRoot.dispatchEvent(new GameEvent(EventType.ENTITY_NEW_PLAYER, driversHumanBody, exDriver));
+			getUniverse().dispatchEvent(new GameEvent(EventType.PLAYER_EXITSCAR, exDriver, parent));
 		}
 		{ // LOGGING
 			final String logMsg = String.format("%s exits car %s", exDriver, getParent());

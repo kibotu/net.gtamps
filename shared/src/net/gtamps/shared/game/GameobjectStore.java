@@ -12,9 +12,10 @@ import net.gtamps.shared.game.score.Score;
 /**
  *
  * @author Tom Wallroth, Jan Rabe, Til Boerner
+ * @param <T>
  *
  */
-public class GameobjectStore {
+public class GameobjectStore<T> {
 
 	Map<Class, GameObjectCache> caches = new HashMap<Class, GameObjectCache>();
 	Map<Integer, GameObject> active = new HashMap<Integer, GameObject>();
@@ -30,8 +31,10 @@ public class GameobjectStore {
 		caches.put(type, new GameObjectCache<T>(type));
 	}
 
+	//preallocate
+	GameObject target;
 	public void reclaim(final int uid) {
-		final GameObject target = active.get(uid);
+		target = active.get(uid);
 		if (target != null) {
 			reclaim(target, (Class<GameObject>) target.getClass());
 		}
@@ -71,15 +74,19 @@ public class GameobjectStore {
 		final GameObjectCache<T> cache =  caches.get(type);
 		cache.registerElement(obj);
 	}
-
+	
+	//preallocate
+	Object obj;
+	@SuppressWarnings("unchecked")
 	private <T extends GameObject> T getActiveOrCached(final int uid, final Class<T> type) {
-		T obj = type.cast(active.get(uid));
+		obj = active.get(uid);
 		if (obj == null) {
 			@SuppressWarnings("unchecked")
 			final GameObjectCache<T> cache = caches.get(type);
 			obj = cache.getOrCreate(uid);
+			active.put(uid, (GameObject) obj);
 		}
-		return obj;
+		return (T)obj;
 	}
 
 }

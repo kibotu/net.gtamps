@@ -2,7 +2,9 @@ package net.gtamps.android.core.net;
 
 import java.util.NoSuchElementException;
 
+import net.gtamps.android.R;
 import net.gtamps.android.core.sound.SoundEngine;
+import net.gtamps.android.core.sound.SoundEngine.Sounds;
 import net.gtamps.android.game.content.EntityView;
 import net.gtamps.android.renderer.Registry;
 import net.gtamps.shared.Config;
@@ -30,10 +32,10 @@ public class MessageHandler {
 
 	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
 	private GameobjectStore store = new GameobjectStore();
-    private ConnectionManager connection;
+    private AbstractConnectionManager connection;
     private IWorld world;
 
-    public MessageHandler(ConnectionManager connection, IWorld world2) {
+    public MessageHandler(AbstractConnectionManager connection, IWorld world2) {
         this.connection = connection;
         this.world = world2;
     }
@@ -122,8 +124,13 @@ public class MessageHandler {
                 break;
 
             case SESSION_OK:
-                connection.currentSessionId = message.getSessionId();
-                connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                connection.currentSessionId = sendable.data.asMap().getString(StringConstants.SESSION_ID);
+                //FIXME workaround for presentation
+                if(android.os.Build.VERSION.SDK_INT>8){
+                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME_TIL, Config.DEFAULT_PASSWORD_TIL));
+                } else {
+                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                }
                 break;
             case SESSION_NEED:
                 break;
@@ -207,9 +214,11 @@ public class MessageHandler {
             	break;
             
             default:
-            	sendable.recycle();
                 break;
         }
+        sendable.recycle();
+        message.sendables = null;
+        sendable = null;
         message.recycle();
         message = null;
     }
@@ -250,8 +259,8 @@ public class MessageHandler {
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:
-                SoundEngine.getInstance().playSound(sourceEntity.type, event.getType());
-                break;
+            	SoundEngine.getInstance().playSound(Sounds.FOOTSTEP);
+            	break;
             case ACTION_DECELERATE:
                 break;
             case ACTION_ENTEREXIT:
@@ -263,8 +272,10 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
-            	store.reclaim(event);
-            	event = null;
+            	SoundEngine.getInstance().playSound(Sounds.SHOOT);
+//            	SoundEngine.getInstance().playSound("");
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ACTION_SUICIDE:
                 break;
@@ -279,20 +290,24 @@ public class MessageHandler {
             case ENTITY_BULLET_HIT:
                 break;
             case ENTITY_COLLIDE:
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_CREATE:
                 break;
             case ENTITY_DAMAGE:
                 break;
             case ENTITY_DEACTIVATE:
+            	world.deactivate(event.getTargetUid());
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_DESTROYED:
+            	
             	world.remove(event.getTargetUid());
-            	store.reclaim(event.getTargetUid());
-            	store.reclaim(event);
-            	event = null;
+//            	store.reclaim(event.getTargetUid());
+//            	store.reclaim(event);
+//            	event = null;
                 break;
             case ENTITY_EVENT:
                 break;
@@ -308,6 +323,7 @@ public class MessageHandler {
                 break;
 
             case PLAYER_ENTERSCAR:
+            	SoundEngine.getInstance().playSound(Sounds.CAR_DOOR);
                 break;
             case PLAYER_JOINS:
                 break;
@@ -339,9 +355,11 @@ public class MessageHandler {
                 // new active object
                 AbstractEntityView entityView = world.getViewById(serverEntity.getUid());
                 world.setActiveView(entityView);
-                store.reclaim(event);
+//                store.reclaim(event);
                 Logger.i(this, "PLAYER_NEWENTITY " + entityView.entity.getUid());
 
+//                store.reclaim(event.getTargetUid());
+//                store.reclaim(event.getSourceUid());
                 break;
 
             case PLAYER_POWERUP:
@@ -360,8 +378,11 @@ public class MessageHandler {
             case SESSION_UPDATE:
                 break;
             default:
-            	store.reclaim(event);
+            	break;
         }
+        store.reclaim(event.getSourceUid());
+        store.reclaim(event.getTargetUid());
+        store.reclaim(event);
     }
 
 }

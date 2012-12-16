@@ -13,7 +13,7 @@ import net.gtamps.shared.serializer.communication.SendableType;
 public class HudInterpreter extends InputInterpreter {
 
 	private static final double JUST_GO_THERE_ANGLE = 20.0;
-	private static final double JUST_GO_THERE_ANGLE_SINE = Math.sin(JUST_GO_THERE_ANGLE/180.0*Math.PI);
+	private static final double JUST_GO_THERE_ANGLE_SINE = Math.sin(JUST_GO_THERE_ANGLE / 180.0 * Math.PI);
 	private long startTime = 0;
 	private double rotation;
 
@@ -21,10 +21,10 @@ public class HudInterpreter extends InputInterpreter {
 		super(actionType, world);
 	}
 
-	
 	double currentRotation = 0;
 	double wantedRotation = 0;
 	double directionTrigger = 0;
+
 	@Override
 	public void interpretTouch(float x, float y, MotionEvent event) {
 
@@ -37,21 +37,35 @@ public class HudInterpreter extends InputInterpreter {
 		if (actionType.equals(ActionType.PLAYER_MOVEMENT)) {
 
 			if (world.getActiveView() != null) {
-				
-				//convert to radians
-				currentRotation = world.getActiveView().entity.rota.value()/180.0*Math.PI;
-				wantedRotation = Math.atan2((y-0.5),(x-0.5));
-				
-				directionTrigger = Math.sin(wantedRotation-currentRotation);
-				if(Math.abs(directionTrigger)<JUST_GO_THERE_ANGLE_SINE){
-					eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
-				} else if(directionTrigger>0){
-					eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
-				} else if(directionTrigger<0){
-					eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
-				
+				if (world.getActiveView().entity.getName().equals("CAR")) {
+					if (x < 0.6 && x > 0.4) {
+						if (y < 0.5f) {
+							eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
+						} else {
+							eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
+						}
+					} else {
+						if (x < 0.5f) {
+							eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
+						} else {
+							eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
+						}
+					}
+				} else {
+					// convert to radians
+					currentRotation = world.getActiveView().entity.rota.value() / 180.0 * Math.PI;
+					wantedRotation = Math.atan2((y - 0.5), (x - 0.5));
+
+					directionTrigger = Math.sin(wantedRotation - currentRotation);
+					if (Math.abs(directionTrigger) < JUST_GO_THERE_ANGLE_SINE) {
+						eventDispatcher.dispatch(SendableType.ACTION_ACCELERATE, null);
+					} else if (directionTrigger > 0) {
+						eventDispatcher.dispatch(SendableType.ACTION_RIGHT, null);
+					} else if (directionTrigger < 0) {
+						eventDispatcher.dispatch(SendableType.ACTION_LEFT, null);
+
+					}
 				}
-//					eventDispatcher.dispatch(SendableType.ACTION_DECELERATE, null);
 			}
 		}
 

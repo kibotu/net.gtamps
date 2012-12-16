@@ -261,7 +261,7 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 			final Value<String> errorMessage = new Value<String>(e.getMessage());
 			final MapEntry<Value<String>> errorMessageEntry = new MapEntry<Value<String>>
 			(StringConstants.ERROR_MESSAGE, errorMessage);
-			final DataMap errorData = new DataMap();
+			final DataMap errorData = sendableProvider.getDataMap();
 			errorData.add(errorMessageEntry);
 
 			response.data = errorData;
@@ -301,7 +301,6 @@ public final class ControlCenter implements Runnable, IMessageHandler {
 	private void sendInMessage(final NewSendable response) {
 		final NewMessage msg = cache.getMessage();
 		msg.sendables = cache.getListNode(response);
-		//msg.sendables = msg.sendables.append(cache.getListNode(response));
 		msg.setSessionId(response.sessionId);
 		SessionManager.instance.sendMessage(msg);
 	}

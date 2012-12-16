@@ -2,7 +2,6 @@
 *.gif
 *.wav
 *.mp3
-*.ogg
 *.apk.*
 gen
 bin
@@ -29,3 +28,5 @@ local.properties
 .checkstyle
 derby.log
 classes.jar
+server/assets
+javadoc/

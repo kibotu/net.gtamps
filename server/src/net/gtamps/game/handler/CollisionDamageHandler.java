@@ -8,15 +8,13 @@ import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class CollisionDamageHandler extends ServersideHandler<Entity> {
 
-	private static EventType[] receives = { EventType.ENTITY_COLLIDE };
+	private static final EventType[] receives = { EventType.ENTITY_COLLIDE };
 
 	float impulseDmgMultiply;
 	int baseDamage;
 
 	public CollisionDamageHandler(final Universe universe, final Entity parent, final int baseDamage, final float impulseDmgMultiply) {
-		super(universe, Type.COLLISION, parent);
-		setReceives(receives);
-		connectUpwardsActor(parent);
+		super(universe, Type.COLLISION, parent, receives);
 
 		this.baseDamage = baseDamage;
 		this.impulseDmgMultiply = impulseDmgMultiply;
@@ -38,7 +36,5 @@ public class CollisionDamageHandler extends ServersideHandler<Entity> {
 		dmgEvent.useProperty(StringConstants.PROPERTY_VALUE, "").set(String.valueOf(dmg));
 		getUniverse().dispatchEvent(dmgEvent);
 	}
-
-
 
 }

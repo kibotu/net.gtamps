@@ -1,6 +1,7 @@
 package net.gtamps.shared;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import net.gtamps.shared.Utils.Logger;
 
@@ -45,10 +46,10 @@ final public class Config {
 	/**
 	 * SOCKET
 	 */
-	public static final ArrayList<String> IPS;
+	public static final LinkedList<String> IPS;
 
 	static {
-		IPS = new ArrayList<String>(10);
+		IPS = new LinkedList<String>();
 		IPS.add("192.168.1.27");
 		IPS.add("192.168.214.1");
 		IPS.add("192.168.1.51");
@@ -80,8 +81,10 @@ final public class Config {
 	public static final long HUD_INPUT_MESSAGE_TIMOUT = 20;
 	public static String DEFAULT_USERNAME = "blub";
 	public static final String DEFAULT_PASSWORD = "blub";
+	public static String DEFAULT_USERNAME_TIL = "til";
+	public static final String DEFAULT_PASSWORD_TIL = "secretpassword";
 
-	public static final String TEST_LEVEL_PATH = "../assets/map1.map.lvl";
+	public static final String TEST_LEVEL_PATH = "./assets/map1.map.lvl";
 
 	public static final boolean SHOW_NETWORK_BANDWITH_USAGE = false;
 

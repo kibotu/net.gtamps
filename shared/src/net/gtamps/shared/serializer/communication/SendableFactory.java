@@ -40,7 +40,7 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createLoginRequest(final String username, final String password) {
-		final DataMap authData = new DataMap();
+		final DataMap authData = sendableProvider.getDataMap();
 		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(username));
 		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(password));
 		authData.add(nameEntry).add(passEntry);
@@ -49,7 +49,7 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createRegisterRequest(final String username, final String password) {
-		final DataMap authData = new DataMap();
+		final DataMap authData = sendableProvider.getDataMap();
 		final MapEntry<Value<String>> nameEntry = sendableProvider.getMapEntry(StringConstants.AUTH_USERNAME, sendableProvider.getValue(username));
 		final MapEntry<Value<String>> passEntry = sendableProvider.getMapEntry(StringConstants.AUTH_PASSWORD, sendableProvider.getValue(password));
 		authData.add(nameEntry).add(passEntry);
@@ -79,7 +79,7 @@ public final class SendableFactory {
 	}
 
 	public NewSendable createGetUpdateRequest(final long revId) {
-		final DataMap data = new DataMap();
+		final DataMap data = sendableProvider.getDataMap();
 		final MapEntry<Value<Long>> revEntry = sendableProvider.getMapEntry(StringConstants.UPDATE_REVISION, sendableProvider.getValue(revId));
 		data.add(revEntry);
 

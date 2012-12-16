@@ -168,18 +168,18 @@ public class PhysicsFactory {
 			case CAR:
 				final CircleDef explosionSensorDef = new CircleDef();
 				explosionSensorDef.isSensor = true;
-				final float radius = 10f;
+				final float radius = 5f;
 				explosionSensorDef.localPosition = new Vec2(0, 0);
 				explosionSensorDef.radius = radius;
 				explosionSensorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-				explosionSensorDef.userData = EventType.ENTITY_SENSE_EXPLOSION;
-				final PolygonDef doorDef = new PolygonDef();
-				doorDef.setAsBox(2f, 5f);
-				doorDef.isSensor = true;
-				doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
-				doorDef.userData = EventType.ENTITY_SENSE_DOOR;
+				explosionSensorDef.userData = EventType.ENTITY_SENSE_DOOR;
 				defs.add(explosionSensorDef);
-				defs.add(doorDef);
+				//				final PolygonDef doorDef = new PolygonDef();
+				//				doorDef.setAsBox(3f, 6f);
+				//				doorDef.isSensor = true;
+				//				doorDef.filter.groupIndex = PhysicalConstants.COLLISION_GROUP_SENSOR;
+				//				doorDef.userData = EventType.ENTITY_SENSE_DOOR;
+				//				defs.add(doorDef);
 				break;
 		}
 		return defs;

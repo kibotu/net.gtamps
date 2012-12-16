@@ -78,4 +78,10 @@ public class EntityView extends AbstractEntityView implements IDirty {
     public void setObject3d(RenderableNode object3d) {
         this.object3d = object3d;
     }
+
+	@Override
+	public void deactivate() {
+		// TODO Auto-generated method stub
+		
+	}
 }

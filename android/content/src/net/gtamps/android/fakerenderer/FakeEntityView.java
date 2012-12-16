@@ -15,14 +15,14 @@ public class FakeEntityView extends AbstractEntityView {
 		super(iev);
 		this.bitmap = b;
 		this.lastEntity = iev;
-		millisUpdateTimeStamp = System.currentTimeMillis();
-		
+		millisUpdateTimeStamp = System.currentTimeMillis();		
 	}
 	
 	@Override
 	public void update(Entity serverEntity) {
 		this.lastEntity = this.entity;
-		this.entity = serverEntity; 
+		this.entity = serverEntity;
+		this.activated = true;
 		millisUpdateTimeStamp = System.currentTimeMillis();
 	}
 	
@@ -59,6 +59,11 @@ public class FakeEntityView extends AbstractEntityView {
 
 	public boolean hasBitmap() {
 		return bitmap!=null;
+	}
+
+	@Override
+	public void deactivate() {
+		this.activated = false;
 	}
 
 }

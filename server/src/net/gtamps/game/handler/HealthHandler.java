@@ -13,6 +13,8 @@ import net.gtamps.shared.serializer.communication.StringConstants;
 public class HealthHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
 
+	private static final EventType[] eventsReceived = {EventType.ACTION_SUICIDE, EventType.ENTITY_DAMAGE};
+
 	private final IProperty<Boolean> isAlive;
 	private final IProperty<Integer> health;
 	private final IProperty<Float> healthRatio;
@@ -25,9 +27,7 @@ public class HealthHandler extends ServersideHandler<Entity> {
 	}
 
 	public HealthHandler(final Universe universe, final Entity parent, final int maxHealth, final float dmgMultiplier, final int threshold) {
-		super(universe, Handler.Type.HEALTH, parent);
-		setReceives(new EventType[]{EventType.ACTION_SUICIDE, EventType.ENTITY_DAMAGE});
-		connectUpwardsActor(parent);
+		super(universe, Handler.Type.HEALTH, parent, eventsReceived);
 		if (maxHealth < 0) {
 			throw new IllegalArgumentException("'maxHealth' must be >= 0");
 		}
@@ -96,7 +96,7 @@ public class HealthHandler extends ServersideHandler<Entity> {
 
 	private void die() {
 		final GameEvent death = new GameEvent(EventType.ENTITY_DESTROYED, parent);
-		System.out.println("death! destruction! calamity!");
+		System.out.println(parent + " death! destruction! calamity!");
 
 		//TODO
 		//FIXME queue events, implement eventHandling phase to decouple from physics

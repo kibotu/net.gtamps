@@ -5,26 +5,31 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
+import net.gtamps.shared.Utils.cache.IObjectCache;
+import net.gtamps.shared.Utils.cache.ObjectFactory;
+import net.gtamps.shared.Utils.cache.ThreadLocalObjectCache;
 import net.gtamps.shared.serializer.communication.AbstractSendable;
+import net.gtamps.shared.serializer.communication.SendableCacheFactory;
+import net.gtamps.shared.serializer.communication.SendableProvider;
+import net.gtamps.shared.serializer.communication.SendableProviderSingleton;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
 
 public class ListNodeTest {
+	
+	@Mock
+	IObjectCache<ListNode<Content>> cache;
 
 	@SuppressWarnings("serial")
 	class Content extends AbstractSendable<Content> {
+		Integer hash = null;
 
 		@Override
 		public boolean equals(final Object o) {
 			return this == o;
-		}
-
-		@Override
-		public int hashCode() {
-			return this.toString().hashCode();
 		}
 
 		@Override
@@ -34,13 +39,25 @@ public class ListNodeTest {
 		@Override
 		protected void recycleHook() {
 		}
+
+		@Override
+		public int hashCode() {
+			if (hash == null) {
+				this.hash = (int)(Math.random() * Integer.MAX_VALUE);
+			}
+			return hash;
+			
+		}
 	}
 
 	ListNode<Content> listNode;
+	ListNode<Content> secondListNode;
+	
 
 	@Before
 	public final void before() {
 		listNode = new ListNode<Content>(new Content());
+		secondListNode = new ListNode<Content>(new Content());
 	}
 
 	@Ignore
@@ -164,7 +181,32 @@ public class ListNodeTest {
 
 	@Test
 	public final void testUnlink() {
-		fail("Not yet implemented"); // TODO
+		listNode.next = secondListNode;
+		
+		listNode.unlink();
+		
+		assertUnlinked(listNode);
+		assertUnlinked(secondListNode);
+	}
+	
+	@Test
+	public final void testRecycle() {
+		
+		SendableProvider cache = SendableProviderSingleton.getInstance(); 
+		ListNode<Value<Float>> list1 = cache.getListNode(cache.getValue(1f));
+		ListNode<Value<Float>>  list2 = cache.getListNode(cache.getValue(2f));;
+		list1.next = list2;
+		
+		list1.recycle();
+
+		assertUnlinked(list1);
+		assertUnlinked(list2);
+	}
+
+	private <T extends AbstractSendable<T>> void assertUnlinked(ListNode<T> node) {
+		assertEquals("next", ListNode.<T>emptyList(), node.next);
+		assertNull("value", node.value());
+		assertTrue("iterator must be set to self", ((ListNode.ListNodeIterator<T>)node.iterator()).isReset());
 	}
 
 }

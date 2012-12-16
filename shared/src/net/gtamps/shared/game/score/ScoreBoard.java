@@ -41,7 +41,7 @@ public class ScoreBoard implements IGameEventListener {
 	 * @param type	not {@code null}
 	 * 
 	 * @return	{@code true} if this scoreBoard is currently keeping a score of
-	 * 			the given <tt>type</tt> 
+	 * 			the given <tt>type</tt>
 	 */
 	public boolean isTracking(final Score.ScoreType type) {
 		return scores.containsKey(type);
@@ -49,7 +49,7 @@ public class ScoreBoard implements IGameEventListener {
 
 	/**
 	 * @param type
-	 * @return
+	 * @return	the score being tracked, identified by <tt>type</tt>
 	 * @throws IllegalArgumentException	if <tt>type</tt> is {@code null} or
 	 * 									there is no score to return
 	 */

@@ -1,5 +1,7 @@
 package net.gtamps.shared.game.player;
 
+import java.util.Set;
+
 import net.gtamps.shared.game.GameObject;
 import net.gtamps.shared.game.IProperty;
 import net.gtamps.shared.game.SharedGameActor;
@@ -10,6 +12,8 @@ import net.gtamps.shared.serializer.communication.StringConstants;
 
 public class Player extends SharedGameActor {
 	private static final long serialVersionUID = -8070689911091703487L;
+
+	private static final Set<EventType> receivedEvents = toImmutableSet(EventType.PLAYER_EVENT);
 
 	@Deprecated
 	private Entity entity;
@@ -32,6 +36,11 @@ public class Player extends SharedGameActor {
 		}
 	}
 
+	@Override
+	public Set<EventType> getReceivedEventTypes() {
+		return receivedEvents;
+	}
+
 	/**
 	 * Set the player's representation to the given entity, replacing an
 	 * existing one.
@@ -49,18 +58,18 @@ public class Player extends SharedGameActor {
 		//((IncarnationProperty)entity.getProperty(Property.Type.INCARNATION)).setPlayer(this);
 		entity.addEventListener(EventType.ENTITY_EVENT, this);
 		entity.addEventListener(EventType.PLAYER_EVENT, this);
-		this.addEventListener(EventType.ACTION_EVENT, entity);
+		addEventListener(EventType.ACTION_EVENT, entity);
 	}
 
 	public void removeEntity() {
-		if (this.entity == null) {
+		if (entity == null) {
 			return;
 		}
 		//((IncarnationProperty)entity.getProperty(Property.Type.INCARNATION)).removePlayer();
 		entity.removeOwner();
 		entity.removeEventListener(EventType.GAME_EVENT, this);
-		this.removeEventListener(EventType.GAME_EVENT, entity);
-		this.entity = null;
+		removeEventListener(EventType.GAME_EVENT, entity);
+		entity = null;
 		entityUid.set(GameObject.INVALID_UID);
 	}
 

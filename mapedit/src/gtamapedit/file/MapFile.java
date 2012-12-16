@@ -22,6 +22,7 @@ import net.gtamps.shared.Utils.math.Vector3;
 import net.gtamps.shared.game.level.EntityPosition;
 import net.gtamps.shared.game.level.Level;
 import net.gtamps.shared.game.level.PhysicalShape;
+import net.gtamps.shared.game.level.Tile;
 
 
 public class MapFile implements Serializable {
@@ -106,6 +107,7 @@ public class MapFile implements Serializable {
 		Level level = new Level(mapData.length*Configuration.tileSize, mapData[0].length*Configuration.tileSize);
 		LinkedList<PhysicalShape> phys = level.getPhysicalShapes();
 		LinkedList<EntityPosition> entPos = level.getEntityPositions();
+		LinkedList<Tile> tileList = new LinkedList<Tile>();
 		
 		TileBitmapBuilder tileImageBuilder = new TileBitmapBuilder(); 
 		tileImageBuilder.createTileMap(this);
@@ -145,7 +147,17 @@ public class MapFile implements Serializable {
 				}
 			}
 		}
-		
+		/*
+		 * Add all entities to the level: like spawnpoints, cars and redlights.
+		 */
+		for (int x = 0; x < mapData.length; x++) {
+			for (int y = 0; y < mapData[0].length; y++) {
+				if(!mapData[x][y].getTextureTop().equals("")){
+					tileList.add(new Tile(mapData[x][y].getTextureTop(),x*Configuration.tileSize,y*Configuration.tileSize, mapData[x][y].getFloors()*Configuration.tileSize,mapData[x][y].getRotation()));
+				}
+			}
+		}
+		level.setTileList(tileList);
 		
 
 		String objfile = OBJBuilder.buildObjFromMap(mapData,tileImageBuilder.getImageMapping(),tileImageBuilder.getTextureSpacing());
@@ -162,7 +174,8 @@ public class MapFile implements Serializable {
 			ex.printStackTrace();
 		}
 		return "Writing export map file...\n" + "=== OBJ File size: " + objfile.length() + " Bytes\n"
-				+ "=== Physical Objects: " + phys.size() + "\n" + "=== Entity Positions: " + entPos.size() + "\n";
+				+ "=== Physical Objects: " + phys.size() + "\n" + "=== Entity Positions: " + entPos.size() + "\n"+
+				"=== Tiles in Tile List : "+tileList.size();
 	}
 
 	public void loadMap(String path) {

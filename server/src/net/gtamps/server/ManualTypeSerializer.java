@@ -64,6 +64,12 @@ public class ManualTypeSerializer implements ISerializer {
 	private final SendableProvider sendableProvider = new SendableProvider(new SendableCacheFactory());
 
 	@Override
+	public ManualTypeSerializer clone() {
+		// TODO reuse sendableProvider
+		return new ManualTypeSerializer();
+	}
+
+	@Override
 	public byte[] serializeNewMessage(@NotNull final NewMessage message) {
 		GUILogger.getInstance().log(TAG, "serializing message: " + message);
 		final StringBuilder bld = new StringBuilder();
@@ -76,8 +82,8 @@ public class ManualTypeSerializer implements ISerializer {
 	}
 
 	private <T extends AbstractSendable<T>>void serializeAbstractSendable(final StringBuilder bld, final AbstractSendable<T> sdb) {
-		Object sdb2 = sdb;
-        if (sdb2 instanceof NewMessage) {
+		final Object sdb2 = sdb;
+		if (sdb2 instanceof NewMessage) {
 			serializeMessage(bld, (NewMessage) sdb2);
 		} else if (sdb2 instanceof NewSendable) {
 			serializeSendable(bld, (NewSendable) sdb2);

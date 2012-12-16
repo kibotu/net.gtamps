@@ -1,21 +1,20 @@
 package net.gtamps.android.simple3Drenderer;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import net.gtamps.android.core.input.InputEngineController;
+import net.gtamps.android.core.input.inputlistener.CameraMovementListener;
 import net.gtamps.android.core.input.layout.InputLayoutIngame;
 import net.gtamps.android.core.net.AbstractEntityView;
-import net.gtamps.android.core.net.ConnectionThread;
-import net.gtamps.android.fakerenderer.FakeCamera;
-import net.gtamps.android.fakerenderer.FakeEntityView;
-import net.gtamps.android.fakerenderer.FakeWorld;
-import net.gtamps.android.game.content.scenes.inputlistener.CameraMovementListener;
-import net.gtamps.shared.game.level.Tile;
-
+import net.gtamps.android.core.net.threaded.ConnectionThread;
+import net.gtamps.android.simple3Drenderer.helper.GL10Utils;
+import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Paint;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
@@ -28,25 +27,38 @@ public class SimpleRenderer implements Renderer {
 	private static final boolean RENDER_ENTITIES = true;
 	private static final boolean RENDER_HUD = true;
 	private static final boolean RENDER_FPS = true;
-	private static final int EVERY_N_TH_FRAME = 100;
-	// private static final char[] SCORE_LABEL = "SCORE ".toCharArray();
+	private static final int EVERY_N_TH_FRAME = 50;
+	private int SCORE_COUNTER_OFFSET = 6;
+	private static final char[] SCORE_LABEL = "SCORE         ".toCharArray();
 	private static final long MILLIS_PER_FRAME = 1000 / MAX_FPS;
 
 	private SimpleCamera camera;
 	private SimpleWorld world;
 
+	TexturedQuad[] fontQuads = new TexturedQuad[256];
+
 	// private Bitmap hudScoreBoard;
 	// private Bitmap hudFont;
 	// private int hudFontCharSize = 16;
 
-	private Context context;
+	// private Context context;
 
-	public SimpleRenderer(Context context) {
-		this.context = context;
-		this.world = new SimpleWorld(context);
-		this.camera = new SimpleCamera(world,context);
-		ConnectionThread connection = new ConnectionThread(world);
-		new Thread(connection).start();
+	public SimpleRenderer(Context context, SimpleWorld world) {
+		this.world = world;
+		// this.context = context;
+		this.camera = new SimpleCamera(this.world, context);
+		
+
+		for (int i = 0; i < 256; i++) {
+			float[] f = { 	
+							(1f / 16f) * ((i) % 16), 	(1f / 16f) * ((i / 16)+1),
+							(1f / 16f) * ((i % 16)+1),	(1f / 16f) * ((i / 16)+1),
+							(1f / 16f) * ((i) % 16), 	(1f / 16f) * ((i) / 16),
+							(1f / 16f) * ((i % 16)+1), (1f / 16f) * ((i) / 16),
+							};
+			fontQuads[i] = new TexturedQuad("spritefont_256.png");
+			fontQuads[i].setTextureCoord(f);
+		}
 
 		InputEngineController.getInstance().setLayout(new InputLayoutIngame(world));
 		CameraMovementListener pml = new CameraMovementListener(world, camera);
@@ -69,6 +81,15 @@ public class SimpleRenderer implements Renderer {
 										// performance
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL10.GL_BLEND);
+		
+		
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, GL10Utils.floatsToFloatBuffer(new float[]{0.5f,0.5f,0.5f,1f}));
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, GL10Utils.floatsToFloatBuffer(new float[]{0.8f,0.7f,0.5f,1f}));
+//		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, GL10Utils.floatsToFloatBuffer(new float[]{0.1f,0.1f,10f,1f}));
+//		gl.glEnable(GL10.GL_LIGHT1);
+//		gl.glEnable(GL10.GL_LIGHTING);
 	}
 
 	// Call back after onSurfaceCreated() or whenever the window's size changes
@@ -88,6 +109,8 @@ public class SimpleRenderer implements Renderer {
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select model-view matrix
 		gl.glLoadIdentity(); // Reset
+		
+		InputEngineController.getInstance().setResolution(width, height);
 
 		// You OpenGL|ES display re-sizing code here
 		// ......
@@ -101,12 +124,18 @@ public class SimpleRenderer implements Renderer {
 	private char[] FPSchars = "   FPS".toCharArray();
 	private long currentTimeMillis;
 
+	// preallocate
+	int i = 0;
+	int len = 0;
+
+	
+	List<AbstractEntityView> allEntities;
+	LinkedList<CubeTile> allTiles;
+	
 	public void onDrawFrame(GL10 gl) {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity(); // Reset model-view matrix ( NEW )
-		gl.glTranslatef(-1.5f, 0.0f, -6.0f); // Translate left and into the
-												// screen ( NEW )
-
+		gl.glTranslatef(0f, 0.0f, -6.0f);
 		if (LIMIT_FPS) {
 			currentTimeMillis = System.currentTimeMillis();
 			if (((currentTimeMillis + 1) - lastDraw) < MILLIS_PER_FRAME) {
@@ -122,10 +151,10 @@ public class SimpleRenderer implements Renderer {
 		}
 
 		gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		// clear the color buffer to show the ClearColor we called above...
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		camera.setGL(gl);
+		camera.setLastExplosion(world.getLastExplosionMillis());
 
 		if (world.getActiveView() == null) {
 			for (AbstractEntityView aev : world.getAllEntities()) {
@@ -138,42 +167,54 @@ public class SimpleRenderer implements Renderer {
 		}
 
 		gl.glPushMatrix();
-		gl.glScalef(0.2f, 0.2f, 0.2f);
+		gl.glScalef(0.6f, 0.6f, 0.6f);
+
 		if (RENDER_TILES) {
-			if (world.getCubeTileMap() != null) {
+			allTiles = world.getCubeTileMap();
+			if (allTiles != null) {
 				synchronized (world) {
-					for (CubeTile t : world.getCubeTileMap()) {
-						camera.renderTile(t);
+					// lets assume, all tiles are always in one texture.
+					allTiles.get(0).bindTexture(gl);
+					len = allTiles.size();
+					for (i = 0; i < len; i++) {
+						camera.renderTile(allTiles.get(i));
 					}
 				}
 			}
 		}
+		
+		if (RENDER_ENTITIES) {
+			// lets assume all entities are inside one texture
+			allEntities = world.getAllEntities();
+			if (!allEntities.isEmpty()) {
+				((SimpleEntityView) allEntities.get(0)).bindTexture(gl);
+				len = allEntities.size();
+				for (i = 0; i < len; i++) {
+					camera.renderEntityView((SimpleEntityView) allEntities.get(i), gl);
+				}
+			}
+
+		}
 		gl.glPopMatrix();
 
-		if (RENDER_ENTITIES) {
-			for (AbstractEntityView ev : world.getAllEntities()) {
-				camera.renderEntityView((SimpleEntityView) ev, gl);
-			}
-
-		}
 		if (RENDER_HUD) {
-			// drawHUD(gl);
+			fontQuads[0].bindTexture(gl);
+			gl.glLoadIdentity();
+			gl.glTranslatef(-2f, 1.0f, -4.0f);
+			gl.glScalef(0.1f, 0.1f, 0.1f);
+			drawHUD(gl);
 		}
+		
 
-		if (RENDER_FPS) {
-			if (FPScounter < FPS_AVERAGE_AMOUNT) {
-				FPScounter++;
-				avgFPS += (int) (1000 / ((System.currentTimeMillis() + 1) - lastDraw));
-			} else {
-				FPS = avgFPS / FPScounter;
-				avgFPS = 0;
-				FPScounter = 0;
-			}
-
-			FPSchars[0] = (char) (((FPS / 10) % 10) + 48);
-			FPSchars[1] = (char) (((FPS) % 10) + 48);
-			// drawHudFont(FPSchars, canvas, 10, 10);
+		if (FPScounter < FPS_AVERAGE_AMOUNT) {
+			FPScounter++;
+			avgFPS += (int) (1000 / ((System.currentTimeMillis() + 1) - lastDraw));
+		} else {
+			FPS = avgFPS / FPScounter;
+			avgFPS = 0;
+			FPScounter = 0;
 		}
+		
 		frameCounter++;
 		if (frameCounter > EVERY_N_TH_FRAME) {
 			frameCounter = 0;
@@ -183,7 +224,60 @@ public class SimpleRenderer implements Renderer {
 
 	}
 
-	private void everyNthFrameDo() {
+	private void drawHUD(GL10 gl) {
+		gl.glDisable(GL10.GL_DEPTH_TEST);
+		drawHudFont(SCORE_LABEL, gl, -2f, -2f);
+		if (RENDER_FPS) {
+			FPSchars[0] = (char) (((FPS / 10) % 10) + 48);
+			FPSchars[1] = (char) (((FPS) % 10) + 48);
+			drawHudFont(FPSchars, gl, -2f, -4f);
+		}
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+	}
 
+	private void everyNthFrameDo() {
+		world.ensureEntityAppearance();
+		updateScoreLabel();
+	}
+
+	char drawChar = ' ';
+	private int charNumber;
+
+	private void drawHudFont(char[] s, GL10 gl, float positionx, float positiony) {
+		gl.glPushMatrix();
+		gl.glTranslatef(positionx, positiony, 0f);
+		for (charNumber = 0; charNumber < s.length; charNumber++) {
+			drawChar = s[charNumber];
+			if (drawChar > 255)
+				continue;
+			fontQuads[drawChar].draw(gl);
+			gl.glTranslatef(1f, 0f, 0f);
+
+		}
+		gl.glPopMatrix();
+	}
+	
+	int scoreCount = 0;
+	int scorePos = SCORE_COUNTER_OFFSET;
+	private void updateScoreLabel() {
+		Arrays.fill(SCORE_LABEL, SCORE_COUNTER_OFFSET, SCORE_LABEL.length, ' ');
+		scoreCount = world.getPlayerFragScore();
+		scorePos = Math.min(SCORE_COUNTER_OFFSET +  getNumberOfDigits(scoreCount+1)-1, SCORE_LABEL.length - 1);
+		do {
+//			Logger.d(this, "POSITION " + scorePos);
+			SCORE_LABEL[scorePos] = (char) (scoreCount % 10 + 48);
+			scoreCount /= 10; 
+			scorePos--;
+		} while (scoreCount != 0 && scorePos >= SCORE_COUNTER_OFFSET);
+	}
+	
+	int count = 0;
+	private int getNumberOfDigits(int n) {
+		count = 0;
+		while (n != 0) {
+			count ++;
+			n /= 10;
+		}
+		return count;
 	}
 }
