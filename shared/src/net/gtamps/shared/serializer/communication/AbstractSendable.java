@@ -32,9 +32,9 @@ public abstract class AbstractSendable<Type extends AbstractSendable<Type>> impl
 	public void recycle() throws IllegalStateException {
 		recycleHook();
 		try {
-			if (this != ListNode.EmptyListNode.INSTANCE) {
-				cache.registerElement((Type)this);
-			}
+//			if (this != ListNode.EmptyListNode.INSTANCE) {
+//				cache.registerElement((Type)this);
+//			}
 		} catch (final NullPointerException e) {
 				throw new IllegalStateException(this.toString() +" "+ ERROR_CACHE_UNDEFINED_MSG, e);
 		}
