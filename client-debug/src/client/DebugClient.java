@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.gtamps.android.core.net.ConnectionManager;
 import net.gtamps.shared.serializer.ConnectionManager;
 import net.gtamps.shared.serializer.communication.Message;
 import net.gtamps.shared.serializer.communication.MessageFactory;

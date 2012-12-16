@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Content.iml" filepath="$PROJECT_DIR$/Content.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" filepath="$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../mapedit/Mapedit.iml" filepath="$PROJECT_DIR$/../../mapedit/Mapedit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../normalizer/Normalizer.iml" filepath="$PROJECT_DIR$/../../normalizer/Normalizer.iml" />
       <module fileurl="file://$PROJECT_DIR$/../engine-test/engine-test.iml" filepath="$PROJECT_DIR$/../engine-test/engine-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphic/graphic.iml" filepath="$PROJECT_DIR$/../graphic/graphic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" filepath="$PROJECT_DIR$/../graphics-engine/graphics-engine.iml" />
