@@ -166,17 +166,17 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	@Override
 	public void recycle() {
 		recycleThis = this.next;
-		while (recycleThis != emptyList()) {
-			tmplist = recycleThis.next;
-			if (recycleThis.value != null) {
-				recycleThis.value.recycle();
-				recycleThis.value = null;
-			}
-			recycleThis.resetIterator();
-			recycleThis.cache.registerElement(recycleThis);
-			recycleThis.next = emptyList();
-			recycleThis = tmplist;
-		}
+//		while (recycleThis != emptyList()) {
+//			tmplist = recycleThis.next;
+//			if (recycleThis.value != null) {
+//				recycleThis.value.recycle();
+//				recycleThis.value = null;
+//			}
+//			recycleThis.resetIterator();
+//			recycleThis.cache.registerElement(recycleThis);
+//			recycleThis.next = emptyList();
+//			recycleThis = tmplist;
+//		}
 		if (this.value != null) {
 			this.value.recycle();
 			this.value = null;
