@@ -6,7 +6,6 @@ import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.*;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
-import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Plane;
 import net.gtamps.android.graphics.graph.scene.primitives.Skybox;
@@ -70,15 +69,15 @@ public class Test12Scene extends SceneGraph {
 //        animations.put(PACKAGE_NAME + "ahri_attack2_anm", anm_attack2);
 
         RiggedObject3D ahri = new RiggedObject3D();
-        ahri.create(skn,skl,animations);
-        ahri.setScaling(0.01f,0.01f,0.01f);
+        ahri.create(skn, skl, animations);
+        ahri.setScaling(0.01f, 0.01f, 0.01f);
         ahri.addTexture(new Texture(R.drawable.ahri, Texture.Type.u_Texture01, true));
         ahri.getRenderState().setShader(Shader.Type.PHONG);
 
         //add obj to scene
         RootNode ahri1 = new RootNode();
         ahri1.add(ahri);
-        ahri1.setPosition(-4f,0,0);
+        ahri1.setPosition(-4f, 0, 0);
         add(ahri1);
 
         RootNode ahri2 = new RootNode();
@@ -87,12 +86,12 @@ public class Test12Scene extends SceneGraph {
 
         RootNode ahri3 = new RootNode();
         ahri3.add(ahri);
-        ahri3.setPosition(4f,0,0);
+        ahri3.setPosition(4f, 0, 0);
         add(ahri3);
 
         Plane ground = new Plane();
-        ground.setRotation(MathUtils.degreesToRadians*90,0,0);
-        ground.setDimension(20,20,20);
+        ground.setRotation(MathUtils.degreesToRadians * 90, 0, 0);
+        ground.setDimension(20, 20, 20);
         ground.getRenderState().setShader(Shader.Type.PHONG);
         ground.addTexture(new Texture(R.drawable.stonebg, Texture.Type.u_Texture01, true));
         add(ground);

@@ -1,25 +1,19 @@
 package net.gtamps.android.graphics.test.actions;
 
-import android.graphics.Bitmap;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.ViewPort;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
-import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
-import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.utils.Registry;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.UIDGenerator;
 import net.gtamps.shared.Utils.math.Vector3;
 
 import javax.microedition.khronos.opengles.GL10;
-import java.io.*;
 import java.util.Calendar;
 
 public class Test12Action extends RenderAction {
@@ -50,16 +44,17 @@ public class Test12Action extends RenderAction {
 
     private int counter = 360;
     private long captureStartTime = Calendar.getInstance().getTimeInMillis();
+
     private void captureVideo(int amountScreens, int interval) {
 
-        if(amountScreens < counter) return;
+        if (amountScreens < counter) return;
 
         // find out if enough time has passed
         int dtInterpolation = (int) (interval - (System.currentTimeMillis() - captureStartTime));
 
         // update
         if (dtInterpolation <= 0) {
-            Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/","   screenshot_"+counter+".png");
+            Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString() + "/aa_gtamps_screens/", "   screenshot_" + counter + ".png");
             ++counter;
         } else {
             captureStartTime = Calendar.getInstance().getTimeInMillis();
@@ -92,7 +87,7 @@ public class Test12Action extends RenderAction {
                 getScenes().get(0).getRootNode().getChild(2).setVisible(!showSkn); // skl
                 return true;
             case R.id.capture_screen:
-                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/", "screenshot_"+UIDGenerator.getNewUID()+".png");
+                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString() + "/aa_gtamps_screens/", "screenshot_" + UIDGenerator.getNewUID() + ".png");
                 return true;
             case R.id.capture_video:
                 counter = 0;

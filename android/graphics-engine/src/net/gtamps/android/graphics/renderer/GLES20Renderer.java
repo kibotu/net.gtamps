@@ -2,7 +2,6 @@ package net.gtamps.android.graphics.renderer;
 
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
-import android.os.Debug;
 import com.badlogic.gdx.backends.android.AndroidGL20;
 import fix.android.opengl.GLES20;
 import net.gtamps.android.graphics.graph.RenderableNode;
@@ -58,6 +57,9 @@ public class GLES20Renderer extends BasicRenderer {
         glDepthFunc(GL_LEQUAL);
         glDepthMask(true);
 
+        gl10.glAlphaFunc(GL_GREATER, 0.1f);
+        glEnable(GL11.GL_ALPHA_TEST);
+
         // cull backface
         glEnable(GL_CULL_FACE);
 
@@ -76,10 +78,12 @@ public class GLES20Renderer extends BasicRenderer {
         int textureId = newTextureID();
         glBindTexture(GL_TEXTURE_2D, textureId);
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmapFormat, texture, 0);
+//        glTglTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, generateMipMap ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//        glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
         glGenerateMipmap(GL_TEXTURE_2D);
         Logger.i(this, "[w=" + texture.getWidth() + "|h=" + texture.getHeight() + "|id=" + textureId + "|mipmaps=" + generateMipMap + "] Bitmap atlas successfully allocated.");
         texture.recycle();
@@ -241,12 +245,14 @@ public class GLES20Renderer extends BasicRenderer {
         int newProgram = renderState.getShader().getProgram();
         if (newProgram != activeShaderProgram) {
             glUseProgram(activeShaderProgram = newProgram);
-            Logger.i(this, "useshader=" + activeShaderProgram);
         }
         applyCamera(activeCamera.getFrustum());
 
         if (renderState.isDoubleSided()) glEnable(GL_CULL_FACE);
         else glDisable(GL_CULL_FACE);
+
+        gl10.glAlphaFunc(GL_GREATER, 0.1f);
+        glEnable(GL11.GL_ALPHA_TEST);
 
         // vertices
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.vertexBufferID);
@@ -463,12 +469,12 @@ public class GLES20Renderer extends BasicRenderer {
             // src: http://www.opengl.org/wiki/Vertex_Specification_Best_Practices
 //            glBufferData(GL_ARRAY_BUFFER, 0, null, GL_DYNAMIC_DRAW);
 //            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer());
-            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(),GL_DYNAMIC_DRAW );
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
 
             glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo.normalBufferID);
 //            glBufferData(GL_ARRAY_BUFFER, 0, null, GL_DYNAMIC_DRAW);
 //            glBufferSubData(GL_ARRAY_BUFFER, 0, mesh.vertices.getNormals().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getNormals().getBuffer());
-            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(),GL_DYNAMIC_DRAW );
+            glBufferData(GL_ARRAY_BUFFER, mesh.vertices.getVertices().getBuffer().capacity() * OpenGLUtils.BYTES_PER_FLOAT, mesh.vertices.getVertices().getBuffer(), GL_DYNAMIC_DRAW);
         }
         // deselect buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
