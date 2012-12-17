@@ -8,15 +8,14 @@ import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.morph.AnimatedObject3D;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class Test10Action extends RenderAction {
 
-    protected SceneGraph world;
-
-    public Test10Action(SceneGraph scene) {
-        scenes.add(world = scene);
+    public Test10Action(@NotNull SceneGraph scene) {
+        super(scene);
     }
 
     @Override

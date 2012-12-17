@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         </EditText>    
-		<net.gtamps.android.menu.MenuButton
+		<net.gtamps.android.gtandroid.menu.MenuButton
                 android:id="@+id/menuAddIpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

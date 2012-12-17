@@ -5,16 +5,12 @@ uniform mat4 u_ModelViewMatrix;     // model matrix
 
 // in
 attribute vec3 in_Position;
-attribute vec3 in_Normal;
 attribute vec2 in_TexCoords;
 
 // out
 varying vec2 v_TexCoords;
-varying vec3 v_Normal;
 
 void main() {
-  vec4 position =  u_WorldView *  u_ModelViewMatrix * vec4(in_Position, 1.);
-  v_Normal = (u_WorldView * u_ModelViewMatrix * vec4(in_Normal, 0.0)).xyz;
-  gl_Position = u_WorldViewProjection * position;
+  gl_Position = u_WorldViewProjection * u_WorldView *  u_ModelViewMatrix * vec4(in_Position, 1.);
   v_TexCoords = in_TexCoords;
 }

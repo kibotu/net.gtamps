@@ -3,6 +3,7 @@ package net.gtamps.android.graphics.renderer;
 import android.os.SystemClock;
 import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -14,8 +15,9 @@ public abstract class RenderAction implements IRenderAction {
     protected final ArrayList<SceneGraph> scenes;
     protected long startTime;
 
-    public RenderAction() {
+    public RenderAction(@NotNull SceneGraph scene) {
         scenes = new ArrayList<SceneGraph>();
+        scenes.add(scene);
         start();
     }
 

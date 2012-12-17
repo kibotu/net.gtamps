@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="net.gtamps.android.gtandroid"
+          android:versionCode="1"
+          android:versionName="beta">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="8"/>
+    <application android:label="@string/app_name" android:icon="@drawable/icon" android:debuggable="true"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        <activity android:name="MenuActivity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="GTA3D" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
+        <activity android:name="GTA2D" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
+    </application>
+</manifest> 

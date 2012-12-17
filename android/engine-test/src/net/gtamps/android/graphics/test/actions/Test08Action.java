@@ -7,15 +7,14 @@ import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.shared.Utils.math.Quaternion;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class Test08Action extends RenderAction {
 
-    protected SceneGraph world;
-
-    public Test08Action(SceneGraph scene) {
-        scenes.add(world = scene);
+    public Test08Action(@NotNull SceneGraph scene) {
+        super(scene);
     }
 
     @Override

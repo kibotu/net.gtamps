@@ -5,8 +5,8 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import net.gtamps.android.graphics.renderer.*;
 import net.gtamps.android.graphics.renderer.RenderCapabilities;
 import net.gtamps.android.graphics.utils.EGLConfigChooser;
@@ -132,5 +132,23 @@ public abstract class RenderActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         final boolean option = renderAction.onOptionsItemSelectedHook(item);
         return option ? option : super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Toast message within gl thread
+     *
+     * @param activity
+     * @param message
+     */
+    final public static void toast(final Activity activity, final String message) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    final public void toast(String message) {
+        toast(this,message);
     }
 }

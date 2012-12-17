@@ -9,6 +9,7 @@
       <directory url="file://$PROJECT_DIR$/../engine-test/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../graphics-engine/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../input-engine/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../gtandroid/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>

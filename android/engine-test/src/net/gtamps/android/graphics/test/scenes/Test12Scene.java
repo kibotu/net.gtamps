@@ -78,7 +78,7 @@ public class Test12Scene extends SceneGraph {
         RootNode ahri1 = new RootNode();
         ahri1.add(ahri);
         ahri1.setPosition(-4f, 0, 0);
-        add(ahri1);
+//        add(ahri1);
 
         RootNode ahri2 = new RootNode();
         ahri2.add(ahri);
@@ -87,7 +87,7 @@ public class Test12Scene extends SceneGraph {
         RootNode ahri3 = new RootNode();
         ahri3.add(ahri);
         ahri3.setPosition(4f, 0, 0);
-        add(ahri3);
+//        add(ahri3);
 
         Plane ground = new Plane();
         ground.setRotation(MathUtils.degreesToRadians * 90, 0, 0);

@@ -12,16 +12,15 @@ import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.UIDGenerator;
 import net.gtamps.shared.Utils.math.Vector3;
+import org.jetbrains.annotations.NotNull;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.Calendar;
 
 public class Test12Action extends RenderAction {
 
-    protected SceneGraph world;
-
-    public Test12Action(SceneGraph scene) {
-        scenes.add(world = scene);
+    public Test12Action(@NotNull SceneGraph scene) {
+        super(scene);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class Test12Action extends RenderAction {
         RootNode rootNode = getScenes().get(0).getRootNode();
 
         cameraRotAngle.set(rot, 0, 0);
-        world.getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 15);
+        getScenes().get(0).getActiveCamera().rotateAroundVector(rootNode.getPosition(), cameraRotAngle, 15);
         captureVideo(360, 0);
     }
 

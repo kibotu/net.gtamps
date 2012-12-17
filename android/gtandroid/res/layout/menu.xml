@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+            android:id="@+id/menuBackgroundImage"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/menu_screen"/>
+
+    <LinearLayout
+            android:id="@+id/mainScreen"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/menuIntroText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Main Menu"/>
+
+        <net.gtamps.android.gtandroid.menu.MenuButton
+                android:id="@+id/menuButtonStartGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Start the game!"/>
+
+        <net.gtamps.android.gtandroid.menu.MenuButton
+                android:id="@+id/menuButtonConfiguration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Configuration"/>
+
+        <net.gtamps.android.gtandroid.menu.MenuButton
+                android:id="@+id/menuButtonQuit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quit"/>
+
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/loadingScreen"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/menuLoadingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading..."/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/configurationScreen"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/configuraionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Configuration"/>
+
+        <EditText
+            android:id="@+id/ipText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </EditText>    
+		<net.gtamps.android.gtandroid.menu.MenuButton
+                android:id="@+id/menuAddIpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add IP"/>
+            
+
+        <net.gtamps.android.gtandroid.menu.MenuButton
+                android:id="@+id/menuButtonGoToMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="go back to main menu"/>
+    </LinearLayout>
+
+</merge>
+   

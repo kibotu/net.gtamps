@@ -2,7 +2,6 @@ package net.gtamps.android.graphics.renderer;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.util.Log;
 import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.utils.Registry;
 import net.gtamps.shared.Utils.Logger;
@@ -16,10 +15,10 @@ public class Shader {
     public enum Type {
 
         PHONG(R.raw.phong_vs, R.raw.phong_ps),
-        SKYBOX(R.raw.skybox_vs, R.raw.skybox_ps),
-        PHONG_HIGH_SPECULAR(R.raw.phong_high_specular_vs, R.raw.phong_ps),
+        DEFAULT(R.raw.texture_color_vs, R.raw.texture_color_ps),
+        PHONG_HIGH_SPECULAR(R.raw.phong_high_specular_vs, R.raw.phong_ps);
 //        PHONG_RIGGED(R.raw.phong_rigged_vs, R.raw.phong_ps),
-        DEFAULT(R.raw.defaultshader_vs, R.raw.defaultshader_ps);
+//        DEFAULT(R.raw.defaultshader_vs, R.raw.defaultshader_ps);
 
         public final int vs;
         public final int ps;
