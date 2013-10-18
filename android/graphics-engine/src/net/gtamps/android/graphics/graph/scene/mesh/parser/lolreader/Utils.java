@@ -8,7 +8,6 @@ import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.Vertex;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.Vector3BufferManager;
 import net.gtamps.android.graphics.graph.scene.mesh.buffermanager.WeightManager;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.Utils.math.Matrix4;
 import net.gtamps.shared.Utils.math.Quaternion;
 import net.gtamps.shared.Utils.math.Vector3;
@@ -295,7 +294,7 @@ public static void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3
         }
 
         BufferUtils.copy(vertices, curV.getBuffer(), vertices.length, 0);
-        BufferUtils.copy(normals, curN.getBuffer(),  normals.length, 0);
+        BufferUtils.copy(normals, curN.getBuffer(), normals.length, 0);
     }
 
     static {

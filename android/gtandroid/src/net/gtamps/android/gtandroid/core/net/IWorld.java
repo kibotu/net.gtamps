@@ -1,7 +1,7 @@
 package net.gtamps.android.gtandroid.core.net;
 
-import net.gtamps.android.game.PlayerManager;
 import net.gtamps.android.gtandroid.core.input.layout.AbstractInputLayout;
+import net.gtamps.android.gtandroid.game.PlayerManager;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.level.Tile;
 import net.gtamps.shared.serializer.communication.NewMessage;

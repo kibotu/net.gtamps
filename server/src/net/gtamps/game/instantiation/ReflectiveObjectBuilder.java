@@ -27,7 +27,7 @@ import net.gtamps.shared.Utils.validate.Validate;
 public class ReflectiveObjectBuilder<T> {
 
 	@SuppressWarnings("unchecked")
-	private static final Class<? extends Collection<?>> DEFAULT_COLLECTION_CLASS = (Class<? extends Collection<?>>) ArrayList.class;
+	private static final Class DEFAULT_COLLECTION_CLASS =  ArrayList.class;
 
 	private final Class<T> type;
 	private boolean locked = false;

@@ -16,8 +16,12 @@
     <content url="file://$MODULE_DIR$/../shared">
       <sourceFolder url="file://$MODULE_DIR$/../shared/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="jdk1.6.0_30" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="derby" level="project" />
+    <orderEntry type="library" name="JBox2D-2.0.1-b250-Full" level="project" />
+    <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="xSocket-2.8.15" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

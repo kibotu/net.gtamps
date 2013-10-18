@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="annotations">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/annotations.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/javastruct-0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/jdom-1.1.1-android-fork.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/junit-4.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/mockito-all-1.8.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/pngj-sandbox.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../shared/libs/mockito-all-1.8.5.jar!/" />
+    </SOURCES>
+  </library>
+</component>

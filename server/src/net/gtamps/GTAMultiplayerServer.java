@@ -46,7 +46,7 @@ public final class GTAMultiplayerServer {
 	 * @deprecated use configuration: common.setup.httpserver.docroot
 	 */
 	@Deprecated
-	public static final String DEFAULT_PATH = "./assets/kompilat/";
+	public static final String DEFAULT_PATH = "../assets/kompilat/";
 	@Deprecated
 	public static final String DEFAULT_MAP = "tinycity.xml";
 	public static final int MAX_LOG_ENTRY_DISPLAY = 20;

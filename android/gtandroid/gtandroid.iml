@@ -15,6 +15,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="graphics-engine" />
     <orderEntry type="module" module-name="utils" />
+    <orderEntry type="module" module-name="Content" />
   </component>
 </module>
 

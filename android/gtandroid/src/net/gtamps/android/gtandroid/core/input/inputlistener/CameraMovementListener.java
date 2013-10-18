@@ -1,8 +1,8 @@
 package net.gtamps.android.gtandroid.core.input.inputlistener;
 
+import net.gtamps.android.core.net.IWorld;
 import net.gtamps.android.gtandroid.core.input.event.InputEventListener;
 import net.gtamps.android.gtandroid.core.net.AbstractConnectionManager;
-import net.gtamps.android.gtandroid.core.net.IWorld;
 import net.gtamps.android.simple3Drenderer.SimpleCamera;
 import net.gtamps.android.simple3Drenderer.SimpleWorld;
 import net.gtamps.shared.serializer.communication.NewMessage;

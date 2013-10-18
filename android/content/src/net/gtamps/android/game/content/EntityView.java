@@ -4,7 +4,6 @@ import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.renderer.graph.RenderableNode;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.IDirty;
-import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

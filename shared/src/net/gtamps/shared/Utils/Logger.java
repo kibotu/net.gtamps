@@ -24,6 +24,10 @@ final public class Logger {
     	}
     }
 
+    public static void toast(@NotNull final Object id, final String getupdate_error) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
     public enum Level {
         DEBUG_LOG_GL_CALLS, DEBUG_CHECK_GL_ERROR, DEBUG, VERBOSE, INFO, WARN, ERROR, NO_LOGGING,
     }

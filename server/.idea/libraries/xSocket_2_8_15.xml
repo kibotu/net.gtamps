@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xSocket-2.8.15">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/xSocket-2.8.15.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
