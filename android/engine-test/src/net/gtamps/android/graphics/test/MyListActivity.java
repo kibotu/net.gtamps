@@ -11,7 +11,6 @@ import net.gtamps.android.graphics.test.listview.ActivityModel;
 import net.gtamps.android.graphics.test.listview.ListModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class MyListActivity extends ListActivity {
         setListAdapter(adapter);
 
         // autostart
-//        startActivity(PACKAGE_NAME, "Test12Activity");
+        startActivity(PACKAGE_NAME, "Test14Activity");
     }
 
     @Override
@@ -59,6 +58,7 @@ public class MyListActivity extends ListActivity {
         list.add(new ActivityModel("Skeleton (Katarina)", PACKAGE_NAME, "Test11Activity"));
         list.add(new ActivityModel("Skeleton based animation - (Ahri)", PACKAGE_NAME, "Test12Activity"));
         list.add(new ActivityModel("Car Demo", PACKAGE_NAME, "Test13Activity"));
+        list.add(new ActivityModel("Hearts", PACKAGE_NAME, "Test14Activity"));
         Collections.reverse(list);
         // Initially select one of the items
         list.get(1).setSelected(true);

@@ -86,29 +86,29 @@ public class FastTrig {
         int ind = (int) Double.doubleToRawLongBits(yp);
 
         // Find φ (a first approximation of θ) from the LUT
-        double φ = ASIN_TAB[ind];
-        double cφ = COS_TAB[ind]; // cos(φ)
+        double psi = ASIN_TAB[ind];
+        double cpsi = COS_TAB[ind]; // cos(φ)
 
         // sin(φ) == ind / 256.0
         // Note that sφ is truncated, hence not identical to y.
-        double sφ = yp - FRAC_BIAS;
-        double sd = y * cφ - x * sφ; // sin(θ-φ) ≡ sinθ cosφ - cosθ sinφ
+        double spsi = yp - FRAC_BIAS;
+        double sd = y * cpsi - x * spsi; // sin(θ-φ) ≡ sinθ cosφ - cosθ sinφ
 
         // asin(sd) ≅ sd + ⅙sd³ (from first 2 terms of Maclaurin series)
         double d = (6.0 + sd * sd) * sd * ONE_SIXTH;
-        double θ = φ + d;
+        double theta = psi + d;
 
         // Translate back to correct octant
         if (steep) {
-            θ = Math.PI * 0.5 - θ;
+            theta = Math.PI * 0.5 - theta;
         }
         if (negX) {
-            θ = Math.PI - θ;
+            theta = Math.PI - theta;
         }
         if (negY) {
-            θ = -θ;
+            theta = -theta;
         }
 
-        return θ;
+        return theta;
     }
 }

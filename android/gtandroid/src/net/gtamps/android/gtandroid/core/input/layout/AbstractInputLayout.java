@@ -1,9 +1,9 @@
 package net.gtamps.android.gtandroid.core.input.layout;
 
-import net.gtamps.android.core.input.event.InputEventDispatcher;
-import net.gtamps.android.core.input.event.InputInterpreter;
-import net.gtamps.android.core.input.touch.TouchInputButton;
-import net.gtamps.android.core.input.touch.TouchInputWindow;
+import net.gtamps.android.gtandroid.core.input.event.InputEventDispatcher;
+import net.gtamps.android.gtandroid.core.input.event.InputInterpreter;
+import net.gtamps.android.gtandroid.core.input.touch.TouchInputButton;
+import net.gtamps.android.gtandroid.core.input.touch.TouchInputWindow;
 
 import java.util.LinkedList;
 

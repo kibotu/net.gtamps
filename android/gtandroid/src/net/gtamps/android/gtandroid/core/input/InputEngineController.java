@@ -5,15 +5,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
-import net.gtamps.android.core.input.event.InputEventDispatcher;
-import net.gtamps.android.core.input.layout.AbstractInputLayout;
+import net.gtamps.android.gtandroid.core.input.event.InputEventDispatcher;
+import net.gtamps.android.gtandroid.core.input.layout.AbstractInputLayout;
 import net.gtamps.shared.Utils.Logger;
 
 
 public class InputEngineController implements OnTouchListener, OnKeyListener {
 
     private static final String TAG = "InputEngineController";
-	private static InputEngineController instance;
+    private static InputEngineController instance;
     private AbstractInputLayout layout;
     private static InputEventDispatcher inputEventDispatcher;
 
@@ -34,7 +34,7 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
     public void setLayout(AbstractInputLayout layout) {
         layout.setInputEventDispatcher(inputEventDispatcher);
         this.layout = layout;
-        Logger.d(this, "Set layout to "+instance.layout.getClass().getSimpleName());
+        Logger.d(this, "Set layout to " + instance.layout.getClass().getSimpleName());
     }
 
     public InputEventDispatcher getInputEventDispatcher() {
@@ -43,13 +43,13 @@ public class InputEngineController implements OnTouchListener, OnKeyListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-   		return instance.layout.getTouchWindow().onTouch(v, event);
+        return instance.layout.getTouchWindow().onTouch(v, event);
     }
 
-    public void setResolution(int x, int y){
-    	instance.layout.getTouchWindow().setResolution(x, y);
+    public void setResolution(int x, int y) {
+        instance.layout.getTouchWindow().setResolution(x, y);
     }
-    
+
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return false;

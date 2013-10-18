@@ -4,7 +4,6 @@ import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
-import net.gtamps.android.graphics.graph.scene.primitives.Cylinder;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Plane;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;

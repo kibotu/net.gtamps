@@ -29,7 +29,7 @@ public class Test08Action extends RenderAction {
 
         rot += 1;
         RootNode rootNode = getScenes().get(0).getRootNode();
-        rootNode.getChild(1).setRotation(rot*0.02f,rot*0.02f,rot*0.02f);
+        rootNode.getChild(1).setRotation(rot * 0.02f, rot * 0.02f, rot * 0.02f);
         rootNode.getChild(2).getRotation(true).setEulerAnglesFromQuaternion(quat.setEulerAngles(rot, rot, rot));
     }
 

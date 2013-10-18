@@ -1,10 +1,10 @@
 package net.gtamps.android.gtandroid.core.input.layout;
 
-import net.gtamps.android.core.input.event.ActionType;
-import net.gtamps.android.core.input.event.InputInterpreter;
-import net.gtamps.android.core.input.interpreter.HudInterpreter;
-import net.gtamps.android.core.input.touch.TouchInputButton;
-import net.gtamps.android.core.net.IWorld;
+import net.gtamps.android.gtandroid.core.input.event.ActionType;
+import net.gtamps.android.gtandroid.core.input.event.InputInterpreter;
+import net.gtamps.android.gtandroid.core.input.interpreter.HudInterpreter;
+import net.gtamps.android.gtandroid.core.input.touch.TouchInputButton;
+import net.gtamps.android.gtandroid.core.net.IWorld;
 
 public class InputLayoutIngame extends AbstractInputLayout {
 

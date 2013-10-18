@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import net.gtamps.android.utils.AndroidLogger;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 

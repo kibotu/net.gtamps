@@ -1,9 +1,9 @@
 package net.gtamps.android.gtandroid.core.net.threaded;
 
 import android.util.Log;
-import net.gtamps.android.core.net.AbstractConnectionManager;
-import net.gtamps.android.core.net.IWorld;
-import net.gtamps.android.core.net.MessageHandler;
+import net.gtamps.android.gtandroid.core.net.AbstractConnectionManager;
+import net.gtamps.android.gtandroid.core.net.IWorld;
+import net.gtamps.android.gtandroid.core.net.MessageHandler;
 import net.gtamps.shared.serializer.communication.NewMessage;
 import net.gtamps.shared.serializer.communication.NewMessageFactory;
 import net.gtamps.shared.serializer.communication.NewSendable;

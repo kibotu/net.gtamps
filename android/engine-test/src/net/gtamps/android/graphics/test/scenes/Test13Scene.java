@@ -1,6 +1,5 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import com.badlogic.gdx.math.MathUtils;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
@@ -16,6 +15,7 @@ import net.gtamps.android.input.controller.InputEngineController;
 import net.gtamps.android.input.view.DefaultLayout;
 import net.gtamps.android.input.view.TouchInputButton;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.MathUtils;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -51,12 +51,12 @@ public class Test13Scene extends SceneGraph {
 
         Object3D camaro = new Object3D(PACKAGE_NAME + "camaro_obj");
         camaro.addTexture(new Texture(R.drawable.camaro, Texture.Type.u_Texture01, true));
-        camaro.setRotation(MathUtils.degreesToRadians*-90,0,0);
+        camaro.setRotation(MathUtils.DEG_TO_RAD * -90, 0, 0);
         camaro.getRenderState().setShader(Shader.Type.PHONG);
 
         Plane ground = new Plane();
-        ground.setRotation(MathUtils.degreesToRadians*90,0,0);
-        ground.setDimension(10,10,10);
+        ground.setRotation(MathUtils.DEG_TO_RAD * 90, 0, 0);
+        ground.setDimension(10, 10, 10);
         ground.getRenderState().setShader(Shader.Type.PHONG);
         ground.addTexture(new Texture(R.drawable.stonebg, Texture.Type.u_Texture01, true));
         add(ground);
@@ -73,12 +73,12 @@ public class Test13Scene extends SceneGraph {
 
         RootNode camaro1 = new RootNode();
         camaro1.add(camaro);
-        camaro1.setPosition(-2.5f,0,0);
+        camaro1.setPosition(-2.5f, 0, 0);
         RootNode camaro2 = new RootNode();
         camaro2.add(camaro);
         RootNode camaro3 = new RootNode();
         camaro3.add(camaro);
-        camaro3.setPosition(2.5f,0,0);
+        camaro3.setPosition(2.5f, 0, 0);
 
         add(camaro1);
         add(camaro2);

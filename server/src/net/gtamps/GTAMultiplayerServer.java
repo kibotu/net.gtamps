@@ -33,7 +33,7 @@ import net.gtamps.shared.serializer.communication.ISerializer;
 
 public final class GTAMultiplayerServer {
 
-	private static final String BASE_CONFIG_PATH = "./assets/config/";
+	private static final String BASE_CONFIG_PATH = "../assets/config/";
 	private static final String[] LOAD_CONFIG = {
 		"Server.xml",
 		"Entities.xml"

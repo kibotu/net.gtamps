@@ -3,7 +3,7 @@ package net.gtamps.android.gtandroid.core.input.touch;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import net.gtamps.android.core.input.event.InputInterpreter;
+import net.gtamps.android.gtandroid.core.input.event.InputInterpreter;
 
 import java.util.HashMap;
 

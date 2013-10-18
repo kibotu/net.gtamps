@@ -1,9 +1,9 @@
 package net.gtamps.android.gtandroid.core.net;
 
-import net.gtamps.android.core.sound.SoundEngine;
-import net.gtamps.android.core.sound.SoundEngine.Sounds;
 import net.gtamps.android.game.content.EntityView;
-import net.gtamps.android.renderer.Registry;
+import net.gtamps.android.graphics.utils.Registry;
+import net.gtamps.android.gtandroid.core.sound.SoundEngine;
+import net.gtamps.android.gtandroid.core.sound.SoundEngine.Sounds;
 import net.gtamps.shared.Config;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.GameObject;
@@ -23,8 +23,8 @@ import java.util.NoSuchElementException;
 
 public class MessageHandler {
 
-	private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
-	private GameobjectStore store = new GameobjectStore();
+    private SendableFactory sendableFactory = new SendableFactory(new SendableCacheFactory());
+    private GameobjectStore store = new GameobjectStore();
     private AbstractConnectionManager connection;
     private IWorld world;
 
@@ -38,6 +38,7 @@ public class MessageHandler {
 //        Logger.i(this, "Handles message.");
 //        Logger.i(this, sendable);
 
+        assert sendable.type != null;
         switch (sendable.type) {
             case GETUPDATE_OK:
                 // empty
@@ -46,35 +47,36 @@ public class MessageHandler {
 
                 // update revision id
                 DataMap updateData = (DataMap) sendable.data;
-                connection.currentRevId = ((Value<Long>)updateData.get(StringConstants.UPDATE_REVISION)).get();
+                assert updateData != null;
+                connection.currentRevId = ((Value<Long>) updateData.get(StringConstants.UPDATE_REVISION)).get();
 
                 // parse all transmitted entities
-                ListNode<DataMap> entities = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_ENTITIES));
-                for (DataMap emap: entities) {
-                	int uid = SendableDataConverter.getGameObjectUid(emap);
-                	Entity e = store.getEntity(uid);
-                	SendableDataConverter.updateGameobject(e, emap);
-                	updateOrCreateEntity(e);
+                ListNode<DataMap> entities = ((ListNode<DataMap>) updateData.get(StringConstants.UPDATE_ENTITIES));
+                for (DataMap emap : entities) {
+                    int uid = SendableDataConverter.getGameObjectUid(emap);
+                    Entity e = store.getEntity(uid);
+                    SendableDataConverter.updateGameobject(e, emap);
+                    updateOrCreateEntity(e);
                 }
 
                 // events
-                ListNode<DataMap> events = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_GAMEEVENTS));
-                for (DataMap emap: events) {
-                	int uid = SendableDataConverter.getGameObjectUid(emap);
-                	GameEvent e = store.getGameEvent(uid);
-                	SendableDataConverter.updateGameobject(e, emap);
-                	handleEvent(e);
+                ListNode<DataMap> events = ((ListNode<DataMap>) updateData.get(StringConstants.UPDATE_GAMEEVENTS));
+                for (DataMap emap : events) {
+                    int uid = SendableDataConverter.getGameObjectUid(emap);
+                    GameEvent e = store.getGameEvent(uid);
+                    SendableDataConverter.updateGameobject(e, emap);
+                    handleEvent(e);
                 }
 
                 // scores
-                ListNode<DataMap> scores = ((ListNode<DataMap>)updateData.get(StringConstants.UPDATE_SCORES));
-                for (DataMap emap: scores) {
-                	int uid = SendableDataConverter.getGameObjectUid(emap);
-                	Score score = store.getScore(uid);
-                	SendableDataConverter.updateGameobject(score, emap);
-                	if (belongsToActivePlayer(score)) {
-                		world.setPlayerFragScore(score.getCount());
-                	}
+                ListNode<DataMap> scores = ((ListNode<DataMap>) updateData.get(StringConstants.UPDATE_SCORES));
+                for (DataMap emap : scores) {
+                    int uid = SendableDataConverter.getGameObjectUid(emap);
+                    Score score = store.getScore(uid);
+                    SendableDataConverter.updateGameobject(score, emap);
+                    if (belongsToActivePlayer(score)) {
+                        world.setPlayerFragScore(score.getCount());
+                    }
                 }
                 break;
 
@@ -94,10 +96,10 @@ public class MessageHandler {
 
                 // not player data
                 DataMap pmap = (DataMap) ((DataMap) sendable.data).get(StringConstants.PLAYER_DATA);
-                
+
                 Player player = store.getPlayer(SendableDataConverter.getGameObjectUid(pmap));
                 SendableDataConverter.updateGameobject(player, pmap);
-                
+
                 world.playerManager.setActivePlayer(player);
 
                 updateOrCreateEntity(store.getEntity(player.getEntityUid()));
@@ -119,10 +121,10 @@ public class MessageHandler {
             case SESSION_OK:
                 connection.currentSessionId = sendable.data.asMap().getString(StringConstants.SESSION_ID);
                 //FIXME workaround for presentation
-                if(android.os.Build.VERSION.SDK_INT>8){
-                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME_TIL, Config.DEFAULT_PASSWORD_TIL));
+                if (android.os.Build.VERSION.SDK_INT > 8) {
+                    connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME_TIL, Config.DEFAULT_PASSWORD_TIL));
                 } else {
-                	connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
+                    connection.add(NewMessageFactory.createLoginRequest(Config.DEFAULT_USERNAME, Config.DEFAULT_PASSWORD));
                 }
                 break;
             case SESSION_NEED:
@@ -134,11 +136,11 @@ public class MessageHandler {
                 break;
 
             case JOIN_OK:
-            	if(world.supports2DTileMap()){
-                	Logger.D(this, "Requesting Map Data...");
-                	connection.add(NewMessageFactory.creategetTileMapRequest());
+                if (world.supports2DTileMap()) {
+                    Logger.D(this, "Requesting Map Data...");
+                    connection.add(NewMessageFactory.creategetTileMapRequest());
                 } else {
-                	connection.add(NewMessageFactory.createGetPlayerRequest());
+                    connection.add(NewMessageFactory.createGetPlayerRequest());
                 }
                 break;
             case JOIN_NEED:
@@ -191,21 +193,21 @@ public class MessageHandler {
             case REGISTER_ERROR:
                 Logger.toast(this, "REGISTER_ERROR");
                 break;
-                
+
             case GETTILEMAP_ERROR:
-            	Logger.e(world, "Server error! Tile Map was not received!");
-            	connection.add(NewMessageFactory.createGetPlayerRequest());
-            	break;
+                Logger.e(world, "Server error! Tile Map was not received!");
+                connection.add(NewMessageFactory.createGetPlayerRequest());
+                break;
             case GETTILEMAP_OK:
-            	if(world.supports2DTileMap()){
-            		Logger.e(this,"Receiving Map Data, parsing...");
-            		world.setTileMap(SendableDataConverter.toTileMap((ListNode<DataMap>) sendable.data));
-            	} else {
-            		Logger.e(world, "doesn't support Tile Maps!");
-            	}
-            	connection.add(NewMessageFactory.createGetPlayerRequest());
-            	break;
-            
+                if (world.supports2DTileMap()) {
+                    Logger.e(this, "Receiving Map Data, parsing...");
+                    world.setTileMap(SendableDataConverter.toTileMap((ListNode<DataMap>) sendable.data));
+                } else {
+                    Logger.e(world, "doesn't support Tile Maps!");
+                }
+                connection.add(NewMessageFactory.createGetPlayerRequest());
+                break;
+
             default:
                 break;
         }
@@ -216,9 +218,9 @@ public class MessageHandler {
         message = null;
     }
 
-	private boolean belongsToActivePlayer(Score score) throws NoSuchElementException {
-		return world.playerManager.getActivePlayer().useProperty(StringConstants.PROPERTY_FRAGSCORE_UID, GameObject.INVALID_UID).value() == score.getUid();
-	}
+    private boolean belongsToActivePlayer(Score score) throws NoSuchElementException {
+        return world.playerManager.getActivePlayer().useProperty(StringConstants.PROPERTY_FRAGSCORE_UID, GameObject.INVALID_UID).value() == score.getUid();
+    }
 
     private void updateOrCreateEntity(@NotNull Entity serverEntity) {
 
@@ -231,8 +233,8 @@ public class MessageHandler {
             world.add(entityView);
 
             // add to setup
-            if(entityView instanceof EntityView){
-            	Registry.getRenderer().addToSetupQueue(((EntityView) entityView).getObject3d());
+            if (entityView instanceof EntityView) {
+                Registry.getRenderer().addToSetupQueue(((EntityView) entityView).getObject3d());
             }
 
 //            Logger.i(this, "Add new entity " + serverEntity.getUid());
@@ -252,8 +254,8 @@ public class MessageHandler {
 
         switch (event.getType()) {
             case ACTION_ACCELERATE:
-            	SoundEngine.getInstance().playSound(Sounds.FOOTSTEP);
-            	break;
+                SoundEngine.getInstance().playSound(Sounds.FOOTSTEP);
+                break;
             case ACTION_DECELERATE:
                 break;
             case ACTION_ENTEREXIT:
@@ -265,7 +267,7 @@ public class MessageHandler {
             case ACTION_NOISE:
                 break;
             case ACTION_SHOOT:
-            	SoundEngine.getInstance().playSound(Sounds.SHOOT);
+                SoundEngine.getInstance().playSound(Sounds.SHOOT);
 //            	SoundEngine.getInstance().playSound("");
 //            	store.reclaim(event);
 //            	event = null;
@@ -291,13 +293,13 @@ public class MessageHandler {
             case ENTITY_DAMAGE:
                 break;
             case ENTITY_DEACTIVATE:
-            	world.deactivate(event.getTargetUid());
+                world.deactivate(event.getTargetUid());
 //            	store.reclaim(event);
 //            	event = null;
                 break;
             case ENTITY_DESTROYED:
-            	
-            	world.remove(event.getTargetUid());
+
+                world.remove(event.getTargetUid());
 //            	store.reclaim(event.getTargetUid());
 //            	store.reclaim(event);
 //            	event = null;
@@ -316,7 +318,7 @@ public class MessageHandler {
                 break;
 
             case PLAYER_ENTERSCAR:
-            	SoundEngine.getInstance().playSound(Sounds.CAR_DOOR);
+                SoundEngine.getInstance().playSound(Sounds.CAR_DOOR);
                 break;
             case PLAYER_JOINS:
                 break;
@@ -327,22 +329,22 @@ public class MessageHandler {
             case PLAYER_LEAVES:
                 break;
             case ENTITY_NEW_PLAYER:
-            	
-            	int playerUid = event.getTargetUid();
-            	int entityUid = event.getSourceUid();
 
-            	// player not active player
-            	if (world.playerManager.getActivePlayer().getUid() != playerUid)
-            		break;
+                int playerUid = event.getTargetUid();
+                int entityUid = event.getSourceUid();
+
+                // player not active player
+                if (world.playerManager.getActivePlayer().getUid() != playerUid)
+                    break;
 
                 Player player = store.getPlayer(playerUid);
                 if (player == null) {
-                	throw new IllegalStateException("event target: player not found " + playerUid);
+                    throw new IllegalStateException("event target: player not found " + playerUid);
                 }
 
                 Entity serverEntity = store.getEntity(entityUid);
                 if (serverEntity == null) {
-                	throw new IllegalStateException("event source: entity not found " + playerUid);
+                    throw new IllegalStateException("event source: entity not found " + playerUid);
                 }
 
                 // new active object
@@ -371,7 +373,7 @@ public class MessageHandler {
             case SESSION_UPDATE:
                 break;
             default:
-            	break;
+                break;
         }
         store.reclaim(event.getSourceUid());
         store.reclaim(event.getTargetUid());

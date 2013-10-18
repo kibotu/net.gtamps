@@ -32,18 +32,13 @@ public class MenuActivity extends Activity implements OnClickListener {
 
         setMenuMode(menuMode.MAIN);
 
-        ((Button) findViewById(R.id.menuButtonStartGame)).setOnClickListener(this);
-        ((Button) findViewById(R.id.menuButtonConfiguration)).setOnClickListener(this);
-        ((Button) findViewById(R.id.menuAddIpButton)).setOnClickListener(this);
-        ((Button) findViewById(R.id.menuButtonQuit)).setOnClickListener(this);
-        ((Button) findViewById(R.id.menuButtonGoToMain)).setOnClickListener(this);
+        findViewById(R.id.menuButtonStartGame).setOnClickListener(this);
+        findViewById(R.id.menuButtonConfiguration).setOnClickListener(this);
+        findViewById(R.id.menuAddIpButton).setOnClickListener(this);
+        findViewById(R.id.menuButtonQuit).setOnClickListener(this);
+        findViewById(R.id.menuButtonGoToMain).setOnClickListener(this);
 
         // autostart
-        /*if(Config.FORCE_GTA_2D){
-        	startGTA2D();
-        } else if(Config.FORCE_GTA_3D_SIMPLE){
-        	startGTA2DSimple();
-        } else startGTA3D();*/
     }
 
     private void startGTA3DSimple() {

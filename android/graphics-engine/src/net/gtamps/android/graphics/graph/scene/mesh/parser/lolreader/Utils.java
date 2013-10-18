@@ -129,37 +129,45 @@ public class Utils {
                 m.values[2] * t.x + m.values[6] * t.y + m.values[10] * t.z + m.values[14] * f);
     }
 
-    public static void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
-        t.set(
-                // x influence for bone 1
-                w[0] * (m[i[0]].values[0] * t.x + m[i[0]].values[4] * t.y + m[i[0]].values[8] * t.z + m[i[0]].values[12] * f) +
-                // x influence for bone 2
-                w[1] * (m[i[1]].values[0] * t.x + m[i[1]].values[4] * t.y + m[i[1]].values[8] * t.z + m[i[1]].values[12] * f) +
-                // x influence for bone 3
-                w[2] * (m[i[2]].values[0] * t.x + m[i[2]].values[4] * t.y + m[i[2]].values[8] * t.z + m[i[2]].values[12] * f) +
-                // x influence for bone 4
-                w[3] * (m[i[3]].values[0] * t.x + m[i[3]].values[4] * t.y + m[i[3]].values[8] * t.z + m[i[3]].values[12] * f),
+/**
+ * skinning
+ * @param w weights
+ * @param i bone influence indices
+ * @param m bone transformation matrix
+ * @param t target vector (position)
+ * @param f flag direction or position (normal or position)
+ */
+public static void marryBonesWithVector(float[] w, int[] i, Matrix4[] m, Vector3 t, float f) {
+    t.set(
+            // x influence for bone 1
+            w[0] * (m[i[0]].values[0] * t.x + m[i[0]].values[4] * t.y + m[i[0]].values[8] * t.z + m[i[0]].values[12] * f) +
+            // x influence for bone 2
+            w[1] * (m[i[1]].values[0] * t.x + m[i[1]].values[4] * t.y + m[i[1]].values[8] * t.z + m[i[1]].values[12] * f) +
+            // x influence for bone 3
+            w[2] * (m[i[2]].values[0] * t.x + m[i[2]].values[4] * t.y + m[i[2]].values[8] * t.z + m[i[2]].values[12] * f) +
+            // x influence for bone 4
+            w[3] * (m[i[3]].values[0] * t.x + m[i[3]].values[4] * t.y + m[i[3]].values[8] * t.z + m[i[3]].values[12] * f),
 
 
-                // y influence for bone 1
-                w[0] * (m[i[0]].values[1] * t.x + m[i[0]].values[5] * t.y + m[i[0]].values[9] * t.z + m[i[0]].values[13] * f) +
-                // y influence for bone 2
-                w[1] * (m[i[1]].values[1] * t.x + m[i[1]].values[5] * t.y + m[i[1]].values[9] * t.z + m[i[1]].values[13] * f) +
-                // y influence for bone 3
-                w[2] * (m[i[2]].values[1] * t.x + m[i[2]].values[5] * t.y + m[i[2]].values[9] * t.z + m[i[2]].values[13] * f) +
-                // y influence for bone 4
-                w[3] * (m[i[3]].values[1] * t.x + m[i[3]].values[5] * t.y + m[i[3]].values[9] * t.z + m[i[3]].values[13] * f),
+            // y influence for bone 1
+            w[0] * (m[i[0]].values[1] * t.x + m[i[0]].values[5] * t.y + m[i[0]].values[9] * t.z + m[i[0]].values[13] * f) +
+            // y influence for bone 2
+            w[1] * (m[i[1]].values[1] * t.x + m[i[1]].values[5] * t.y + m[i[1]].values[9] * t.z + m[i[1]].values[13] * f) +
+            // y influence for bone 3
+            w[2] * (m[i[2]].values[1] * t.x + m[i[2]].values[5] * t.y + m[i[2]].values[9] * t.z + m[i[2]].values[13] * f) +
+            // y influence for bone 4
+            w[3] * (m[i[3]].values[1] * t.x + m[i[3]].values[5] * t.y + m[i[3]].values[9] * t.z + m[i[3]].values[13] * f),
 
-                // z influence for bone 1
-                w[0] * (m[i[0]].values[2] * t.x + m[i[0]].values[6] * t.y + m[i[0]].values[10] * t.z + m[i[0]].values[14] * f) +
-                // z influence for bone 1
-                w[1] * (m[i[1]].values[2] * t.x + m[i[1]].values[6] * t.y + m[i[1]].values[10] * t.z + m[i[1]].values[14] * f) +
-                // z influence for bone 1
-                w[2] * (m[i[2]].values[2] * t.x + m[i[2]].values[6] * t.y + m[i[2]].values[10] * t.z + m[i[2]].values[14] * f) +
-                // z influence for bone 1
-                w[3] * (m[i[3]].values[2] * t.x + m[i[3]].values[6] * t.y + m[i[3]].values[10] * t.z + m[i[3]].values[14] * f)
-        );
-    }
+            // z influence for bone 1
+            w[0] * (m[i[0]].values[2] * t.x + m[i[0]].values[6] * t.y + m[i[0]].values[10] * t.z + m[i[0]].values[14] * f) +
+            // z influence for bone 1
+            w[1] * (m[i[1]].values[2] * t.x + m[i[1]].values[6] * t.y + m[i[1]].values[10] * t.z + m[i[1]].values[14] * f) +
+            // z influence for bone 1
+            w[2] * (m[i[2]].values[2] * t.x + m[i[2]].values[6] * t.y + m[i[2]].values[10] * t.z + m[i[2]].values[14] * f) +
+            // z influence for bone 1
+            w[3] * (m[i[3]].values[2] * t.x + m[i[3]].values[6] * t.y + m[i[3]].values[10] * t.z + m[i[3]].values[14] * f)
+    );
+}
 
     /**
      * Computes bone transformation matrices

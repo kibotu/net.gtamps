@@ -4,12 +4,9 @@ import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.skeleton.AnimatedSkeletonObject3D;
 import net.gtamps.android.graphics.graph.scene.mesh.parser.Parser;
-import net.gtamps.android.graphics.graph.scene.mesh.parser.lolreader.SKNFile;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
-import net.gtamps.android.graphics.graph.scene.primitives.Object3D;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
-import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.test.input.CameraInputInterpreter;
 import net.gtamps.android.input.controller.InputEngineController;
@@ -27,7 +24,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Test11Scene extends SceneGraph {
 
     public Test11Scene() {
-        super(new Camera(0, 1, 7, 0, 1, -1,0, 1, 0));
+        super(new Camera(0, 1, 7, 0, 1, -1, 0, 1, 0));
 
         DefaultLayout layout = new DefaultLayout();
         layout.addButton(new TouchInputButton(0, 0, 1, 1), new CameraInputInterpreter(getActiveCamera()));
@@ -60,7 +57,7 @@ public class Test11Scene extends SceneGraph {
         object3D.setVisible(!showBonesFirst);
 
         // default scaling to 0.01f
-        object3D.setScaling(0.01f,0.01f,0.01f);
+        object3D.setScaling(0.01f, 0.01f, 0.01f);
 //        object3D.getMaterial().setShininess(1);
 
         // add bones

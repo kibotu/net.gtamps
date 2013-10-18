@@ -34,15 +34,6 @@ final public class Logger {
     private Logger() {
     }
 
-    public static void toast(@NotNull final Object id, final String message) {
-        // remove string allocations
-        if (Config.LOG_LEVEL != Logger.Level.NO_LOGGING) {
-            if (logger != null && message != null) {
-                logger.toast(id instanceof String ? id.toString() : id.getClass().getSimpleName(), message);
-            }
-        }
-    }
-
     /**
      * DEBUG *
      */

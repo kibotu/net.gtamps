@@ -20,7 +20,7 @@ import android.os.Bundle;
 
 public class GTA3Dsimple extends Activity{
 	
-	private static final boolean THREADED_NETWORKING = true;;
+	private static final boolean THREADED_NETWORKING = true;
 	private GLSurfaceView glView;
 	private SimpleWorld world;
 	private ConnectionCenter connectionCenter; 

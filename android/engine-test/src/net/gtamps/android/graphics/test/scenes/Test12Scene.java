@@ -1,6 +1,5 @@
 package net.gtamps.android.graphics.test.scenes;
 
-import com.badlogic.gdx.math.MathUtils;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
@@ -17,6 +16,7 @@ import net.gtamps.android.input.controller.InputEngineController;
 import net.gtamps.android.input.view.DefaultLayout;
 import net.gtamps.android.input.view.TouchInputButton;
 import net.gtamps.shared.Utils.math.Color4;
+import net.gtamps.shared.Utils.math.MathUtils;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.HashMap;
@@ -90,7 +90,7 @@ public class Test12Scene extends SceneGraph {
 //        add(ahri3);
 
         Plane ground = new Plane();
-        ground.setRotation(MathUtils.degreesToRadians * 90, 0, 0);
+        ground.setRotation(MathUtils.DEG_TO_RAD * 90, 0, 0);
         ground.setDimension(20, 20, 20);
         ground.getRenderState().setShader(Shader.Type.PHONG);
         ground.addTexture(new Texture(R.drawable.stonebg, Texture.Type.u_Texture01, true));

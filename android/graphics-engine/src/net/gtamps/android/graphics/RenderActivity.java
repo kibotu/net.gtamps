@@ -151,4 +151,8 @@ public abstract class RenderActivity extends Activity {
     final public void toast(String message) {
         toast(this,message);
     }
+
+    public GLSurfaceView getView() {
+        return view;
+    }
 }

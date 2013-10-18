@@ -36,7 +36,7 @@ public class MenuActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.menuButtonGoToMain).setOnClickListener(this);
 
         // autostart
-        startGTA3D();
+        startGTA2D();
     }
 
     private void startGTA3D() {
@@ -62,7 +62,7 @@ public class MenuActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v.equals(findViewById(R.id.menuButtonStartGame))) {
             setMenuMode(menuMode.LOADING);
-            startGTA3D();
+            startGTA2D();
         }
         if (v.equals(findViewById(R.id.menuButtonConfiguration))) {
             setMenuMode(menuMode.CONFIGURATION);

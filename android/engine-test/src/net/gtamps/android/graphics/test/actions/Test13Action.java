@@ -6,8 +6,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.animation.rigged.RiggedObject3D;
-import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.renderer.RenderAction;
 import net.gtamps.android.graphics.test.R;
 import net.gtamps.android.graphics.utils.Registry;
@@ -44,16 +42,17 @@ public class Test13Action extends RenderAction {
 
     private int counter = 360;
     private long captureStartTime = Calendar.getInstance().getTimeInMillis();
+
     private void captureVideo(int amountScreens, int interval) {
 
-        if(amountScreens < counter) return;
+        if (amountScreens < counter) return;
 
         // find out if enough time has passed
         int dtInterpolation = (int) (interval - (System.currentTimeMillis() - captureStartTime));
 
         // update
         if (dtInterpolation <= 0) {
-            Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/","   screenshot_"+counter+".png");
+            Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString() + "/aa_gtamps_screens/", "   screenshot_" + counter + ".png");
             ++counter;
         } else {
             captureStartTime = Calendar.getInstance().getTimeInMillis();
@@ -70,7 +69,7 @@ public class Test13Action extends RenderAction {
     public boolean onOptionsItemSelectedHook(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.capture_screen:
-                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString()+"/aa_gtamps_screens/", "screenshot_"+UIDGenerator.getNewUID()+".png");
+                Registry.getRenderer().captureScreenshot(Environment.getExternalStorageDirectory().toString() + "/aa_gtamps_screens/", "screenshot_" + UIDGenerator.getNewUID() + ".png");
                 return true;
             default:
                 return false;

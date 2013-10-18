@@ -1,15 +1,12 @@
 package net.gtamps.android.graphics.test.scenes;
 
 import net.gtamps.android.graphics.R;
-import net.gtamps.android.graphics.graph.RenderableNode;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
-import net.gtamps.android.graphics.graph.scene.mesh.Mesh;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
 import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
-import net.gtamps.android.graphics.renderer.Shader;
 import net.gtamps.shared.Utils.Logger;
 
 import javax.microedition.khronos.opengles.GL10;

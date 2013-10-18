@@ -51,7 +51,7 @@ public class XMLConfigLoader implements ConfigLoader {
 
     @SuppressWarnings("unchecked")
     private ConfigBuilder fillMapConfigBuilderFromElement(final Element xmlElement, final ConfigBuilder builderContext) {
-        assert builderContext.getType() == Map.class;
+        assert builderContext.gletType() == Map.class;
         final List<Attribute> attributeList = xmlElement.getAttributes();
         final List<Element> childrenList = xmlElement.getChildren();
         for (final Attribute attribute : attributeList) {

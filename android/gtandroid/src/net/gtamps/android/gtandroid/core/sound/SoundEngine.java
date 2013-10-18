@@ -5,7 +5,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
-import net.gtamps.android.R;
+import net.gtamps.android.gtandroid.R;
 
 import java.util.HashMap;
 

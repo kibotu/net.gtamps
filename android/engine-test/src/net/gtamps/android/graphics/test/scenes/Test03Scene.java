@@ -4,7 +4,6 @@ import net.gtamps.android.graphics.R;
 import net.gtamps.android.graphics.graph.RootNode;
 import net.gtamps.android.graphics.graph.scene.SceneGraph;
 import net.gtamps.android.graphics.graph.scene.mesh.texture.Texture;
-import net.gtamps.android.graphics.graph.scene.primitives.Cube;
 import net.gtamps.android.graphics.graph.scene.primitives.Light;
 import net.gtamps.android.graphics.graph.scene.primitives.Sphere;
 import net.gtamps.android.graphics.graph.scene.primitives.camera.Camera;
@@ -32,7 +31,7 @@ public class Test03Scene extends SceneGraph {
 
         float scale = 0.3f;
         int counter = 0;
-        Sphere obj = new Sphere(1,10,10);
+        Sphere obj = new Sphere(1, 10, 10);
         obj.addTexture(crateTexture);
 
         for (int x = -3; x < 3; x++) {
