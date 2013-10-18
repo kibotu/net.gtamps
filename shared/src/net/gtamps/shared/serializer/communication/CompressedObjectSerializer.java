@@ -9,7 +9,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
 
-import org.jdom.output.EscapeStrategy;
 
 public class CompressedObjectSerializer implements ISerializer {
 

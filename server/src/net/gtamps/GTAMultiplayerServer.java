@@ -1,19 +1,6 @@
 package net.gtamps;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import net.gtamps.server.ControlCenter;
-import net.gtamps.server.ISocketHandler;
-import net.gtamps.server.ServerChainFactory;
-import net.gtamps.server.ServerException;
-import net.gtamps.server.ServerHelper;
+import net.gtamps.server.*;
 import net.gtamps.server.db.DBHandler;
 import net.gtamps.server.gui.GUILogger;
 import net.gtamps.server.gui.GUILoggerToGeneralAdapter;
@@ -22,18 +9,21 @@ import net.gtamps.server.gui.ServerGUI;
 import net.gtamps.server.http.SimpleHttpServer;
 import net.gtamps.server.xsocket.XSocketServer;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.configuration.ConfigBuilder;
-import net.gtamps.shared.configuration.ConfigSource;
-import net.gtamps.shared.configuration.Configuration;
-import net.gtamps.shared.configuration.MergeConfiguration;
-import net.gtamps.shared.configuration.ProtectedMergeStrategy;
+import net.gtamps.shared.configuration.*;
 import net.gtamps.shared.configuration.conversion.XMLConfigLoader;
 import net.gtamps.shared.game.ServerData;
 import net.gtamps.shared.serializer.communication.ISerializer;
 
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public final class GTAMultiplayerServer {
 
-	private static final String BASE_CONFIG_PATH = "./assets/config/";
+	private static final String BASE_CONFIG_PATH = "./../assets/config/";
 	private static final String[] LOAD_CONFIG = {
 		"Server.xml",
 		"Entities.xml"
@@ -46,7 +36,7 @@ public final class GTAMultiplayerServer {
 	 * @deprecated use configuration: common.setup.httpserver.docroot
 	 */
 	@Deprecated
-	public static final String DEFAULT_PATH = "./assets/kompilat/";
+	public static final String DEFAULT_PATH = "./../assets/kompilat/";
 	@Deprecated
 	public static final String DEFAULT_MAP = "tinycity.xml";
 	public static final int MAX_LOG_ENTRY_DISPLAY = 20;

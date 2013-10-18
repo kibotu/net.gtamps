@@ -1,15 +1,11 @@
 package net.gtamps.android;
 
-import java.io.File;
-import java.io.IOException;
-
+import android.app.Activity;
+import android.os.Bundle;
 import net.gtamps.android.core.input.InputEngineController;
 import net.gtamps.android.fakerenderer.FakeGame;
 import net.gtamps.android.utils.AndroidLogger;
 import net.gtamps.shared.Utils.Logger;
-import net.gtamps.shared.serializer.communication.Translator;
-import android.app.Activity;
-import android.os.Bundle;
 
 public class GTA2D extends Activity{
 	
@@ -22,7 +18,7 @@ public class GTA2D extends Activity{
 		setContentView(view);
 		
 		Logger.setLogger(AndroidLogger.INSTANCE);
-		
+
 		view.setOnTouchListener(InputEngineController.getInstance());
 		view.setOnKeyListener(InputEngineController.getInstance());		
 	}
