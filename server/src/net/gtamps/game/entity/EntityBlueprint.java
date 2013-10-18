@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.gtamps.game.handler.ServersideHandler;
 import net.gtamps.game.handler.blueprints.HandlerBlueprint;
 import net.gtamps.shared.game.entity.Entity;
 
@@ -54,8 +55,8 @@ public final class EntityBlueprint {
 	public Entity createEntity(final Integer pixX, final Integer pixY, final Integer deg) {
 		final Entity entity = new Entity(name);
 		for (final HandlerBlueprint hproto : handlerPrototypes) {
-			assert hproto != null;
-			entity.setHandler(hproto.createHandler(entity));
+			final ServersideHandler handler = hproto.createHandler(entity);
+			entity.setHandler(handler);
 		}
 		entity.x.set(pixX);
 		entity.y.set(pixY);

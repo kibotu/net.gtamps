@@ -2,6 +2,7 @@ package net.gtamps.shared.game.entity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.gtamps.shared.Utils.validate.Validate;
 import net.gtamps.shared.game.IProperty;
@@ -18,12 +19,13 @@ public class Entity extends SharedGameActor {
 	private static final String TAG = Entity.class.getSimpleName();
 
 	private static final long serialVersionUID = -5466989016443709708L;
+	private static final Set<EventType> receivedEventTypes = toImmutableSet(EventType.ENTITY_EVENT);
 
 	static public enum Type {
 		CAR_CAMARO, CAR_RIVIERA, CAR_CHEVROLET_CORVETTE, HUMAN, HOUSE, BULLET, SPAWNPOINT, WAYPOINT, PLACEHOLDER, CUBE, CYLINDER, TORUS, SPHERE;
 	}
-	
-	
+
+
 	//TODO: use!
 	public static String normalizeName(final String name) {
 		return name.toUpperCase();
@@ -42,7 +44,7 @@ public class Entity extends SharedGameActor {
 
 	public Entity() {
 		super();
-		this.type = Type.PLACEHOLDER;
+		type = Type.PLACEHOLDER;
 	}
 
 	//TODO: fix the disconnect between the use of 'type' (serializer) and 'name' (server)
@@ -58,7 +60,7 @@ public class Entity extends SharedGameActor {
 	public Entity(final String name, final int uid) {
 		super(name, uid);
 		assert this.name != null;
-		this.type = getType(name);
+		type = getType(name);
 	}
 
 	//preallocate
@@ -66,11 +68,11 @@ public class Entity extends SharedGameActor {
 	private Type getType(final String name) {
 		retGetType = EntityTypeProvider.valueOf(name);
 		return retGetType==null ? Type.PLACEHOLDER : retGetType;
-		/*try {
-			return Type.valueOf(name.toUpperCase());
-		} catch (final IllegalArgumentException e) {
-			return Type.PLACEHOLDER;
-		}*/
+	}
+
+	@Override
+	public Set<EventType> getReceivedEventTypes() {
+		return receivedEventTypes;
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class Entity extends SharedGameActor {
 		} else if (type.isType(EventType.ENTITY_ACTIVATE)) {
 			enable();
 		}
-		
+
 	}
 
 	public void setOwner(final Player p) {
@@ -94,7 +96,7 @@ public class Entity extends SharedGameActor {
 			throw new IllegalArgumentException("'p' must not be null");
 		}
 		System.out.println("entity owner set to: " + p);
-		this.playerProperty.set(p.getUid());
+		playerProperty.set(p.getUid());
 	}
 
 	public void removeOwner() {
@@ -102,25 +104,25 @@ public class Entity extends SharedGameActor {
 	}
 
 	public int getOwnerUid() {
-		return this.playerProperty.value();
+		return playerProperty.value();
 	}
 
 	public void setHandler(final Handler<Entity> handler) {
 		if (handler == null) {
 			throw new IllegalArgumentException("'handler' must not be null");
 		}
-		this.handlers.put(handler.getName(), handler);
+		handlers.put(handler.getName(), handler);
 	}
 
 	public Handler<Entity> removeHandler(final Handler.Type type) {
 		final String name = type.name().toLowerCase();
-		final Handler<Entity> handler = this.handlers.remove(name);
+		final Handler<Entity> handler = handlers.remove(name);
 		return handler;
 	}
 
 	public Handler<Entity> getHandler(final Handler.Type type) {
-		final String name = type.name().toLowerCase();
-		final Handler<Entity> handler = this.handlers.get(name);
+		final String name = type.name();
+		final Handler<Entity> handler = handlers.get(name);
 		return handler;
 	}
 
@@ -130,11 +132,6 @@ public class Entity extends SharedGameActor {
 		for (final Handler<Entity> h : handlers.values()) {
 			h.enable();
 		}
-		//FIXME
-		//ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
-		//		if (ap != null) {
-		//			ap.enable();
-		//		}
 	}
 
 	@Override
@@ -143,24 +140,17 @@ public class Entity extends SharedGameActor {
 		for (final Handler<?> h : handlers.values()) {
 			h.disable();
 		}
-		//FIXME
-		//ActivationProperty ap = (ActivationProperty) this.getProperty(Property.Type.ACTIVATION);
-		//		if (ap != null) {
-		//			ap.disable();
-		//		}
 	}
 
 	@Override
 	public String toString() {
 		String s = super.toString();
-		s += String.format("x:%d y:%d r:%d", this.x.value(), this.y.value(), this.rota.value());
+		s += String.format("x:%d y:%d r:%d", x.value(), y.value(), rota.value());
 		return s;
 	}
 
 	public void destroy() {
-		// TODO Auto-generated method stub
-		this.disable();
-
+		disable();
 	}
 
 	@Override

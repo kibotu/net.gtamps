@@ -89,11 +89,6 @@ public class SendableDataConverterTest {
 		SendableDataConverter.toSendableData(someEntity, null);
 	}
 
-	@Test
-	public final void testToSendableDataTSendableProvider() {
-		fail("Not yet implemented"); // TODO
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public final void testToSendableDataListOfTSendableProvider_whenNullList_expectException() {
 		SendableDataConverter.toSendableData((List<GameObject>)null, provider);

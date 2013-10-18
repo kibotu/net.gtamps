@@ -52,10 +52,6 @@ public class SensorExplosionHandler extends SensorHandler {
 
 	public SensorExplosionHandler(final Universe universe, final Entity parent, final float force) {
 		super(universe, EventType.ENTITY_SENSE_EXPLOSION, EventType.ENTITY_DESTROYED, parent);
-		final EventType[] receives = {EventType.ENTITY_SENSE_EXPLOSION,
-				EventType.ENTITY_DESTROYED};
-		setReceives(receives);
-		connectUpwardsActor(parent);
 		initialForce = force;
 		maxDistanceSq = -(force / FALLOFF_SLOPE);
 	}

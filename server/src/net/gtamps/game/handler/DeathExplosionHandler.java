@@ -10,9 +10,7 @@ public class DeathExplosionHandler extends ServersideHandler<Entity> {
 	private static EventType[] triggers = {EventType.ENTITY_DESTROYED};
 
 	public DeathExplosionHandler(final Universe universe, final Entity parent) {
-		super(universe, Type.AUTODISPOSE, parent);
-		setReceives(triggers);
-		connectUpwardsActor(parent);
+		super(universe, Type.AUTODISPOSE, parent, triggers);
 	}
 
 	@Override

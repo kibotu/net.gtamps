@@ -81,17 +81,18 @@ public class MobilityHandlerTest {
 	}
 
 	@Test
-	public void testReceiveEvent_UpdateEvent_ShouldQueryActionQueue() {
+	public void testReceiveEvent_UpdateEvent_ShouldQueryPhysicsHandler() {
 		// setup
 		final GameEvent updateEvent = new GameEvent(EventType.SESSION_UPDATE, parent);
 		when(body.getLinearVelocity()).thenReturn(new Vec2(0, 0));
 		when(actionQueue.isEmpty()).thenReturn(true);
+		when(physicsHandler.isEnabled()).thenReturn(false);
 
 		// run
 		mobilityHandler.receiveEvent(updateEvent);
 
 		// assert
-		verify(actionQueue, atLeastOnce()).isEmpty();
+		verify(physicsHandler, atLeastOnce()).isEnabled();
 	}
 
 	@Test
@@ -131,21 +132,6 @@ public class MobilityHandlerTest {
 
 		// assert
 		verify(actionQueue).add(actionEvent);
-	}
-
-	@Test
-	public void testUpdate_update_shouldQueryActionQueue() {
-		// setup
-		final GameEvent updateEvent = new GameEvent(EventType.SESSION_UPDATE, parent);
-		when(body.getLinearVelocity()).thenReturn(new Vec2(0, 0));
-		when(actionQueue.isEmpty()).thenReturn(true);
-
-		// run
-		mobilityHandler.receiveEvent(updateEvent);
-
-		// assert
-		verify(actionQueue, atLeastOnce()).isEmpty();
-
 	}
 
 }

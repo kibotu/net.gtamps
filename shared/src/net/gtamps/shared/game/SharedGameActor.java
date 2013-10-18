@@ -1,10 +1,16 @@
 package net.gtamps.shared.game;
 
-import net.gtamps.shared.game.event.*;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.gtamps.shared.Utils.validate.Validate;
+import net.gtamps.shared.game.event.EventType;
+import net.gtamps.shared.game.event.GameEvent;
+import net.gtamps.shared.game.event.GameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventDispatcher;
+import net.gtamps.shared.game.event.IGameEventListener;
 
 /**
  * <p>
@@ -19,7 +25,7 @@ import java.util.Set;
  * By declaring which types of events a gameActor intends
  * to send upwards, and which types it will handle when passed down, these
  * connections can be joined automatically, by using
- * {@link #connectUpwardsActor(SharedGameActor)}.
+ * {@link #connectUpwardsActor(IGameActor)}.
  * </p><p>
  * Owing to the indiscriminate nature of {@link IGameEventDispatcher}-style
  * event handling (events themselves have no sense of the direction they're
@@ -33,24 +39,12 @@ import java.util.Set;
  *
  * @author jan, tom, til
  */
-public class SharedGameActor extends GameObject implements IGameActor {
+public abstract class SharedGameActor extends GameObject implements IGameActor {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 4996110383027919751L;
-	/**
-	 * The types of gameEvents this actor wants to pass upwards. Must have
-	 * no types in common with {@link #receivesDown}.
-	 */
-	private transient Set<EventType> sendsUp = null;
-	/**
-	 * The types of gameEvents this actor is interested in receiving from
-	 * upwards. Must have
-	 * no types in common with {@link #sendsUp}.
-	 */
-	private transient Set<EventType> receivesDown = null;
+
 	private transient GameEventDispatcher eventDispatcher = new GameEventDispatcher();
+
 	private boolean enabled = true;
 
 	public SharedGameActor(final String name) {
@@ -63,7 +57,6 @@ public class SharedGameActor extends GameObject implements IGameActor {
 
 	public SharedGameActor() {
 		super();
-
 	}
 
 	/* (non-Javadoc)
@@ -79,9 +72,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 	 */
 	@Override
 	public void enable() {
-		//Logger.i().log(LogType.GAMEWORLD, "Enabling Game Actor "+this);
 		enabled = true;
-		//Logger.i().log(LogType.GAMEWORLD, this+" was enabled "+this.enabled);
 	}
 
 	/* (non-Javadoc)
@@ -118,6 +109,7 @@ public class SharedGameActor extends GameObject implements IGameActor {
 				throw new IllegalArgumentException(msg);
 			}
 		}
+		final Set<EventType> receivesDown = getReceivedEventTypes();
 		if (receivesDown != null) {
 			other.registerListeningActor(this, receivesDown);
 		}
@@ -129,47 +121,11 @@ public class SharedGameActor extends GameObject implements IGameActor {
 		other.removeEventListener(EventType.GAME_EVENT, this);
 	}
 
-	/**
-	 * Declare the types of gameEvents this actor is interested in receiving
-	 * from upwards. Must have no types in common with {@link #setSendsUp(EventType[]) sendsUp}.
-	 * Use before {@link #connectUpwardsActor(SharedGameActor)} or
-	 * {@link #connectDownwardsActor(SharedGameActor)}.
-	 */
-	@Override
-	public void setReceives(final EventType[] receivesDown) {
-		this.receivesDown = new HashSet<EventType>(Arrays.asList(receivesDown));
-	}
-
-
 	@Override
 	public void registerListeningActor(final IGameActor listener, final Set<EventType> types) {
 		for (final EventType type : types) {
 			addEventListener(type, listener);
 		}
-	}
-
-	/**
-	 * Find the intersection between the types of events this actor sends
-	 * upwards and receives from there. Less than trivial, since
-	 * EventTypes form a hierarchy and types can be transitive.
-	 *
-	 * @return the intersection between the types of events this actor sends
-	 *         upwards and receives from there
-	 */
-	private Set<EventType> upAndDownIntersection() {
-		final Set<EventType> intersection = new HashSet<EventType>();
-		if (sendsUp != null && receivesDown != null) {
-			for (final EventType upType : sendsUp) {
-				for (final EventType downType : receivesDown) {
-					if (upType.isType(downType)) {
-						intersection.add(upType);
-					} else if (downType.isType(upType)) {
-						intersection.add(downType);
-					}
-				}
-			}
-		}
-		return intersection;
 	}
 
 	/* (non-Javadoc)
@@ -212,4 +168,13 @@ public class SharedGameActor extends GameObject implements IGameActor {
 		return eventDispatcher.isRegisteredListener(listener);
 	}
 
+	/**
+	 * utility function to convert an {@link EventType} array to a set.
+	 * @param types
+	 * @return
+	 */
+	protected static Set<EventType> toImmutableSet(final EventType... types) {
+		assert Validate.noNullElements(types);
+		return Collections.unmodifiableSet(new HashSet<EventType>(Arrays.asList(types)));
+	}
 }

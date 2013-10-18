@@ -5,7 +5,7 @@ public final class Value<T> extends AbstractSendableData<Value<T>> {
 	public static final Class<?>[] ALLOWED_TYPES = {
 		String.class,
 		Boolean.class,
-		Byte.class, Integer.class, Long.class, 
+		Byte.class, Integer.class, Long.class,
 		Float.class, Double.class,
 		//		Entity.class, GameEvent.class, Player.class,
 	};
@@ -15,32 +15,13 @@ public final class Value<T> extends AbstractSendableData<Value<T>> {
 
 	protected T value;
 
-	/**
-	 * @param type
-	 * @param value
-	 * @throws IllegalArgumentException	if T (= value.getClass()is not
-	 */
-	public Value(/*final Class<T> valueType*/) {
+	public Value() {
 		super();
-		//		validate(valueType);
 	}
 
 	public Value(final T value) {
 		this();
 		set(value);
-	}
-
-	private final void validate(final Class<T> valueType) {
-		boolean found = false;
-		for (int i = 0; i < ALLOWED_TYPES.length; i++) {	// old-school for-loop allocates no heap memory
-			if (valueType == ALLOWED_TYPES[i]) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			throw new IllegalArgumentException(typeNotAllowedMsg + valueType.getCanonicalName());
-		}
 	}
 
 	public void set(final T value) {

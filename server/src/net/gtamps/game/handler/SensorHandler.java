@@ -18,23 +18,18 @@ import net.gtamps.shared.game.handler.Handler;
  *
  * @author jan, tom, til
  */
-public class SensorHandler extends ServersideHandler<Entity> {
+@SuppressWarnings("serial")
+public abstract class SensorHandler extends ServersideHandler<Entity> {
 	private static final LogType TAG = LogType.GAMEWORLD;
-
-	private static EventType[] sendsUp = {};
-	private static EventType[] receivesDown = {EventType.ENTITY_SENSE};
-	//EventType.ACTION_ENTEREXIT, EventType.ENTITY_DESTROYED };
 
 	protected Set<Entity> sensed = new HashSet<Entity>();
 	protected final EventType sensorType;
 	protected final EventType triggerEvent;
 
 	public SensorHandler(final Universe universe, final EventType sensorType, final EventType triggerEvent, final Entity parent) {
-		super(universe, Handler.Type.SENSOR, parent);
+		super(universe, Handler.Type.SENSOR, parent, sensorType, triggerEvent);
 		this.sensorType = sensorType;
 		this.triggerEvent = triggerEvent;
-		setReceives(receivesDown);
-		connectUpwardsActor(parent);
 	}
 
 	@Override
@@ -45,29 +40,9 @@ public class SensorHandler extends ServersideHandler<Entity> {
 		} else if (type.isType(triggerEvent)) {
 			act(event);
 		}
-
-		/*		switch (type) {
-		case ENTITY_SENSE_BEGIN:
-		case ENTITY_SENSE_END:
-			sense(event);
-			break;
-		case ACTION_ENTEREXIT:
-			if (this.sensorType == Type.ENTER_DOORS) {
-				enterdoor((Player) event.getSource());
-			}
-			break;
-		case ENTITY_DESTROYED:
-			if (this.sensorType == Type.EXPLOSION) {
-				explode();
-			}
-			break;
-		}
-		 */
 	}
 
-	protected void act(final GameEvent event) {
-		// override this! method will be triggered by TriggerEvent events
-	}
+	protected abstract void act(final GameEvent event);
 
 	protected void sense(final GameEvent event) {
 		assert event.getType().isType(sensorType);
@@ -84,88 +59,9 @@ public class SensorHandler extends ServersideHandler<Entity> {
 			GUILogger.i().log(TAG, target + " interacted with door sensor of " + source);
 		}
 
-		/*		switch (event.getType()) {
-        case ENTITY_SENSE_BEGIN:
-            if (this.sensorType == Type.ENTER_DOORS) {
-                Logger.i().log(TAG, getParent() + " sensed a door");
-            }
-            this.sensed.add((Entity) subject);
-            break;
-        case ENTITY_SENSE_END:
-            if (this.sensorType == Type.ENTER_DOORS) {
-                Logger.i().log(TAG, getParent() + " forgot a door");
-            }
-            this.sensed.remove((Entity) subject);
-            break;
-        }
-		 */
 	}
 
 	protected void update() {
 		// nothing
 	}
-
-	/*	protected void explode() {
-		float maxdistance = 100;
-		float maximpulse = 100000;
-		PositionProperty p1 = (PositionProperty) getParent().getProperty(
-				Property.Type.POSITION);
-		PositionProperty p2;
-		for (Entity e : sensed) {
-			p2 = (PositionProperty) e
-					.getProperty(Property.Type.POSITION);
-			if (p2 == null) {
-				continue;
-			}
-			Vec2 vec = new Vec2(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-			float relativeDistance = vec.length() / maxdistance;
-			if (relativeDistance >= 1) {
-				continue;
-			}
-			vec.normalize();
-			float impulse = (1 - relativeDistance) * maximpulse;
-			SimplePhysicsHandler ph = e.getPhysicsHandler();
-			if (ph != null) {
-				ph.applyImpulse(vec.mul(impulse * relativeDistance));
-			}
-			HealthProperty h = (HealthProperty) e
-					.getProperty(Property.Type.HEALTH);
-			if (h != null) {
-				h.takeDamage(impulse);
-			}
-		}
-	}
-	 */
-	/*	protected void enterdoor(Player p) {
-		//Logger.i().log(TAG, getParent() + " looking for things to enter");
-		float minDistance = Float.POSITIVE_INFINITY;
-		Entity closest = null;
-		PositionProperty p1 = (PositionProperty) getParent().getProperty(
-				Property.Type.POSITION);
-		PositionProperty p2;
-		for (Entity e : sensed) {
-			if (e.getHandler(Handler.Type.DRIVER) == null) {
-				continue;
-			}
-			p2 = (PositionProperty) e.getProperty(Property.Type.POSITION);
-			float dx = p1.getX() - p2.getX();
-			float dy = p1.getY() - p2.getY();
-			float dist = dx * dx + dy * dy;
-			if (dist < minDistance) {
-				minDistance = dist;
-				closest = e;
-			}
-
-		}
-		if (closest != null) {
-			//Logger.i().log(TAG, getParent() + " trying to enter " + closest);
-			DriverHandler driver = (DriverHandler) closest
-					.getHandler(Handler.Type.DRIVER);
-			if (driver != null) {
-				driver.enter(p);
-			} else {
-			}
-		}
-	}
-	 */
 }

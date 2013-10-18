@@ -22,7 +22,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 		return new Predicate<GameEvent>() {
 
 			@Override
-			public boolean isTrueFor(final GameEvent x) {
+			public boolean appliesTo(final GameEvent x) {
 				return x.getSourceUid() == uid;
 			}
 
@@ -33,7 +33,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 		return new Predicate<GameEvent>() {
 
 			@Override
-			public boolean isTrueFor(final GameEvent x) {
+			public boolean appliesTo(final GameEvent x) {
 				return x.getTargetUid() == uid;
 			}
 
@@ -67,7 +67,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 			if (event.getType() != this.triggerEventType) {
 				return false;
 			}
-			if (filter != null && !filter.isTrueFor(event)) {
+			if (filter != null && !filter.appliesTo(event)) {
 				return false;
 			}
 			return true;
@@ -127,7 +127,7 @@ public class Score extends GameObject implements IGameEventListener, Cloneable {
 	@Override
 	public void receiveEvent(final GameEvent event) {
 		Validate.notNull(event);
-		if (getType().isTriggeredBy(event) && filter.isTrueFor(event)) {
+		if (getType().isTriggeredBy(event) && (filter == null || filter.appliesTo(event))) {
 			increaseCountBy(1);
 		}
 	}

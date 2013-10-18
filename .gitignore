@@ -28,7 +28,5 @@ local.properties
 .checkstyle
 derby.log
 classes.jar
-<<<<<<< HEAD
-=======
 server/assets
->>>>>>> 71c790216365cbf825ca157f68802bed92dc5684
+javadoc/

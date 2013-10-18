@@ -6,7 +6,6 @@ package net.gtamps.shared.Utils.cache;
  *
  * @author Tom Wallroth, Jan Rabe, Til Boerner
  *
- * @param <T>	anything, really
  */
 public interface TypableObjectCacheFactory {
 

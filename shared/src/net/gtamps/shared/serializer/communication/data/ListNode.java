@@ -117,7 +117,7 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 	/**
 	 * @param value
 	 *            not <code>null</code>
-	 * @return
+	 * @return	this listNode
 	 */
 	public ListNode<T> set(final T value) {
 		this.value = value;
@@ -182,11 +182,12 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 			this.value = null;
 		}
 		this.resetIterator();
-		this.cache.registerElement(this);
+		cache.registerElement(this);
 		this.next = emptyList();
 
 	}
 
+	@Override
 	protected void recycleHook() {
 	}
 
@@ -243,11 +244,12 @@ public class ListNode<T extends AbstractSendable<T>> extends AbstractSendableDat
 		private EmptyListNode() {
 			next = null;
 		}
-		
+
+		@Override
 		public void recycle(){
-			
+
 		}
-		
+
 		@Override
 		void unlink() {
 			// do nothing
