@@ -7,10 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="processing" level="application" />
-    <orderEntry type="library" exported="" name="jdom-1.1.1-android-fork" level="application" />
-    <orderEntry type="module" module-name="shared" exported="" />
-    <orderEntry type="library" exported="" name="junit-4.8" level="application" />
   </component>
 </module>
 

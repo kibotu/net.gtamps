@@ -28,43 +28,10 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
-      <library name="derby.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/derby.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="JBox2D-2.0.1-b250-Full.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/JBox2D-2.0.1-b250-Full.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="xSocket-2.8.15-sources.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/xSocket-2.8.15-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="xSocket-2.8.15.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/xSocket-2.8.15.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="shared" />
+    <orderEntry type="library" name="JBox2D-2.0.1-b250-Full" level="project" />
+    <orderEntry type="library" name="xSocket-2.8.15" level="project" />
+    <orderEntry type="library" name="derby" level="project" />
   </component>
 </module>
 

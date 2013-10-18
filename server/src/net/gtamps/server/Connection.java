@@ -36,7 +36,7 @@ public final class Connection<H extends ISocketHandler> {
 	public void send(final NewMessage msg) {
 		if(this.isActive){
 			try{
-				msg.setSessionId(null);
+				//msg.setSessionId();
 				final SerializedMessage serializedMessage = serializer.serializeAndPackNewMessage(msg);
 				if(GTAMultiplayerServer.WRITE_SERIALIZED_MESSAGE_DUMPS){
 					FileDumper.writeBytesToFile(id, serializedMessage.message,serializedMessage.length);

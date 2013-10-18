@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public final class GTAMultiplayerServer {
 
-	private static final String BASE_CONFIG_PATH = "./../assets/config/";
+	private static final String BASE_CONFIG_PATH = "../../assets/config/";
 	private static final String[] LOAD_CONFIG = {
 		"Server.xml",
 		"Entities.xml"
@@ -36,7 +36,7 @@ public final class GTAMultiplayerServer {
 	 * @deprecated use configuration: common.setup.httpserver.docroot
 	 */
 	@Deprecated
-	public static final String DEFAULT_PATH = "./../assets/kompilat/";
+	public static final String DEFAULT_PATH = "../../assets/kompilat/";
 	@Deprecated
 	public static final String DEFAULT_MAP = "tinycity.xml";
 	public static final int MAX_LOG_ENTRY_DISPLAY = 20;
@@ -134,7 +134,7 @@ public final class GTAMultiplayerServer {
 	}
 
 	private DBHandler initDBHandler() throws ServerException {
-		final DBHandler dbHandler = new DBHandler("db/gtamps");
+		final DBHandler dbHandler = new DBHandler("D:/programming/android-gtamps/server/db/gtamps");
 		//		assert databasePassesBasicTests(dbHandler);
 		return dbHandler;
 	}

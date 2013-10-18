@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import net.gtamps.shared.Utils.Logger;
 
@@ -89,7 +90,8 @@ public class MenuActivity extends Activity implements OnClickListener {
             setMenuMode(menuMode.MAIN);
         }
         if (v.equals(findViewById(R.id.menuAddIpButton))) {
-        	net.gtamps.shared.Config.IPS.add("192.168.2.101"); // ((EditText)findViewById(R.id.ipText)).getText().toString());
+        	//net.gtamps.shared.Config.IPS.add("192.168.2.101");
+            net.gtamps.shared.Config.IPS.add(((EditText)findViewById(R.id.ipText)).getText().toString());
         	Logger.toast("", "IP was added!");
         }
         if (v.equals(findViewById(R.id.menuButtonQuit))) {

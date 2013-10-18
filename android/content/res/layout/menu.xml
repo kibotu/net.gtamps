@@ -67,8 +67,8 @@
 
         <EditText
             android:id="@+id/ipText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="234dp"
+            android:layout_height="wrap_content" android:digits=".0123456789">
         </EditText>    
 		<net.gtamps.android.menu.MenuButton
                 android:id="@+id/menuAddIpButton"

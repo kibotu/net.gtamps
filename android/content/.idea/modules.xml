@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" filepath="$PROJECT_DIR$/../../server/GTAMultiplayerServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../mapedit/Mapedit.iml" filepath="$PROJECT_DIR$/../../mapedit/Mapedit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../normalizer/Normalizer.iml" filepath="$PROJECT_DIR$/../../normalizer/Normalizer.iml" />
       <module fileurl="file://$PROJECT_DIR$/content.iml" filepath="$PROJECT_DIR$/content.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graphic/graphic.iml" filepath="$PROJECT_DIR$/../graphic/graphic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../shared/shared.iml" filepath="$PROJECT_DIR$/../../shared/shared.iml" />
