@@ -37,7 +37,7 @@ public class ProcessingPreview extends PApplet {
 		// tex =
 		// loadImage("/home/tom/studium/mmp2/mapedit/tile_images/GTATILES-010.jpg");
 		// textureMode(NORMALIZED);
-		textureMode(NORMALIZED);
+		textureMode(NORMAL);
 		fill(255);
 		stroke(color(44, 48, 32));
 	}

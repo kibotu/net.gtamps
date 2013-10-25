@@ -1,25 +1,21 @@
 package net.gtamps.android.fakerenderer;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
 import net.gtamps.android.R;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.IWorld;
 import net.gtamps.shared.Utils.Logger;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.level.Tile;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FakeWorld implements IWorld {
 
@@ -107,10 +103,12 @@ public class FakeWorld implements IWorld {
 			if (!tileBitmapLookup.containsKey(t.getBitmap())) {
 				Bitmap bitmapLoader = null;
 				try {
-					bitmapLoader = BitmapFactory.decodeStream(assetManager.open("tiles/" + t.getBitmap()));
+					bitmapLoader = BitmapFactory.decodeStream(assetManager.open("tile_images/"+ t.getBitmap()));
 				} catch (IOException e) {
-					Logger.e(this, "unable to load tile: " + t.getBitmap());
+					Logger.e(this, "unable to load tile: " + "tile_images/"+ t.getBitmap());
 				}
+
+				//bitmapLoader = BitmapFactory.decodeFile("file:///android_asset/tile_images/"+ t.getBitmap());
 				if (bitmapLoader != null) {
 					tileBitmapLookup.put(t.getBitmap(), bitmapLoader);
 					Logger.e(this, "Sucessfully loaded tile: " + t.getBitmap());

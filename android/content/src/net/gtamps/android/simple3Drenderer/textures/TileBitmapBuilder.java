@@ -1,14 +1,14 @@
 package net.gtamps.android.simple3Drenderer.textures;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import net.gtamps.shared.Utils.Logger;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import net.gtamps.shared.Utils.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class TileBitmapBuilder {
 	private final int TILE_SIZE;
@@ -42,7 +42,7 @@ public class TileBitmapBuilder {
 			Bitmap singleTile;
 			try {
 				singleTile = BitmapFactory.decodeStream(am.open(foldername+"/"+tileFileName));
-				Logger.e(this, "Sucessfully loaded tile: " + tileFileName);
+				Logger.e(this, "Sucessfully loaded tile: " + foldername+"/"+tileFileName);
 				int currWidth = singleTile.getWidth();
 				int currHeight = singleTile.getHeight();
 				int[] pixels = new int[currWidth*currHeight];
@@ -56,7 +56,7 @@ public class TileBitmapBuilder {
 				};
 				textureCoords.put(tileFileName, coords);
 			} catch (IOException e) {
-				Logger.e(this, "!!! Failed to load tile: " + tileFileName);
+				Logger.e(this, "!!! Failed to load tile: " + foldername + "/"+tileFileName);
 //				e.printStackTrace();
 			}
 			i++;

@@ -1,9 +1,8 @@
 package net.gtamps.android.simple3Drenderer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
 import net.gtamps.android.core.net.AbstractEntityView;
 import net.gtamps.android.core.net.IWorld;
 import net.gtamps.android.simple3Drenderer.shapes.AbstractShape;
@@ -12,9 +11,10 @@ import net.gtamps.android.simple3Drenderer.shapes.TexturedQuad;
 import net.gtamps.android.simple3Drenderer.textures.TileBitmapBuilder;
 import net.gtamps.shared.game.entity.Entity;
 import net.gtamps.shared.game.level.Tile;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.util.Log;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SimpleWorld implements IWorld {
 
@@ -133,7 +133,7 @@ public class SimpleWorld implements IWorld {
 			this.cubeTileMap = new LinkedList<CubeTile>();
 		}
 		synchronized (this) {
-			TileBitmapBuilder tbb = new TileBitmapBuilder(assetManager, "tiles");
+			TileBitmapBuilder tbb = new TileBitmapBuilder(assetManager, "tile_images");
 			for (Tile t : tileMap) {
 				tbb.putIfAbsent(t.getBitmap());
 			}

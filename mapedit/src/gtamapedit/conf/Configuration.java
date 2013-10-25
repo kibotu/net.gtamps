@@ -1,12 +1,14 @@
 package gtamapedit.conf;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class Configuration {
-	private static String tileImagePath = new File("").getAbsolutePath()+"/tile_images/";
-	private static String savePath = new File("").getAbsolutePath()+"/map1.map";
-	private static String levelSavePath = new File("..").getAbsolutePath()+"/assets/map1.map.lvl";
+	//private static String tileImagePath = new File("").getAbsolutePath()+"/tile_images/";
+	//private static String savePath = new File("").getAbsolutePath()+"/map1.map";
+	//private static String levelSavePath = new File("..").getAbsolutePath()+"/assets/map1.map.lvl";
+    private static String tileImagePath = "D:/programming/android-gtamps/mapedit/tile_images/";
+    private static String savePath = "D:/programming/android-gtamps/assets/map1.map";
+    private static String levelSavePath = "D:/programming/android-gtamps/assets/map1.map.lvl";
 	private static int maxFloors = 10;
 	private static int mapSizeX = 20;
 	private static int mapSizeY = 20;

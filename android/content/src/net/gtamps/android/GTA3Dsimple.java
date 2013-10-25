@@ -41,7 +41,8 @@ public class GTA3Dsimple extends Activity{
 		this.world = new SimpleWorld(getApplicationContext());
 		
 		//Graphics
-		glView = new GLSurfaceView(this); 
+		glView = new GLSurfaceView(this);
+        glView.setKeepScreenOn(true);
 //		glView.getHolder().setFixedSize(512, 300);
 		glView.setOnTouchListener(InputEngineController.getInstance());
 		glView.setOnKeyListener(InputEngineController.getInstance());

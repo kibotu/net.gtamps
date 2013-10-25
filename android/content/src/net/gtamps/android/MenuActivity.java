@@ -3,8 +3,10 @@ package net.gtamps.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,6 +21,8 @@ public class MenuActivity extends Activity implements OnClickListener {
     enum menuMode {
         MAIN, CONFIGURATION, LOADING, BUBU
     }
+
+    protected PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,11 @@ public class MenuActivity extends Activity implements OnClickListener {
         } else if(Config.FORCE_GTA_3D_SIMPLE){
         	startGTA2DSimple();
         } else startGTA3D();*/
+
+        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "gtmamps");
+        this.mWakeLock.acquire();  */
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void startGTA3DSimple() {
@@ -90,12 +99,21 @@ public class MenuActivity extends Activity implements OnClickListener {
             setMenuMode(menuMode.MAIN);
         }
         if (v.equals(findViewById(R.id.menuAddIpButton))) {
-        	//net.gtamps.shared.Config.IPS.add("192.168.2.101");
+        	net.gtamps.shared.Config.IPS.add("192.168.57.1");
+            ((EditText)findViewById(R.id.ipText)).setText("192.168.57.1");
             net.gtamps.shared.Config.IPS.add(((EditText)findViewById(R.id.ipText)).getText().toString());
         	Logger.toast("", "IP was added!");
         }
         if (v.equals(findViewById(R.id.menuButtonQuit))) {
             finish();
         }
+
+        ((EditText)findViewById(R.id.ipText)).setText("192.168.57.1");
+    }
+
+    @Override
+    public void onDestroy() {
+        this.mWakeLock.release();
+        super.onDestroy();
     }
 }
