@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+<DEF>
+<GAME>
+	<PHYSICS>
+		<TYPE name="Body" class="BodyBuilder">
+			<PARAM name="posx" type="int" comment="pixels"/>
+			<PARAM name="posy" type="int" comment="pixels"/>
+			<PARAM name="angle" type="int" comment="degrees"/>
+			<PARAM name="isbullet" type="boolean" />
+			<PARAM name="linearDamping" type="float" default="0"/>
+			<PARAM name="angularDamping" type="float" default="0"/>
+			<LISTPARAM name="shapes" type="Shape" />
+		</TYPE>
+		
+		<TYPE name="Shape" abstract="true" class="ShapeBuilder">
+			<PARAM name="density" type="float" default="0" />
+			<PARAM name="friction" type="float" default="0" />
+			<PARAM name="restitution" type="float" default="0" />
+		</TYPE>
+		
+		<TYPE name="Box" extends="Shape" class="BoxBuilder">
+			<PARAM name="width" type="int" comment="pixels"/>
+			<PARAM name="height" type="int" comment="pixels"/>
+		</TYPE>
+		
+		<TYPE name="Circle" extends="Shape" class="CircleBuilder">
+			<PARAM name="radius" type="int" comment="pixels" />
+		</TYPE>
+	</PHYSICS>
+
+	<HANDLERS>
+		<TYPE name="Physics" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="dynamic" type="boolean" default="false" />
+			<PARAM name="body" type="game.physics.Body" />
+		</TYPE>
+		
+		<TYPE name="Mobility" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="f_velocity" type="int" default="0" />
+			<PARAM name="f_steering" type="int" default="0" />
+			<PARAM name="r_steering" type="int" default="0" />
+			<PARAM name="r_steering" type="int" default="0" />
+			<PARAM name="speed_max" type="int" default="0" />
+		</TYPE>
+		
+		<TYPE name="Health" class="net.gtamps.game.handler.SimplePhysicsHandler">
+			<PARAM name="max" type="int"/>
+			<PARAM name="dmgThresh" type="int" default="0" />
+			<PARAM name="dmgMult" type="float" default="1" />
+		</TYPE>
+		
+		<TYPE name="DoorSensorReceiver" class="net.gtamps.game.handler.SensorDoorHandler"/>
+		
+		<TYPE name="Drivable" class="nurbs" />
+
+	</HANDLERS>
+</GAME>
+</DEF>
+</CONFIG>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_utils" default="compile.module.utils">
+  <dirname property="module.utils.basedir" file="${ant.file.module_utils}"/>
+  
+  <property name="module.jdk.home.utils" value="${jdk.home.android_2.2_platform}"/>
+  <property name="module.jdk.bin.utils" value="${jdk.bin.android_2.2_platform}"/>
+  <property name="module.jdk.classpath.utils" value="jdk.classpath.android_2.2_platform"/>
+  
+  <property name="compiler.args.utils" value="${compiler.args}"/>
+  
+  <property name="utils.output.dir" value="${module.utils.basedir}/../content/out/production/utils"/>
+  <property name="utils.testoutput.dir" value="${module.utils.basedir}/../content/out/test/utils"/>
+  
+  <path id="utils.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="utils.module.production.classpath">
+    <path refid="${module.jdk.classpath.utils}"/>
+    <pathelement location="${shared.output.dir}"/>
+    <path refid="library.annotations.classpath"/>
+    <path refid="library.junit-4.8.classpath"/>
+    <path refid="library.jdom-1.1.1-android-fork.classpath"/>
+  </path>
+  
+  <path id="utils.runtime.production.module.classpath">
+    <pathelement location="${utils.output.dir}"/>
+    <path refid="shared.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="utils.module.classpath">
+    <path refid="${module.jdk.classpath.utils}"/>
+    <pathelement location="${utils.output.dir}"/>
+    <pathelement location="${shared.testoutput.dir}"/>
+    <pathelement location="${shared.output.dir}"/>
+    <path refid="library.annotations.classpath"/>
+    <path refid="library.junit-4.8.classpath"/>
+    <path refid="library.jdom-1.1.1-android-fork.classpath"/>
+  </path>
+  
+  <path id="utils.runtime.module.classpath">
+    <pathelement location="${utils.testoutput.dir}"/>
+    <pathelement location="${utils.output.dir}"/>
+    <path refid="shared.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.utils">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.utils">
+    <patternset refid="excluded.from.module.utils"/>
+  </patternset>
+  
+  <path id="utils.module.sourcepath">
+    <dirset dir="${module.utils.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.utils" depends="compile.module.utils.production,compile.module.utils.tests" description="Compile module utils"/>
+  
+  <target name="compile.module.utils.production" depends="register.custom.compilers,compile.module.shared" description="Compile module utils; production classes">
+    <mkdir dir="${utils.output.dir}"/>
+    <javac2 destdir="${utils.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.utils}/javac">
+      <compilerarg line="${compiler.args.utils}"/>
+      <bootclasspath refid="utils.module.bootclasspath"/>
+      <classpath refid="utils.module.production.classpath"/>
+      <src refid="utils.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.utils"/>
+    </javac2>
+    
+    <copy todir="${utils.output.dir}">
+      <fileset dir="${module.utils.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.utils.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.utils.tests" depends="register.custom.compilers,compile.module.utils.production" description="compile module utils; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.utils" description="cleanup module">
+    <delete dir="${utils.output.dir}"/>
+    <delete dir="${utils.testoutput.dir}"/>
+  </target>
+</project>

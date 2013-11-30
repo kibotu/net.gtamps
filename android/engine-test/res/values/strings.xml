@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GTAMPS Gaphics Engine Test</string>
+    <drawable name="rot">#FF0000</drawable>
+    <string name="click">Click</string>
+    <string name="animate">Animate</string>
+    <string name="show_bones">Show Skeleton</string>
+    <string name="capture_screen">Capture Screen</string>
+    <string name="capture_video">Capture Video (90 Screenshots)</string>
+</resources>

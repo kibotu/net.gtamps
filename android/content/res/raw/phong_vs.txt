@@ -1,0 +1,37 @@
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 normalMatrix;
+
+// lighting
+uniform vec4 lightPos;
+uniform vec4 lightColor;
+
+attribute vec3 vertexPosition;
+attribute vec3 vertexNormal;
+attribute vec2 vertexUv;
+
+// eye pos
+uniform vec3 eyePos;
+
+varying vec2 v_TextCoord;
+varying vec3 v_Normal;
+varying vec3 esNormal;
+varying vec3 lightDir, eyeVec;
+
+void main()
+{
+	// the vertex position
+	vec4 position =  projectionMatrix * viewMatrix *  modelMatrix * vec4(vertexPosition,1.0);
+
+    // eye normal
+	esNormal = (normalMatrix * vec4(vertexNormal, 1.0)).xyz;
+
+	// light dir
+    lightDir = lightPos.xyz - position.xyz;
+    eyeVec = normalize(-position.xyz);
+
+    gl_Position = position;
+    v_Normal = vec3(normalMatrix * vec4(vertexNormal,1.0));
+    v_TextCoord = vertexUv;
+}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="net.gtamps.android.graphics.test"
+          android:versionCode="5"
+          android:versionName="beta">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
+    <application android:icon="@drawable/engine_icon" android:label="@string/app_name" android:debuggable="false"
+                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        <activity android:name=".MyListActivity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="portrait"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".Test01Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test02Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test03Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test04Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test05Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test06Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test07Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test08Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test09Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test10Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test11Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test12Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+        <activity android:name=".Test13Activity" android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+                  android:screenOrientation="landscape" android:label="@string/app_name">
+        </activity>
+    </application>
+</manifest> 

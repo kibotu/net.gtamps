@@ -1,0 +1,55 @@
+precision mediump float;
+//
+// Vertex Shader for Skeletal Animation and Phong Lighting.
+// Supports 4 bones per vertex. (35633)
+//
+uniform mat4 u_WorldView;		    // we need vector from vertex to eye
+uniform mat4 u_WorldViewProjection;	// normal transform for vertex
+uniform mat4 u_ModelViewMatrix;
+uniform vec3 u_LightDirection;
+// bone transformations
+// uniform float u_BoneScale[128];    // not used x_X
+uniform mat4 u_BoneTransform[128];
+
+// in
+attribute vec3 in_Position;
+attribute vec3 in_Normal;
+attribute vec2 in_TexCoords;
+attribute vec4 in_BoneID;
+attribute vec4 in_Weights;
+
+// out
+varying vec3 v_ViewSpacePosition;
+varying vec3 v_VertexToLight;
+varying vec3 v_Normal;
+varying vec2 v_TexCoords;
+
+void main(void)
+{
+   // Transform the vertex information based on bones.
+   vec3 position =  (in_Weights[0] * (u_BoneTransform[ int(in_BoneID[0]) ] * vec4(in_Position, 1.0)).xyz) +
+                    (in_Weights[1] * (u_BoneTransform[ int(in_BoneID[1]) ] * vec4(in_Position, 1.0)).xyz) +
+                    (in_Weights[2] * (u_BoneTransform[ int(in_BoneID[2]) ] * vec4(in_Position, 1.0)).xyz) +
+                    (in_Weights[3] * (u_BoneTransform[ int(in_BoneID[3]) ] * vec4(in_Position, 1.0)).xyz);
+
+    vec3 normal =   (in_Weights[0] * (u_BoneTransform[ int(in_BoneID[0]) ] * vec4(in_Normal, 0.0)).xyz) +
+                    (in_Weights[1] * (u_BoneTransform[ int(in_BoneID[1]) ] * vec4(in_Normal, 0.0)).xyz) +
+                    (in_Weights[2] * (u_BoneTransform[ int(in_BoneID[2]) ] * vec4(in_Normal, 0.0)).xyz) +
+                    (in_Weights[3] * (u_BoneTransform[ int(in_BoneID[3]) ] * vec4(in_Normal, 0.0)).xyz);
+
+    mat4 ModelViewMatrix = u_WorldView * u_ModelViewMatrix;
+
+    // The normal graphic's pipeline transformation
+    gl_Position = u_WorldViewProjection * ModelViewMatrix * vec4(position, 1.0);
+
+    // Required for phong lighting
+    vec3 viewLightDirection = ( u_WorldView * vec4(u_LightDirection, 0.0) ).xyz;
+    v_VertexToLight = normalize( viewLightDirection );
+
+    v_ViewSpacePosition = ( u_WorldView * vec4(in_Position, 1.0) ).xyz;
+
+    // Only take to view space
+    v_Normal = ( normalize( ModelViewMatrix * vec4(normal, 0.0) ) ).xyz;
+
+    v_TexCoords = in_TexCoords;
+}

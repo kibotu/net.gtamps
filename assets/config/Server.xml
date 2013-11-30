@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+<!-- some ideas
+    <%INCLUDE file="bla/blub/blorg.xml"/>
+    <%INCLUDE url="bla/blub/blorg.xml"/>
+-->
+<DEF>
+<!-- some ideas
+    <%ALIAS id="LengthEncodedTCPSocketHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
+    <%ALIAS id="LineBasedTCPSocketHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler"/>
+    <%ALIAS id="CompressedObjectSerializer" class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer"/>
+-->
+	<TYPE name="TelnetSockHandler" class="net.gtamps.server.xsocket.LineBasedTCPSocketHandler" />
+	<TYPE name="NormalTCPSockHandler" class="net.gtamps.server.xsocket.LengthEncodedTCPSocketHandler" />
+	<TYPE name="TelnetSerializer" class="net.gtamps.server.ManualTypeSerializer" />
+	<TYPE name="CompressedObjectSerializer" class="net.gtamps.shared.serializer.communication.CompressedObjectSerializer" />
+	<TYPE name="ObjectSerializer" class="net.gtamps.shared.serializer.communication.ObjectSerializer" />
+	<TYPE name="BinaryObjectSerializer" class="net.gtamps.shared.serializer.communication.BinaryObjectSerializer" />
+</DEF>
+<COMMON>
+	<SETUP>
+        <GAMESERVER port="8095" protocol="tcp">
+			    <SOCKETHANDLER type="NormalTCPSockHandler"/>
+			    <SERIALIZER type="BinaryObjectSerializer"/>
+        </GAMESERVER>
+        <HTTPSERVER port="8080" docroot="../assets/kompilat/"/>
+        <GUI>
+        	<LOOKANDFEEL name="nimbus"/> <!--things to try: Metal Nimbus CDE/Motif -->
+        	<!-- or java cmd line:  -Dswing.defaultlaf=com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel -->
+        </GUI>
+	</SETUP>
+</COMMON>
+<SERVER>
+	<SETUP>
+		<SESSIONHANDLER maxSessions="0"/>
+		<CONTROL maxGames="0" maxPlayers="0"/>
+	</SETUP>
+</SERVER>
+<ANDROID>
+    <!-- some ideas
+    <%IMPORT key="server.setup.gameserver" as="setup.gameserver"/>
+    <%IMPORT key="^.setup.gameserver" as="setup.gameserver"/>
+    -->
+</ANDROID>
+</CONFIG>

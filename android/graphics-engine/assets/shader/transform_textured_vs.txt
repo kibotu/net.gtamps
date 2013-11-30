@@ -1,0 +1,20 @@
+#version 150
+
+//
+// Basic vertex shader to transform
+// 3D coordinates to screen space. - James Lammlein
+//
+
+uniform mat4 u_WorldViewProjection;
+
+in  vec3 in_Position;
+in  vec2 in_TexCoords;
+
+out vec2 v_TexCoords;
+
+void main(void)
+{
+    gl_Position = u_WorldViewProjection * vec4(in_Position, 1.0);
+
+    v_TexCoords = in_TexCoords;
+}

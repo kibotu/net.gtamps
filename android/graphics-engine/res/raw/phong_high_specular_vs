@@ -1,0 +1,44 @@
+precision mediump float;
+//
+// Vertex Shader for Phong Lighting.
+//
+uniform mat4 u_WorldView;		    // we need vector from vertex to eye
+uniform mat4 u_WorldViewProjection;	// normal transform for vertex
+uniform mat4 u_ModelViewMatrix;
+uniform vec3 u_LightDirection;
+uniform vec3 u_LightPosition;
+
+// int
+attribute vec3 in_Position;
+attribute vec3 in_Normal;
+attribute vec2 in_TexCoords;
+
+// out
+varying vec3 v_ViewSpacePosition;
+varying vec3 v_VertexToLight;
+varying vec3 v_Normal;
+varying vec2 v_TexCoords;
+
+void main(void)
+{
+    mat4 m_ModelWorldView = u_WorldView * u_ModelViewMatrix;
+
+    // The normal graphic's pipeline transformation
+    gl_Position = u_WorldViewProjection * m_ModelWorldView * vec4(in_Position, 1.0);
+
+    // Required for phong lighting
+    //vec3 viewLightDirection = ( u_WorldView * vec4(u_LightDirection, 0.0) ).xyz;
+    //v_VertexToLight = normalize( viewLightDirection );
+
+    v_ViewSpacePosition = -in_Position.xyz;
+    v_VertexToLight = u_LightPosition - in_Position.xyz;
+
+
+
+    //v_ViewSpacePosition = ( u_WorldView * vec4(in_Position, 1.0) ).xyz;
+
+    // Only take to view space
+    v_Normal = ( normalize( m_ModelWorldView * vec4(in_Normal, 0.0) ) ).xyz;
+
+    v_TexCoords = in_TexCoords;
+}

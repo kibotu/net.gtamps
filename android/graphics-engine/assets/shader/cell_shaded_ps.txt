@@ -1,0 +1,57 @@
+#version 150
+
+//
+// Implements a cell-shaded lighting model. - James Lammlein
+//
+
+precision highp float;
+
+uniform sampler2D 	u_Texture;
+
+// Quantization levels.
+uniform float       u_QOne;
+uniform float       u_QTwo;
+uniform float       u_QThree;
+
+// Quantization values.
+uniform float       u_ValueOne;
+uniform float       u_ValueTwo;
+uniform float       u_ValueThree;
+uniform float       u_ValueFour;
+
+in vec3 v_VertexToLight;
+in vec3 v_Normal;
+in vec2 v_TexCoords;
+out vec4 gl_FragColor;
+
+void main(void)
+{
+    // Use the texture as the default color.
+    gl_FragColor = texture2D( u_Texture, v_TexCoords );
+
+    // Compute the intensity of light at this pixel.
+    vec3 L = v_VertexToLight;
+    float intensity = dot( vec3( L ), v_Normal );
+    intensity = clamp(intensity, 0.0, 1.0);
+
+    // Quantize based on the intensity to four possible values.
+    if (intensity > u_QOne)
+    {
+        intensity = u_ValueOne;
+    }
+    else if (intensity > u_QTwo)
+    {
+        intensity = u_ValueTwo;
+    }
+    else if (intensity > u_QThree)
+    {
+        intensity = u_ValueThree;
+    }
+    else
+    {
+        intensity = u_ValueFour;
+    }
+
+    // Modify the color based on the intensity.
+    gl_FragColor *= intensity;
+}

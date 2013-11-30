@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture>
+    <dimension width="256" height="256" normalized="true"/>
+    <img x="0.0" y="0.00390625" w="0.26953125" h="0.265625"/>
+    <img x="0.27734375" y="0.00390625" w="0.08203125" h="0.09375"/>
+    <animation type="idle" indices="0 1"/>
+</texture>
+

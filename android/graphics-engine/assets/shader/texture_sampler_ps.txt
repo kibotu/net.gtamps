@@ -1,0 +1,19 @@
+#version 150
+
+//
+// Samples texture for fragment's output.
+// No lighting. - James Lammlein
+//
+
+precision highp float;
+
+uniform sampler2D u_Texture;
+
+in vec2 v_TexCoords;
+out vec4 gl_FragColor;
+
+void main(void)
+{
+    gl_FragColor.rgb = vec3( texture2D( u_Texture, v_TexCoords ) );
+    gl_FragColor.a = 1.0f;
+}

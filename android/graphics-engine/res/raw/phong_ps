@@ -1,0 +1,40 @@
+precision mediump float;
+uniform vec4		u_LightDiffuse;
+uniform float		u_KA;
+uniform float		u_KD;
+uniform float		u_KS;
+uniform float		u_SExponent;
+uniform sampler2D 	u_Texture01;
+
+varying vec3 v_ViewSpacePosition;
+varying vec3 v_VertexToLight;
+varying vec3 v_Normal;
+varying vec2 v_TexCoords;
+
+void main(void)
+{
+    vec3 L = v_VertexToLight;
+
+    // we are in camera space, so camera position is (0,0,0).
+    // Therefore, camera position - v_ViewSpacePosition
+    // = -v_ViewSpacePosition
+    vec3 E = normalize(-v_ViewSpacePosition);
+
+    vec3 R = normalize(reflect(L,v_Normal));
+
+    // Ambient - Sample texture for ambient lighting.
+    vec4 ambient = texture2D(u_Texture01, v_TexCoords);
+
+    // Diffuse
+    vec4 diffuse = u_LightDiffuse * max(dot(v_Normal,L), 0.);
+    diffuse = clamp(diffuse, 0., 1.);
+
+    // Specular
+    vec4 specular = vec4(1., 1., 1., 1.) * pow(max(-dot(R,E), 0.), u_SExponent);
+    specular = clamp(specular, 0., 1.);
+
+    // Finalize
+    gl_FragColor = u_KA * ambient;
+    gl_FragColor += u_KD * diffuse;
+    gl_FragColor += u_KS * specular;
+}
